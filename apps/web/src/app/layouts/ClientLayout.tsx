@@ -1,4 +1,5 @@
 import { CalendarCheck, FileText, MessageCircle, UserRound } from 'lucide-react';
+import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
@@ -6,7 +7,7 @@ import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
 import { useSessionStore } from '@/stores/session';
 
-const items: SpaceNavItem[] = [
+const baseItems: SpaceNavItem[] = [
   { to: '/espace/demandes', label: 'Mes demandes', icon: FileText },
   { to: '/espace/reservations', label: 'Réservations', icon: CalendarCheck },
   { to: '/espace/messages', label: 'Messages', icon: MessageCircle },
@@ -16,6 +17,11 @@ const items: SpaceNavItem[] = [
 /** Gabarit de l'espace client : en-tête + onglets en haut de page. */
 export function ClientLayout() {
   useRememberSpace('client');
+  // Pastille « non lus » sur « Messages », rafraîchie avec la messagerie.
+  const unread = useUnreadCount('client');
+  const items = baseItems.map((item) =>
+    item.to.endsWith('/messages') ? { ...item, badge: unread } : item,
+  );
   const isProvider = useSessionStore((state) => state.user?.roles.includes('provider'));
 
   return (

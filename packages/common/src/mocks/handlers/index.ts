@@ -1,7 +1,9 @@
 import type { MockDb } from '../db';
 import { authHandlers } from './auth';
 import { catalogueHandlers } from './catalogue';
+import { messagingHandlers } from './messaging';
 import { providerHandlers } from './providers';
+import { quoteRequestHandlers } from './quoteRequests';
 
 export * from './http';
 export { FEATURED_PROVIDERS_COUNT } from './catalogue';
@@ -15,5 +17,11 @@ export { FEATURED_PROVIDERS_COUNT } from './catalogue';
  */
 export function createHandlers(db: MockDb) {
   // L'ordre compte : catalogue (« /providers/featured ») avant providers (« /providers/:slug »).
-  return [...authHandlers(db), ...catalogueHandlers(db), ...providerHandlers(db)];
+  return [
+    ...authHandlers(db),
+    ...catalogueHandlers(db),
+    ...providerHandlers(db),
+    ...quoteRequestHandlers(db),
+    ...messagingHandlers(db),
+  ];
 }

@@ -1,3 +1,4 @@
+import type { Side } from '../api';
 import type { ProviderSearchFilters } from '../types';
 
 /**
@@ -21,5 +22,16 @@ export const queryKeys = {
     reviews: (providerId: string) => [...queryKeys.providers.all, 'reviews', providerId] as const,
     unavailableDates: (providerId: string, range: { from: string; to: string }) =>
       [...queryKeys.providers.all, 'unavailable-dates', providerId, range] as const,
+  },
+  quoteRequests: {
+    all: ['quote-requests'] as const,
+    list: (side: Side) => [...queryKeys.quoteRequests.all, 'list', side] as const,
+    detail: (id: string) => [...queryKeys.quoteRequests.all, 'detail', id] as const,
+  },
+  conversations: {
+    all: ['conversations'] as const,
+    list: (side: Side) => [...queryKeys.conversations.all, 'list', side] as const,
+    messages: (conversationId: string) =>
+      [...queryKeys.conversations.all, 'messages', conversationId] as const,
   },
 };

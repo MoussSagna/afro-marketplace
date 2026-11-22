@@ -1,4 +1,14 @@
-import type { ProviderCard, ProviderProfile, PublicUser, User } from '../types';
+import type {
+  ProviderCard,
+  ProviderProfile,
+  PublicUser,
+  Quote,
+  QuoteRequest,
+  QuoteRequestDetails,
+  QuoteRequestSummary,
+  User,
+} from '../types';
+import type { MockData } from './data';
 
 /*
  * Transformations « base → réponse de l'API ».
@@ -35,5 +45,38 @@ export function toPublicUser(
     firstName: user.firstName,
     lastNameInitial: `${user.lastName.charAt(0)}.`,
     avatarUrl: user.avatarUrl,
+  };
+}
+
+/**
+ * Une demande de devis « prête à afficher » : le prestataire, le client,
+ * le dernier devis et la conversation liée.
+ */
+export function toQuoteRequestSummary(data: MockData, request: QuoteRequest): QuoteRequestSummary {
+  const provider = data.providers.find((p) => p.id === request.providerId)!;
+  const client = data.users.find((u) => u.id === request.clientId)!;
+  const quotes = data.quotes.filter((q) => q.quoteRequestId === request.id);
+  const latestQuote = quotes.reduce<Quote | undefined>(
+    (latest, quote) => (!latest || quote.version > latest.version ? quote : latest),
+    undefined,
+  );
+  const conversation = data.conversations.find((c) => c.quoteRequestId === request.id)!;
+  return {
+    request,
+    provider: toProviderCard(provider),
+    client: toPublicUser(client),
+    latestQuote,
+    conversationId: conversation.id,
+  };
+}
+
+/** Le détail d'une demande (C3 / S3) : en plus du résumé, tous les devis et la réservation. */
+export function toQuoteRequestDetails(data: MockData, request: QuoteRequest): QuoteRequestDetails {
+  return {
+    ...toQuoteRequestSummary(data, request),
+    quotes: data.quotes
+      .filter((q) => q.quoteRequestId === request.id)
+      .sort((a, b) => a.version - b.version),
+    booking: data.bookings.find((b) => b.quoteRequestId === request.id),
   };
 }

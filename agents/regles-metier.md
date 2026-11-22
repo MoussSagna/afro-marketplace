@@ -41,3 +41,10 @@ Masqués : emails classiques, emails « déguisés » (`at`, `arobase`, `dot`, `
 **9 chiffres ou plus** (séparateurs espace, point, tiret, slash ; indicatif `+33`/`0033` accepté).
 Les dates (`12/06/2027`), prix et codes postaux ne sont pas touchés. Ce n'est pas infaillible :
 le bouton « Signaler » complète le dispositif.
+
+## Précisions ajoutées au lot 4
+
+- **Expiration à 7 jours** : seule une demande `pending` expire. Si le prestataire écrit dans la conversation (une
+  question, par exemple), le délai repart pour 7 jours : il est actif, la demande ne doit pas expirer sous ses yeux.
+- **Conversation fermée** quand la demande est déclinée, expirée ou annulée : plus d'envoi possible (409).
+- **Messages système** (« Demande déclinée… », « Demande annulée… ») : comptés comme non lus des deux côtés, jamais masqués.

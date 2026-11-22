@@ -8,6 +8,8 @@ export interface SpaceNavItem {
   icon: LucideIcon;
   /** true : actif seulement sur l'adresse exacte (utile pour « Tableau de bord » sur /pro). */
   end?: boolean;
+  /** Une pastille (nombre de messages non lus, par exemple). Masquée à 0. */
+  badge?: number;
 }
 
 interface SpaceNavProps {
@@ -30,7 +32,7 @@ export function SpaceNav({ items, label, variant, className }: SpaceNavProps) {
           variant === 'side' ? 'flex flex-col gap-1' : 'flex gap-1 overflow-x-auto pb-1',
         )}
       >
-        {items.map(({ to, label: itemLabel, icon: Icon, end }) => (
+        {items.map(({ to, label: itemLabel, icon: Icon, end, badge }) => (
           <li key={to} className="shrink-0">
             <NavLink
               to={to}
@@ -46,6 +48,12 @@ export function SpaceNav({ items, label, variant, className }: SpaceNavProps) {
             >
               <Icon className="size-4" aria-hidden />
               {itemLabel}
+              {!!badge && (
+                <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-accent-foreground">
+                  {badge}
+                  <span className="sr-only"> non lu{badge > 1 ? 's' : ''}</span>
+                </span>
+              )}
             </NavLink>
           </li>
         ))}

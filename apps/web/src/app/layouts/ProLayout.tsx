@@ -1,11 +1,12 @@
 import { CalendarDays, FileText, LayoutDashboard, MessageCircle, Star, Store } from 'lucide-react';
+import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
 
-const items: SpaceNavItem[] = [
+const baseItems: SpaceNavItem[] = [
   { to: '/pro', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
   { to: '/pro/demandes', label: 'Demandes reçues', icon: FileText },
   { to: '/pro/messages', label: 'Messages', icon: MessageCircle },
@@ -20,6 +21,11 @@ const items: SpaceNavItem[] = [
  */
 export function ProLayout() {
   useRememberSpace('provider');
+  // Pastille « non lus » sur « Messages », rafraîchie avec la messagerie.
+  const unread = useUnreadCount('provider');
+  const items = baseItems.map((item) =>
+    item.to.endsWith('/messages') ? { ...item, badge: unread } : item,
+  );
 
   return (
     <div className="flex min-h-dvh flex-col">
