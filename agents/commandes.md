@@ -21,6 +21,13 @@ React 19, React Router 8, Vite 8, Tailwind v4 (thème en CSS dans `packages/conf
 TypeScript 6.0 (**pas 7** : pas encore supporté par typescript-eslint), Zod 4, MSW 2, Vitest 5,
 Playwright **épinglé en 1.63.0**.
 
+## Après un `git pull`
+
+Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod` dans `apps/web` au lot 4,
+`@axe-core/playwright` au lot 9). Si une erreur « Cannot find module » persiste (lien manquant dans
+`node_modules`), `pnpm install --force` recrée tous les liens. Le dépôt est sain : une installation propre
+(`pnpm install --frozen-lockfile`) crée bien `apps/web/node_modules/zod` (vérifié le 22/11/2026, QA de Mouss).
+
 ## Pièges connus (environnement cloud des agents)
 
 - Le registre `ui.shadcn.com` est bloqué depuis le bac à sable : les composants shadcn/ui y sont écrits à la main
