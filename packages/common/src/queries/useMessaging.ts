@@ -48,10 +48,10 @@ export function useSendMessage(conversationId: string) {
         queryKeys.conversations.messages(conversationId),
         (messages) => [...(messages ?? []), message],
       );
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.quoteRequests.all }),
-      ]);
+      // On ne renvoie PAS ces promesses : l'envoi est fini dès que le serveur a répondu,
+      // sans attendre le rechargement des listes (sinon la zone d'écriture reste pleine).
+      void queryClient.invalidateQueries({ queryKey: queryKeys.conversations.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.quoteRequests.all });
     },
   });
 }

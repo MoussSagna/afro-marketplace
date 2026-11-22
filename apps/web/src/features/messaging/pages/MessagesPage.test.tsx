@@ -28,7 +28,7 @@ describe('Messagerie (C4 / S5)', () => {
 
     expect(await screen.findByText('Mon numéro : [coordonnées masquées]')).toBeInTheDocument();
     expect(screen.getByText(/Coordonnées masquées : elles seront visibles/)).toBeInTheDocument();
-    expect(input).toHaveValue('');
+    await waitFor(() => expect(input).toHaveValue(''));
   });
 
   it('affiche les non-lus du prestataire, puis les efface à la lecture', async () => {
