@@ -62,7 +62,7 @@ export function ProviderProfilePage() {
 
   return (
     <article>
-      <div className="relative h-48 bg-linear-to-br from-brand-400 via-brand-600 to-gold-500 md:h-72">
+      <div className="relative h-48 bg-linear-to-br from-ochre via-primary to-foreground md:h-72">
         {p.coverUrl && <img src={p.coverUrl} alt="" className="size-full object-cover" />}
       </div>
 
@@ -76,7 +76,10 @@ export function ProviderProfilePage() {
                 </Link>
               ))}
               {p.isProVerified && (
-                <Badge variant="outline" className="text-forest-700">
+                <Badge
+                  variant="outline"
+                  className="border-success/30 bg-success-muted text-success"
+                >
                   <BadgeCheck aria-hidden /> Pro vérifié
                 </Badge>
               )}

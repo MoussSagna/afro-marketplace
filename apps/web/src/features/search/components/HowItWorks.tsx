@@ -21,7 +21,7 @@ const STEPS = [
 /** « Comment ça marche » en 3 étapes, sur l'accueil. */
 export function HowItWorks() {
   return (
-    <section className="bg-sand-100" aria-labelledby="how-title">
+    <section className="bg-muted" aria-labelledby="how-title">
       <div className="mx-auto max-w-6xl px-4 py-12">
         <h2 id="how-title" className="mb-8 font-display text-2xl font-semibold">
           Comment ça marche
@@ -29,7 +29,7 @@ export function HowItWorks() {
         <ol className="grid gap-6 md:grid-cols-3">
           {STEPS.map(({ icon: Icon, title, text }, index) => (
             <li key={title} className="flex gap-4">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Icon className="size-5" aria-hidden />
               </span>
               <div>

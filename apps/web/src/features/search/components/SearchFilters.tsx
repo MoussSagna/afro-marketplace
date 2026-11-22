@@ -170,7 +170,7 @@ export function SearchFilters({
       <label className="flex items-center gap-2 text-sm font-medium">
         <input
           type="checkbox"
-          className="size-4 accent-brand-600"
+          className="size-4 accent-primary"
           checked={filters.verifiedOnly ?? false}
           onChange={(event) => onChange({ verifiedOnly: event.target.checked || undefined })}
         />
@@ -188,7 +188,7 @@ export function SearchFilters({
               <label key={origin.id} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  className="size-4 accent-brand-600"
+                  className="size-4 accent-primary"
                   checked={filters.origins?.includes(origin.slug) ?? false}
                   onChange={(event) => toggleOrigin(origin.slug, event.target.checked)}
                 />

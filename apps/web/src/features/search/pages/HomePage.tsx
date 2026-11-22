@@ -22,7 +22,7 @@ export function HomePage() {
 
   return (
     <>
-      <section className="bg-linear-to-b from-brand-50 to-background">
+      <section className="bg-linear-to-b from-muted to-background">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 md:py-24">
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
@@ -42,7 +42,7 @@ export function HomePage() {
               <li key={category.id}>
                 <Link
                   to={`/categories/${category.slug}`}
-                  className="inline-flex items-center gap-1 rounded-full border bg-background px-3 py-1 text-sm font-medium transition-colors hover:bg-accent"
+                  className="inline-flex items-center gap-1 rounded-full border bg-background px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
                 >
                   <span aria-hidden>{category.icon}</span> {category.name}
                 </Link>

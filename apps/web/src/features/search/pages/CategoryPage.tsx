@@ -66,7 +66,7 @@ export function CategoryPage() {
             <li key={sub.id}>
               <Link
                 to={`/categories/${sub.slug}`}
-                className="inline-block rounded-full border bg-card px-3 py-1 text-sm hover:bg-accent"
+                className="inline-block rounded-full border bg-card px-3 py-1 text-sm hover:bg-muted"
               >
                 {sub.name}
               </Link>

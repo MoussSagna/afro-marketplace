@@ -40,7 +40,7 @@ Dernière mise à jour : 22/11/2026 (lot 3).
 - Gardes : `<RequireAuth />` et `<RequireAuth role="provider|admin" />` ; retour sécurisé avec `?retour=` (`safeRedirect`).
 - Page de connexion de démo (`/connexion`), déconnexion (`/deconnexion`), bascule client ↔ prestataire, raccourci « Mon espace »,
   « Réinitialiser les données de démo » dans le menu du compte.
-- Thème : toujours la palette provisoire (terre cuite, or, vert). L'identité visuelle définitive attend un nom de marque.
+- Thème : tokens **Teranga** de la maquette v1 appliqués (`packages/config/tailwind/theme.css`, copie JSON dans `tokens.json`). Nom provisoire « Teranga » ; en-tête = icône d'app + nom en Playfair tant que le logo n'est pas choisi. Maquette : `/mnt/project-files/maquette/` et https://claude.ai/artifact/9bkx1UDkFjBKFEKMGTrVGv.
 
 ## Ce que contient le lot 1
 
@@ -55,7 +55,7 @@ Dernière mise à jour : 22/11/2026 (lot 3).
 
 ## Questions en suspens pour Mouss
 
-- Identité visuelle définitive (couleurs, typographie, logo), liée au nom de la marque.
+- Logo définitif (3 pistes, la 1 recommandée) et nom de marque définitif. Menu latéral pro en brun (`bg-sidebar`) à faire avec le tableau de bord S2 (lot 5).
 - Nom de la marque (remplacera `@afro/…` au lot 11).
 
 ## Écarts assumés par rapport à la conception

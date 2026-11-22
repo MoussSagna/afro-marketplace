@@ -112,8 +112,8 @@ export function AvailabilityCalendar({
                         'flex aspect-square items-center justify-center rounded-md',
                         past && 'text-muted-foreground/50',
                         !past && isBlocked && 'bg-muted text-muted-foreground line-through',
-                        !past && !isBlocked && 'bg-forest-500/10 text-forest-700',
-                        day === today && 'ring-2 ring-brand-400',
+                        !past && !isBlocked && 'bg-success-muted text-success',
+                        day === today && 'ring-2 ring-ring',
                       )}
                     >
                       {Number(day.slice(8))}
@@ -127,7 +127,11 @@ export function AvailabilityCalendar({
       </table>
       <p className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span className="size-3 rounded-sm bg-forest-500/20" aria-hidden /> Disponible
+          <span
+            className="size-3 rounded-sm bg-success-muted border border-success/30"
+            aria-hidden
+          />{' '}
+          Disponible
         </span>
         <span className="flex items-center gap-1">
           <span className="size-3 rounded-sm bg-muted" aria-hidden /> Indisponible

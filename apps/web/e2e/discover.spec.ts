@@ -32,5 +32,5 @@ test('une page catégorie a son titre pour Google', async ({ page }) => {
   await expect(
     page.getByRole('heading', { level: 1, name: 'DJ afro en Île-de-France' }),
   ).toBeVisible();
-  await expect(page).toHaveTitle('DJ afro en Île-de-France · Afro Marketplace');
+  await expect(page).toHaveTitle('DJ afro en Île-de-France · Teranga');
 });

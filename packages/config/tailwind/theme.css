@@ -1,34 +1,110 @@
 /*
- * Thème partagé de la marque (couleurs, typographie).
- * Utilisé par Tailwind côté web, et plus tard par NativeWind côté mobile.
- * Couleurs provisoires, à remplacer quand l'identité visuelle sera choisie (lot 2).
+ * Teranga : tokens de design pour Tailwind v4 + shadcn/ui
+ * Source : maquette v1 (22 novembre 2026), palette.json de Mouss.
+ * Importé par apps/web/src/index.css. Polices chargées dans apps/web/index.html.
+ * Même valeurs en JSON : tokens.json (pour NativeWind côté mobile).
+ *
+ * Règles d'accessibilité (ratios mesurés sur #FDF7F0) :
+ *  - texte courant : --foreground (15,7:1) ou --primary (9,7:1)
+ *  - texte secondaire : --muted-foreground (7,4:1)
+ *  - --ochre et --accent ne servent JAMAIS de couleur de texte sur fond clair.
+ *    --accent s'utilise en fond, avec --accent-foreground (9,1:1).
  */
-@theme {
+
+:root {
+  /* Couleurs de marque */
+  --background: #fdf7f0; /* Ivoire, fond de page */
+  --foreground: #2b1a12; /* Brun profond, texte courant */
+
+  --card: #ffffff;
+  --card-foreground: #2b1a12;
+  --popover: #ffffff;
+  --popover-foreground: #2b1a12;
+
+  --primary: #7a1f0e; /* Terre intense : boutons, liens, titres */
+  --primary-hover: #63180a;
+  --primary-foreground: #fdf7f0;
+
+  --secondary: #ebd9c6; /* Sable : boutons secondaires */
+  --secondary-foreground: #2b1a12;
+
+  --muted: #f6ece1; /* Sable clair : fonds de section, survols */
+  --muted-foreground: #6b4a36; /* Argile foncée : texte secondaire */
+
+  --accent: #f3b618; /* Soleil : fonds d'accent, pastilles */
+  --accent-foreground: #2b1a12;
+
+  --ochre: #d9822b; /* Ocre doré : étoiles, filets, anneau de focus */
+  --clay: #b9987a; /* Argile claire : décor uniquement */
+
+  /* États */
+  --destructive: #b42318;
+  --destructive-foreground: #fdf7f0;
+  --success: #2e6b3f;
+  --success-muted: #e3f0e6;
+  --warning: #8c5a10;
+  --warning-muted: #fcefd0;
+
+  /* Bordures et champs */
+  --border: #ead9c7;
+  --input: #d9c2aa;
+  --ring: #d9822b;
+
+  /* Rayons : boutons/champs 10px, cartes 16px, pastilles 999px */
+  --radius: 0.625rem;
+
+  /* Espace pro (menu latéral) */
+  --sidebar: #2b1a12;
+  --sidebar-foreground: #ebd9c6;
+  --sidebar-primary: #fdf7f0;
+  --sidebar-primary-foreground: #2b1a12;
+  --sidebar-accent: #f3b618;
+  --sidebar-border: rgb(235 217 198 / 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ochre: var(--ochre);
+  --color-clay: var(--clay);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+
+  --radius-sm: calc(var(--radius) - 4px); /* 6px : badges carrés */
+  --radius-md: var(--radius); /* 10px : boutons, champs */
+  --radius-lg: 0.75rem; /* 12px : vignettes, options */
+  --radius-xl: 1rem; /* 16px : cartes */
+  --radius-2xl: 1.5rem; /* 24px : grands blocs */
+
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-display: 'Playfair Display', Georgia, serif;
 
-  /* Terre cuite : couleur principale */
-  --color-brand-50: #fdf4ef;
-  --color-brand-100: #fae5d8;
-  --color-brand-200: #f4c7ae;
-  --color-brand-300: #eca27c;
-  --color-brand-400: #e27548;
-  --color-brand-500: #d85a2a;
-  --color-brand-600: #c04420;
-  --color-brand-700: #9f341d;
-  --color-brand-800: #802c1f;
-  --color-brand-900: #68261c;
-
-  /* Or : accents (badges, notes) */
-  --color-gold-400: #f2b630;
-  --color-gold-500: #e09a12;
-
-  /* Vert profond : succès, « vérifié » */
-  --color-forest-500: #1f7a55;
-  --color-forest-700: #155239;
-
-  /* Fonds chauds */
-  --color-sand-50: #fbf8f3;
-  --color-sand-100: #f4ede2;
-  --color-ink-900: #1c1917;
+  --shadow-card: 0 8px 24px rgb(43 26 18 / 0.08);
+  --shadow-pop: 0 12px 32px rgb(43 26 18 / 0.25);
 }

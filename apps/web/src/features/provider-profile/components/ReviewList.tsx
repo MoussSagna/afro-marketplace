@@ -53,7 +53,7 @@ export function ReviewList({ providerId, ratingAverage, ratingCount }: ReviewLis
                 {dateFormatter.format(new Date(review.createdAt))}
               </p>
               {review.providerReply && (
-                <blockquote className="mt-3 border-l-2 border-brand-300 pl-3 text-sm text-muted-foreground">
+                <blockquote className="mt-3 border-l-2 border-ochre pl-3 text-sm text-muted-foreground">
                   <p className="font-medium text-foreground">Réponse du prestataire</p>
                   {review.providerReply}
                 </blockquote>

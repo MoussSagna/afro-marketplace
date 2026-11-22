@@ -19,7 +19,7 @@ interface ProviderCardProps {
 export function ProviderCard({ provider, categoryName }: ProviderCardProps) {
   return (
     <Card className="relative h-full gap-3 overflow-hidden pt-0 pb-5 transition-shadow focus-within:ring-[3px] focus-within:ring-ring/50 hover:shadow-md">
-      <div className="relative h-40 bg-linear-to-br from-brand-400 via-brand-600 to-gold-500">
+      <div className="relative h-40 bg-linear-to-br from-ochre via-primary to-foreground">
         {provider.coverUrl ? (
           <img src={provider.coverUrl} alt="" loading="lazy" className="size-full object-cover" />
         ) : (
@@ -36,7 +36,7 @@ export function ProviderCard({ provider, categoryName }: ProviderCardProps) {
         <div className="flex items-center justify-between gap-2">
           {categoryName && <Badge variant="secondary">{categoryName}</Badge>}
           {provider.isProVerified && (
-            <Badge variant="outline" className="text-forest-700">
+            <Badge variant="outline" className="border-success/30 bg-success-muted text-success">
               <BadgeCheck aria-hidden />
               Pro vérifié
             </Badge>
