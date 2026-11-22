@@ -1,0 +1,30 @@
+# Commandes et environnement
+
+## Commandes
+
+| Commande                                   | Effet                                                        |
+| ------------------------------------------ | ------------------------------------------------------------ |
+| `pnpm install`                             | Installe tout (Node ≥ 22.13, pnpm 10 via `corepack enable`)  |
+| `pnpm dev`                                 | Site web sur http://localhost:5173, avec les mocks           |
+| `pnpm check`                               | Lint + types + tests Vitest de tous les paquets              |
+| `pnpm turbo run lint typecheck test build` | Ce que lance la CI (avec `pnpm format:check`)                |
+| `pnpm test:e2e`                            | Playwright (build + Chromium), projets `desktop` et `mobile` |
+| `pnpm format` / `pnpm format:check`        | Prettier                                                     |
+| `pnpm --filter @afro/common test`          | Tests d'un seul paquet                                       |
+| `pnpm --filter @afro/web test:watch`       | Tests en continu                                             |
+
+Avant de pousser : `pnpm format && pnpm turbo run lint typecheck test build`, puis `pnpm test:e2e` si un écran a changé.
+
+## Versions (choisies au lot 0)
+
+React 19, React Router 8, Vite 8, Tailwind v4 (thème en CSS dans `packages/config/tailwind/theme.css`),
+TypeScript 6.0 (**pas 7** : pas encore supporté par typescript-eslint), Zod 4, MSW 2, Vitest 5,
+Playwright **épinglé en 1.63.0**.
+
+## Pièges connus (environnement cloud des agents)
+
+- Le registre `ui.shadcn.com` est bloqué depuis le bac à sable : les composants shadcn/ui y sont écrits à la main
+  (même code que le registre) dans `apps/web/src/components/ui/`. En local, `pnpm dlx shadcn@latest add …` marche.
+- Chromium est préinstallé : ne pas lancer `playwright install` (la version 1.63.0 correspond au navigateur fourni).
+  Passer `--trace off` aux lancements de Playwright.
+- Zod 4 : `.omit/.pick/.extend` sont interdits sur un schéma qui a des `.refine` → garder les entités sans refine.

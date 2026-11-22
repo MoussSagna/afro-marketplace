@@ -1,4 +1,4 @@
-import { seedProviders } from '@afro/common/mocks';
+import { FEATURED_PROVIDERS_COUNT } from '@afro/common/mocks';
 import { screen, within } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ describe("Page d'accueil", () => {
     renderRoute('/');
 
     expect(await screen.findByRole('heading', { name: 'Saveurs de Dakar' })).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(seedProviders.length);
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(FEATURED_PROVIDERS_COUNT);
   });
 
   it('affiche les catégories principales', async () => {
