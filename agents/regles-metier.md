@@ -5,8 +5,8 @@ et où elles vivent dans `packages/common/src/rules/`. Toutes sont des fonctions
 
 | N°  | Règle                                                                                                                           | Fonction(s)                                                                             | Fichier                  | Statut   |
 | --- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------ | -------- |
-| 1   | Pas de `ProviderProfile` sans le rôle `provider`                                                                                | `canHaveProviderProfile`                                                                | `providerProfile.ts`     | ✅ lot 1 |
-| 2   | Envoi en validation seulement si ≥ 1 catégorie, ≥ 3 photos, ≥ 1 formule active, une ville                                       | `getMissingProfileRequirements`, `canSubmitProfileForReview`, `canChangeProviderStatus` | `providerProfile.ts`     | ✅ lot 1 |
+| 1   | Pas de `ProviderProfile` sans le rôle `provider`                                                                                | `canHaveProviderProfile`                                                                | `providerProfile.ts`     | ✅ lot 7 |
+| 2   | Envoi en validation seulement si ≥ 1 catégorie, ≥ 3 photos, ≥ 1 formule active, une ville                                       | `getMissingProfileRequirements`, `canSubmitProfileForReview`, `canChangeProviderStatus` | `providerProfile.ts`     | ✅ lot 7 |
 | 3   | Pas de demande si le prestataire est indisponible (blocage manuel ou `maxBookingsPerDay` atteint)                               | `isProviderAvailable`                                                                   | `isProviderAvailable.ts` | ✅ lot 0 |
 | 4   | Pas de demande à soi-même ; regroupe aussi la n° 3 et les garde-fous (client actif, profil publié, date entre demain et +2 ans) | `canSendQuoteRequest`                                                                   | `quoteRequest.ts`        | ✅ lot 1 |
 | 5   | Accepter un devis : autres versions `superseded`, création de la `Booking`, `Unavailability`, message système                   | `canAcceptQuote`, `acceptQuote`                                                         | `acceptQuote.ts`         | ✅ lot 5 |
@@ -69,3 +69,14 @@ le bouton « Signaler » complète le dispositif.
 - **Recalcul de la note** (règle n° 8) à chaque avis créé ; un avis masqué par la modération (lot 8) sortira du calcul.
 - **Sous-notes** : facultatives, mais les trois ensemble (le schéma de l'API les attend groupées).
 - **Réponse du prestataire** : une seule, publique, non modifiable (409 `already_replied`). Pas de réponse sur un avis masqué.
+
+## Précisions ajoutées au lot 7
+
+- **Devenir prestataire** (règle n° 1) : le serveur crée le profil ET ajoute le rôle `provider` en une seule opération.
+  Un deuxième appel renvoie le profil existant.
+- **Envoi en validation** (règle n° 2) : `canSubmitProfileForReview` côté serveur (422 `incomplete_profile` avec la
+  liste de ce qui manque, 409 si le statut ne le permet pas) ; `getMissingProfileRequirements` affiche la checklist.
+- **Pause** : seulement `published` ↔ `paused` (`canChangeProviderStatus`). Un profil en pause sort de la recherche ;
+  ses réservations en cours ne changent pas.
+- **Adresse publique** (`slug`) : suit le nom commercial tant que le profil est un brouillon, figée ensuite
+  (pour ne pas casser les liens déjà partagés).

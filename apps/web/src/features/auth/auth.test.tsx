@@ -90,8 +90,8 @@ describe('Gardes de routes', () => {
     const { router } = renderRoute('/pro/agenda', { as: 'user-aissatou' });
 
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Devenir prestataire' }),
-    ).toBeInTheDocument();
+      await screen.findAllByRole('button', { name: 'Créer mon profil gratuitement' }),
+    ).not.toHaveLength(0);
     expect(router.state.location.pathname).toBe('/devenir-prestataire');
   });
 

@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { BookingCard } from '@/features/bookings/components/BookingCard';
+import { ProfileStatusBanner } from '@/features/provider-onboarding/components/ProfileStatusBanner';
 import { RequestCard } from '@/features/quote-requests/components/RequestCard';
 import { useSessionStore } from '@/stores/session';
 
@@ -49,6 +50,7 @@ export function DashboardPage() {
         </h1>
         {firstName && <p className="mt-1 text-muted-foreground">Bonjour {firstName} !</p>}
       </div>
+      <ProfileStatusBanner />
 
       {dashboard.isPending && <Skeleton className="h-28 rounded-xl" aria-label="Chargement" />}
       {dashboard.isError && (

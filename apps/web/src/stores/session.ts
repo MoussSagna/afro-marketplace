@@ -12,6 +12,8 @@ interface SessionState {
   lastSpace: Space;
   signIn(session: Session): void;
   signOut(): void;
+  /** Met à jour l'utilisateur connecté (ex. : rôle prestataire obtenu au lot 7). */
+  setUser(user: User): void;
   setLastSpace(space: Space): void;
 }
 
@@ -31,6 +33,7 @@ export const useSessionStore = create<SessionState>()(
       lastSpace: 'client',
       signIn: ({ user, token }) => set({ user, token, lastSpace: defaultSpaceFor(user.roles) }),
       signOut: () => set({ user: null, token: null, lastSpace: 'client' }),
+      setUser: (user) => set({ user }),
       setLastSpace: (lastSpace) => set({ lastSpace }),
     }),
     {

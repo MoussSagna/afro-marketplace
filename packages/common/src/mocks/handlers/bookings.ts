@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
 import { computeCancellationRefund } from '../../rules';
-import { cancelBookingInputSchema, updateProviderProfileInputSchema } from '../../schemas';
+import { cancelBookingInputSchema } from '../../schemas';
 import type { Unavailability, User } from '../../types';
 import { formatPrice } from '../../utils/formatPrice';
 import { completePastBookings, toBookingSummary } from '../bookings';
@@ -10,8 +10,8 @@ import { toQuoteRequestSummary } from '../mappers';
 import { apiError, currentUser, invalidInput } from './http';
 
 /**
- * Réservations (C5 / S2), tableau de bord (S2), agenda (S6) et réglages du
- * profil prestataire connecté. Lot 5.
+ * Réservations (C5 / S2), tableau de bord (S2) et agenda (S6). Lot 5.
+ * Le profil du prestataire connecté (GET/PATCH /me/provider) est dans myProvider.ts.
  */
 export function bookingHandlers(db: MockDb) {
   const myProvider = (user: User) => db.data.providers.find((p) => p.userId === user.id);
@@ -179,37 +179,6 @@ export function bookingHandlers(db: MockDb) {
         data.unavailabilities = data.unavailabilities.filter((u) => u.id !== target.id);
       });
       return new HttpResponse(null, { status: 204 });
-    }),
-
-    http.get('*/api/me/provider', async ({ request }) => {
-      await delay();
-      const user = currentUser(db, request);
-      const provider = user && myProvider(user);
-      if (!provider)
-        return apiError(404, 'no_provider_profile', 'Pas encore de profil prestataire.');
-      return HttpResponse.json({
-        profile: provider,
-        offerings: db.data.offerings.filter((o) => o.providerId === provider.id),
-        media: db.data.media
-          .filter((m) => m.providerId === provider.id)
-          .sort((a, b) => a.order - b.order),
-      });
-    }),
-
-    http.patch('*/api/me/provider', async ({ request }) => {
-      await delay();
-      const user = currentUser(db, request);
-      const provider = user && myProvider(user);
-      if (!provider)
-        return apiError(404, 'no_provider_profile', 'Pas encore de profil prestataire.');
-      const parsed = updateProviderProfileInputSchema.safeParse(
-        await request.json().catch(() => null),
-      );
-      if (!parsed.success) return invalidInput(parsed.error);
-      db.update(() => {
-        Object.assign(provider, parsed.data, { updatedAt: db.now().toISOString() });
-      });
-      return HttpResponse.json(provider);
     }),
   ];
 }
