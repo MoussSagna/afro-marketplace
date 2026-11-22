@@ -1,3 +1,4 @@
+import { mockDb } from '@afro/common/mocks';
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
@@ -8,5 +9,6 @@ beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => {
   cleanup();
   server.resetHandlers(); // annule les surcharges faites dans un test (server.use)
+  mockDb.reset(); // chaque test repart des données de démo
 });
 afterAll(() => server.close());
