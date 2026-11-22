@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import {
+  adminOverviewSchema,
+  adminProviderDetailsSchema,
+  adminReportSchema,
   apiErrorBodySchema,
   bookingSchema,
   bookingSummarySchema,
@@ -189,11 +192,14 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
     createReport: (input) => request('POST', '/reports', reportSchema, input),
 
     // Administration
+    getAdminOverview: () => get('/admin/overview', adminOverviewSchema),
     listProvidersToReview: () => get('/admin/providers/to-review', z.array(providerProfileSchema)),
+    getAdminProvider: (providerId) =>
+      get(`/admin/providers/${id(providerId)}`, adminProviderDetailsSchema),
     moderateProvider: (providerId, input) =>
       request('POST', `/admin/providers/${id(providerId)}/moderate`, providerProfileSchema, input),
     listReports: (status) =>
-      get(`/admin/reports${toQueryString({ status })}`, z.array(reportSchema)),
+      get(`/admin/reports${toQueryString({ status })}`, z.array(adminReportSchema)),
     resolveReport: (reportId, input) =>
       request('POST', `/admin/reports/${id(reportId)}/resolve`, reportSchema, input),
     listUsers: (query) => get(`/admin/users${toQueryString(query)}`, paginated(userSchema)),

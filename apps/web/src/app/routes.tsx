@@ -213,10 +213,39 @@ export const routes: RouteObject[] = [
           {
             element: <AdminLayout />,
             children: [
-              { index: true, element: <PlaceholderPage title="Vue d’ensemble" lot={8} /> },
-              soon('prestataires', 'Profils à valider', 8),
-              soon('signalements', 'Signalements', 8),
-              soon('utilisateurs', 'Utilisateurs', 8),
+              {
+                index: true,
+                lazy: async () => ({
+                  Component: (await import('@/features/admin/pages/AdminOverviewPage'))
+                    .AdminOverviewPage,
+                }),
+              },
+              {
+                path: 'prestataires',
+                lazy: async () => ({
+                  Component: (await import('@/features/admin/pages/ProvidersToReviewPage'))
+                    .ProvidersToReviewPage,
+                }),
+              },
+              {
+                path: 'prestataires/:id',
+                lazy: async () => ({
+                  Component: (await import('@/features/admin/pages/ProviderReviewPage'))
+                    .ProviderReviewPage,
+                }),
+              },
+              {
+                path: 'signalements',
+                lazy: async () => ({
+                  Component: (await import('@/features/admin/pages/ReportsPage')).ReportsPage,
+                }),
+              },
+              {
+                path: 'utilisateurs',
+                lazy: async () => ({
+                  Component: (await import('@/features/admin/pages/UsersPage')).UsersPage,
+                }),
+              },
             ],
           },
         ],

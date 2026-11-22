@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 7, onboarding et profil prestataire).
+Dernière mise à jour : 22/11/2026 (lot 8, admin minimal).
 
 ## Lots
 
@@ -13,13 +13,33 @@ Dernière mise à jour : 22/11/2026 (lot 7, onboarding et profil prestataire).
 | 4      | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
 | 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
 | 6      | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
-| 7      | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | 🔍 PR ouverte, à relire | PR « Lot 7 » |
-| 8 – 11 | Admin, finitions, Supabase, emails                                                  |                         |              |
+| 7      | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné             | #8           |
+| 8      | Admin minimal : profils à valider, signalements, utilisateurs                       | 🔍 PR ouverte, à relire | PR « Lot 8 » |
+| 9 – 11 | Compte, pages statiques, finitions (jalon B), Supabase, emails                      |                         |              |
 
 ## Jalon A atteint (fin du lot 5)
 
 La boucle complète est cliquable : recherche → profil → demande → messagerie → devis → acceptation → réservation →
 agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne les lots suivants, une PR par lot.
+
+## Ce que contient le lot 8
+
+- Handlers (`mocks/handlers/admin.ts`, réservés au rôle `admin`, 401/403 sinon) :
+  `GET /api/admin/overview`, `GET /api/admin/providers/to-review`, `GET /api/admin/providers/:id` (fiche + propriétaire
+  - historique), `POST /api/admin/providers/:id/moderate` (valider / corrections / refus avec motif),
+    `GET /api/admin/reports?status=` (avec un aperçu de la cible), `POST /api/admin/reports/:id/resolve`
+    (classer, masquer le contenu, suspendre l'auteur), `GET /api/admin/users?q=&page=` (recherche sans accents),
+    `POST /api/admin/users/:id/status` (suspendre, bannir, réactiver, motif obligatoire).
+- **Journal** : chaque décision écrit une `ModerationAction` (qui, quoi, motif).
+- Effets : masquer un avis le passe en `hidden` et recalcule la note (règle n° 8) ; masquer un message remplace son
+  texte ; masquer une photo la retire ; suspendre un compte bloque la connexion et sort son profil de la recherche
+  (`published → suspended`), réactiver le remet en ligne. Un admin ne peut pas être suspendu.
+- Vues : `adminOverviewSchema`, `adminProviderDetailsSchema`, `adminReportSchema` ; libellés `USER_ROLE_LABELS`,
+  `USER_STATUS_LABELS`, `REPORT_STATUS_LABELS`, `MODERATION_ACTION_LABELS`. Hooks : `queries/useAdmin.ts`.
+- Web (`features/admin/`) : A1 `/admin` (4 chiffres), A2 `/admin/prestataires` et la fiche `/admin/prestataires/:id`,
+  A3 `/admin/signalements` (filtre par statut), A4 `/admin/utilisateurs` (recherche, pagination, suspension).
+  Fenêtre à motif réutilisable : `ReasonDialog`. Tableaux simples (`AdminTable`), pas d'effort de design (prévu).
+- Playwright : `e2e/admin.spec.ts` (parcours 6 : l'admin valide un profil, qui apparaît dans la recherche).
 
 ## Ce que contient le lot 7
 
@@ -172,6 +192,8 @@ agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne l
 - `Quote.lines` : les lignes sont renvoyées dans le devis (pas de route séparée pour `QuoteLine`).
 - `Booking` a en plus `quoteRequestId` et `cancelledAt` (pratique pour les écrans et la règle n° 9).
 - `ProviderProfile.postalCode` peut être vide pour un brouillon d'onboarding.
-- Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (à décider avec Mouss au lot 8, côté admin).
+- Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (question ouverte pour Mouss).
+- Lot 8 : pas de notification au prestataire après une décision (le modèle `Notification` arrive avec les emails, lot 11) ;
+  il voit son nouveau statut et le motif dans son espace.
 - Lot 7 : pas d'upload réel au MVP mocké, les photos sont des « data URL » (vrai stockage au lot 10 avec Supabase).
 - Page d'accueil : « à la une » = les 8 profils publiés les mieux notés (en attendant la mise en avant payante).

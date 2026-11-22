@@ -80,3 +80,14 @@ le bouton « Signaler » complète le dispositif.
   ses réservations en cours ne changent pas.
 - **Adresse publique** (`slug`) : suit le nom commercial tant que le profil est un brouillon, figée ensuite
   (pour ne pas casser les liens déjà partagés).
+
+## Précisions ajoutées au lot 8 (modération)
+
+- **Décisions sur un profil** : seulement depuis `pending_review` (`canChangeProviderStatus`). Corrections et refus
+  exigent un motif (10 caractères minimum), copié dans `rejectionReason` et visible par le prestataire.
+  Le badge « Pro vérifié » ne s'active que si le profil a un SIRET.
+- **Signalements** : un signalement traité ne se retraite pas (409). « Masquer » dépend de la cible (avis masqué,
+  message remplacé, photo retirée, profil ou compte suspendu).
+- **Suspension** : un compte non `active` ne peut plus se connecter (`currentUser` l'ignore, la connexion de démo
+  renvoie 403) et son profil `published` passe en `suspended`.
+- **Journal** : toute action d'admin écrit une `ModerationAction`.

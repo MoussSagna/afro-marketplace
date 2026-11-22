@@ -7,7 +7,8 @@ import { providerCardSchema, providerProfileSchema, publicProviderProfileSchema 
 import { quoteSchema } from './quote';
 import { quoteRequestSchema } from './quoteRequest';
 import { reviewSchema } from './review';
-import { publicUserSchema } from './user';
+import { moderationActionSchema, reportSchema } from './moderation';
+import { publicUserSchema, userSchema } from './user';
 
 /*
  * Les « vues » : des réponses de l'API qui assemblent plusieurs entités pour
@@ -86,4 +87,35 @@ export const providerDashboardSchema = z.object({
 export const apiErrorBodySchema = z.object({
   code: z.string(),
   message: z.string(),
+});
+
+// ------------------------------------------------------------ Administration (lot 8)
+
+/** A1 : les chiffres de la vue d'ensemble admin. */
+export const adminOverviewSchema = z.object({
+  providersToReview: z.number().int().nonnegative(),
+  openReports: z.number().int().nonnegative(),
+  publishedProviders: z.number().int().nonnegative(),
+  users: z.number().int().nonnegative(),
+});
+
+/** A2 : la fiche d'un profil à valider, avec son propriétaire et l'historique de modération. */
+export const adminProviderDetailsSchema = myProviderDetailsSchema.extend({
+  owner: userSchema,
+  history: z.array(moderationActionSchema),
+});
+
+/** A3 : un signalement, avec qui l'a fait et un aperçu de ce qui est signalé. */
+export const adminReportSchema = reportSchema.extend({
+  reporter: publicUserSchema,
+  target: z.object({
+    /** « Avis de Grace M. », « Profil Saveurs de Dakar »… */
+    label: z.string(),
+    /** Le texte signalé (avis, message), s'il y en a un. */
+    excerpt: z.string().optional(),
+    /** Le compte à suspendre si l'admin choisit « suspendre le compte ». */
+    ownerId: idSchema.optional(),
+    /** Le contenu a déjà été masqué ou supprimé. */
+    hidden: z.boolean(),
+  }),
 });
