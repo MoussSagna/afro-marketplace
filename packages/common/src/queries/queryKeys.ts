@@ -34,4 +34,15 @@ export const queryKeys = {
     messages: (conversationId: string) =>
       [...queryKeys.conversations.all, 'messages', conversationId] as const,
   },
+  bookings: {
+    all: ['bookings'] as const,
+    list: (side: Side) => [...queryKeys.bookings.all, 'list', side] as const,
+  },
+  myProvider: {
+    all: ['my-provider'] as const,
+    profile: () => [...queryKeys.myProvider.all, 'profile'] as const,
+    dashboard: () => [...queryKeys.myProvider.all, 'dashboard'] as const,
+    unavailabilities: (range: { from: string; to: string }) =>
+      [...queryKeys.myProvider.all, 'unavailabilities', range] as const,
+  },
 };

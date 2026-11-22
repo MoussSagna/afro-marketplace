@@ -76,7 +76,7 @@ export function HeroSearchForm() {
           onChange={(event) => setDate(event.target.value)}
         />
       </div>
-      <Button type="submit" size="lg" className="md:h-9">
+      <Button type="submit" variant="cta" size="lg" className="md:h-9">
         <Search aria-hidden />
         Rechercher
       </Button>

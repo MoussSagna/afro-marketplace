@@ -2,31 +2,15 @@ import { toIsoDate, useUnavailableDates } from '@afro/common';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  cursorFromIsoDate,
+  dayLabel,
+  monthGrid,
+  monthLabel as formatMonth,
+  moveMonth,
+  WEEK_DAYS,
+} from '@/lib/calendar';
 import { cn } from '@/lib/utils';
-
-const WEEK_DAYS = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'];
-const monthFormatter = new Intl.DateTimeFormat('fr-FR', {
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-const dayFormatter = new Intl.DateTimeFormat('fr-FR', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  timeZone: 'UTC',
-});
-
-/** Les jours d'un mois, précédés de cases vides pour commencer un lundi. */
-function monthGrid(year: number, month: number): (string | null)[] {
-  const first = new Date(Date.UTC(year, month, 1));
-  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const offset = (first.getUTCDay() + 6) % 7; // lundi = 0
-  const days = Array.from({ length: daysInMonth }, (_, i) =>
-    toIsoDate(new Date(Date.UTC(year, month, i + 1))),
-  );
-  return [...Array<null>(offset).fill(null), ...days];
-}
 
 interface AvailabilityCalendarProps {
   providerId: string;
@@ -43,23 +27,15 @@ export function AvailabilityCalendar({
   providerId,
   today = toIsoDate(new Date()),
 }: AvailabilityCalendarProps) {
-  const [cursor, setCursor] = useState(() => {
-    const [year, month] = today.split('-').map(Number);
-    return { year: year!, month: month! - 1 };
-  });
-  const days = useMemo(() => monthGrid(cursor.year, cursor.month), [cursor]);
+  const [cursor, setCursor] = useState(() => cursorFromIsoDate(today));
+  const days = useMemo(() => monthGrid(cursor), [cursor]);
   const range = { from: days.find(Boolean)!, to: days.at(-1)! };
   const unavailable = useUnavailableDates(providerId, range);
   const blocked = new Set(unavailable.data ?? []);
   const isCurrentMonth = today.startsWith(range.from.slice(0, 7));
 
-  const move = (step: number) =>
-    setCursor(({ year, month }) => {
-      const date = new Date(Date.UTC(year, month + step, 1));
-      return { year: date.getUTCFullYear(), month: date.getUTCMonth() };
-    });
-
-  const monthLabel = monthFormatter.format(new Date(Date.UTC(cursor.year, cursor.month, 1)));
+  const move = (step: number) => setCursor((current) => moveMonth(current, step));
+  const monthLabel = formatMonth(cursor);
 
   return (
     <section aria-labelledby="availability-title" className="rounded-xl border bg-card p-4">
@@ -100,7 +76,7 @@ export function AvailabilityCalendar({
                 if (!day) return <td key={`empty-${index}`} />;
                 const past = day < today;
                 const isBlocked = blocked.has(day);
-                const label = `${dayFormatter.format(new Date(`${day}T00:00:00Z`))} : ${
+                const label = `${dayLabel(day)} : ${
                   past ? 'passé' : isBlocked ? 'indisponible' : 'disponible'
                 }`;
                 return (

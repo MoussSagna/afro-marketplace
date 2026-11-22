@@ -74,7 +74,7 @@ export function ConversationList({ side, activeId }: { side: Side; activeId?: st
                       {lastMessage?.body ?? 'Pas encore de message'}
                     </p>
                     {unreadCount > 0 && (
-                      <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-accent-foreground">
+                      <span className="relative flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-accent-foreground">
                         {unreadCount}
                         <span className="sr-only"> non lu{unreadCount > 1 ? 's' : ''}</span>
                       </span>

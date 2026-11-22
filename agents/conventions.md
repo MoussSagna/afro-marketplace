@@ -25,6 +25,8 @@
 - **Fonctionnels** (Vitest + Testing Library + MSW) pour chaque écran : chargement, vide, erreur, interaction.
 - **Playwright** pour les parcours clés (les 8 parcours de l'étape 3), en `desktop` et `mobile`.
 - Les tests sont à côté du fichier testé (`foo.ts` → `foo.test.ts`).
+- La CI est plus lente que nos postes : `findBy…` attend jusqu'à 5 s (`configure` dans `apps/web/src/test/setup.ts`)
+  et un test web peut durer 20 s (`testTimeout`). N'ajoute pas de `timeout` au cas par cas.
 - Le seed a ses propres tests de cohérence (`mocks/seed/buildSeed.test.ts`) : si tu modifies le seed, ils doivent rester verts.
 
 ## Style

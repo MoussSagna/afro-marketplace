@@ -14,5 +14,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     css: false,
+    // Un test peut enchaîner plusieurs attentes de 5 s (voir src/test/setup.ts).
+    testTimeout: 20000,
   },
 });

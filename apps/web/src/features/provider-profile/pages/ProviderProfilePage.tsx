@@ -138,7 +138,7 @@ export function ProviderProfilePage() {
             <p className="mb-3 text-sm text-muted-foreground">
               Gratuit et sans engagement : le prestataire vous répond avec un devis.
             </p>
-            <Button asChild size="lg" className="w-full">
+            <Button asChild variant="cta" size="lg" className="w-full">
               <Link to={requestUrl}>Demander un devis</Link>
             </Button>
           </div>
@@ -158,7 +158,7 @@ export function ProviderProfilePage() {
 
       {/* Sur téléphone, le bouton reste visible en bas de l'écran. */}
       <div className="sticky bottom-0 border-t bg-background/95 p-3 backdrop-blur lg:hidden">
-        <Button asChild size="lg" className="w-full">
+        <Button asChild variant="cta" size="lg" className="w-full">
           <Link to={requestUrl}>Demander un devis</Link>
         </Button>
       </div>

@@ -19,6 +19,8 @@ export function useProvider(slug: string) {
   return useQuery({
     queryKey: queryKeys.providers.detail(slug),
     queryFn: () => api.getProviderBySlug(slug),
+    // Un slug vide = rien à charger (utile quand on attend une autre donnée).
+    enabled: slug !== '',
   });
 }
 

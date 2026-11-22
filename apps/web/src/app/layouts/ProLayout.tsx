@@ -31,7 +31,11 @@ export function ProLayout() {
     <div className="flex min-h-dvh flex-col">
       <AppHeader spaceLabel="Espace pro">
         <Button asChild variant="outline" size="sm">
-          <Link to="/espace/demandes">Passer en mode client</Link>
+          <Link to="/espace/demandes" aria-label="Passer en mode client">
+            {/* Texte court sur téléphone pour que l'en-tête tienne sur une ligne. */}
+            <span className="sm:hidden">Mode client</span>
+            <span className="hidden sm:inline">Passer en mode client</span>
+          </Link>
         </Button>
       </AppHeader>
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:flex-row">
@@ -39,6 +43,7 @@ export function ProLayout() {
           items={items}
           label="Espace prestataire"
           variant="side"
+          tone="dark"
           className="hidden w-56 shrink-0 md:block"
         />
         <SpaceNav

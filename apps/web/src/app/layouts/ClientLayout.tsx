@@ -29,7 +29,11 @@ export function ClientLayout() {
       <AppHeader spaceLabel="Espace client">
         {isProvider && (
           <Button asChild variant="outline" size="sm">
-            <Link to="/pro">Passer en mode prestataire</Link>
+            <Link to="/pro" aria-label="Passer en mode prestataire">
+              {/* Texte court sur téléphone pour que l'en-tête tienne sur une ligne. */}
+              <span className="sm:hidden">Mode pro</span>
+              <span className="hidden sm:inline">Passer en mode prestataire</span>
+            </Link>
           </Button>
         )}
       </AppHeader>

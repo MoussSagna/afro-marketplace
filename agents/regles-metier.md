@@ -9,7 +9,7 @@ et où elles vivent dans `packages/common/src/rules/`. Toutes sont des fonctions
 | 2   | Envoi en validation seulement si ≥ 1 catégorie, ≥ 3 photos, ≥ 1 formule active, une ville                                       | `getMissingProfileRequirements`, `canSubmitProfileForReview`, `canChangeProviderStatus` | `providerProfile.ts`     | ✅ lot 1 |
 | 3   | Pas de demande si le prestataire est indisponible (blocage manuel ou `maxBookingsPerDay` atteint)                               | `isProviderAvailable`                                                                   | `isProviderAvailable.ts` | ✅ lot 0 |
 | 4   | Pas de demande à soi-même ; regroupe aussi la n° 3 et les garde-fous (client actif, profil publié, date entre demain et +2 ans) | `canSendQuoteRequest`                                                                   | `quoteRequest.ts`        | ✅ lot 1 |
-| 5   | Accepter un devis : autres versions `superseded`, création de la `Booking`, `Unavailability`, message système                   | à écrire                                                                                | `quote.ts`               | ⏳ lot 5 |
+| 5   | Accepter un devis : autres versions `superseded`, création de la `Booking`, `Unavailability`, message système                   | `canAcceptQuote`, `acceptQuote`                                                         | `acceptQuote.ts`         | ✅ lot 5 |
 | 6   | Avis seulement sur une réservation `completed`, une fois, par son client                                                        | `canReviewBooking`                                                                      | `review.ts`              | ✅ lot 1 |
 | 7   | Téléphones et emails masqués tant qu'il n'y a pas de réservation confirmée                                                      | `maskContactDetails`, `shouldMaskContactDetails`                                        | `contactMasking.ts`      | ✅ lot 1 |
 | 8   | Note moyenne et nombre d'avis recalculés (avis publiés seulement, arrondi à 0,1)                                                | `computeProviderRating`                                                                 | `review.ts`              | ✅ lot 1 |
@@ -48,3 +48,16 @@ le bouton « Signaler » complète le dispositif.
   question, par exemple), le délai repart pour 7 jours : il est actif, la demande ne doit pas expirer sous ses yeux.
 - **Conversation fermée** quand la demande est déclinée, expirée ou annulée : plus d'envoi possible (409).
 - **Messages système** (« Demande déclinée… », « Demande annulée… ») : comptés comme non lus des deux côtés, jamais masqués.
+
+## Précisions ajoutées au lot 5
+
+- **Accepter un devis** (`canAcceptQuote`) : seulement le client, sur un devis `sent`, encore valable (`validUntil`),
+  demande `quoted`, et si la date est toujours libre. `acceptQuote` est pure : elle calcule la réservation, la date
+  bloquée, les versions mises à jour et le message système ; le serveur les enregistre ensemble.
+- **Nouvelle version de devis** : la version précédente encore `sent` passe en `superseded`. Le total est toujours
+  recalculé côté serveur.
+- **Refus d'un devis par le client** : le devis passe en `declined`, la demande reste `quoted` (le prestataire peut
+  proposer une nouvelle version).
+- **Annulation d'une réservation** : possible jusqu'à la veille, par le client ou le prestataire ; la date est libérée et
+  un message système affiche le remboursement prévu sur l'acompte (règle n° 9, mode `offline` : affichage seulement).
+- **Fin de prestation** : `confirmed` → `completed` le lendemain de la date (vérifié à chaque lecture, comme l'expiration).
