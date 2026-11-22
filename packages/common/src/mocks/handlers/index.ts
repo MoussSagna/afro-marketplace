@@ -1,4 +1,5 @@
 import type { MockDb } from '../db';
+import { authHandlers } from './auth';
 import { catalogueHandlers } from './catalogue';
 
 export * from './http';
@@ -12,5 +13,5 @@ export { FEATURED_PROVIDERS_COUNT } from './catalogue';
  * Un fichier par ressource ; chaque lot ajoute les siens.
  */
 export function createHandlers(db: MockDb) {
-  return [...catalogueHandlers(db)];
+  return [...authHandlers(db), ...catalogueHandlers(db)];
 }

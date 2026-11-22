@@ -42,7 +42,7 @@ Dates bloquées à la main : dans 15 et 16 jours. `maxBookingsPerDay = 2`.
 ## Réinitialiser
 
 - Dans le navigateur, les données sont gardées dans le `localStorage` (clé `afro-marketplace:mock-db:v1`).
-  Pour repartir de zéro : `mockDb.reset()` (un bouton arrivera au lot 2) ou vider le localStorage.
+  Pour repartir de zéro : menu du compte → « Réinitialiser les données de démo » (ou vider le localStorage).
 - **Si tu changes la forme des données** (schéma), incrémente `DEFAULT_STORAGE_KEY` dans `mocks/db.ts`
   (de toute façon, une sauvegarde invalide est ignorée).
 - Dans les tests web, la base est réinitialisée après chaque test.

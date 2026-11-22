@@ -68,6 +68,25 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 
 ## `apps/web`
 
+### Routes et espaces (lot 2)
+
+| Espace      | Préfixe                                                                                                              | Garde                                                            | Gabarit                    |
+| ----------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------- |
+| Public      | `/`, `/connexion`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`             |
+| Client      | `/espace/…` (demandes, reservations, messages, avis, compte)                                                         | `<RequireAuth />`                                                | `ClientLayout` (onglets)   |
+| Prestataire | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                              | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral) |
+| Admin       | `/admin/…` (prestataires, signalements, utilisateurs)                                                                | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`              |
+
+Toutes les adresses sont dans `src/app/routes.tsx`. Une page pas encore construite utilise `soon(path, titre, lot)` ;
+pour la construire, remplace-la par une route `lazy` vers `src/features/<fonctionnalité>/pages/…`.
+
+### Session
+
+`src/stores/session.ts` (Zustand + localStorage) : `user`, `token`, `lastSpace`, `signIn`, `signOut`.
+`AppProviders` passe `getToken` à l'ApiClient. Pour se déconnecter, on navigue vers `/deconnexion`
+(fermer la session depuis une page protégée déclencherait sa garde). Dans les tests :
+`renderRoute(url, { as: 'user-aissatou' })` ouvre une session ; `setup.ts` la ferme après chaque test.
+
 - `src/app/` : `App`, `AppProviders` (QueryClient + ApiClient), `routes.tsx`, layouts.
 - `src/features/<fonctionnalité>/` : `components/`, `pages/`, et leurs tests à côté.
 - `src/components/ui/` : composants shadcn/ui copiés dans le projet (modifiables).

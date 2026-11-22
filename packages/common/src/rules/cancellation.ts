@@ -11,7 +11,7 @@ export interface RefundTier {
 }
 
 /**
- * Les trois politiques d'annulation (proposition à valider).
+ * Les trois politiques d'annulation (validées par Mouss le 22/11/2026).
  * Les tranches sont rangées de la plus favorable à la moins favorable.
  * En dessous de la dernière tranche, rien n'est remboursé.
  */

@@ -3,8 +3,12 @@ import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MotionConfig } from 'motion/react';
 import { useState, type ReactNode } from 'react';
 import { createQueryClient } from '@/lib/queryClient';
+import { useSessionStore } from '@/stores/session';
 
-const defaultApiClient = createHttpApiClient();
+// Chaque appel à l'API envoie le jeton de la session en cours (lu au moment de l'appel).
+const defaultApiClient = createHttpApiClient({
+  getToken: () => useSessionStore.getState().token,
+});
 
 interface AppProvidersProps {
   children: ReactNode;
