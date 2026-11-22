@@ -1,4 +1,4 @@
-import type { EventType, LegalType } from '../types';
+import type { ClientType, EventType, LegalType, ReportReason } from '../types';
 
 /*
  * Les libellés français des valeurs codées en anglais.
@@ -12,6 +12,12 @@ export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   corporate: 'Événement d’entreprise',
   funeral: 'Funérailles',
   other: 'Autre',
+};
+
+/** Qui organise l'événement (demande de devis). */
+export const CLIENT_TYPE_LABELS: Record<ClientType, string> = {
+  individual: 'À titre personnel',
+  business: 'Par une entreprise ou une association',
 };
 
 export const LEGAL_TYPE_LABELS: Record<LegalType, string> = {
@@ -39,3 +45,12 @@ const LANGUAGE_LABELS: Record<string, string> = {
 export function languageLabel(code: string): string {
   return LANGUAGE_LABELS[code] ?? code.charAt(0).toUpperCase() + code.slice(1);
 }
+
+/** Les motifs de signalement proposés à l'utilisateur. */
+export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  fraud: 'Arnaque ou tentative de fraude',
+  inappropriate: 'Contenu inapproprié ou insultant',
+  spam: 'Spam ou publicité',
+  fake_review: 'Faux avis',
+  other: 'Autre raison',
+};

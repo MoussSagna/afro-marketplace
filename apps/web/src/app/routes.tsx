@@ -1,3 +1,4 @@
+import type { Side } from '@afro/common';
 import type { RouteObject } from 'react-router';
 import { RequireAuth } from '@/features/auth/components/RequireAuth';
 import { AdminLayout } from './layouts/AdminLayout';
@@ -11,6 +12,35 @@ const soon = (path: string, title: string, lot: number): RouteObject => ({
   path,
   element: <PlaceholderPage title={title} lot={lot} />,
 });
+
+/**
+ * Les pages « demandes » et « messages », communes aux espaces client et pro :
+ * le même composant, avec le côté (`side`) en paramètre.
+ */
+const spacePages = (side: Side): RouteObject[] => [
+  {
+    path: 'demandes',
+    lazy: async () => {
+      const { RequestsPage } = await import('@/features/quote-requests/pages/RequestsPage');
+      return { element: <RequestsPage side={side} /> };
+    },
+  },
+  {
+    path: 'demandes/:id',
+    lazy: async () => {
+      const { RequestDetailPage } =
+        await import('@/features/quote-requests/pages/RequestDetailPage');
+      return { element: <RequestDetailPage side={side} /> };
+    },
+  },
+  ...['messages', 'messages/:conversationId'].map((path) => ({
+    path,
+    lazy: async () => {
+      const { MessagesPage } = await import('@/features/messaging/pages/MessagesPage');
+      return { element: <MessagesPage side={side} /> };
+    },
+  })),
+];
 
 /**
  * Toutes les routes de l'application.
@@ -65,7 +95,19 @@ export const routes: RouteObject[] = [
                 .ProviderProfilePage,
             }),
           },
-          soon('prestataires/:slug/demande', 'Demander un devis', 4),
+          {
+            // C1 : il faut être connecté pour demander un devis (retour ici après la connexion).
+            element: <RequireAuth />,
+            children: [
+              {
+                path: 'prestataires/:slug/demande',
+                lazy: async () => ({
+                  Component: (await import('@/features/quote-requests/pages/QuoteRequestPage'))
+                    .QuoteRequestPage,
+                }),
+              },
+            ],
+          },
           soon('devenir-prestataire', 'Devenir prestataire', 7),
           soon('comment-ca-marche', 'Comment ça marche', 9),
           {
@@ -84,11 +126,8 @@ export const routes: RouteObject[] = [
           {
             element: <ClientLayout />,
             children: [
-              soon('demandes', 'Mes demandes', 4),
-              soon('demandes/:id', 'Détail de la demande', 4),
+              ...spacePages('client'),
               soon('reservations', 'Mes réservations', 5),
-              soon('messages', 'Messages', 4),
-              soon('messages/:conversationId', 'Conversation', 4),
               soon('avis/:bookingId', 'Laisser un avis', 6),
               soon('compte', 'Mon compte', 9),
             ],
@@ -104,11 +143,8 @@ export const routes: RouteObject[] = [
             element: <ProLayout />,
             children: [
               { index: true, element: <PlaceholderPage title="Tableau de bord" lot={5} /> },
-              soon('demandes', 'Demandes reçues', 4),
-              soon('demandes/:id', 'Détail de la demande', 4),
+              ...spacePages('provider'),
               soon('demandes/:id/devis', 'Créer un devis', 5),
-              soon('messages', 'Messages', 4),
-              soon('messages/:conversationId', 'Conversation', 4),
               soon('agenda', 'Agenda', 5),
               soon('avis', 'Avis reçus', 6),
               soon('profil', 'Mon profil', 7),
