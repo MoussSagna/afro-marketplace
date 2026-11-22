@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import { useSessionStore } from '@/stores/session';
 
 /**
@@ -14,6 +14,8 @@ export function LogoutPage() {
   const signOut = useSessionStore((state) => state.signOut);
   const user = useSessionStore((state) => state.user);
   const queryClient = useQueryClient();
+  // Message éventuel pour l'accueil (ex. : « compte supprimé », C8).
+  const { state } = useLocation();
 
   useEffect(() => {
     signOut();
@@ -21,5 +23,5 @@ export function LogoutPage() {
     queryClient.clear();
   }, [signOut, queryClient]);
 
-  return user ? null : <Navigate to="/" replace />;
+  return user ? null : <Navigate to="/" replace state={state} />;
 }

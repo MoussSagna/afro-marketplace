@@ -41,6 +41,7 @@
 - **Une PR par lot** (ou par sujet si le lot est gros), commits en français, au format `feat(common): …`, `fix(web): …`, `docs(agents): …`.
 - La CI doit être verte : format, lint, types, tests, build, Playwright.
 - Chaque PR met à jour `agents/avancement.md` (et les autres fiches si besoin).
+- Une décision reportée ou une question qui pourrait avoir un impact plus tard va dans `agents/questions-ouvertes.md` (choix actuel, impact, échéance), à mettre à jour dans la même PR.
 - On ne fusionne pas soi-même : Mouss relit et fusionne.
 
 ## Design (tokens Teranga)

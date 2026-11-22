@@ -59,7 +59,7 @@ export function LoginPage() {
       )}
 
       {accounts.isPending && (
-        <div className="mt-8 grid gap-4 md:grid-cols-3" aria-label="Chargement">
+        <div className="mt-8 grid gap-4 md:grid-cols-3" role="status" aria-label="Chargement">
           {Array.from({ length: 3 }, (_, index) => (
             <Skeleton key={index} className="h-44 rounded-xl" />
           ))}

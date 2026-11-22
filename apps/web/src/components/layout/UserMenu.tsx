@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Briefcase, LogOut, RotateCcw, Shield, User } from 'lucide-react';
+import { Briefcase, LogOut, RotateCcw, Settings, Shield, User } from 'lucide-react';
 import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -60,6 +60,11 @@ export function UserMenu() {
               </Link>
             </DropdownMenuItem>
           )}
+          <DropdownMenuItem asChild>
+            <Link to="/espace/compte">
+              <Settings /> Mon compte
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {USES_MOCKS && (

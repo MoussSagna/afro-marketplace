@@ -42,7 +42,7 @@ export function CreateQuotePage() {
   usePageMeta('Envoyer un devis');
 
   if (details.isPending) {
-    return <Skeleton className="h-96 rounded-xl" aria-label="Chargement" />;
+    return <Skeleton className="h-96 rounded-xl" role="status" aria-label="Chargement" />;
   }
   if (details.isError) {
     if (details.error instanceof ApiError && details.error.status === 404) return <NotFoundPage />;

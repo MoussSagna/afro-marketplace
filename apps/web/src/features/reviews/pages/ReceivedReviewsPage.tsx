@@ -25,7 +25,8 @@ export function ReceivedReviewsPage() {
   const reviews = useMyReviews();
   usePageMeta('Avis reçus');
 
-  if (reviews.isPending) return <Skeleton className="h-64 rounded-xl" aria-label="Chargement" />;
+  if (reviews.isPending)
+    return <Skeleton className="h-64 rounded-xl" role="status" aria-label="Chargement" />;
   if (reviews.isError) {
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">

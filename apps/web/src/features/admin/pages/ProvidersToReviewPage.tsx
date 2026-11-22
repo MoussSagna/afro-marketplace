@@ -22,7 +22,9 @@ export function ProvidersToReviewPage() {
       <h1 id="to-review-title" className="text-3xl font-semibold">
         Profils à valider
       </h1>
-      {providers.isPending && <Skeleton className="h-40 rounded-xl" aria-label="Chargement" />}
+      {providers.isPending && (
+        <Skeleton className="h-40 rounded-xl" role="status" aria-label="Chargement" />
+      )}
       {providers.isError && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">
           Impossible de charger les profils.

@@ -46,7 +46,8 @@ export function LeaveReviewPage() {
   const userId = useSessionStore((state) => state.user?.id ?? '');
   usePageMeta('Laisser un avis');
 
-  if (bookings.isPending) return <Skeleton className="h-96 rounded-xl" aria-label="Chargement" />;
+  if (bookings.isPending)
+    return <Skeleton className="h-96 rounded-xl" role="status" aria-label="Chargement" />;
   if (bookings.isError) {
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">

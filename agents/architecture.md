@@ -77,8 +77,10 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 | Prestataire | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                              | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral) |
 | Admin       | `/admin/…` (prestataires, signalements, utilisateurs)                                                                | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`              |
 
-Toutes les adresses sont dans `src/app/routes.tsx`. Une page pas encore construite utilise `soon(path, titre, lot)` ;
-pour la construire, remplace-la par une route `lazy` vers `src/features/<fonctionnalité>/pages/…`.
+Toutes les adresses sont dans `src/app/routes.tsx`. Chaque page est une route `lazy` vers `src/features/<fonctionnalité>/pages/…`
+(le helper `soon()` des pages « Bientôt disponible » a été retiré au lot 9 : toutes les pages du MVP existent).
+Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentions-legales`, `/confidentialite`
+(`features/static/`, gabarit `StaticPage`).
 
 ### Session
 

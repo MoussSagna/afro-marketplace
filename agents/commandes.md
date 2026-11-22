@@ -27,4 +27,8 @@ Playwright **épinglé en 1.63.0**.
   (même code que le registre) dans `apps/web/src/components/ui/`. En local, `pnpm dlx shadcn@latest add …` marche.
 - Chromium est préinstallé : ne pas lancer `playwright install` (la version 1.63.0 correspond au navigateur fourni).
   Passer `--trace off` aux lancements de Playwright.
+- Audit d'accessibilité seul : `pnpm --filter @afro/web exec playwright test e2e/a11y.spec.ts --trace off`
+  (axe-core attend la fin des fondus d'apparition avant de mesurer les contrastes).
+- `vite build` génère aussi `dist/sitemap.xml` et `dist/robots.txt` ; `SITE_URL=https://… pnpm build` pour
+  forcer l'adresse du site.
 - Zod 4 : `.omit/.pick/.extend` sont interdits sur un schéma qui a des `.refine` → garder les entités sans refine.

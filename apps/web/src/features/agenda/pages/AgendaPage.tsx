@@ -190,7 +190,7 @@ export function AgendaPage({ today = toIsoDate(new Date()) }: { today?: string }
                         className={cn(
                           base,
                           'transition-colors disabled:cursor-default',
-                          past && 'border-transparent text-muted-foreground/50',
+                          past && 'border-transparent text-muted-foreground',
                           !past && manual && 'bg-secondary text-muted-foreground line-through',
                           !past && !manual && 'bg-background hover:bg-muted',
                           day === today && 'ring-2 ring-ring',

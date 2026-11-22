@@ -1,6 +1,6 @@
 import { useCategories, useFeaturedProviders } from '@afro/common';
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { HeroSearchForm } from '../components/HeroSearchForm';
@@ -14,6 +14,9 @@ export function HomePage() {
     'Traiteurs, danseurs, DJ, speakers, coiffeuses… Trouvez un prestataire afro en Île-de-France et demandez un devis gratuit.',
   );
   const providers = useFeaturedProviders();
+  // Après la suppression du compte (C8), on confirme ici que c'est fait.
+  const accountDeleted = (useLocation().state as { accountDeleted?: boolean } | null)
+    ?.accountDeleted;
   const categories = useCategories();
 
   const categoryName = (id: string | undefined) =>
@@ -22,6 +25,11 @@ export function HomePage() {
 
   return (
     <>
+      {accountDeleted && (
+        <p role="status" className="bg-muted px-4 py-3 text-center text-sm">
+          Ton compte a bien été supprimé. Merci d’avoir utilisé Teranga.
+        </p>
+      )}
       <section className="bg-linear-to-b from-muted to-background">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 md:py-24">
           <motion.h1
@@ -58,7 +66,11 @@ export function HomePage() {
         </h2>
 
         {providers.isPending && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Chargement">
+          <div
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            role="status"
+            aria-label="Chargement"
+          >
             {Array.from({ length: 6 }, (_, index) => (
               <Skeleton key={index} className="h-72 rounded-xl" />
             ))}

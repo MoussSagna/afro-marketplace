@@ -61,7 +61,9 @@ export function UsersPage() {
           />
         </div>
       </div>
-      {users.isPending && <Skeleton className="h-40 rounded-xl" aria-label="Chargement" />}
+      {users.isPending && (
+        <Skeleton className="h-40 rounded-xl" role="status" aria-label="Chargement" />
+      )}
       {users.isError && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">
           Impossible de charger les comptes.
