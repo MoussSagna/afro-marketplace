@@ -1,18 +1,33 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 2).
+Dernière mise à jour : 22/11/2026 (lot 3).
 
 ## Lots
 
-| Lot    | Sujet                                                                               | État                    | PR  |
-| ------ | ----------------------------------------------------------------------------------- | ----------------------- | --- |
-| 0      | Socle du monorepo + CI                                                              | ✅ fusionné             | #1  |
-| 1      | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2  |
-| 2      | Design system, layouts, connexion de démo                                           | 🔍 PR ouverte, à relire | #3  |
-| 3      | Découvrir : accueil, recherche, catégories, profil                                  | ⏭️ prochain             |     |
-| 4      | Demander un devis + messagerie                                                      |                         |     |
-| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) |                         |     |
-| 6 – 11 | Avis, onboarding, admin, finitions, Supabase, emails                                |                         |     |
+| Lot    | Sujet                                                                               | État                    | PR           |
+| ------ | ----------------------------------------------------------------------------------- | ----------------------- | ------------ |
+| 0      | Socle du monorepo + CI                                                              | ✅ fusionné             | #1           |
+| 1      | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
+| 2      | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
+| 3      | Découvrir : accueil, recherche, catégories, profil                                  | 🔍 PR ouverte, à relire | PR « Lot 3 » |
+| 4      | Demander un devis + messagerie                                                      | ⏭️ prochain             |              |
+| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) |                         |              |
+| 6 – 11 | Avis, onboarding, admin, finitions, Supabase, emails                                |                         |              |
+
+## Ce que contient le lot 3
+
+- Recherche « serveur » : `searchProviders` (`packages/common/src/mocks/search.ts`, fonction pure testée) : catégorie (une
+  catégorie principale inclut ses sous-catégories), origines, texte (sans accents), ville, date (règle n° 3), budget (les
+  « sur devis » restent), invités, note, vérifié ; tri pertinence (note pondérée par le nombre d'avis) / note / prix ;
+  pagination (12 par page).
+- Handlers : `GET /api/providers` (recherche), `/api/providers/:slug` (profil public), `/:id/reviews`, `/:id/unavailable-dates`.
+- Hooks : `useProviderSearch`, `useProvider`, `useProviderReviews`, `useUnavailableDates`, `useCulturalOrigins`.
+- Utilitaires partagés : `formatOfferingPrice`, libellés français (`EVENT_TYPE_LABELS`, `LEGAL_TYPE_LABELS`, `languageLabel`).
+- Web : filtres dans l'adresse en français (`features/search/lib/searchParams.ts` : `categorie`, `origines`, `ville`,
+  `date`, `budget` en euros, `invites`, `note`, `verifie`, `tri`, `page`) ; accueil (P1) avec recherche Quoi/Où/Quand ;
+  résultats (P2) ; pages catégorie (P4) avec titre pour Google (`usePageMeta`) ; profil (P5) avec galerie + visionneuse,
+  formules, calendrier de disponibilités en lecture, avis, politique d'annulation, bouton « Demander un devis ».
+- Transition douce entre les pages publiques (Motion, respecte « réduire les animations »).
 
 ## Ce que contient le lot 2
 

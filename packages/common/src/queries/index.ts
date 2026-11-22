@@ -3,3 +3,4 @@ export * from './queryKeys';
 export * from './useAuth';
 export * from './useCategories';
 export * from './useFeaturedProviders';
+export * from './useProviders';
