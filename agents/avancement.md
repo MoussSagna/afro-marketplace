@@ -9,7 +9,7 @@ Dernière mise à jour : 22/11/2026 (lot 4).
 | 0      | Socle du monorepo + CI                                                              | ✅ fusionné             | #1           |
 | 1      | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
 | 2      | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
-| 3      | Découvrir : accueil, recherche, catégories, profil                                  | 🔍 PR ouverte, à relire | PR « Lot 3 » |
+| 3      | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
 | 4      | Demander un devis + messagerie                                                      | 🔍 PR ouverte, à relire | PR « Lot 4 » |
 | 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ⏭️ prochain             |              |
 | 6 – 11 | Avis, onboarding, admin, finitions, Supabase, emails                                |                         |              |
