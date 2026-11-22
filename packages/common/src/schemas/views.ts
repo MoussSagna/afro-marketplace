@@ -68,6 +68,8 @@ export const bookingSummarySchema = z.object({
   booking: bookingSchema,
   provider: providerCardSchema,
   client: publicUserSchema,
+  /** L'avis laissé sur cette réservation, s'il existe (règle n° 6 : un seul). */
+  review: reviewSchema.optional(),
 });
 
 /** Tableau de bord prestataire (S2) : 3 chiffres simples + les listes récentes. */

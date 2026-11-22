@@ -108,6 +108,8 @@ export interface ApiClient {
   // --- Avis (lot 6)
   createReview(input: CreateReviewInput): Promise<Review>;
   replyToReview(reviewId: string, input: ReplyToReviewInput): Promise<Review>;
+  /** S8 : les avis reçus par le prestataire connecté (masqués compris). */
+  listMyReviews(): Promise<ReviewWithAuthor[]>;
 
   // --- Profil prestataire et onboarding (lot 7)
   getMyProviderProfile(): Promise<MyProviderDetails>;

@@ -1,7 +1,16 @@
-import { formatEventDate, formatPrice, type BookingSummary, type Side } from '@afro/common';
-import { CalendarDays, MapPin } from 'lucide-react';
+import {
+  canReviewBooking,
+  formatEventDate,
+  formatPrice,
+  type BookingSummary,
+  type Side,
+} from '@afro/common';
+import { CalendarDays, MapPin, Star } from 'lucide-react';
 import { Link } from 'react-router';
+import { Rating } from '@/components/Rating';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useSessionStore } from '@/stores/session';
 import { SPACE_PATHS } from '@/features/quote-requests/lib/spacePaths';
 
 const STATUS: Record<string, { label: string; className: string }> = {
@@ -12,7 +21,12 @@ const STATUS: Record<string, { label: string; className: string }> = {
 
 /** Une réservation dans une liste. Le lien mène à la demande, qui porte tout le détail. */
 export function BookingCard({ summary, side }: { summary: BookingSummary; side: Side }) {
-  const { booking, provider, client } = summary;
+  const { booking, provider, client, review } = summary;
+  const userId = useSessionStore((state) => state.user?.id ?? '');
+  // Règle n° 6 : le bouton n'apparaît que si l'avis est possible.
+  const canReview =
+    side === 'client' &&
+    canReviewBooking({ booking, userId, existingReviews: review ? [review] : [] }).allowed;
   const title =
     side === 'client' ? provider.displayName : `${client.firstName} ${client.lastNameInitial}`;
   const status = STATUS[booking.status] ?? STATUS.confirmed!;
@@ -38,7 +52,17 @@ export function BookingCard({ summary, side }: { summary: BookingSummary; side: 
           </span>
         </p>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
+        {canReview && (
+          // « relative z-10 » : le bouton passe au-dessus du lien qui couvre toute la carte.
+          <Button asChild variant="cta" size="sm" className="relative z-10">
+            <Link to={`/espace/avis/${booking.id}`}>
+              <Star aria-hidden />
+              Laisser un avis
+            </Link>
+          </Button>
+        )}
+        {review && <Rating value={review.rating} className="relative z-10" />}
         <span className="font-semibold tabular-nums">{formatPrice(booking.totalAmount)}</span>
         <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-semibold', status.className)}>
           {status.label}

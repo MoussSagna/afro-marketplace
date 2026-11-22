@@ -42,6 +42,7 @@ export const queryKeys = {
     all: ['my-provider'] as const,
     profile: () => [...queryKeys.myProvider.all, 'profile'] as const,
     dashboard: () => [...queryKeys.myProvider.all, 'dashboard'] as const,
+    reviews: () => [...queryKeys.myProvider.all, 'reviews'] as const,
     unavailabilities: (range: { from: string; to: string }) =>
       [...queryKeys.myProvider.all, 'unavailabilities', range] as const,
   },

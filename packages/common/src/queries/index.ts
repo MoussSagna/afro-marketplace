@@ -7,3 +7,4 @@ export * from './useFeaturedProviders';
 export * from './useProviders';
 export * from './useMessaging';
 export * from './useQuoteRequests';
+export * from './useReviews';

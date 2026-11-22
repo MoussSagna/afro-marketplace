@@ -1,5 +1,7 @@
 import { useProviderReviews } from '@afro/common';
-import { MessageSquareQuote } from 'lucide-react';
+import { CheckCircle2, MessageSquareQuote } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router';
 import { EmptyState } from '@/components/EmptyState';
 import { Rating } from '@/components/Rating';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,9 +17,25 @@ interface ReviewListProps {
 /** Les avis publiés sur le profil (P5). La réponse du prestataire s'affiche sous l'avis. */
 export function ReviewList({ providerId, ratingAverage, ratingCount }: ReviewListProps) {
   const reviews = useProviderReviews(providerId);
+  // Après « Publier mon avis » (C6), on arrive ici : message de confirmation et défilement.
+  const justPublished = (useLocation().state as { reviewPublished?: boolean } | null)
+    ?.reviewPublished;
+  const sectionRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (justPublished && reviews.isSuccess) sectionRef.current?.scrollIntoView?.();
+  }, [justPublished, reviews.isSuccess]);
 
   return (
-    <section aria-labelledby="reviews-title">
+    <section ref={sectionRef} aria-labelledby="reviews-title" className="scroll-mt-20">
+      {justPublished && (
+        <p
+          role="status"
+          className="mb-4 flex items-center gap-2 rounded-lg bg-success-muted p-4 text-success"
+        >
+          <CheckCircle2 className="size-5" aria-hidden />
+          Merci ! Ton avis est publié.
+        </p>
+      )}
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <h2 id="reviews-title" className="font-display text-2xl font-semibold">
           Avis
