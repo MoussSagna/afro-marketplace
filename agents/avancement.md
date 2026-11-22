@@ -15,7 +15,7 @@ Dernière mise à jour : 22/11/2026 (lot 9, compte, pages de contenu, SEO, acces
 | 6       | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
 | 7       | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné             | #8           |
 | 8       | Admin minimal : profils à valider, signalements, utilisateurs                       | ✅ fusionné             | #9           |
-| 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | 🔍 PR ouverte, à relire | PR « Lot 9 » |
+| 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | ✅ fusionné             | #10          |
 | 10 – 11 | Supabase, emails + bêta → jalon C                                                   |                         |              |
 
 ## Jalon A atteint (fin du lot 5)
