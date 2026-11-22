@@ -1,11 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Side } from '../api';
-import type {
-  AcceptQuoteInput,
-  CancelBookingInput,
-  CreateQuoteInput,
-  UpdateProviderProfileInput,
-} from '../types';
+import type { AcceptQuoteInput, CancelBookingInput, CreateQuoteInput } from '../types';
 import { useApiClient } from './ApiClientContext';
 import { queryKeys } from './queryKeys';
 
@@ -106,27 +101,5 @@ export function useUnblockDate() {
   return useMutation({
     mutationFn: (unavailabilityId: string) => api.unblockDate(unavailabilityId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.myProvider.all }),
-  });
-}
-
-/** Le profil du prestataire connecté (champs internes compris). */
-export function useMyProviderProfile() {
-  const api = useApiClient();
-  return useQuery({
-    queryKey: queryKeys.myProvider.profile(),
-    queryFn: () => api.getMyProviderProfile(),
-  });
-}
-
-export function useUpdateMyProviderProfile() {
-  const api = useApiClient();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (input: UpdateProviderProfileInput) => api.updateMyProviderProfile(input),
-    onSuccess: () =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.myProvider.all }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.providers.all }),
-      ]),
   });
 }

@@ -108,7 +108,13 @@ export const routes: RouteObject[] = [
               },
             ],
           },
-          soon('devenir-prestataire', 'Devenir prestataire', 7),
+          {
+            path: 'devenir-prestataire',
+            lazy: async () => ({
+              Component: (await import('@/features/provider-onboarding/pages/BecomeProviderPage'))
+                .BecomeProviderPage,
+            }),
+          },
           soon('comment-ca-marche', 'Comment ça marche', 9),
           {
             path: '*',
@@ -181,8 +187,20 @@ export const routes: RouteObject[] = [
                     .ReceivedReviewsPage,
                 }),
               },
-              soon('profil', 'Mon profil', 7),
-              soon('onboarding', 'Créer mon profil', 7),
+              {
+                path: 'profil',
+                lazy: async () => ({
+                  Component: (await import('@/features/provider-onboarding/pages/MyProfilePage'))
+                    .MyProfilePage,
+                }),
+              },
+              {
+                path: 'onboarding',
+                lazy: async () => ({
+                  Component: (await import('@/features/provider-onboarding/pages/OnboardingPage'))
+                    .OnboardingPage,
+                }),
+              },
             ],
           },
         ],

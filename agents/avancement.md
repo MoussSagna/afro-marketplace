@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 6, avis).
+Dernière mise à jour : 22/11/2026 (lot 7, onboarding et profil prestataire).
 
 ## Lots
 
@@ -12,13 +12,39 @@ Dernière mise à jour : 22/11/2026 (lot 6, avis).
 | 3      | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
 | 4      | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
 | 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
-| 6      | Avis : laisser un avis (C6), avis reçus (S8)                                        | 🔍 PR ouverte, à relire | PR « Lot 6 » |
-| 7 – 11 | Onboarding, admin, finitions, Supabase, emails                                      |                         |              |
+| 6      | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
+| 7      | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | 🔍 PR ouverte, à relire | PR « Lot 7 » |
+| 8 – 11 | Admin, finitions, Supabase, emails                                                  |                         |              |
 
 ## Jalon A atteint (fin du lot 5)
 
 La boucle complète est cliquable : recherche → profil → demande → messagerie → devis → acceptation → réservation →
 agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne les lots suivants, une PR par lot.
+
+## Ce que contient le lot 7
+
+- Handlers (`mocks/handlers/myProvider.ts`, qui reprend aussi `GET/PATCH /api/me/provider` du lot 5) :
+  `POST /api/me/provider` (crée un brouillon et ajoute le rôle `provider`, règle n° 1), `PATCH /api/me/provider`
+  (l'adresse `slug` suit le nom tant que le profil est un brouillon), `POST /api/me/provider/submit` (règle n° 2, 422 si
+  incomplet), `POST /api/me/provider/pause`, formules (`POST/PUT/DELETE /api/me/provider/offerings`, le « à partir de »
+  est recalculé avec `computePriceFrom`), galerie (`POST/DELETE /api/me/provider/media`, la 1re photo devient la couverture).
+- `utils/slugify.ts` (`slugify`, `uniqueSlug`) ; libellés `PROVIDER_STATUS_LABELS`, `PRICING_TYPE_LABELS`, `LANGUAGE_LABELS` exporté.
+- Hooks (`queries/useMyProvider.ts`, qui reprend `useMyProviderProfile` et `useUpdateMyProviderProfile`) :
+  `useStartProviderOnboarding`, `useSubmitMyProviderProfile`, `useSetMyProviderProfilePaused`, `useSaveOffering`,
+  `useDeleteOffering`, `useAddMedia`, `useDeleteMedia`.
+- Web (`features/provider-onboarding/`) :
+  - P6 `/devenir-prestataire` : argumentaire (« gratuit au lancement »), bouton qui crée le profil, met la session à jour
+    (`setUser` du store) puis ouvre l'onboarding. Un visiteur passe d'abord par la connexion.
+  - S1 `/pro/onboarding` : 7 étapes + récapitulatif, barre de progression, transition animée (Motion) entre étapes.
+    Chaque « Continuer » enregistre l'étape et `onboardingStep` : on reprend là où on s'était arrêté.
+    Le récapitulatif affiche la checklist de la règle n° 2 et envoie en validation.
+  - S7 `/pro/profil` : les mêmes sections en onglets (`ProfileSections.tsx`, partagées avec S1), aperçu de la carte
+    de recherche, pause / réactivation, lien vers la page publique.
+  - Tableau de bord : bandeau tant que le profil n'est pas en ligne (brouillon, en validation, corrections, pause).
+  - Schémas de formulaire séparés : `features/provider-onboarding/lib/profileForms.ts` ; euros ↔ centimes partagés
+    dans `apps/web/src/lib/money.ts`.
+  - Photos : fichier réduit à 1200 px et gardé en « data URL » dans la base mockée, ou photo d'exemple en un clic.
+- Playwright : `e2e/onboarding.spec.ts` (parcours 5 : une cliente devient prestataire et envoie son profil).
 
 ## Ce que contient le lot 6
 
@@ -146,4 +172,6 @@ agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne l
 - `Quote.lines` : les lignes sont renvoyées dans le devis (pas de route séparée pour `QuoteLine`).
 - `Booking` a en plus `quoteRequestId` et `cancelledAt` (pratique pour les écrans et la règle n° 9).
 - `ProviderProfile.postalCode` peut être vide pour un brouillon d'onboarding.
+- Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (à décider avec Mouss au lot 8, côté admin).
+- Lot 7 : pas d'upload réel au MVP mocké, les photos sont des « data URL » (vrai stockage au lot 10 avec Supabase).
 - Page d'accueil : « à la une » = les 8 profils publiés les mieux notés (en attendant la mise en avant payante).

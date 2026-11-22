@@ -1,4 +1,11 @@
-import type { ClientType, EventType, LegalType, ReportReason } from '../types';
+import type {
+  ClientType,
+  EventType,
+  LegalType,
+  PricingType,
+  ProviderStatus,
+  ReportReason,
+} from '../types';
 
 /*
  * Les libellés français des valeurs codées en anglais.
@@ -27,7 +34,7 @@ export const LEGAL_TYPE_LABELS: Record<LegalType, string> = {
 };
 
 /** Codes de langue → nom affiché. Les langues inconnues sont affichées telles quelles. */
-const LANGUAGE_LABELS: Record<string, string> = {
+export const LANGUAGE_LABELS: Record<string, string> = {
   fr: 'Français',
   en: 'Anglais',
   wolof: 'Wolof',
@@ -53,4 +60,23 @@ export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
   spam: 'Spam ou publicité',
   fake_review: 'Faux avis',
   other: 'Autre raison',
+};
+
+/** Le statut d'un profil prestataire, vu par son propriétaire (S7). */
+export const PROVIDER_STATUS_LABELS: Record<ProviderStatus, string> = {
+  draft: 'Brouillon',
+  pending_review: 'En cours de validation',
+  changes_requested: 'Corrections demandées',
+  published: 'Publié',
+  rejected: 'Refusé',
+  paused: 'En pause',
+  suspended: 'Suspendu',
+};
+
+/** Comment le prix d'une formule est affiché. */
+export const PRICING_TYPE_LABELS: Record<PricingType, string> = {
+  from: 'À partir de',
+  fixed: 'Prix fixe',
+  per_person: 'Par personne',
+  on_quote: 'Sur devis',
 };
