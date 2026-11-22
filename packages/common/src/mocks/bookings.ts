@@ -25,5 +25,11 @@ export function completePastBookings(db: MockDb): void {
 export function toBookingSummary(data: MockData, booking: Booking): BookingSummary {
   const provider = data.providers.find((p) => p.id === booking.providerId)!;
   const client = data.users.find((u) => u.id === booking.clientId)!;
-  return { booking, provider: toProviderCard(provider), client: toPublicUser(client) };
+  const review = data.reviews.find((r) => r.bookingId === booking.id);
+  return {
+    booking,
+    provider: toProviderCard(provider),
+    client: toPublicUser(client),
+    ...(review && { review }),
+  };
 }

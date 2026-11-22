@@ -6,6 +6,7 @@ import { messagingHandlers } from './messaging';
 import { providerHandlers } from './providers';
 import { quoteRequestHandlers } from './quoteRequests';
 import { quoteHandlers } from './quotes';
+import { reviewHandlers } from './reviews';
 
 export * from './http';
 export { FEATURED_PROVIDERS_COUNT } from './catalogue';
@@ -27,5 +28,6 @@ export function createHandlers(db: MockDb) {
     ...messagingHandlers(db),
     ...quoteHandlers(db),
     ...bookingHandlers(db),
+    ...reviewHandlers(db),
   ];
 }

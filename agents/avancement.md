@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 5, jalon A).
+Dernière mise à jour : 22/11/2026 (lot 6, avis).
 
 ## Lots
 
@@ -11,13 +11,32 @@ Dernière mise à jour : 22/11/2026 (lot 5, jalon A).
 | 2      | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
 | 3      | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
 | 4      | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
-| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | 🔍 PR ouverte, à relire | PR « Lot 5 » |
-| 6 – 11 | Avis, onboarding, admin, finitions, Supabase, emails                                |                         |              |
+| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
+| 6      | Avis : laisser un avis (C6), avis reçus (S8)                                        | 🔍 PR ouverte, à relire | PR « Lot 6 » |
+| 7 – 11 | Onboarding, admin, finitions, Supabase, emails                                      |                         |              |
 
 ## Jalon A atteint (fin du lot 5)
 
 La boucle complète est cliquable : recherche → profil → demande → messagerie → devis → acceptation → réservation →
-agenda. **On s'arrête ici** pour que Mouss teste la démo avant de lancer le lot 6.
+agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne les lots suivants, une PR par lot.
+
+## Ce que contient le lot 6
+
+- Handlers (`mocks/handlers/reviews.ts`) : `POST /api/reviews` (règle n° 6 via `canReviewBooking`, puis note recalculée
+  par `computeProviderRating`, règle n° 8), `POST /api/reviews/:id/reply` (une seule réponse, par le prestataire concerné),
+  `GET /api/me/provider/reviews` (S8, avis masqués compris). Le signalement passe par `POST /api/reports` (lot 4).
+- `BookingSummary` porte maintenant `review` (l'avis éventuel) : la carte de réservation sait si le bouton s'affiche.
+- API : `listMyReviews()`. Hooks (`queries/useReviews.ts`) : `useCreateReview`, `useMyReviews`, `useReplyToReview`.
+- Web (`features/reviews/`) :
+  - C6 `/espace/avis/:bookingId` : note générale obligatoire, 3 sous-notes facultatives (« les trois ou aucune »),
+    commentaire. Étoiles = boutons radio masqués (`StarRatingInput`, clavier et lecteurs d'écran inclus).
+    Schéma de formulaire séparé : `features/reviews/lib/reviewForm.ts`. Après l'envoi, retour sur le profil avec
+    « Merci ! Ton avis est publié. » et la nouvelle moyenne.
+  - Bouton « Laisser un avis » sur la carte de réservation, seulement si `canReviewBooking` l'autorise ;
+    sinon la note laissée s'affiche.
+  - S8 `/pro/avis` : moyenne, avis sans réponse, sous-notes, réponse publique unique (`ReplyForm`), signalement
+    (`ReportDialog`, motifs « faux avis », « contenu inapproprié », « autre »), badge « Masqué par la modération ».
+- Playwright : `e2e/review.spec.ts` (parcours 4 : la cliente laisse un avis, la moyenne et le nombre d'avis changent).
 
 ## Ce que contient le lot 5
 

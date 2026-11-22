@@ -133,7 +133,13 @@ export const routes: RouteObject[] = [
                   Component: (await import('@/features/bookings/pages/BookingsPage')).BookingsPage,
                 }),
               },
-              soon('avis/:bookingId', 'Laisser un avis', 6),
+              {
+                path: 'avis/:bookingId',
+                lazy: async () => ({
+                  Component: (await import('@/features/reviews/pages/LeaveReviewPage'))
+                    .LeaveReviewPage,
+                }),
+              },
               soon('compte', 'Mon compte', 9),
             ],
           },
@@ -168,7 +174,13 @@ export const routes: RouteObject[] = [
                   Component: (await import('@/features/agenda/pages/AgendaPage')).AgendaPage,
                 }),
               },
-              soon('avis', 'Avis reçus', 6),
+              {
+                path: 'avis',
+                lazy: async () => ({
+                  Component: (await import('@/features/reviews/pages/ReceivedReviewsPage'))
+                    .ReceivedReviewsPage,
+                }),
+              },
               soon('profil', 'Mon profil', 7),
               soon('onboarding', 'Créer mon profil', 7),
             ],

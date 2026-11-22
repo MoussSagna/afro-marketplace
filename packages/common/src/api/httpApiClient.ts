@@ -167,6 +167,7 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
     createReview: (input) => request('POST', '/reviews', reviewSchema, input),
     replyToReview: (reviewId, input) =>
       request('POST', `/reviews/${id(reviewId)}/reply`, reviewSchema, input),
+    listMyReviews: () => get('/me/provider/reviews', z.array(reviewWithAuthorSchema)),
 
     // Profil prestataire et onboarding
     getMyProviderProfile: () => get('/me/provider', myProviderDetailsSchema),

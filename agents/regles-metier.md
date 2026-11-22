@@ -10,9 +10,9 @@ et où elles vivent dans `packages/common/src/rules/`. Toutes sont des fonctions
 | 3   | Pas de demande si le prestataire est indisponible (blocage manuel ou `maxBookingsPerDay` atteint)                               | `isProviderAvailable`                                                                   | `isProviderAvailable.ts` | ✅ lot 0 |
 | 4   | Pas de demande à soi-même ; regroupe aussi la n° 3 et les garde-fous (client actif, profil publié, date entre demain et +2 ans) | `canSendQuoteRequest`                                                                   | `quoteRequest.ts`        | ✅ lot 1 |
 | 5   | Accepter un devis : autres versions `superseded`, création de la `Booking`, `Unavailability`, message système                   | `canAcceptQuote`, `acceptQuote`                                                         | `acceptQuote.ts`         | ✅ lot 5 |
-| 6   | Avis seulement sur une réservation `completed`, une fois, par son client                                                        | `canReviewBooking`                                                                      | `review.ts`              | ✅ lot 1 |
+| 6   | Avis seulement sur une réservation `completed`, une fois, par son client                                                        | `canReviewBooking`                                                                      | `review.ts`              | ✅ lot 6 |
 | 7   | Téléphones et emails masqués tant qu'il n'y a pas de réservation confirmée                                                      | `maskContactDetails`, `shouldMaskContactDetails`                                        | `contactMasking.ts`      | ✅ lot 1 |
-| 8   | Note moyenne et nombre d'avis recalculés (avis publiés seulement, arrondi à 0,1)                                                | `computeProviderRating`                                                                 | `review.ts`              | ✅ lot 1 |
+| 8   | Note moyenne et nombre d'avis recalculés (avis publiés seulement, arrondi à 0,1)                                                | `computeProviderRating`                                                                 | `review.ts`              | ✅ lot 6 |
 | 9   | Remboursement selon la politique copiée dans la réservation et les jours restants                                               | `computeCancellationRefund`, `describeCancellationPolicy`, `CANCELLATION_POLICIES`      | `cancellation.ts`        | ✅ lot 1 |
 
 ## Autres fonctions métier
@@ -61,3 +61,11 @@ le bouton « Signaler » complète le dispositif.
 - **Annulation d'une réservation** : possible jusqu'à la veille, par le client ou le prestataire ; la date est libérée et
   un message système affiche le remboursement prévu sur l'acompte (règle n° 9, mode `offline` : affichage seulement).
 - **Fin de prestation** : `confirmed` → `completed` le lendemain de la date (vérifié à chaque lecture, comme l'expiration).
+
+## Précisions ajoutées au lot 6
+
+- **Une seule fonction pour le bouton et le serveur** : `canReviewBooking` décide d'afficher « Laisser un avis » ET
+  d'accepter `POST /reviews` (403 si ce n'est pas sa réservation, 409 si pas terminée ou déjà notée).
+- **Recalcul de la note** (règle n° 8) à chaque avis créé ; un avis masqué par la modération (lot 8) sortira du calcul.
+- **Sous-notes** : facultatives, mais les trois ensemble (le schéma de l'API les attend groupées).
+- **Réponse du prestataire** : une seule, publique, non modifiable (409 `already_replied`). Pas de réponse sur un avis masqué.
