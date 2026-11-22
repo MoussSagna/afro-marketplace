@@ -24,7 +24,7 @@ et où elles vivent dans `packages/common/src/rules/`. Toutes sont des fonctions
 | `computeQuoteRequestExpiresAt`, `shouldExpireQuoteRequest`, `canChangeQuoteRequestStatus`, `isQuoteRequestOpen` | Cycle de vie des demandes (expiration à 7 jours)            | `quoteRequest.ts`    |
 | `isProviderPublic`                                                                                              | Seuls les profils `published` sont visibles et contactables | `providerProfile.ts` |
 
-## Politiques d'annulation (proposition à faire valider par Mouss)
+## Politiques d'annulation (validées par Mouss le 22/11/2026)
 
 | Politique            | 100 % remboursé si annulé au moins… | 50 % si au moins… | Sinon |
 | -------------------- | ----------------------------------- | ----------------- | ----- |

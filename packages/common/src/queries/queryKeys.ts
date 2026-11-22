@@ -4,6 +4,10 @@
  * et TanStack Query recharge tout seul les écrans concernés.
  */
 export const queryKeys = {
+  auth: {
+    demoAccounts: ['auth', 'demo-accounts'] as const,
+    me: ['auth', 'me'] as const,
+  },
   categories: ['categories'] as const,
   providers: {
     all: ['providers'] as const,
