@@ -1,0 +1,34 @@
+{
+  "name": "@afro/common",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./mocks": "./src/mocks/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "msw": "^2.11.13",
+    "zod": "^4.6.7"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@afro/config": "workspace:*",
+    "@tanstack/react-query": "^5.108.2",
+    "@types/react": "^19.3.0",
+    "eslint": "^10.15.0",
+    "react": "^19.3.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.1"
+  }
+}

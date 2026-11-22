@@ -1,0 +1,9 @@
+{
+  "extends": "@afro/config/tsconfig/react.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": ["vite/client", "@testing-library/jest-dom/vitest"],
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": ["src"]
+}
