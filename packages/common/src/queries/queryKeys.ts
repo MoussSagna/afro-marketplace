@@ -1,5 +1,5 @@
 import type { Side } from '../api';
-import type { ProviderSearchFilters } from '../types';
+import type { ProviderSearchFilters, ReportStatus } from '../types';
 
 /**
  * Les « clés de cache » de TanStack Query, rangées au même endroit.
@@ -45,5 +45,15 @@ export const queryKeys = {
     reviews: () => [...queryKeys.myProvider.all, 'reviews'] as const,
     unavailabilities: (range: { from: string; to: string }) =>
       [...queryKeys.myProvider.all, 'unavailabilities', range] as const,
+  },
+  admin: {
+    all: ['admin'] as const,
+    overview: () => [...queryKeys.admin.all, 'overview'] as const,
+    providersToReview: () => [...queryKeys.admin.all, 'providers-to-review'] as const,
+    provider: (id: string) => [...queryKeys.admin.all, 'provider', id] as const,
+    reports: (status?: ReportStatus) =>
+      [...queryKeys.admin.all, 'reports', status ?? 'all'] as const,
+    users: (query: { q?: string; page?: number }) =>
+      [...queryKeys.admin.all, 'users', query] as const,
   },
 };

@@ -1,5 +1,8 @@
 import type {
   AcceptQuoteInput,
+  AdminOverview,
+  AdminProviderDetails,
+  AdminReport,
   Booking,
   BookingSummary,
   CancelBookingInput,
@@ -129,9 +132,12 @@ export interface ApiClient {
   createReport(input: CreateReportInput): Promise<Report>;
 
   // --- Administration (lot 8)
+  getAdminOverview(): Promise<AdminOverview>;
+  /** A2 : les profils en attente de validation, les plus anciens d'abord. */
   listProvidersToReview(): Promise<ProviderProfile[]>;
+  getAdminProvider(providerId: string): Promise<AdminProviderDetails>;
   moderateProvider(providerId: string, input: ModerateProviderInput): Promise<ProviderProfile>;
-  listReports(status?: ReportStatus): Promise<Report[]>;
+  listReports(status?: ReportStatus): Promise<AdminReport[]>;
   resolveReport(reportId: string, input: ResolveReportInput): Promise<Report>;
   listUsers(query: { q?: string; page?: number }): Promise<Paginated<User>>;
   setUserStatus(userId: string, input: SetUserStatusInput): Promise<User>;

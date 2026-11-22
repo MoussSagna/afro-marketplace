@@ -1,4 +1,5 @@
 import type { MockDb } from '../db';
+import { adminHandlers } from './admin';
 import { authHandlers } from './auth';
 import { bookingHandlers } from './bookings';
 import { catalogueHandlers } from './catalogue';
@@ -31,5 +32,6 @@ export function createHandlers(db: MockDb) {
     ...bookingHandlers(db),
     ...reviewHandlers(db),
     ...myProviderHandlers(db),
+    ...adminHandlers(db),
   ];
 }

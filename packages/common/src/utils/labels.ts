@@ -4,7 +4,11 @@ import type {
   LegalType,
   PricingType,
   ProviderStatus,
+  ModerationActionType,
   ReportReason,
+  ReportStatus,
+  UserRole,
+  UserStatus,
 } from '../types';
 
 /*
@@ -79,4 +83,37 @@ export const PRICING_TYPE_LABELS: Record<PricingType, string> = {
   fixed: 'Prix fixe',
   per_person: 'Par personne',
   on_quote: 'Sur devis',
+};
+
+// ---------------------------------------------------------------- Administration (lot 8)
+
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+  client: 'Client',
+  provider: 'Prestataire',
+  admin: 'Admin',
+};
+
+export const USER_STATUS_LABELS: Record<UserStatus, string> = {
+  active: 'Actif',
+  suspended: 'Suspendu',
+  banned: 'Banni',
+  deleted: 'Supprimé',
+};
+
+export const REPORT_STATUS_LABELS: Record<ReportStatus, string> = {
+  open: 'À traiter',
+  resolved: 'Traité',
+  dismissed: 'Classé sans suite',
+};
+
+/** Le journal de modération, lisible par un humain. */
+export const MODERATION_ACTION_LABELS: Record<ModerationActionType, string> = {
+  validate_profile: 'Profil validé',
+  request_changes: 'Corrections demandées',
+  reject_profile: 'Profil refusé',
+  hide_content: 'Contenu masqué',
+  dismiss_report: 'Signalement classé sans suite',
+  suspend_user: 'Compte suspendu',
+  ban_user: 'Compte banni',
+  reactivate_user: 'Compte réactivé',
 };
