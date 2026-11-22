@@ -43,7 +43,7 @@ export function RequestsPage({ side }: { side: Side }) {
       </h1>
 
       {requests.isPending && (
-        <div className="flex flex-col gap-3" aria-label="Chargement">
+        <div className="flex flex-col gap-3" role="status" aria-label="Chargement">
           <Skeleton className="h-24 rounded-xl" />
           <Skeleton className="h-24 rounded-xl" />
         </div>

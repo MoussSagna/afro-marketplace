@@ -5,13 +5,6 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { ClientLayout } from './layouts/ClientLayout';
 import { ProLayout } from './layouts/ProLayout';
 import { PublicLayout } from './layouts/PublicLayout';
-import { PlaceholderPage } from './PlaceholderPage';
-
-/** Une page pas encore construite : son adresse existe déjà, son contenu arrive avec son lot. */
-const soon = (path: string, title: string, lot: number): RouteObject => ({
-  path,
-  element: <PlaceholderPage title={title} lot={lot} />,
-});
 
 /**
  * Les pages « demandes » et « messages », communes aux espaces client et pro :
@@ -115,7 +108,36 @@ export const routes: RouteObject[] = [
                 .BecomeProviderPage,
             }),
           },
-          soon('comment-ca-marche', 'Comment ça marche', 9),
+          {
+            path: 'comment-ca-marche',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/HowItWorksPage')).HowItWorksPage,
+            }),
+          },
+          {
+            path: 'faq',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/FaqPage')).FaqPage,
+            }),
+          },
+          {
+            path: 'cgu',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/LegalPages')).TermsPage,
+            }),
+          },
+          {
+            path: 'mentions-legales',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/LegalPages')).LegalNoticePage,
+            }),
+          },
+          {
+            path: 'confidentialite',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/LegalPages')).PrivacyPage,
+            }),
+          },
           {
             path: '*',
             lazy: async () => ({
@@ -146,7 +168,12 @@ export const routes: RouteObject[] = [
                     .LeaveReviewPage,
                 }),
               },
-              soon('compte', 'Mon compte', 9),
+              {
+                path: 'compte',
+                lazy: async () => ({
+                  Component: (await import('@/features/account/pages/AccountPage')).AccountPage,
+                }),
+              },
             ],
           },
         ],

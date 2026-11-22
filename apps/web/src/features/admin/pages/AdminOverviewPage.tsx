@@ -41,7 +41,9 @@ export function AdminOverviewPage() {
       <h1 id="admin-title" className="text-3xl font-semibold">
         Vue d’ensemble
       </h1>
-      {overview.isPending && <Skeleton className="h-28 rounded-xl" aria-label="Chargement" />}
+      {overview.isPending && (
+        <Skeleton className="h-28 rounded-xl" role="status" aria-label="Chargement" />
+      )}
       {overview.isError && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">
           Impossible de charger les chiffres.

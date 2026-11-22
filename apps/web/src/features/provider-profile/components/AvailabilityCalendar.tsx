@@ -86,7 +86,7 @@ export function AvailabilityCalendar({
                       title={label}
                       className={cn(
                         'flex aspect-square items-center justify-center rounded-md',
-                        past && 'text-muted-foreground/50',
+                        past && 'text-muted-foreground',
                         !past && isBlocked && 'bg-muted text-muted-foreground line-through',
                         !past && !isBlocked && 'bg-success-muted text-success',
                         day === today && 'ring-2 ring-ring',

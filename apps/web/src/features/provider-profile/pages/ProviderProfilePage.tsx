@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { buildProviderJsonLd } from '@/lib/seo';
 import { AvailabilityCalendar } from '../components/AvailabilityCalendar';
 import { Gallery } from '../components/Gallery';
 import { OfferingList } from '../components/OfferingList';
@@ -33,7 +34,11 @@ export function ProviderProfilePage() {
 
   if (provider.isPending) {
     return (
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8" aria-label="Chargement">
+      <div
+        className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8"
+        role="status"
+        aria-label="Chargement"
+      >
         <Skeleton className="h-56 rounded-xl" />
         <Skeleton className="h-10 w-80" />
         <Skeleton className="h-40 rounded-xl" />
@@ -59,9 +64,18 @@ export function ProviderProfilePage() {
     .map((id) => origins.data?.find((o) => o.id === id)?.name)
     .filter(Boolean);
   const requestUrl = `/prestataires/${p.slug}/demande`;
+  const jsonLd = buildProviderJsonLd(window.location.origin, {
+    ...p,
+    categoryNames: categoryNames.map((c) => c.name),
+  });
 
   return (
     <article>
+      {/* Données structurées pour Google (note, ville, prix). « < » échappé : pas d'injection. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('<', '\\u003c') }}
+      />
       <div className="relative h-48 bg-linear-to-br from-ochre via-primary to-foreground md:h-72">
         {p.coverUrl && <img src={p.coverUrl} alt="" className="size-full object-cover" />}
       </div>

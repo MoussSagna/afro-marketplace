@@ -72,7 +72,11 @@ export function QuoteRequestPage() {
 
   if (provider.isPending) {
     return (
-      <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-8" aria-label="Chargement">
+      <div
+        className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-8"
+        role="status"
+        aria-label="Chargement"
+      >
         <Skeleton className="h-10 w-80" />
         <Skeleton className="h-96 rounded-xl" />
       </div>

@@ -11,7 +11,7 @@ export function ConversationList({ side, activeId }: { side: Side; activeId?: st
 
   if (conversations.isPending) {
     return (
-      <div className="flex flex-col gap-2 p-2" aria-label="Chargement">
+      <div className="flex flex-col gap-2 p-2" role="status" aria-label="Chargement">
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} className="h-16 rounded-lg" />
         ))}

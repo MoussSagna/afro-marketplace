@@ -34,7 +34,8 @@ export function MyProfilePage() {
   const details = useMyProviderProfile();
   usePageMeta('Mon profil');
 
-  if (details.isPending) return <Skeleton className="h-96 rounded-xl" aria-label="Chargement" />;
+  if (details.isPending)
+    return <Skeleton className="h-96 rounded-xl" role="status" aria-label="Chargement" />;
   if (details.isError) {
     if (details.error instanceof ApiError && details.error.status === 404) {
       return <Navigate to="/devenir-prestataire" replace />;

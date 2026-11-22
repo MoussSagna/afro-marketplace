@@ -55,7 +55,9 @@ export function ReportsPage() {
           </Button>
         ))}
       </div>
-      {reports.isPending && <Skeleton className="h-40 rounded-xl" aria-label="Chargement" />}
+      {reports.isPending && (
+        <Skeleton className="h-40 rounded-xl" role="status" aria-label="Chargement" />
+      )}
       {reports.isError && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">
           Impossible de charger les signalements.

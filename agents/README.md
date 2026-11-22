@@ -9,16 +9,17 @@ Il est lu en premier : `AGENTS.md` et `CLAUDE.md` à la racine y renvoient.
 
 ## Par où commencer
 
-| Fichier                                | Contenu                                                                           | Quand le lire                               |
-| -------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------- |
-| [`produit.md`](produit.md)             | Le projet, les décisions produit validées, le périmètre du MVP, le vocabulaire    | Toujours                                    |
-| [`avancement.md`](avancement.md)       | État des lots, PR ouvertes, prochaines étapes, questions en suspens               | Toujours                                    |
-| [`architecture.md`](architecture.md)   | Monorepo, `packages/common`, app web, mocks, comment ajouter une route            | Avant de coder                              |
-| [`conventions.md`](conventions.md)     | Langue, nommage, montants, dates, tests exigés, Git et PR                         | Avant de coder                              |
-| [`regles-metier.md`](regles-metier.md) | Les 9 règles métier et la fonction qui implémente chacune                         | Avant de toucher à `rules/` ou aux handlers |
-| [`donnees-demo.md`](donnees-demo.md)   | Comptes de démo, scénarios du seed, comment réinitialiser                         | Pour tester ou écrire un test               |
-| [`commandes.md`](commandes.md)         | Commandes utiles et pièges de l'environnement                                     | Pour lancer, tester, déboguer               |
-| [`conception/`](conception/)           | Les 4 documents de conception validés (parcours, modèle, architecture, découpage) | Pour le détail d'un écran ou d'une entité   |
+| Fichier                                          | Contenu                                                                           | Quand le lire                                   |
+| ------------------------------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`produit.md`](produit.md)                       | Le projet, les décisions produit validées, le périmètre du MVP, le vocabulaire    | Toujours                                        |
+| [`avancement.md`](avancement.md)                 | État des lots, PR ouvertes, prochaines étapes, questions en suspens               | Toujours                                        |
+| [`architecture.md`](architecture.md)             | Monorepo, `packages/common`, app web, mocks, comment ajouter une route            | Avant de coder                                  |
+| [`conventions.md`](conventions.md)               | Langue, nommage, montants, dates, tests exigés, Git et PR                         | Avant de coder                                  |
+| [`questions-ouvertes.md`](questions-ouvertes.md) | Décisions reportées et questions à impact : choix actuel, impact, échéance        | Avant de toucher à une fonctionnalité concernée |
+| [`regles-metier.md`](regles-metier.md)           | Les 9 règles métier et la fonction qui implémente chacune                         | Avant de toucher à `rules/` ou aux handlers     |
+| [`donnees-demo.md`](donnees-demo.md)             | Comptes de démo, scénarios du seed, comment réinitialiser                         | Pour tester ou écrire un test                   |
+| [`commandes.md`](commandes.md)                   | Commandes utiles et pièges de l'environnement                                     | Pour lancer, tester, déboguer                   |
+| [`conception/`](conception/)                     | Les 4 documents de conception validés (parcours, modèle, architecture, découpage) | Pour le détail d'un écran ou d'une entité       |
 
 ## Qui est Mouss
 

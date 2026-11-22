@@ -91,3 +91,15 @@ le bouton « Signaler » complète le dispositif.
 - **Suspension** : un compte non `active` ne peut plus se connecter (`currentUser` l'ignore, la connexion de démo
   renvoie 403) et son profil `published` passe en `suspended`.
 - **Journal** : toute action d'admin écrit une `ModerationAction`.
+
+## Précisions ajoutées au lot 9 (compte et RGPD)
+
+- **Suppression du compte = anonymisation**, pas effacement des lignes (`DELETE /api/me`) : prénom « Utilisateur »,
+  nom « supprimé », email `supprime-<id>@teranga.invalid`, statut `deleted`, téléphone et photo retirés. Les avis et
+  messages restent (l'historique des autres utilisateurs reste cohérent) mais ne désignent plus personne.
+- Refusée (409 `upcoming_bookings`) tant qu'il reste une réservation **confirmée à venir**, côté client ou prestataire.
+  Un compte admin ne se supprime pas depuis l'application (422).
+- Les demandes encore ouvertes (`pending`, `quoted`) sont annulées ; le profil prestataire passe `suspended`,
+  sa présentation, son SIRET et ses photos sont effacés.
+- L'email ne se modifie pas depuis « Mon compte » au MVP (il servira d'identifiant avec Supabase, lot 10).
+- Choix à valider avec le juriste : voir `questions-ouvertes.md` n° 7.

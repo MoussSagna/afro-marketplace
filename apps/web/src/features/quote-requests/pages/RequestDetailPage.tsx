@@ -55,7 +55,7 @@ export function RequestDetailPage({ side }: { side: Side }) {
 
   if (details.isPending) {
     return (
-      <div className="flex flex-col gap-4" aria-label="Chargement">
+      <div className="flex flex-col gap-4" role="status" aria-label="Chargement">
         <Skeleton className="h-10 w-72" />
         <Skeleton className="h-64 rounded-xl" />
       </div>

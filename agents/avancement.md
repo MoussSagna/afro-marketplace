@@ -1,26 +1,58 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 8, admin minimal).
+Dernière mise à jour : 22/11/2026 (lot 9, compte, pages de contenu, SEO, accessibilité → jalon B).
 
 ## Lots
 
-| Lot    | Sujet                                                                               | État                    | PR           |
-| ------ | ----------------------------------------------------------------------------------- | ----------------------- | ------------ |
-| 0      | Socle du monorepo + CI                                                              | ✅ fusionné             | #1           |
-| 1      | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
-| 2      | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
-| 3      | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
-| 4      | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
-| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
-| 6      | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
-| 7      | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné             | #8           |
-| 8      | Admin minimal : profils à valider, signalements, utilisateurs                       | 🔍 PR ouverte, à relire | PR « Lot 8 » |
-| 9 – 11 | Compte, pages statiques, finitions (jalon B), Supabase, emails                      |                         |              |
+| Lot     | Sujet                                                                               | État                    | PR           |
+| ------- | ----------------------------------------------------------------------------------- | ----------------------- | ------------ |
+| 0       | Socle du monorepo + CI                                                              | ✅ fusionné             | #1           |
+| 1       | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
+| 2       | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
+| 3       | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
+| 4       | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
+| 5       | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
+| 6       | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
+| 7       | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné             | #8           |
+| 8       | Admin minimal : profils à valider, signalements, utilisateurs                       | ✅ fusionné             | #9           |
+| 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | 🔍 PR ouverte, à relire | PR « Lot 9 » |
+| 10 – 11 | Supabase, emails + bêta → jalon C                                                   |                         |              |
 
 ## Jalon A atteint (fin du lot 5)
 
 La boucle complète est cliquable : recherche → profil → demande → messagerie → devis → acceptation → réservation →
 agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne les lots suivants, une PR par lot.
+
+## Jalon B atteint (fin du lot 9)
+
+Tous les écrans du MVP existent (plus aucune page « Bientôt disponible »), testés, avec une préview Vercel par PR.
+Les 8 parcours Playwright de l'étape 3 passent sur ordinateur et sur mobile, plus la page compte et l'audit
+d'accessibilité : 50 tests Playwright verts. Prochaine étape : le lot 10 (Supabase, vrai back-end).
+
+## Ce que contient le lot 9
+
+- Handlers (`mocks/handlers/auth.ts`) : `PATCH /api/me` (nom, téléphone, préférences ; un téléphone vide le retire)
+  et `DELETE /api/me` (anonymisation RGPD, voir `regles-metier.md`). Hooks `useUpdateMe`, `useDeleteMe`.
+- Web `features/account/` : **C8 « Mon compte »** (`/espace/compte`) : informations, tableau des notifications
+  (sujet × canal), suppression du compte confirmée en tapant « SUPPRIMER ». Après la suppression, on passe par
+  `/deconnexion` (qui transmet un message à l'accueil : « Ton compte a bien été supprimé »). Lien « Mon compte »
+  ajouté au menu du compte.
+- Web `features/static/` : **P7** `/comment-ca-marche`, `/faq` (accordéon `<details>`), `/cgu`, `/mentions-legales`,
+  `/confidentialite`, gabarit `StaticPage`. Les textes juridiques sont **provisoires** et l'affichent
+  (voir `questions-ouvertes.md` n° 6). Liens dans le pied de page public.
+- `soon()` et `PlaceholderPage` supprimés : toutes les routes du MVP pointent vers une vraie page.
+- **SEO** (`src/lib/seo.ts`, fonctions pures testées) :
+  - `sitemap.xml` et `robots.txt` générés au build par un petit plugin Vite (`vite.config.ts`). Le plan du site vient
+    du seed (pages fixes, catégories, profils publiés) ; il viendra de Supabase au lot 10.
+  - Adresse du site : `SITE_URL`, sinon le domaine de production Vercel. Seule la production
+    (`VERCEL_ENV=production`) est indexable : une préview répond `Disallow: /`.
+  - Données structurées JSON-LD (`LocalBusiness` : ville, prix « à partir de », note si avis) sur chaque profil.
+- **Accessibilité** : audit axe-core (`e2e/a11y.spec.ts`, WCAG 2.1 AA, zéro violation « serious »/« critical ») sur
+  l'accueil, la recherche, un profil, la connexion, la FAQ, « Devenir prestataire » et l'espace client. Corrigé :
+  les blocs « Chargement » ont `role="status"` (un `aria-label` sur une `div` sans rôle est interdit), et les jours
+  passés des calendriers ont un contraste suffisant.
+- Tests : `me.test.ts` (handlers), `accountForm.test.ts`, `AccountPage.test.tsx`, `StaticPages.test.tsx`,
+  `seo.test.ts` ; Playwright `account.spec.ts` (compte, pied de page, JSON-LD) et `a11y.spec.ts`.
 
 ## Ce que contient le lot 8
 
@@ -183,6 +215,8 @@ agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne l
 
 ## Questions en suspens pour Mouss
 
+La liste complète (choix actuel, impact, échéance) est dans [`questions-ouvertes.md`](questions-ouvertes.md).
+
 - Logo définitif (3 pistes, la 1 recommandée) et nom de marque définitif. Menu latéral pro en brun (`bg-sidebar`) à faire avec le tableau de bord S2 (lot 5).
 - Nom de la marque (remplacera `@afro/…` au lot 11).
 
@@ -192,7 +226,7 @@ agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne l
 - `Quote.lines` : les lignes sont renvoyées dans le devis (pas de route séparée pour `QuoteLine`).
 - `Booking` a en plus `quoteRequestId` et `cancelledAt` (pratique pour les écrans et la règle n° 9).
 - `ProviderProfile.postalCode` peut être vide pour un brouillon d'onboarding.
-- Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (question ouverte pour Mouss).
+- Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (choix de Mouss pour l'instant, voir [`questions-ouvertes.md`](questions-ouvertes.md) n° 1).
 - Lot 8 : pas de notification au prestataire après une décision (le modèle `Notification` arrive avec les emails, lot 11) ;
   il voit son nouveau statut et le motif dans son espace.
 - Lot 7 : pas d'upload réel au MVP mocké, les photos sont des « data URL » (vrai stockage au lot 10 avec Supabase).

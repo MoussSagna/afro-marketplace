@@ -13,7 +13,8 @@ export function BookingsPage() {
   usePageMeta('Mes réservations');
   const today = toIsoDate(new Date());
 
-  if (bookings.isPending) return <Skeleton className="h-40 rounded-xl" aria-label="Chargement" />;
+  if (bookings.isPending)
+    return <Skeleton className="h-40 rounded-xl" role="status" aria-label="Chargement" />;
   if (bookings.isError) {
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">

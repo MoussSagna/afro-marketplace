@@ -102,7 +102,11 @@ export function SearchResults({
         </div>
 
         {search.isPending && (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3" aria-label="Chargement">
+          <div
+            className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+            role="status"
+            aria-label="Chargement"
+          >
             {Array.from({ length: 6 }, (_, index) => (
               <Skeleton key={index} className="h-80 rounded-xl" />
             ))}

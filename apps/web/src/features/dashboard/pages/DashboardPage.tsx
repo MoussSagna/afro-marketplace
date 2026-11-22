@@ -52,7 +52,9 @@ export function DashboardPage() {
       </div>
       <ProfileStatusBanner />
 
-      {dashboard.isPending && <Skeleton className="h-28 rounded-xl" aria-label="Chargement" />}
+      {dashboard.isPending && (
+        <Skeleton className="h-28 rounded-xl" role="status" aria-label="Chargement" />
+      )}
       {dashboard.isError && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-destructive">
           Impossible de charger le tableau de bord.
