@@ -1,9 +1,11 @@
 import type { MockDb } from '../db';
 import { authHandlers } from './auth';
+import { bookingHandlers } from './bookings';
 import { catalogueHandlers } from './catalogue';
 import { messagingHandlers } from './messaging';
 import { providerHandlers } from './providers';
 import { quoteRequestHandlers } from './quoteRequests';
+import { quoteHandlers } from './quotes';
 
 export * from './http';
 export { FEATURED_PROVIDERS_COUNT } from './catalogue';
@@ -23,5 +25,7 @@ export function createHandlers(db: MockDb) {
     ...providerHandlers(db),
     ...quoteRequestHandlers(db),
     ...messagingHandlers(db),
+    ...quoteHandlers(db),
+    ...bookingHandlers(db),
   ];
 }

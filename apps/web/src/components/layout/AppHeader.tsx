@@ -33,7 +33,11 @@ export function AppHeader({ spaceLabel, children }: AppHeaderProps) {
             <img src="/teranga-icon.svg" alt="" className="size-8" />
             Teranga
           </Link>
-          {spaceLabel && <Badge variant="secondary">{spaceLabel}</Badge>}
+          {spaceLabel && (
+            <Badge variant="secondary" className="hidden sm:inline-flex">
+              {spaceLabel}
+            </Badge>
+          )}
         </div>
         <nav className="flex items-center gap-1 sm:gap-2" aria-label="Compte">
           {children}

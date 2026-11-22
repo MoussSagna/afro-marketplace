@@ -323,6 +323,7 @@ export function QuoteRequestPage() {
             )}
 
             <Button
+              variant="cta"
               type="submit"
               size="lg"
               className="self-start"

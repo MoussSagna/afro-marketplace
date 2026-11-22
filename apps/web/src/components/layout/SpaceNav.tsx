@@ -17,6 +17,8 @@ interface SpaceNavProps {
   label: string;
   /** « side » : menu latéral sur grand écran ; « top » : onglets horizontaux. */
   variant: 'side' | 'top';
+  /** « dark » : le menu brun de l'espace pro (maquette). */
+  tone?: 'light' | 'dark';
   className?: string;
 }
 
@@ -24,9 +26,16 @@ interface SpaceNavProps {
  * Le menu d'un espace. NavLink sait si son lien est la page actuelle :
  * on s'en sert pour le style et pour aria-current (lu par les lecteurs d'écran).
  */
-export function SpaceNav({ items, label, variant, className }: SpaceNavProps) {
+export function SpaceNav({ items, label, variant, tone = 'light', className }: SpaceNavProps) {
+  const dark = tone === 'dark';
   return (
-    <nav aria-label={label} className={className}>
+    <nav
+      aria-label={label}
+      className={cn(
+        dark && 'self-start rounded-xl bg-sidebar p-2 text-sidebar-foreground',
+        className,
+      )}
+    >
       <ul
         className={cn(
           variant === 'side' ? 'flex flex-col gap-1' : 'flex gap-1 overflow-x-auto pb-1',
@@ -40,16 +49,20 @@ export function SpaceNav({ items, label, variant, className }: SpaceNavProps) {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-muted text-primary'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                  dark
+                    ? isActive
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                      : 'text-sidebar-foreground hover:bg-white/10'
+                    : isActive
+                      ? 'bg-muted text-primary'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                 )
               }
             >
               <Icon className="size-4" aria-hidden />
               {itemLabel}
               {!!badge && (
-                <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-accent-foreground">
+                <span className="relative ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-semibold text-accent-foreground">
                   {badge}
                   <span className="sr-only"> non lu{badge > 1 ? 's' : ''}</span>
                 </span>

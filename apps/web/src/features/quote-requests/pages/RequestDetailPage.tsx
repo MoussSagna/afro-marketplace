@@ -6,17 +6,22 @@ import {
   formatEventDate,
   formatPrice,
   isQuoteRequestOpen,
+  useProvider,
   useQuoteRequest,
   type QuoteRequestDetails,
   type Side,
 } from '@afro/common';
-import { ArrowLeft, MessageCircle } from 'lucide-react';
+import { ArrowLeft, FileText, MessageCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
 import { NotFoundPage } from '@/app/NotFoundPage';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { BookingPanel } from '@/features/bookings/components/BookingPanel';
+import { AcceptQuoteDialog } from '@/features/quotes/components/AcceptQuoteDialog';
+import { DeclineQuoteButton } from '@/features/quotes/components/DeclineQuoteButton';
+import { QuoteCard } from '@/features/quotes/components/QuoteCard';
 import { CancelRequestDialog } from '../components/CancelRequestDialog';
 import { DeclineDialog } from '../components/DeclineDialog';
 import { RequestStatusBadge } from '../components/RequestStatusBadge';
@@ -43,6 +48,8 @@ function Info({ label, children }: { label: string; children: ReactNode }) {
 export function RequestDetailPage({ side }: { side: Side }) {
   const { id = '' } = useParams();
   const details = useQuoteRequest(id);
+  // Côté client, la politique d'annulation du prestataire s'affiche avant d'accepter un devis.
+  const publicProfile = useProvider(side === 'client' ? (details.data?.provider.slug ?? '') : '');
   usePageMeta('Détail de la demande');
   const paths = SPACE_PATHS[side];
 
@@ -63,7 +70,7 @@ export function RequestDetailPage({ side }: { side: Side }) {
     );
   }
 
-  const { request, provider, client, quotes, conversationId } = details.data;
+  const { request, provider, client, quotes, booking, conversationId } = details.data;
   const title =
     side === 'client' ? provider.displayName : `${client.firstName} ${client.lastNameInitial}`;
   const conversationUrl = `${paths.messages}/${conversationId}`;
@@ -125,25 +132,31 @@ export function RequestDetailPage({ side }: { side: Side }) {
         <p className="whitespace-pre-line">{request.message}</p>
       </section>
 
+      {booking && <BookingPanel booking={booking} side={side} />}
+
       {quotes.length > 0 && (
-        <section aria-labelledby="quotes-title" className="rounded-xl border bg-card p-5">
-          <h2 id="quotes-title" className="mb-3 text-xl font-semibold">
+        <section aria-labelledby="quotes-title" className="flex flex-col gap-3">
+          <h2 id="quotes-title" className="text-xl font-semibold">
             Devis
           </h2>
-          <ul className="flex flex-col gap-2">
-            {quotes.map((quote) => (
-              <li key={quote.id} className="flex justify-between gap-2 text-sm">
-                <span>
-                  Devis n° {quote.version}
-                  {quote.status === 'superseded' && ' (remplacé)'}
-                </span>
-                <strong>{formatPrice(quote.totalAmount)}</strong>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Le détail des devis et leur acceptation arrivent au lot 5.
-          </p>
+          {/* La version la plus récente en premier. */}
+          {[...quotes].reverse().map((quote) => (
+            <QuoteCard key={quote.id} quote={quote}>
+              {side === 'client' && quote.status === 'sent' && request.status === 'quoted' && (
+                <>
+                  {publicProfile.data ? (
+                    <AcceptQuoteDialog
+                      quote={quote}
+                      cancellationPolicy={publicProfile.data.profile.cancellationPolicy}
+                    />
+                  ) : (
+                    <Button disabled>Accepter le devis</Button>
+                  )}
+                  <DeclineQuoteButton quoteId={quote.id} />
+                </>
+              )}
+            </QuoteCard>
+          ))}
         </section>
       )}
 
@@ -156,6 +169,14 @@ export function RequestDetailPage({ side }: { side: Side }) {
               : 'Ouvrir la conversation'}
           </Link>
         </Button>
+        {side === 'provider' && isOpen && (
+          <Button asChild variant="outline">
+            <Link to={`${paths.requests}/${request.id}/devis`}>
+              <FileText aria-hidden />
+              {quotes.length === 0 ? 'Envoyer un devis' : 'Nouvelle version du devis'}
+            </Link>
+          </Button>
+        )}
         {side === 'provider' && request.status === 'pending' && (
           <DeclineDialog requestId={request.id} />
         )}

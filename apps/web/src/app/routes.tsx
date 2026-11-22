@@ -127,7 +127,12 @@ export const routes: RouteObject[] = [
             element: <ClientLayout />,
             children: [
               ...spacePages('client'),
-              soon('reservations', 'Mes réservations', 5),
+              {
+                path: 'reservations',
+                lazy: async () => ({
+                  Component: (await import('@/features/bookings/pages/BookingsPage')).BookingsPage,
+                }),
+              },
               soon('avis/:bookingId', 'Laisser un avis', 6),
               soon('compte', 'Mon compte', 9),
             ],
@@ -142,10 +147,27 @@ export const routes: RouteObject[] = [
           {
             element: <ProLayout />,
             children: [
-              { index: true, element: <PlaceholderPage title="Tableau de bord" lot={5} /> },
+              {
+                index: true,
+                lazy: async () => ({
+                  Component: (await import('@/features/dashboard/pages/DashboardPage'))
+                    .DashboardPage,
+                }),
+              },
               ...spacePages('provider'),
-              soon('demandes/:id/devis', 'Créer un devis', 5),
-              soon('agenda', 'Agenda', 5),
+              {
+                path: 'demandes/:id/devis',
+                lazy: async () => ({
+                  Component: (await import('@/features/quotes/pages/CreateQuotePage'))
+                    .CreateQuotePage,
+                }),
+              },
+              {
+                path: 'agenda',
+                lazy: async () => ({
+                  Component: (await import('@/features/agenda/pages/AgendaPage')).AgendaPage,
+                }),
+              },
               soon('avis', 'Avis reçus', 6),
               soon('profil', 'Mon profil', 7),
               soon('onboarding', 'Créer mon profil', 7),

@@ -7,3 +7,4 @@ export * from './quote';
 export * from './review';
 export * from './contactMasking';
 export * from './cancellation';
+export * from './acceptQuote';

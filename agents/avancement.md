@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 4).
+Dernière mise à jour : 22/11/2026 (lot 5, jalon A).
 
 ## Lots
 
@@ -10,9 +10,43 @@ Dernière mise à jour : 22/11/2026 (lot 4).
 | 1      | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
 | 2      | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
 | 3      | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
-| 4      | Demander un devis + messagerie                                                      | 🔍 PR ouverte, à relire | PR « Lot 4 » |
-| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ⏭️ prochain             |              |
+| 4      | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
+| 5      | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | 🔍 PR ouverte, à relire | PR « Lot 5 » |
 | 6 – 11 | Avis, onboarding, admin, finitions, Supabase, emails                                |                         |              |
+
+## Jalon A atteint (fin du lot 5)
+
+La boucle complète est cliquable : recherche → profil → demande → messagerie → devis → acceptation → réservation →
+agenda. **On s'arrête ici** pour que Mouss teste la démo avant de lancer le lot 6.
+
+## Ce que contient le lot 5
+
+- Règle n° 5 : `canAcceptQuote` + `acceptQuote` (`packages/common/src/rules/acceptQuote.ts`, testées).
+- Handlers : `POST /api/quotes`, `POST /api/quotes/:id/accept`, `POST /api/quotes/:id/decline`, `GET /api/bookings?side=`,
+  `POST /api/bookings/:id/cancel`, `GET /api/me/provider/dashboard`, `GET/POST /api/me/provider/unavailabilities`,
+  `DELETE /api/me/provider/unavailabilities/:id`, `GET/PATCH /api/me/provider` (le PATCH sert au réglage
+  « max par jour » ; l'onboarding du lot 7 s'appuiera dessus). `mocks/bookings.ts` : `completePastBookings`, `toBookingSummary`.
+- Hooks (`queries/useBookings.ts`) : `useCreateQuote`, `useAcceptQuote`, `useDeclineQuote`, `useBookings`,
+  `useCancelBooking`, `useProviderDashboard`, `useMyUnavailabilities`, `useBlockDate`, `useUnblockDate`,
+  `useMyProviderProfile`, `useUpdateMyProviderProfile`.
+- Web :
+  - S4 `/pro/demandes/:id/devis` : lignes dynamiques (`useFieldArray`), total et acompte en direct, montants saisis en
+    euros « à la française » (`features/quotes/lib/quoteForm.ts`), reprise de la version précédente pour négocier.
+  - C3 : devis détaillés (`QuoteCard`), « Accepter » (adresse + conditions d'annulation) / « Refuser » ;
+    bloc réservation (`BookingPanel`) avec adresse révélée et annulation (`CancelBookingDialog`, remboursement prévu affiché).
+  - C5 `/espace/reservations` ; S2 `/pro` (3 chiffres, demandes récentes, prochaines dates) ;
+    S6 `/pro/agenda` (mois, réservé / bloqué / libre, clic pour bloquer/débloquer, réglage « max par jour »).
+  - Grille de calendrier partagée : `apps/web/src/lib/calendar.ts`.
+  - Maquette v2 : boutons en pilule, variante `cta` (soleil orangé) pour l'action principale d'un écran
+    (Rechercher, Demander un devis, Envoyer, Accepter) ; menu pro brun (`SpaceNav tone="dark"`).
+  - Correctif mobile : les textes `sr-only` des pastilles débordaient (page plus large que l'écran) → pastilles en `relative`.
+    En-tête : texte court « Mode client / Mode pro » sur téléphone.
+- Playwright : `e2e/booking.spec.ts` (parcours 2 et 3).
+
+## Reste à faire côté maquette v2
+
+- Accueil façon référence de Mouss : photo pleine largeur sous l'en-tête, grand titre avec mot accent (`text-title-accent`),
+  recherche en pilule, bordure à motif de losanges. Logo piste 1 à intégrer quand le fichier final sera prêt.
 
 ## Ce que contient le lot 4
 

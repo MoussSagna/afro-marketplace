@@ -1,8 +1,8 @@
 /*
  * Teranga : tokens de design pour Tailwind v4 + shadcn/ui
- * Source : maquette v1 (22 novembre 2026), palette.json de Mouss.
+ * Source : maquette v2 (22 novembre 2026), palette.json et référence d'accueil de Mouss.
  * Importé par apps/web/src/index.css. Polices chargées dans apps/web/index.html.
- * Même valeurs en JSON : tokens.json (pour NativeWind côté mobile).
+ * Mêmes valeurs en JSON : tokens.json (pour NativeWind côté mobile).
  *
  * Règles d'accessibilité (ratios mesurés sur #FDF7F0) :
  *  - texte courant : --foreground (15,7:1) ou --primary (9,7:1)
@@ -34,6 +34,12 @@
   --accent: #f3b618; /* Soleil : fonds d'accent, pastilles */
   --accent-foreground: #2b1a12;
 
+  /* v2 (référence de Mouss) : boutons d'action en pilule soleil orangé */
+  --cta: #f0a422; /* Boutons d'action, recherche, mot clé sur photo */
+  --cta-hover: #d9822b;
+  --cta-foreground: #2b1a12; /* 8:1 */
+  --title-accent: #c2611f; /* Rouille : mot accent des grands titres (>= 24px, 3,9:1) */
+
   --ochre: #d9822b; /* Ocre doré : étoiles, filets, anneau de focus */
   --clay: #b9987a; /* Argile claire : décor uniquement */
 
@@ -50,7 +56,7 @@
   --input: #d9c2aa;
   --ring: #d9822b;
 
-  /* Rayons : boutons/champs 10px, cartes 16px, pastilles 999px */
+  /* Rayons : champs 10px, cartes 16px, boutons et recherche en pilule (999px) */
   --radius: 0.625rem;
 
   /* Espace pro (menu latéral) */
@@ -78,6 +84,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-cta-foreground: var(--cta-foreground);
+  --color-title-accent: var(--title-accent);
   --color-ochre: var(--ochre);
   --color-clay: var(--clay);
   --color-destructive: var(--destructive);

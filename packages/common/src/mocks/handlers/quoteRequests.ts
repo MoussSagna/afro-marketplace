@@ -6,6 +6,7 @@ import {
 } from '../../rules';
 import { createQuoteRequestInputSchema, declineQuoteRequestInputSchema } from '../../schemas';
 import type { Conversation, QuoteRequest, QuoteRequestStatus } from '../../types';
+import { completePastBookings } from '../bookings';
 import { expireStaleQuoteRequests, postMessage } from '../conversations';
 import type { MockDb } from '../db';
 import { toQuoteRequestDetails, toQuoteRequestSummary } from '../mappers';
@@ -131,6 +132,7 @@ export function quoteRequestHandlers(db: MockDb) {
       const user = currentUser(db, request);
       if (!user) return apiError(401, 'unauthenticated', 'Connecte-toi pour continuer.');
       expireStaleQuoteRequests(db);
+      completePastBookings(db);
 
       const found = findForUser(String(params.requestId), user.id);
       // 404 aussi quand la demande existe mais n'est pas à toi : on ne dit pas qu'elle existe.
