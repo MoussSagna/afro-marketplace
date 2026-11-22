@@ -46,9 +46,25 @@ export const routes: RouteObject[] = [
               Component: (await import('@/features/auth/pages/LogoutPage')).LogoutPage,
             }),
           },
-          soon('recherche', 'Rechercher un prestataire', 3),
-          soon('categories/:slug', 'Catégorie', 3),
-          soon('prestataires/:slug', 'Profil du prestataire', 3),
+          {
+            path: 'recherche',
+            lazy: async () => ({
+              Component: (await import('@/features/search/pages/SearchPage')).SearchPage,
+            }),
+          },
+          {
+            path: 'categories/:slug',
+            lazy: async () => ({
+              Component: (await import('@/features/search/pages/CategoryPage')).CategoryPage,
+            }),
+          },
+          {
+            path: 'prestataires/:slug',
+            lazy: async () => ({
+              Component: (await import('@/features/provider-profile/pages/ProviderProfilePage'))
+                .ProviderProfilePage,
+            }),
+          },
           soon('prestataires/:slug/demande', 'Demander un devis', 4),
           soon('devenir-prestataire', 'Devenir prestataire', 7),
           soon('comment-ca-marche', 'Comment ça marche', 9),

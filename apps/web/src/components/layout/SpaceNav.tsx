@@ -39,7 +39,7 @@ export function SpaceNav({ items, label, variant, className }: SpaceNavProps) {
                 cn(
                   'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-brand-50 text-brand-800'
+                    ? 'bg-muted text-primary'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                 )
               }

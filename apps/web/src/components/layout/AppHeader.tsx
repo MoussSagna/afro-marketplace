@@ -25,9 +25,13 @@ export function AppHeader({ spaceLabel, children }: AppHeaderProps) {
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4">
         <div className="flex items-center gap-2">
-          {/* Nom provisoire : la marque n'est pas encore choisie. */}
-          <Link to="/" className="font-display text-xl font-semibold text-brand-700">
-            Afro Marketplace
+          {/* Nom provisoire « Teranga » : en attendant le logo, icône d'app + nom en Playfair. */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 font-display text-xl font-bold text-primary"
+          >
+            <img src="/teranga-icon.svg" alt="" className="size-8" />
+            Teranga
           </Link>
           {spaceLabel && <Badge variant="secondary">{spaceLabel}</Badge>}
         </div>

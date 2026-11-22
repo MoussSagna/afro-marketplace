@@ -1,5 +1,7 @@
 import { formatPrice, type ProviderCard as ProviderCardData } from '@afro/common';
-import { BadgeCheck, MapPin, Star } from 'lucide-react';
+import { BadgeCheck, MapPin } from 'lucide-react';
+import { Link } from 'react-router';
+import { Rating } from '@/components/Rating';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -8,33 +10,47 @@ interface ProviderCardProps {
   categoryName?: string;
 }
 
-const ratingFormatter = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
-
+/**
+ * La carte d'un prestataire dans les listes (accueil, résultats).
+ * Toute la carte est cliquable : le lien est sur le titre, et une astuce CSS
+ * (after:absolute inset-0) étend sa zone de clic à toute la carte, sans
+ * imbriquer d'éléments interactifs.
+ */
 export function ProviderCard({ provider, categoryName }: ProviderCardProps) {
   return (
-    <Card className="h-full gap-3 overflow-hidden pt-0 pb-5 transition-shadow hover:shadow-md">
-      {/* En attendant les vraies photos (lot 3), un dégradé aux couleurs de la marque. */}
-      <div
-        aria-hidden
-        className="flex h-36 items-end bg-linear-to-br from-brand-400 via-brand-600 to-gold-500 p-4"
-      >
-        <span className="font-display text-4xl font-semibold text-white/90">
-          {provider.displayName.charAt(0)}
-        </span>
+    <Card className="relative h-full gap-3 overflow-hidden pt-0 pb-5 transition-shadow focus-within:ring-[3px] focus-within:ring-ring/50 hover:shadow-md">
+      <div className="relative h-40 bg-linear-to-br from-ochre via-primary to-foreground">
+        {provider.coverUrl ? (
+          <img src={provider.coverUrl} alt="" loading="lazy" className="size-full object-cover" />
+        ) : (
+          <span
+            aria-hidden
+            className="absolute bottom-3 left-4 font-display text-4xl font-semibold text-white/90"
+          >
+            {provider.displayName.charAt(0)}
+          </span>
+        )}
       </div>
 
       <CardHeader className="gap-2">
         <div className="flex items-center justify-between gap-2">
           {categoryName && <Badge variant="secondary">{categoryName}</Badge>}
           {provider.isProVerified && (
-            <Badge variant="outline" className="text-forest-700">
+            <Badge variant="outline" className="border-success/30 bg-success-muted text-success">
               <BadgeCheck aria-hidden />
               Pro vérifié
             </Badge>
           )}
         </div>
         <CardTitle className="text-lg">
-          <h3>{provider.displayName}</h3>
+          <h3>
+            <Link
+              to={`/prestataires/${provider.slug}`}
+              className="outline-none after:absolute after:inset-0"
+            >
+              {provider.displayName}
+            </Link>
+          </h3>
         </CardTitle>
       </CardHeader>
 
@@ -43,12 +59,8 @@ export function ProviderCard({ provider, categoryName }: ProviderCardProps) {
           <MapPin className="size-4" aria-hidden />
           {provider.city}
         </p>
-        <div className="flex items-center justify-between">
-          <p className="flex items-center gap-1">
-            <Star className="size-4 fill-gold-400 text-gold-500" aria-hidden />
-            <span className="font-medium">{ratingFormatter.format(provider.ratingAverage)}</span>
-            <span className="text-muted-foreground">({provider.ratingCount} avis)</span>
-          </p>
+        <div className="flex items-center justify-between gap-2">
+          <Rating value={provider.ratingAverage} count={provider.ratingCount} />
           <p className="font-medium">
             {provider.priceFrom === undefined
               ? 'Sur devis'

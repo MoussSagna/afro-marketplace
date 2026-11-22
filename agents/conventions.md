@@ -40,3 +40,11 @@
 - La CI doit être verte : format, lint, types, tests, build, Playwright.
 - Chaque PR met à jour `agents/avancement.md` (et les autres fiches si besoin).
 - On ne fusionne pas soi-même : Mouss relit et fusionne.
+
+## Design (tokens Teranga)
+
+- N'utilise que les couleurs du thème : `primary` (terre intense, actions et liens), `foreground`, `muted`/`muted-foreground` (texte secondaire #6B4A36), `secondary` (sable), `accent` (soleil, **fond uniquement**, avec `accent-foreground`), `ochre` (étoiles, filets, focus, **jamais en texte**), `clay` (décor seulement), `success`/`warning`/`destructive` et leurs variantes `-muted`, `sidebar-*` pour le menu pro.
+- Survols et éléments actifs de menu : `bg-muted`, pas `bg-accent` (le soleil est réservé aux pastilles).
+- Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
+- Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
+- Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.

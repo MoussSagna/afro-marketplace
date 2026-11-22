@@ -92,7 +92,7 @@ export function LoginPage() {
                 >
                   <Card className="h-full py-5 transition-shadow hover:shadow-md">
                     <CardHeader className="gap-3">
-                      <span className="flex size-10 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-muted text-primary">
                         <Icon className="size-5" aria-hidden />
                       </span>
                       <CardTitle>{account.label}</CardTitle>

@@ -1,10 +1,18 @@
 import { useCategories, useFeaturedProviders } from '@afro/common';
 import { motion } from 'motion/react';
-import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { HeroSearchForm } from '../components/HeroSearchForm';
+import { HowItWorks } from '../components/HowItWorks';
 import { ProviderCard } from '../components/ProviderCard';
 
+/** P1 : l'accueil. Recherche « Quoi / Où / Quand », catégories, prestataires à la une, comment ça marche. */
 export function HomePage() {
+  usePageMeta(
+    'Prestataires afro pour vos événements',
+    'Traiteurs, danseurs, DJ, speakers, coiffeuses… Trouvez un prestataire afro en Île-de-France et demandez un devis gratuit.',
+  );
   const providers = useFeaturedProviders();
   const categories = useCategories();
 
@@ -14,7 +22,7 @@ export function HomePage() {
 
   return (
     <>
-      <section className="bg-linear-to-b from-brand-50 to-background">
+      <section className="bg-linear-to-b from-muted to-background">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 md:py-24">
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
@@ -28,12 +36,16 @@ export function HomePage() {
             Traiteurs, danseurs, DJ, speakers, coiffeuses… Trouvez le bon prestataire en
             Île-de-France et demandez un devis en quelques minutes.
           </p>
+          <HeroSearchForm />
           <ul className="flex flex-wrap gap-2" aria-label="Catégories">
             {mainCategories.map((category) => (
               <li key={category.id}>
-                <Badge variant="outline" className="bg-background px-3 py-1 text-sm">
+                <Link
+                  to={`/categories/${category.slug}`}
+                  className="inline-flex items-center gap-1 rounded-full border bg-background px-3 py-1 text-sm font-medium transition-colors hover:bg-muted"
+                >
                   <span aria-hidden>{category.icon}</span> {category.name}
-                </Badge>
+                </Link>
               </li>
             ))}
           </ul>
@@ -77,6 +89,8 @@ export function HomePage() {
           </ul>
         )}
       </section>
+
+      <HowItWorks />
     </>
   );
 }

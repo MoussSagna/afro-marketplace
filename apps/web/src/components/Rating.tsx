@@ -46,10 +46,10 @@ export function Rating({ value, count, size = 'sm', className }: RatingProps) {
           const fill = Math.max(0, Math.min(1, value - index)) * 100;
           return (
             <span key={index} className="relative">
-              <Star className={cn('text-gold-400/30', size === 'md' ? 'size-5' : 'size-4')} />
+              <Star className={cn('text-clay/50', size === 'md' ? 'size-5' : 'size-4')} />
               <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill}%` }}>
                 <Star
-                  className={cn('fill-gold-400 text-gold-400', size === 'md' ? 'size-5' : 'size-4')}
+                  className={cn('fill-ochre text-ochre', size === 'md' ? 'size-5' : 'size-4')}
                 />
               </span>
             </span>
