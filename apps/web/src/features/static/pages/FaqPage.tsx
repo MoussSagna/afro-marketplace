@@ -32,7 +32,7 @@ const QUESTIONS = [
   },
   {
     q: 'Comment changer mon email ou signaler un problème ?',
-    a: 'Écrivez-nous à contact@teranga.example (adresse provisoire). Pour un contenu inapproprié, utilisez le bouton « Signaler » sur le message, l’avis ou le profil.',
+    a: 'Écrivez-nous à contact@wenzee.example (adresse provisoire). Pour un contenu inapproprié, utilisez le bouton « Signaler » sur le message, l’avis ou le profil.',
   },
 ];
 

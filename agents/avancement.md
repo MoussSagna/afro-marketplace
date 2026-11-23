@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 22/11/2026 (lot 9, compte, pages de contenu, SEO, accessibilité → jalon B).
+Dernière mise à jour : 23/11/2026 (changement de marque : Teranga devient Wenzee, étape 1).
 
 ## Lots
 
@@ -17,6 +17,19 @@ Dernière mise à jour : 22/11/2026 (lot 9, compte, pages de contenu, SEO, acces
 | 8       | Admin minimal : profils à valider, signalements, utilisateurs                       | ✅ fusionné | #9  |
 | 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | ✅ fusionné | #10 |
 | 10 – 11 | Supabase, emails + bêta → jalon C                                                   |             |     |
+
+## Changement de marque : Wenzee (23/11/2026)
+
+Mouss a choisi le nom **Wenzee** (fin du nom provisoire « Teranga ») et le logo **piste 3 « Le lien »** : deux rubans
+imbriqués qui forment un W, un losange au-dessus. Les SVG sont dans `/mnt/project-files/marque-wenzee/`. Les couleurs
+du thème ne changent pas. Mouss veut le changement **étape par étape**, une petite PR à la fois :
+
+| Étape | Contenu                                                                             | État       |
+| ----- | ----------------------------------------------------------------------------------- | ---------- |
+| 1     | Le nom : textes, titres des pages, SEO, emails provisoires (`wenzee.example`), docs | PR ouverte |
+| 2     | Le logo : en-tête, pied de page, favicon ; suppression de `teranga-icon.svg`        | à faire    |
+
+Le préfixe des paquets `@afro/…` ne bouge pas pour l'instant (voir `questions-ouvertes.md`).
 
 ## Jalon A atteint (fin du lot 5)
 
@@ -189,7 +202,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
   résultats (P2) ; pages catégorie (P4) avec titre pour Google (`usePageMeta`) ; profil (P5) avec galerie + visionneuse,
   formules, calendrier de disponibilités en lecture, avis, politique d'annulation, bouton « Demander un devis ».
 - Transition douce entre les pages publiques (Motion, respecte « réduire les animations »).
-- Thème : tokens **Teranga** de la maquette v1 appliqués (`packages/config/tailwind/theme.css`, copie JSON dans `tokens.json`). Nom provisoire « Teranga » ; en-tête = icône d'app + nom en Playfair tant que le logo n'est pas choisi. Maquette : `/mnt/project-files/maquette/` et https://claude.ai/artifact/9bkx1UDkFjBKFEKMGTrVGv.
+- Thème : tokens de la maquette v1 appliqués (`packages/config/tailwind/theme.css`, copie JSON dans `tokens.json`). En-tête = icône d'app + nom en Playfair tant que le logo n'est pas intégré (nom : Wenzee depuis le 23/11/2026). Maquette : `/mnt/project-files/maquette/` et https://claude.ai/artifact/9bkx1UDkFjBKFEKMGTrVGv.
 
 ## Ce que contient le lot 2
 
@@ -218,8 +231,8 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
 
 La liste complète (choix actuel, impact, échéance) est dans [`questions-ouvertes.md`](questions-ouvertes.md).
 
-- Logo définitif (3 pistes, la 1 recommandée) et nom de marque définitif. Menu latéral pro en brun (`bg-sidebar`) à faire avec le tableau de bord S2 (lot 5).
-- Nom de la marque (remplacera `@afro/…` au lot 11).
+- Menu latéral pro en brun (`bg-sidebar`) à faire avec le tableau de bord S2 (lot 5).
+- Préfixe des paquets : garder `@afro/…` ou passer à `@wenzee/…` (lot 11).
 
 ## Écarts assumés par rapport à la conception
 

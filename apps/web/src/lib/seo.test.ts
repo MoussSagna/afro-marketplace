@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildProviderJsonLd, buildRobotsTxt, buildSitemap } from './seo';
 
 describe('buildSitemap', () => {
-  const xml = buildSitemap('https://teranga.example/', {
+  const xml = buildSitemap('https://wenzee.example/', {
     categories: [{ slug: 'traiteurs' }],
     providers: [
       { slug: 'saveurs-de-dakar', status: 'published', updatedAt: '2026-11-02T10:00:00.000Z' },
@@ -11,11 +11,11 @@ describe('buildSitemap', () => {
   });
 
   it('liste les pages fixes, les catégories et les profils publiés seulement', () => {
-    expect(xml).toContain('<loc>https://teranga.example/</loc>');
-    expect(xml).toContain('<loc>https://teranga.example/faq</loc>');
-    expect(xml).toContain('<loc>https://teranga.example/categories/traiteurs</loc>');
+    expect(xml).toContain('<loc>https://wenzee.example/</loc>');
+    expect(xml).toContain('<loc>https://wenzee.example/faq</loc>');
+    expect(xml).toContain('<loc>https://wenzee.example/categories/traiteurs</loc>');
     expect(xml).toContain(
-      '<loc>https://teranga.example/prestataires/saveurs-de-dakar</loc><lastmod>2026-11-02</lastmod>',
+      '<loc>https://wenzee.example/prestataires/saveurs-de-dakar</loc><lastmod>2026-11-02</lastmod>',
     );
     expect(xml).not.toContain('brouillon');
   });

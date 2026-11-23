@@ -87,7 +87,7 @@ export function GalleryEditor({ media }: { media: Media[] }) {
           type="button"
           variant="ghost"
           disabled={addMedia.isPending}
-          onClick={() => add([samplePhotoUrl(`teranga-${Date.now()}`)])}
+          onClick={() => add([samplePhotoUrl(`wenzee-${Date.now()}`)])}
         >
           <Sparkles aria-hidden />
           Ajouter une photo d’exemple

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-const SITE_NAME = 'Teranga';
+const SITE_NAME = 'Wenzee';
 
 /**
  * Titre de l'onglet et description pour Google, page par page (SEO de base).
- * usePageMeta('Traiteurs', 'Les meilleurs traiteurs afro…') → « Traiteurs · Teranga ».
+ * usePageMeta('Traiteurs', 'Les meilleurs traiteurs afro…') → « Traiteurs · Wenzee ».
  */
 export function usePageMeta(title: string | undefined, description?: string) {
   useEffect(() => {

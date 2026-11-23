@@ -95,7 +95,7 @@ le bouton « Signaler » complète le dispositif.
 ## Précisions ajoutées au lot 9 (compte et RGPD)
 
 - **Suppression du compte = anonymisation**, pas effacement des lignes (`DELETE /api/me`) : prénom « Utilisateur »,
-  nom « supprimé », email `supprime-<id>@teranga.invalid`, statut `deleted`, téléphone et photo retirés. Les avis et
+  nom « supprimé », email `supprime-<id>@wenzee.invalid`, statut `deleted`, téléphone et photo retirés. Les avis et
   messages restent (l'historique des autres utilisateurs reste cohérent) mais ne désignent plus personne.
 - Refusée (409 `upcoming_bookings`) tant qu'il reste une réservation **confirmée à venir**, côté client ou prestataire.
   Un compte admin ne se supprime pas depuis l'application (422).
