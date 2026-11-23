@@ -108,6 +108,11 @@ apps/mobile/
   src/components/ui/   Composants de base (Button, Input, Card…), équivalents des composants shadcn du site
   src/components/brand/ Logo Wenzee (SVG)
   src/lib/cn.ts        cn(), formatRating(), initials()
+  src/lib/api/         Le client API de l'app (celui de common) + mockFetch (handlers MSW sans réseau)
+  src/lib/demoData.ts  Au démarrage : recharge la base de démo et la session depuis AsyncStorage
+  src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
+  src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
+  src/stores/          Session (Zustand + AsyncStorage)
   tailwind.config.js   NativeWind : preset partagé @afro/config/tailwind/preset.cjs (couleurs du site)
   global.css           Point d'entrée de NativeWind (importé dans app/_layout.tsx)
   app.json             Nom, icône, identifiants de l'app (Expo)
@@ -116,7 +121,13 @@ apps/mobile/
 ```
 
 - Raccourci d'import `@/…` = `src/…` (dans `tsconfig.json` et `jest.config.js`).
-- L'app importe `@afro/common` comme le site. Les mocks sur téléphone arrivent au lot M3.
+- L'app importe `@afro/common` comme le site, avec les mêmes hooks de données (`useCategories`…).
+- Données (lot M3) : écran → hook TanStack Query de `common` → `apiClient` (`createHttpApiClient`) →
+  `mockFetch` → handlers MSW → `mockDb` (sauvegardée dans AsyncStorage). Pas de Service Worker sur téléphone :
+  `mockFetch` appelle les handlers directement avec `getResponse` de MSW. Avec le vrai back-end, seul ce `fetch`
+  disparaîtra.
+- Attention : `src/app/` est interdit (Expo Router le prendrait pour le dossier des routes) ; les fournisseurs
+  React vont dans `src/providers/`.
 - Styles : NativeWind (`className`). Les couleurs viennent de `packages/config/tailwind/tokens.json` via
   `preset.cjs` ; le site lit les mêmes valeurs dans `theme.css` (un test vérifie qu'elles sont identiques).
 - Écran de travail `/catalogue` : tous les composants, pour relire le design sur téléphone.
