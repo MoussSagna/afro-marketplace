@@ -24,7 +24,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 
 - Maquette mobile validée « pour le moment » le 23/11/2026 : `/mnt/project-files/maquette-mobile/`.
 - Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
-  **En attente du feu vert de Mouss** avant M1.
+  Plan fusionné (#15). **En attente du « go M1 » de Mouss.**
 
 | Lot | Sujet                                  | État             |
 | --- | -------------------------------------- | ---------------- |

@@ -52,6 +52,9 @@ pour le site **et** l'app en même temps.
 
 ### M0 · Ce plan (PR de documentation)
 
+- Ce que Mouss a à faire de son côté (Expo Go, comptes développeur, Supabase…) : la liste à jour est en haut de
+  `questions-ouvertes.md`, section « Ce que Mouss a à faire ».
+
 - `agents/sprint-mobile.md` (ce fichier), mise à jour de `avancement.md`, `questions-ouvertes.md` et `README.md`.
 - Pas de code.
 
@@ -103,7 +106,8 @@ pour le site **et** l'app en même temps.
   Nouveau mot de passe, Compte vérifié, **plus** l'accès aux 3 comptes de démo (P8).
 - Comme il n'y a pas encore de back-end, les nouvelles routes (`/api/auth/sign-up`, `verify-otp`, `sign-in`,
   `forgot-password`, `reset-password`) sont **simulées** dans `common` : le code OTP de démo est toujours `123456`
-  et aucun email n'est envoyé. Google et Apple affichent « Bientôt disponible » (voir `questions-ouvertes.md`).
+  et aucun email n'est envoyé. Google et Apple affichent « Bientôt disponible ». **Décidé par Mouss le 23/11/2026**
+  (voir `questions-ouvertes.md`, « Tranchées »).
 - Gardes : les espaces Demandes, Messages et Compte demandent d'être connecté, puis on revient où on était.
 - **Tests** : schémas Zod (email, mot de passe, code à 6 chiffres) ; handlers ; fonctionnels sur chaque écran
   (erreurs affichées, code faux, renvoi du code) ; un parcours complet inscription → code → accueil connecté.
