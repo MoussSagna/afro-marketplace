@@ -27,7 +27,7 @@ export function HomePage() {
     <>
       {accountDeleted && (
         <p role="status" className="bg-muted px-4 py-3 text-center text-sm">
-          Ton compte a bien été supprimé. Merci d’avoir utilisé Teranga.
+          Ton compte a bien été supprimé. Merci d’avoir utilisé Wenzee.
         </p>
       )}
       <section className="bg-linear-to-b from-muted to-background">

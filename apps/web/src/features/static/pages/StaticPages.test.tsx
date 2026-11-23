@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderRoute } from '@/test/renderRoute';
@@ -13,7 +13,7 @@ describe('Pages de contenu (P7)', () => {
   ])('%s affiche son titre et le titre de l’onglet', async (path, title) => {
     renderRoute(path);
     expect(await screen.findByRole('heading', { level: 1, name: title })).toBeInTheDocument();
-    expect(document.title).toBe(`${title} · Teranga`);
+    await waitFor(() => expect(document.title).toBe(`${title} · Wenzee`));
   });
 
   it('les textes juridiques sont marqués comme provisoires', async () => {

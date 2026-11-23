@@ -88,7 +88,7 @@ export function authHandlers(db: MockDb) {
         Object.assign(user, {
           firstName: 'Utilisateur',
           lastName: 'supprimé',
-          email: `supprime-${user.id}@teranga.invalid`,
+          email: `supprime-${user.id}@wenzee.invalid`,
           status: 'deleted',
           updatedAt: at,
         });

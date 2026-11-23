@@ -119,7 +119,7 @@ describe('Page catégorie (P4)', () => {
     renderRoute('/categories/traiteurs');
 
     await screen.findByRole('heading', { level: 1, name: 'Traiteur afro en Île-de-France' });
-    await waitFor(() => expect(document.title).toBe('Traiteur afro en Île-de-France · Teranga'));
+    await waitFor(() => expect(document.title).toBe('Traiteur afro en Île-de-France · Wenzee'));
   });
 
   it('affiche une 404 pour une catégorie inconnue', async () => {

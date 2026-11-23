@@ -13,15 +13,15 @@ export function TermsPage() {
   return (
     <StaticPage
       title="Conditions générales d’utilisation"
-      description="Les règles d’utilisation de Teranga pour les clients et les prestataires."
+      description="Les règles d’utilisation de Wenzee pour les clients et les prestataires."
       updatedAt={UPDATED_AT}
       draft
     >
       <StaticSection title="1. Objet">
         <p>
-          Teranga est une plateforme de mise en relation entre des personnes qui organisent un
+          Wenzee est une plateforme de mise en relation entre des personnes qui organisent un
           événement (les « clients ») et des professionnels de l’événementiel (les « prestataires
-          »). Teranga n’est pas partie aux contrats conclus entre clients et prestataires.
+          »). Wenzee n’est pas partie aux contrats conclus entre clients et prestataires.
         </p>
       </StaticSection>
       <StaticSection title="2. Compte">
@@ -48,7 +48,7 @@ export function TermsPage() {
         <p>
           Le prestataire garantit l’exactitude de son profil (identité, statut, SIRET, photos,
           tarifs) et respecte la réglementation applicable à son activité (hygiène alimentaire,
-          droits d’auteur, assurances…). Chaque profil est relu par Teranga avant publication.
+          droits d’auteur, assurances…). Chaque profil est relu par Wenzee avant publication.
         </p>
       </StaticSection>
       <StaticSection title="6. Avis et contenus">
@@ -60,7 +60,7 @@ export function TermsPage() {
       </StaticSection>
       <StaticSection title="7. Tarifs">
         <p>
-          L’utilisation de Teranga est gratuite pour les clients. Elle est gratuite pour les
+          L’utilisation de Wenzee est gratuite pour les clients. Elle est gratuite pour les
           prestataires pendant la phase de lancement ; toute évolution sera annoncée au moins 30
           jours à l’avance.
         </p>
@@ -76,7 +76,7 @@ export function LegalNoticePage() {
   return (
     <StaticPage
       title="Mentions légales"
-      description="Éditeur, hébergeur et contact du site Teranga."
+      description="Éditeur, hébergeur et contact du site Wenzee."
       updatedAt={UPDATED_AT}
       draft
     >
@@ -87,7 +87,7 @@ export function LegalNoticePage() {
           <br />
           Directeur de la publication : [nom].
           <br />
-          Contact : contact@teranga.example (adresse provisoire).
+          Contact : contact@wenzee.example (adresse provisoire).
         </p>
       </StaticSection>
       <StaticSection title="Hébergement">
@@ -99,7 +99,7 @@ export function LegalNoticePage() {
       <StaticSection title="Propriété intellectuelle">
         <p>
           Les photos et textes des profils appartiennent à leurs auteurs, qui en autorisent
-          l’affichage sur Teranga. Le reste du site est la propriété de l’éditeur.
+          l’affichage sur Wenzee. Le reste du site est la propriété de l’éditeur.
         </p>
       </StaticSection>
     </StaticPage>
@@ -110,7 +110,7 @@ export function PrivacyPage() {
   return (
     <StaticPage
       title="Politique de confidentialité"
-      description="Quelles données Teranga collecte, pourquoi, combien de temps, et comment exercer vos droits."
+      description="Quelles données Wenzee collecte, pourquoi, combien de temps, et comment exercer vos droits."
       updatedAt={UPDATED_AT}
       draft
     >
@@ -148,13 +148,13 @@ export function PrivacyPage() {
           </Link>
           , et supprimer votre compte depuis la même page : vos informations personnelles sont alors
           effacées et vos avis restent, signés « Utilisateur supprimé ». Pour toute autre demande
-          (accès, portabilité, opposition), écrivez à contact@teranga.example. Vous pouvez aussi
+          (accès, portabilité, opposition), écrivez à contact@wenzee.example. Vous pouvez aussi
           saisir la CNIL.
         </p>
       </StaticSection>
       <StaticSection title="Cookies">
         <p>
-          Teranga n’utilise que le stockage nécessaire au fonctionnement (garder votre session
+          Wenzee n’utilise que le stockage nécessaire au fonctionnement (garder votre session
           ouverte). Aucun cookie publicitaire ni de mesure d’audience pour l’instant.
         </p>
       </StaticSection>

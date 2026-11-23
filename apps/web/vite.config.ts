@@ -18,7 +18,7 @@ function seoFiles(): Plugin {
     process.env.SITE_URL ?? (vercelUrl ? `https://${vercelUrl}` : 'http://localhost:5173');
   const allowIndexing = process.env.VERCEL_ENV === 'production';
   return {
-    name: 'teranga-seo-files',
+    name: 'wenzee-seo-files',
     apply: 'build',
     async generateBundle() {
       // Le paquet commun est en TypeScript : Vite le charge pour nous (runnerImport).

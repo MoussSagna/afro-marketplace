@@ -40,7 +40,7 @@ const STEPS = [
 export function BecomeProviderPage() {
   usePageMeta(
     'Devenir prestataire',
-    'Traiteur, DJ, danseur, coiffeuse… Rejoins Teranga gratuitement et reçois des demandes de devis.',
+    'Traiteur, DJ, danseur, coiffeuse… Rejoins Wenzee gratuitement et reçois des demandes de devis.',
   );
   const user = useSessionStore((state) => state.user);
   const setUser = useSessionStore((state) => state.setUser);

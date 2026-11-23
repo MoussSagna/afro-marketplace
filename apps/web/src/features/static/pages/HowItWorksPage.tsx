@@ -12,7 +12,7 @@ export function HowItWorksPage() {
         description="Trouvez un prestataire afro, demandez un devis gratuit et réservez en quelques minutes. Prestataires : inscription gratuite."
       >
         <p className="text-lg text-muted-foreground">
-          Teranga met en relation les organisateurs d’événements et les prestataires afro
+          Wenzee met en relation les organisateurs d’événements et les prestataires afro
           d’Île-de-France : traiteurs, danseurs, DJ, coiffeuses, speakers…
         </p>
       </StaticPage>
