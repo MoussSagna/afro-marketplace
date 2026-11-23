@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (changement de marque : Teranga devient Wenzee, étape 2, le logo).
+Dernière mise à jour : 23/11/2026 (idée de style d'input façon Material UI notée dans `questions-ouvertes.md`, question 9).
 
 ## Lots
 
