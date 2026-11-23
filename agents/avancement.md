@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (lot M1 : squelette de l'app mobile).
+Dernière mise à jour : 23/11/2026 (lot M2 : thème NativeWind et composants de base de l'app mobile).
 
 ## Lots
 
@@ -26,11 +26,33 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 - Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
   Plan fusionné (#15). « Go M1 » donné par Mouss le 23/11/2026.
 
-| Lot | Sujet                                  | État                    |
-| --- | -------------------------------------- | ----------------------- |
-| M0  | Sprint planning                        | ✅ fusionné #15 (+ #16) |
-| M1  | Squelette Expo + monorepo + tests + CI | 🔍 PR ouverte           |
-| M2  | Thème NativeWind + composants de base  | à faire                 |
+| Lot | Sujet                                  | État                                                             |
+| --- | -------------------------------------- | ---------------------------------------------------------------- |
+| M0  | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
+| M1  | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
+| M2  | Thème NativeWind + composants de base  | 🔍 PR ouverte                                                    |
+| M3  | Données mockées sur téléphone          | à faire                                                          |
+
+## Ce que contient le lot M2
+
+- **NativeWind 4** (Tailwind 3 pour React Native) : `tailwind.config.js`, `global.css`, Babel et Metro branchés.
+  On écrit `className="bg-primary rounded-xl"` comme sur le site.
+- **Preset partagé** `packages/config/tailwind/preset.cjs`, construit depuis `tokens.json` : mêmes noms de couleurs
+  que le site (`bg-cta`, `text-muted-foreground`, `bg-success-muted`…), rayons, tailles de texte, polices.
+  Le test `src/theme/preset.test.ts` compare chaque couleur à `theme.css` du site : impossible de les désynchroniser.
+- **Polices** Inter et Playfair Display (`@expo-google-fonts`), chargées dans `app/_layout.tsx`. Sur téléphone, chaque
+  graisse est une police : `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`.
+- **Composants** (`src/components/ui/`, variantes avec `cva` comme shadcn) : `Text`, `Heading` + `Accent`, `Button`
+  (cta, primary, secondary, outline, ghost, destructive ; `loading`, `disabled`), `Input` (libellé, aide, erreur),
+  `Card`, `Badge`, `Chip`, `Avatar`, `Rating`, `EmptyState`. **Logo Wenzee** (`src/components/brand/Logo.tsx`,
+  3 variantes, SVG recopiés de `/mnt/project-files/marque-wenzee/` dans `svgs.ts`). Icônes : `lucide-react-native`.
+- **Écran Catalogue** (`/catalogue`, bouton « Voir les composants » de l'écran de bienvenue) : tous les composants
+  pour relire le design sur un vrai téléphone. L'écran de bienvenue utilise maintenant le thème et le logo.
+- Accessibilité : rôles et libellés pour VoiceOver/TalkBack (bouton, titre, image, état choisi/désactivé/occupé),
+  erreurs de champ annoncées, cibles tactiles de 44 px minimum.
+- Tests : 61 tests mobiles (`cn.test.ts`, `preset.test.ts`, `ui.test.tsx`, `CatalogueScreen.test.tsx`,
+  `WelcomeScreen.test.tsx`). Limite : Jest ne calcule pas les styles NativeWind, on teste donc les classes des
+  variantes et le comportement ; le rendu se vérifie à l'œil dans le Catalogue.
 
 ## Ce que contient le lot M1
 

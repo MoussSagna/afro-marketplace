@@ -53,4 +53,7 @@
 - Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
 - Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
+- **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices :
+  `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`. Composants de base dans
+  `apps/mobile/src/components/ui/` ; on n'ajoute pas de couleur en dur (sauf les icônes lucide, qui prennent un code hexa).
 - Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.

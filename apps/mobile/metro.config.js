@@ -2,6 +2,7 @@
 // Depuis le SDK 52, getDefaultConfig détecte tout seul le monorepo pnpm
 // (il surveille la racine du dépôt et suit les liens vers packages/common).
 const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
 const path = require('node:path');
 
 const config = getDefaultConfig(__dirname);
@@ -27,4 +28,5 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return resolve(context, moduleName, platform);
 };
 
-module.exports = config;
+// NativeWind lit global.css et le thème Tailwind pour générer les styles.
+module.exports = withNativeWind(config, { input: './global.css' });

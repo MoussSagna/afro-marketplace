@@ -1,0 +1,52 @@
+import { fireEvent } from '@testing-library/react-native';
+import { renderRouter, screen } from 'expo-router/testing-library';
+import { WelcomeScreen } from '../welcome/WelcomeScreen';
+import { CatalogueScreen } from './CatalogueScreen';
+
+const routes = { index: WelcomeScreen, catalogue: CatalogueScreen };
+
+describe('Catalogue des composants (lot M2)', () => {
+  it("s'ouvre depuis l'écran de bienvenue et revient en arrière", async () => {
+    await renderRouter(routes, { initialUrl: '/' });
+
+    await fireEvent.press(screen.getByRole('link', { name: 'Voir les composants' }));
+    expect(await screen.findByText('Catalogue des composants')).toBeOnTheScreen();
+    expect(screen).toHavePathname('/catalogue');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Retour' }));
+    expect(await screen.findByText(/Bonjour/)).toBeOnTheScreen();
+    expect(screen).toHavePathname('/');
+  });
+
+  it('montre toutes les familles de composants', async () => {
+    await renderRouter(routes, { initialUrl: '/catalogue' });
+    for (const title of [
+      'Logo',
+      'Typographie',
+      'Boutons',
+      'Champs',
+      'Pastilles et badges',
+      'Cartes, avatars et notes',
+      'État vide',
+    ]) {
+      expect(screen.getByRole('header', { name: title })).toBeOnTheScreen();
+    }
+  });
+
+  it('coche et décoche une origine en touchant sa pastille', async () => {
+    await renderRouter(routes, { initialUrl: '/catalogue' });
+    const mali = screen.getByRole('button', { name: 'Mali' });
+    expect(mali).not.toBeSelected();
+    await fireEvent.press(mali);
+    expect(screen.getByRole('button', { name: 'Mali' })).toBeSelected();
+    await fireEvent.press(screen.getByRole('button', { name: 'Sénégal' }));
+    expect(screen.getByRole('button', { name: 'Sénégal' })).not.toBeSelected();
+  });
+
+  it("affiche l'exemple d'erreur de champ", async () => {
+    await renderRouter(routes, { initialUrl: '/catalogue' });
+    expect(
+      screen.getByText("Ce prestataire n'est pas disponible ce jour-là. Choisis une autre date."),
+    ).toBeOnTheScreen();
+  });
+});

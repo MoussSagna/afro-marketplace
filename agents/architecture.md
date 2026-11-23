@@ -105,7 +105,11 @@ Plan complet : [`sprint-mobile.md`](sprint-mobile.md).
 apps/mobile/
   app/                 Les écrans pour Expo Router : un fichier = une adresse (app/index.tsx = « / »)
   src/features/        Le code des écrans, par fonctionnalité (comme le web) ; app/ ne fait que les réexporter
-  src/theme.ts         Couleurs provisoires (NativeWind au lot M2)
+  src/components/ui/   Composants de base (Button, Input, Card…), équivalents des composants shadcn du site
+  src/components/brand/ Logo Wenzee (SVG)
+  src/lib/cn.ts        cn(), formatRating(), initials()
+  tailwind.config.js   NativeWind : preset partagé @afro/config/tailwind/preset.cjs (couleurs du site)
+  global.css           Point d'entrée de NativeWind (importé dans app/_layout.tsx)
   app.json             Nom, icône, identifiants de l'app (Expo)
   metro.config.js      Le bundler d'Expo, réglé pour le monorepo et un seul React
   jest.config.js       Tests (jest-expo)
@@ -113,3 +117,6 @@ apps/mobile/
 
 - Raccourci d'import `@/…` = `src/…` (dans `tsconfig.json` et `jest.config.js`).
 - L'app importe `@afro/common` comme le site. Les mocks sur téléphone arrivent au lot M3.
+- Styles : NativeWind (`className`). Les couleurs viennent de `packages/config/tailwind/tokens.json` via
+  `preset.cjs` ; le site lit les mêmes valeurs dans `theme.css` (un test vérifie qu'elles sont identiques).
+- Écran de travail `/catalogue` : tous les composants, pour relire le design sur téléphone.

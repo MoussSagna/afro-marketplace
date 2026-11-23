@@ -44,6 +44,8 @@ Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod
 - `vite build` génère aussi `dist/sitemap.xml` et `dist/robots.txt` ; `SITE_URL=https://… pnpm build` pour
   forcer l'adresse du site.
 - Zod 4 : `.omit/.pick/.extend` sont interdits sur un schéma qui a des `.refine` → garder les entités sans refine.
+- Mobile : `render`, `fireEvent.press` (Testing Library React Native 14) et `renderRouter` (Expo Router) sont
+  **asynchrones** : toujours `await`. Sans `await fireEvent…`, l'état ne se met pas à jour dans le test.
 - Mobile : `render` (Testing Library React Native 14) et `renderRouter` (Expo Router) sont **asynchrones** :
   toujours `await render(...)`, sinon « `render` function has not been called ».
 - Mobile : un paquet de `node_modules` écrit en ESM fait planter Jest (« Must use import to load ES Module ») ?
@@ -52,3 +54,10 @@ Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod
   `cd apps/mobile && CI=1 pnpm exec expo export --platform ios --output-dir /tmp/expo-out`.
 - Mobile : pour tester sur ton téléphone, il faut être sur le même réseau Wi-Fi que l'ordinateur
   (sinon `pnpm --filter @afro/mobile start -- --tunnel`).
+- Mobile : une `View` avec `accessibilityRole` n'est trouvée par `getByRole` (et lue par VoiceOver comme un seul
+  élément) que si elle a aussi `accessible`.
+- Mobile : NativeWind demande `react-native-css-interop` en dépendance directe de `apps/mobile` (pnpm isole les
+  paquets) ; sinon Metro échoue sur « react-native-css-interop/jsx-runtime could not be found ».
+- Mobile : `lucide-react-native` est lu en version CommonJS dans Jest (`moduleNameMapper` de `jest.config.js`).
+- Mobile : Jest ne calcule pas les styles NativeWind (`toHaveStyle` ne voit rien) : tester les classes des variantes
+  (`buttonVariants()`) et le comportement ; vérifier le rendu dans l'écran `/catalogue`.
