@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (changement de marque : Teranga devient Wenzee, étape 1).
+Dernière mise à jour : 23/11/2026 (changement de marque : Teranga devient Wenzee, étape 2, le logo).
 
 ## Lots
 
@@ -26,10 +26,14 @@ du thème ne changent pas. Mouss veut le changement **étape par étape**, une p
 
 | Étape | Contenu                                                                             | État       |
 | ----- | ----------------------------------------------------------------------------------- | ---------- |
-| 1     | Le nom : textes, titres des pages, SEO, emails provisoires (`wenzee.example`), docs | PR ouverte |
-| 2     | Le logo : en-tête, pied de page, favicon ; suppression de `teranga-icon.svg`        | à faire    |
+| 1     | Le nom : textes, titres des pages, SEO, emails provisoires (`wenzee.example`), docs | ✅ #12     |
+| 2     | Le logo : en-tête, pied de page, favicon ; suppression de `teranga-icon.svg`        | PR ouverte |
 
 Le préfixe des paquets `@afro/…` ne bouge pas pour l'instant (voir `questions-ouvertes.md`).
+
+Étape 2 : composant `Logo` (`apps/web/src/components/Logo.tsx`, image `public/wenzee-logo.svg`) dans l'en-tête
+(lien « Wenzee, accueil ») et le pied de page public ; favicon `public/wenzee-icon.svg`. Tests : `Brand.test.tsx`
+et une vérification du logo dans `e2e/discover.spec.ts`.
 
 ## Jalon A atteint (fin du lot 5)
 
@@ -202,7 +206,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
   résultats (P2) ; pages catégorie (P4) avec titre pour Google (`usePageMeta`) ; profil (P5) avec galerie + visionneuse,
   formules, calendrier de disponibilités en lecture, avis, politique d'annulation, bouton « Demander un devis ».
 - Transition douce entre les pages publiques (Motion, respecte « réduire les animations »).
-- Thème : tokens de la maquette v1 appliqués (`packages/config/tailwind/theme.css`, copie JSON dans `tokens.json`). En-tête = icône d'app + nom en Playfair tant que le logo n'est pas intégré (nom : Wenzee depuis le 23/11/2026). Maquette : `/mnt/project-files/maquette/` et https://claude.ai/artifact/9bkx1UDkFjBKFEKMGTrVGv.
+- Thème : tokens de la maquette v1 appliqués (`packages/config/tailwind/theme.css`, copie JSON dans `tokens.json`). Nom et logo Wenzee depuis le 23/11/2026 (voir « Changement de marque »). Maquette : `/mnt/project-files/maquette/` et https://claude.ai/artifact/9bkx1UDkFjBKFEKMGTrVGv.
 
 ## Ce que contient le lot 2
 
