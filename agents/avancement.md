@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (idée de style d'input façon Material UI notée dans `questions-ouvertes.md`, question 9).
+Dernière mise à jour : 23/11/2026 (sprint planning de l'app mobile proposé : [`sprint-mobile.md`](sprint-mobile.md)).
 
 ## Lots
 
@@ -18,16 +18,29 @@ Dernière mise à jour : 23/11/2026 (idée de style d'input façon Material UI n
 | 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | ✅ fusionné | #10 |
 | 10 – 11 | Supabase, emails + bêta → jalon C                                                   |             |     |
 
+## Application mobile (en préparation)
+
+Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supabase en dernier.
+
+- Maquette mobile validée « pour le moment » le 23/11/2026 : `/mnt/project-files/maquette-mobile/`.
+- Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
+  **En attente du feu vert de Mouss** avant M1.
+
+| Lot | Sujet                                  | État             |
+| --- | -------------------------------------- | ---------------- |
+| M0  | Sprint planning (cette doc)            | 🔍 PR ouverte    |
+| M1  | Squelette Expo + monorepo + tests + CI | en attente du go |
+
 ## Changement de marque : Wenzee (23/11/2026)
 
 Mouss a choisi le nom **Wenzee** (fin du nom provisoire « Teranga ») et le logo **piste 3 « Le lien »** : deux rubans
 imbriqués qui forment un W, un losange au-dessus. Les SVG sont dans `/mnt/project-files/marque-wenzee/`. Les couleurs
 du thème ne changent pas. Mouss veut le changement **étape par étape**, une petite PR à la fois :
 
-| Étape | Contenu                                                                             | État       |
-| ----- | ----------------------------------------------------------------------------------- | ---------- |
-| 1     | Le nom : textes, titres des pages, SEO, emails provisoires (`wenzee.example`), docs | ✅ #12     |
-| 2     | Le logo : en-tête, pied de page, favicon ; suppression de `teranga-icon.svg`        | PR ouverte |
+| Étape | Contenu                                                                             | État   |
+| ----- | ----------------------------------------------------------------------------------- | ------ |
+| 1     | Le nom : textes, titres des pages, SEO, emails provisoires (`wenzee.example`), docs | ✅ #12 |
+| 2     | Le logo : en-tête, pied de page, favicon ; suppression de `teranga-icon.svg`        | ✅ #13 |
 
 Le préfixe des paquets `@afro/…` ne bouge pas pour l'instant (voir `questions-ouvertes.md`).
 
