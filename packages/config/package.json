@@ -7,7 +7,9 @@
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/react.json": "./tsconfig/react.json",
     "./eslint": "./eslint/index.js",
-    "./tailwind/theme.css": "./tailwind/theme.css"
+    "./tailwind/theme.css": "./tailwind/theme.css",
+    "./tailwind/preset.cjs": "./tailwind/preset.cjs",
+    "./tailwind/tokens.json": "./tailwind/tokens.json"
   },
   "dependencies": {
     "@eslint/js": "^10.0.1",

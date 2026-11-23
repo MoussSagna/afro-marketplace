@@ -15,16 +15,16 @@ Statuts : ⏸️ reportée (un choix provisoire est en place) · ❓ à trancher
 La liste des actions **de ton côté**, dans l'ordre où elles arrivent. Mise à jour à chaque PR : quand une action
 est faite, elle est cochée avec la date.
 
-| Quand                          | Action                                                                                                          | Pourquoi                                                                   | Fait           |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------- |
-| 23/11/2026                     | Relire et fusionner la PR du plan mobile (`sprint-mobile.md`)                                                   | Rien n'est codé dans `apps/mobile` sans ton feu vert                       | ✅ 23/11 (#15) |
-| 23/11/2026                     | Dire « go M1 » pour lancer le premier lot de code                                                               | Le plan est validé, il reste ton feu vert                                  | ✅ 23/11       |
-| Avant de tester le lot M1      | Installer **Expo Go** sur ton téléphone (App Store ou Play Store, gratuit)                                      | Pour ouvrir l'app en scannant le QR code, sans build ni compte développeur | ☐              |
-| Après chaque lot mobile        | Ouvrir l'app dans Expo Go, tester ce que le lot annonce, puis fusionner la PR                                   | Une petite PR à la fois : le lot suivant part de ce qui est fusionné       | ☐              |
-| Au jalon M1 (après le lot M12) | Tester tout le parcours client sur ton téléphone et dire ce qui ne va pas                                       | Point d'arrêt prévu avant le mode prestataire                              | ☐              |
-| Avant le lot M16               | Décider des comptes développeur Apple (99 $/an) et Google Play (25 $ une fois), voir question n° 12             | Nécessaires pour un build de test hors Expo Go et pour publier             | ☐              |
-| Avant le back-end              | Créer le projet Supabase et me donner l'URL et la clé publique (jamais dans le dépôt ni dans un message public) | Vraie connexion, vrais emails (code OTP), stockage des photos              | ☐              |
-| Avant l'ouverture publique     | Faire relire les textes légaux par un juriste (question n° 6)                                                   | Obligatoire avant d'accueillir de vrais utilisateurs                       | ☐              |
+| Quand                          | Action                                                                                                          | Pourquoi                                                                   | Fait                                  |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------- |
+| 23/11/2026                     | Relire et fusionner la PR du plan mobile (`sprint-mobile.md`)                                                   | Rien n'est codé dans `apps/mobile` sans ton feu vert                       | ✅ 23/11 (#15)                        |
+| 23/11/2026                     | Dire « go M1 » pour lancer le premier lot de code                                                               | Le plan est validé, il reste ton feu vert                                  | ✅ 23/11                              |
+| Avant de tester le lot M1      | Installer **Expo Go** sur ton téléphone (App Store ou Play Store, gratuit)                                      | Pour ouvrir l'app en scannant le QR code, sans build ni compte développeur | ✅ 23/11 (M1 lancé sur son téléphone) |
+| Après chaque lot mobile        | Ouvrir l'app dans Expo Go, tester ce que le lot annonce, puis fusionner la PR                                   | Une petite PR à la fois : le lot suivant part de ce qui est fusionné       | ☐                                     |
+| Au jalon M1 (après le lot M12) | Tester tout le parcours client sur ton téléphone et dire ce qui ne va pas                                       | Point d'arrêt prévu avant le mode prestataire                              | ☐                                     |
+| Avant le lot M16               | Décider des comptes développeur Apple (99 $/an) et Google Play (25 $ une fois), voir question n° 12             | Nécessaires pour un build de test hors Expo Go et pour publier             | ☐                                     |
+| Avant le back-end              | Créer le projet Supabase et me donner l'URL et la clé publique (jamais dans le dépôt ni dans un message public) | Vraie connexion, vrais emails (code OTP), stockage des photos              | ☐                                     |
+| Avant l'ouverture publique     | Faire relire les textes légaux par un juriste (question n° 6)                                                   | Obligatoire avant d'accueillir de vrais utilisateurs                       | ☐                                     |
 
 ## Ouvertes
 
