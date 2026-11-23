@@ -4,19 +4,19 @@ Dernière mise à jour : 22/11/2026 (lot 9, compte, pages de contenu, SEO, acces
 
 ## Lots
 
-| Lot     | Sujet                                                                               | État                    | PR           |
-| ------- | ----------------------------------------------------------------------------------- | ----------------------- | ------------ |
-| 0       | Socle du monorepo + CI                                                              | ✅ fusionné             | #1           |
-| 1       | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné             | #2           |
-| 2       | Design system, layouts, connexion de démo                                           | ✅ fusionné             | #3           |
-| 3       | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné             | #4           |
-| 4       | Demander un devis + messagerie                                                      | ✅ fusionné             | #5           |
-| 5       | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné             | #6           |
-| 6       | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné             | #7           |
-| 7       | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné             | #8           |
-| 8       | Admin minimal : profils à valider, signalements, utilisateurs                       | ✅ fusionné             | #9           |
-| 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | 🔍 PR ouverte, à relire | PR « Lot 9 » |
-| 10 – 11 | Supabase, emails + bêta → jalon C                                                   |                         |              |
+| Lot     | Sujet                                                                               | État        | PR  |
+| ------- | ----------------------------------------------------------------------------------- | ----------- | --- |
+| 0       | Socle du monorepo + CI                                                              | ✅ fusionné | #1  |
+| 1       | Cœur partagé : schémas, règles, base mockée, dossier `agents/`                      | ✅ fusionné | #2  |
+| 2       | Design system, layouts, connexion de démo                                           | ✅ fusionné | #3  |
+| 3       | Découvrir : accueil, recherche, catégories, profil                                  | ✅ fusionné | #4  |
+| 4       | Demander un devis + messagerie                                                      | ✅ fusionné | #5  |
+| 5       | Devis et réservation → **jalon A** (démo cliquable, s'arrêter pour que Mouss teste) | ✅ fusionné | #6  |
+| 6       | Avis : laisser un avis (C6), avis reçus (S8)                                        | ✅ fusionné | #7  |
+| 7       | Devenir prestataire (P6), onboarding en étapes (S1), modifier mon profil (S7)       | ✅ fusionné | #8  |
+| 8       | Admin minimal : profils à valider, signalements, utilisateurs                       | ✅ fusionné | #9  |
+| 9       | Mon compte (C8), pages de contenu (P7), SEO, accessibilité → **jalon B**            | ✅ fusionné | #10 |
+| 10 – 11 | Supabase, emails + bêta → jalon C                                                   |             |     |
 
 ## Jalon A atteint (fin du lot 5)
 
@@ -27,7 +27,8 @@ agenda. Mouss a demandé de continuer (« passe à la suite ») : on enchaîne l
 
 Tous les écrans du MVP existent (plus aucune page « Bientôt disponible »), testés, avec une préview Vercel par PR.
 Les 8 parcours Playwright de l'étape 3 passent sur ordinateur et sur mobile, plus la page compte et l'audit
-d'accessibilité : 50 tests Playwright verts. Prochaine étape : le lot 10 (Supabase, vrai back-end).
+d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application mobile** (décision de Mouss le 22/11/2026, avant le back-end) ; le lot 10
+(Supabase) est reporté à après.
 
 ## Ce que contient le lot 9
 
