@@ -1,0 +1,8 @@
+# Expo
+.expo/
+expo-env.d.ts.bak
+web-build/
+
+# Dossiers natifs générés par « expo prebuild » (on ne les garde pas, Expo les recrée)
+ios/
+android/

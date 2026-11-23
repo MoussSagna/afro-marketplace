@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Wenzee",
+    "slug": "wenzee",
+    "scheme": "wenzee",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FDF7F0",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.wenzee.mobile"
+    },
+    "android": {
+      "package": "app.wenzee.mobile"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

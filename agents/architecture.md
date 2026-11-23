@@ -9,6 +9,7 @@ pnpm workspaces + Turborepo.
 
 ```
 apps/web/           Le site (React + Vite)
+apps/mobile/        L'app mobile (Expo + Expo Router), voir sprint-mobile.md
 packages/common/    Code partagé web + mobile, SANS composant visuel (@afro/common)
 packages/config/    TypeScript, ESLint, thème Tailwind partagés (@afro/config)
 agents/             Cette documentation
@@ -95,3 +96,20 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/test/` : `setup.ts`, `server.ts` (MSW Node), `renderRoute.tsx`.
 - `e2e/` : Playwright (projets `desktop` et `mobile`).
 - MSW actif si `VITE_USE_MOCKS=true` (`.env.development`, `.env.e2e`).
+
+## `apps/mobile` (depuis le lot M1)
+
+Plan complet : [`sprint-mobile.md`](sprint-mobile.md).
+
+```
+apps/mobile/
+  app/                 Les écrans pour Expo Router : un fichier = une adresse (app/index.tsx = « / »)
+  src/features/        Le code des écrans, par fonctionnalité (comme le web) ; app/ ne fait que les réexporter
+  src/theme.ts         Couleurs provisoires (NativeWind au lot M2)
+  app.json             Nom, icône, identifiants de l'app (Expo)
+  metro.config.js      Le bundler d'Expo, réglé pour le monorepo et un seul React
+  jest.config.js       Tests (jest-expo)
+```
+
+- Raccourci d'import `@/…` = `src/…` (dans `tsconfig.json` et `jest.config.js`).
+- L'app importe `@afro/common` comme le site. Les mocks sur téléphone arrivent au lot M3.

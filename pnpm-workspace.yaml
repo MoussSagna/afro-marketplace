@@ -1,3 +1,9 @@
 packages:
   - apps/*
   - packages/*
+
+# Un seul React dans tout le dépôt. Expo SDK 58 exige React 19.3.0 exactement :
+# le site, packages/common et l'app mobile utilisent donc tous cette version.
+overrides:
+  react: 19.3.0
+  react-dom: 19.3.0
