@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { AppHeader } from '@/components/layout/AppHeader';
+import { Logo } from '@/components/Logo';
 
 const FOOTER_LINKS = [
   { to: '/comment-ca-marche', label: 'Comment ça marche' },
@@ -29,6 +30,7 @@ export function PublicLayout() {
       </motion.main>
       <footer className="border-t py-8 text-sm text-muted-foreground">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4">
+          <Logo className="h-7" />
           <nav aria-label="Liens utiles">
             <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2">
               {FOOTER_LINKS.map((link) => (

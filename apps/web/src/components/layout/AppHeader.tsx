@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router';
+import { Logo } from '@/components/Logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SPACE_HOME, useSessionStore } from '@/stores/session';
@@ -25,13 +26,8 @@ export function AppHeader({ spaceLabel, children }: AppHeaderProps) {
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4">
         <div className="flex items-center gap-2">
-          {/* Wenzee : icône provisoire + nom, le logo SVG arrive à l’étape 2 du changement de marque. */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-display text-xl font-bold text-primary"
-          >
-            <img src="/teranga-icon.svg" alt="" className="size-8" />
-            Wenzee
+          <Link to="/" aria-label="Wenzee, accueil" className="flex items-center rounded-md">
+            <Logo className="h-8 sm:h-9" />
           </Link>
           {spaceLabel && (
             <Badge variant="secondary" className="hidden sm:inline-flex">

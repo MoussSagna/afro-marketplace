@@ -50,4 +50,5 @@
 - Survols et éléments actifs de menu : `bg-muted`, pas `bg-accent` (le soleil est réservé aux pastilles).
 - Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
+- Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
 - Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.

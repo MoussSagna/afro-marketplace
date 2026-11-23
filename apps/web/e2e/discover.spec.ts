@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('un visiteur cherche, filtre et ouvre un profil', async ({ page, isMobile }) => {
   await page.goto('/');
+  await expect(page.getByRole('link', { name: 'Wenzee, accueil' })).toBeVisible();
 
   // Accueil : recherche « Quoi ? »
   const search = page.getByRole('search', { name: 'Rechercher un prestataire' });
