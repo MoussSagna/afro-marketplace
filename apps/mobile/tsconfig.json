@@ -1,0 +1,10 @@
+{
+  "extends": "@afro/config/tsconfig/react.json",
+  "compilerOptions": {
+    "types": ["jest"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["app", "src", "jest.setup.ts", "expo-env.d.ts", ".expo/types/**/*.ts"]
+}

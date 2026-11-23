@@ -1,6 +1,6 @@
 # afro-marketplace
 
-Marketplace de prestataires afro pour les événements (traiteurs, danse, shows, speakers, DJ…), en Île-de-France d'abord. Nom de marque provisoire.
+**Wenzee** : marketplace de prestataires afro pour les événements (traiteurs, danse, shows, speakers, DJ…), en Île-de-France d'abord.
 
 ## Démarrer
 
@@ -13,14 +13,15 @@ pnpm dev          # http://localhost:5173, avec les données mockées
 
 ## Commandes utiles
 
-| Commande        | Ce qu'elle fait                                                  |
-| --------------- | ---------------------------------------------------------------- |
-| `pnpm dev`      | Lance le site web en développement                               |
-| `pnpm check`    | Lint + vérification des types + tests unitaires et fonctionnels  |
-| `pnpm test`     | Tests Vitest de tous les paquets                                 |
-| `pnpm test:e2e` | Tests Playwright (construit le site puis le teste dans Chromium) |
-| `pnpm build`    | Construit le site pour la production                             |
-| `pnpm format`   | Met en forme tout le code avec Prettier                          |
+| Commande                           | Ce qu'elle fait                                                  |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| `pnpm dev`                         | Lance le site web en développement                               |
+| `pnpm check`                       | Lint + vérification des types + tests unitaires et fonctionnels  |
+| `pnpm test`                        | Tests Vitest de tous les paquets                                 |
+| `pnpm test:e2e`                    | Tests Playwright (construit le site puis le teste dans Chromium) |
+| `pnpm build`                       | Construit le site pour la production                             |
+| `pnpm format`                      | Met en forme tout le code avec Prettier                          |
+| `pnpm --filter @afro/mobile start` | Lance l'app mobile (QR code à scanner avec Expo Go)              |
 
 Dans un seul paquet : `pnpm --filter @afro/web test:watch`.
 
@@ -30,6 +31,7 @@ Première fois avec Playwright sur ta machine : `pnpm --filter @afro/web exec pl
 
 ```
 apps/
+  mobile/              App mobile : Expo, Expo Router (NativeWind et Moti arrivent avec les lots M2 et M4)
   web/                 Site web : React, Vite, Tailwind, shadcn/ui, Motion, React Router, TanStack Query
     src/app/           Démarrage : providers, routes, layouts
     src/features/      Un dossier par fonctionnalité (search, quote-requests, messaging…)
@@ -47,7 +49,7 @@ packages/
   config/              Réglages partagés : TypeScript, ESLint, thème Tailwind
 ```
 
-L'app mobile (Expo) viendra dans `apps/mobile` et réutilisera `packages/common`.
+L'app mobile (`apps/mobile`) réutilise `packages/common`. Plan : `agents/sprint-mobile.md`.
 
 ## Données mockées
 

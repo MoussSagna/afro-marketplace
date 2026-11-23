@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (sprint planning de l'app mobile proposé : [`sprint-mobile.md`](sprint-mobile.md)).
+Dernière mise à jour : 23/11/2026 (lot M1 : squelette de l'app mobile).
 
 ## Lots
 
@@ -24,12 +24,28 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 
 - Maquette mobile validée « pour le moment » le 23/11/2026 : `/mnt/project-files/maquette-mobile/`.
 - Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
-  Plan fusionné (#15). **En attente du « go M1 » de Mouss.**
+  Plan fusionné (#15). « Go M1 » donné par Mouss le 23/11/2026.
 
-| Lot | Sujet                                  | État             |
-| --- | -------------------------------------- | ---------------- |
-| M0  | Sprint planning (cette doc)            | 🔍 PR ouverte    |
-| M1  | Squelette Expo + monorepo + tests + CI | en attente du go |
+| Lot | Sujet                                  | État                    |
+| --- | -------------------------------------- | ----------------------- |
+| M0  | Sprint planning                        | ✅ fusionné #15 (+ #16) |
+| M1  | Squelette Expo + monorepo + tests + CI | 🔍 PR ouverte           |
+| M2  | Thème NativeWind + composants de base  | à faire                 |
+
+## Ce que contient le lot M1
+
+- `apps/mobile` (`@afro/mobile`) : Expo SDK 58, Expo Router (`app/_layout.tsx`, `app/index.tsx`), TypeScript strict
+  (config `react.json` partagée), ESLint partagé, nom « Wenzee » et identifiant `app.wenzee.mobile` dans `app.json`.
+- Écran de bienvenue provisoire (`src/features/welcome/WelcomeScreen.tsx`) : il affiche un prix formaté par
+  `@afro/common` pour prouver que le code partagé est bien branché. Couleurs provisoires dans `src/theme.ts`
+  (remplacées par NativeWind au lot M2).
+- **Un seul React** dans le dépôt : Expo 58 exige React 19.3.0 exactement. `pnpm-workspace.yaml` force
+  `react` et `react-dom` en 19.3.0 (`overrides`) : le site passe de 19.3.1 à 19.3.0 (correctif mineur, tous les
+  tests restent verts). En plus, `metro.config.js` résout toujours `react`, `react-native` et
+  `@tanstack/react-query` depuis `apps/mobile`. Vérifié sur le bundle iOS : une seule copie de chacun.
+- Tests : jest-expo + Testing Library React Native (`jest.config.js`, `jest.setup.ts`) ;
+  `WelcomeScreen.test.tsx` (titre, prix formaté par `common`, route « / » avec `renderRouter`).
+- La CI lance déjà `lint`, `typecheck` et `test` de tous les paquets : le mobile y est inclus sans changement.
 
 ## Changement de marque : Wenzee (23/11/2026)
 
