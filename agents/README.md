@@ -19,6 +19,7 @@ Il est lu en premier : `AGENTS.md` et `CLAUDE.md` à la racine y renvoient.
 | [`regles-metier.md`](regles-metier.md)           | Les 9 règles métier et la fonction qui implémente chacune                         | Avant de toucher à `rules/` ou aux handlers     |
 | [`donnees-demo.md`](donnees-demo.md)             | Comptes de démo, scénarios du seed, comment réinitialiser                         | Pour tester ou écrire un test                   |
 | [`commandes.md`](commandes.md)                   | Commandes utiles et pièges de l'environnement                                     | Pour lancer, tester, déboguer                   |
+| [`sprint-mobile.md`](sprint-mobile.md)           | Plan de l'app mobile : sprints, lots M0 → M16, stack et tests                     | Avant de toucher à `apps/mobile`                |
 | [`conception/`](conception/)                     | Les 4 documents de conception validés (parcours, modèle, architecture, découpage) | Pour le détail d'un écran ou d'une entité       |
 
 ## Qui est Mouss
