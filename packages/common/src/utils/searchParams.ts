@@ -1,4 +1,4 @@
-import type { ProviderSearchFilters, ProviderSort } from '@afro/common';
+import type { ProviderSearchFilters, ProviderSort } from '../types';
 
 /*
  * Les filtres de recherche vivent dans l'ADRESSE de la page :
@@ -8,6 +8,7 @@ import type { ProviderSearchFilters, ProviderSort } from '@afro/common';
  *
  * Les noms sont en français (ce sont des adresses visibles), les montants en euros.
  * Ces deux fonctions traduisent dans les deux sens, et ignorent les valeurs invalides.
+ * Partagées par le site (?categorie=… dans la barre d'adresse) et l'app (paramètres d'Expo Router).
  */
 
 const SORT_TO_PARAM: Record<ProviderSort, string> = {

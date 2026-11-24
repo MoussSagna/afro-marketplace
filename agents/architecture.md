@@ -116,6 +116,8 @@ apps/mobile/
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
   src/features/home/   Accueil (bannière, catégories, « À la une »)
+  src/features/search/ Recherche (M7) : SearchPill, CategoryBar, SearchResultCard, SearchWizard (Quoi/Où/Quand/Invités),
+                       FiltersSheet + BudgetSlider, Calendar, useSearchFilters (filtres ↔ adresse de l'écran)
   src/features/providers/ ProviderCard (carte prestataire) et priceLabel
   src/components/QueryState.tsx Chargement → erreur (« Réessayer ») → contenu
   src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth

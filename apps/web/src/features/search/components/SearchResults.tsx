@@ -3,6 +3,7 @@ import {
   useProviderSearch,
   type ProviderSearchFilters,
   type ProviderSort,
+  countActiveFilters,
 } from '@afro/common';
 import { SearchX, SlidersHorizontal } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -12,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { NativeSelect } from '@/components/ui/native-select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { countActiveFilters } from '../lib/searchParams';
 import { ProviderCard } from './ProviderCard';
 import { SearchFilters } from './SearchFilters';
 

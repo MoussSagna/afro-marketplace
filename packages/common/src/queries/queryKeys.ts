@@ -18,6 +18,9 @@ export const queryKeys = {
     featured: () => [...queryKeys.providers.all, 'featured'] as const,
     search: (filters: ProviderSearchFilters) =>
       [...queryKeys.providers.all, 'search', filters] as const,
+    /** La même recherche, chargée page après page (liste qui défile, sur mobile). */
+    searchPages: (filters: ProviderSearchFilters) =>
+      [...queryKeys.providers.all, 'search-pages', filters] as const,
     detail: (slug: string) => [...queryKeys.providers.all, 'detail', slug] as const,
     reviews: (providerId: string) => [...queryKeys.providers.all, 'reviews', providerId] as const,
     unavailableDates: (providerId: string, range: { from: string; to: string }) =>

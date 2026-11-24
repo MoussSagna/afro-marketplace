@@ -3,3 +3,4 @@ export * from './formatPrice';
 export * from './labels';
 export * from './formatDate';
 export * from './slugify';
+export * from './searchParams';

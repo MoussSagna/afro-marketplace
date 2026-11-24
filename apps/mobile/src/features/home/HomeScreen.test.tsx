@@ -85,7 +85,10 @@ describe('Accueil (lot M6)', () => {
     await fireEvent.press(await screen.findByRole('button', { name: beauty.name }));
     expect(screen).toHavePathname('/recherche');
     expect(screen).toHaveSearchParams({ categorie: 'beaute' });
-    expect(await screen.findByText(`Catégorie : ${beauty.name}`)).toBeOnTheScreen();
+    // La Recherche s'ouvre avec la catégorie déjà choisie dans sa rangée de catégories.
+    expect(
+      await screen.findByRole('button', { name: beauty.name, selected: true }),
+    ).toBeOnTheScreen();
     expect(screen.getByRole('tab', { name: 'Recherche' })).toBeSelected();
   });
 
@@ -93,6 +96,7 @@ describe('Accueil (lot M6)', () => {
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(demoApi().api) });
     await fireEvent.press(screen.getByRole('search', { name: 'Rechercher un prestataire' }));
     expect(screen).toHavePathname('/recherche');
-    expect(screen.queryByText(/Catégorie :/)).toBeNull();
+    expect(await screen.findByRole('search', { name: /^Que cherches-tu \?/ })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Tout', selected: true })).toBeOnTheScreen();
   });
 });

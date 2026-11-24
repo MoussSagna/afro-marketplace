@@ -1,4 +1,4 @@
-import { useCategories } from '@afro/common';
+import { useCategories, paramsFromFilters } from '@afro/common';
 import { Search } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect } from '@/components/ui/native-select';
-import { paramsFromFilters } from '../lib/searchParams';
 
 /** La recherche « Quoi / Où / Quand » de l'accueil (P1) : elle mène à la page de résultats. */
 export function HeroSearchForm() {
