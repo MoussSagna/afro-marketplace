@@ -10,7 +10,7 @@ import {
 } from '../../rules';
 import { mockDataSchema } from '../data';
 import { buildSeed } from './buildSeed';
-import { DEMO_CLIENT_ID, DEMO_PROVIDER_ID, seedDemoAccounts } from './people';
+import { DEMO_CLIENT_ID, DEMO_PASSWORD, DEMO_PROVIDER_ID, seedDemoAccounts } from './people';
 
 const NOW = new Date('2026-11-22T12:00:00Z');
 const TODAY = '2026-11-22';
@@ -43,9 +43,17 @@ describe('le jeu de données de démo', () => {
 
   it('a des identifiants uniques dans chaque table', () => {
     for (const [table, rows] of Object.entries(data)) {
-      const ids = (rows as { id: string }[]).map((row) => row.id);
+      // Les tables de connexion (M5) sont repérées par l'utilisateur ou l'email, pas par un id.
+      const ids = (rows as { id?: string; userId?: string; email?: string }[]).map(
+        (row) => row.id ?? row.userId ?? row.email,
+      );
       expect(new Set(ids).size, table).toBe(ids.length);
     }
+  });
+
+  it('donne le mot de passe de démo à chaque compte (connexion par email)', () => {
+    expect(data.credentials).toHaveLength(data.users.length);
+    expect(new Set(data.credentials.map((c) => c.password))).toEqual(new Set([DEMO_PASSWORD]));
   });
 
   it('a des slugs de prestataires uniques', () => {

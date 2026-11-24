@@ -29,6 +29,7 @@ import {
   reviewSchema,
   reviewWithAuthorSchema,
   sessionSchema,
+  signUpResultSchema,
   unavailabilitySchema,
   userSchema,
 } from '../schemas';
@@ -112,6 +113,17 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
     getMe: () => get('/me', userSchema),
     updateMe: (input) => request('PATCH', '/me', userSchema, input),
     deleteMe: () => request('DELETE', '/me', noContent),
+
+    // Connexion et inscription par email
+    signUp: (input) => request('POST', '/auth/sign-up', signUpResultSchema, input),
+    verifyOtp: (input) =>
+      request('POST', '/auth/verify-otp', sessionSchema.nullish(), input).then(
+        (session) => session ?? null,
+      ),
+    resendOtp: (input) => request('POST', '/auth/resend-otp', noContent, input),
+    signIn: (input) => request('POST', '/auth/sign-in', sessionSchema, input),
+    forgotPassword: (input) => request('POST', '/auth/forgot-password', noContent, input),
+    resetPassword: (input) => request('POST', '/auth/reset-password', sessionSchema, input),
 
     // Catalogue et recherche
     listCategories: () => get('/categories', z.array(categorySchema)),

@@ -94,6 +94,12 @@ export const seedPeople: SeedPerson[] = [
   },
 ];
 
+/**
+ * Le mot de passe de TOUS les comptes du jeu de démo (connexion par email, lot M5).
+ * Ex. : aissatou.ndiaye@example.com / Wenzee2026.
+ */
+export const DEMO_PASSWORD = 'Wenzee2026';
+
 /** Les comptes proposés sur la page de connexion de démo (lot 2). */
 export const seedDemoAccounts: DemoAccount[] = [
   {

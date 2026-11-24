@@ -38,6 +38,25 @@ export const mockDataSchema = z.object({
   reviews: z.array(reviewSchema),
   reports: z.array(reportSchema),
   moderationActions: z.array(moderationActionSchema),
+  /*
+   * Connexion par email (lot M5), SIMULÉE : en démo, le mot de passe est gardé en clair
+   * dans la base du téléphone ou du navigateur. Le vrai back-end (Supabase Auth) ne le fera jamais.
+   * `.default([])` : une ancienne sauvegarde sans ces tables reste lisible.
+   */
+  credentials: z
+    .array(z.object({ userId: z.string().min(1), email: z.string(), password: z.string() }))
+    .default([]),
+  /** Inscriptions en attente du code de vérification. */
+  pendingSignUps: z
+    .array(
+      z.object({
+        email: z.string(),
+        firstName: z.string(),
+        password: z.string(),
+        createdAt: z.string(),
+      }),
+    )
+    .default([]),
 });
 
 export type MockData = z.infer<typeof mockDataSchema>;

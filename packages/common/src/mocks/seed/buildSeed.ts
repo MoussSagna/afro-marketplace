@@ -26,7 +26,13 @@ import { formatPrice } from '../../utils/formatPrice';
 import { addDays, parseIsoDate, toIsoDate } from '../../utils/dates';
 import type { MockData } from '../data';
 import { seedCategories, seedCulturalOrigins } from './catalogue';
-import { DEMO_ADMIN_ID, DEMO_CLIENT_ID, DEMO_PROVIDER_ID, seedPeople } from './people';
+import {
+  DEMO_ADMIN_ID,
+  DEMO_CLIENT_ID,
+  DEMO_PASSWORD,
+  DEMO_PROVIDER_ID,
+  seedPeople,
+} from './people';
 import { seedProviderDefinitions } from './providers';
 
 /*
@@ -73,6 +79,8 @@ export function buildSeed(now: Date): MockData {
     reviews: [],
     reports: [],
     moderationActions: [],
+    credentials: [],
+    pendingSignUps: [],
   };
 
   // ---------------------------------------------------------------- Comptes
@@ -839,6 +847,14 @@ export function buildSeed(now: Date): MockData {
     conversation.unreadCountProvider = unreadFrom(conversation.clientId);
     conversation.updatedAt = conversation.lastMessageAt;
   }
+
+  // ------------------------------------------------- Connexion par email (M5)
+  // Tous les comptes de démo ont le même mot de passe (DEMO_PASSWORD).
+  data.credentials = data.users.map((user) => ({
+    userId: user.id,
+    email: user.email.toLowerCase(),
+    password: DEMO_PASSWORD,
+  }));
 
   return data;
 }

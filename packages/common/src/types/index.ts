@@ -20,6 +20,16 @@ export type PublicUser = z.infer<typeof s.publicUserSchema>;
 export type DemoAccount = z.infer<typeof s.demoAccountSchema>;
 export type Session = z.infer<typeof s.sessionSchema>;
 
+// Connexion et inscription (simulées jusqu'au back-end)
+export type OtpPurpose = z.infer<typeof s.otpPurposeSchema>;
+export type SignUpInput = z.input<typeof s.signUpInputSchema>;
+export type SignUpResult = z.infer<typeof s.signUpResultSchema>;
+export type VerifyOtpInput = z.input<typeof s.verifyOtpInputSchema>;
+export type ResendOtpInput = z.input<typeof s.resendOtpInputSchema>;
+export type SignInInput = z.input<typeof s.signInInputSchema>;
+export type ForgotPasswordInput = z.input<typeof s.forgotPasswordInputSchema>;
+export type ResetPasswordInput = z.input<typeof s.resetPasswordInputSchema>;
+
 export type ProviderStatus = z.infer<typeof s.providerStatusSchema>;
 export type LegalType = z.infer<typeof s.legalTypeSchema>;
 export type CancellationPolicy = z.infer<typeof s.cancellationPolicySchema>;
