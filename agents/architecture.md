@@ -117,8 +117,13 @@ apps/mobile/
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
   src/features/home/   Accueil (bannière, catégories, « À la une »)
   src/features/search/ Recherche (M7) : SearchPill, CategoryBar, SearchResultCard, SearchWizard (Quoi/Où/Quand/Invités),
-                       FiltersSheet + BudgetSlider, Calendar, useSearchFilters (filtres ↔ adresse de l'écran)
-  src/features/providers/ ProviderCard (carte prestataire) et priceLabel
+                       FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse de l'écran)
+  src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
+                       onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
+  src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
+  src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
+  src/components/FullScreenModal.tsx Fenêtre plein écran (Modal) qui respecte l'encoche : à utiliser pour tout plein écran
+  src/lib/dates.ts     Dates des calendriers (isoDay, longDay, monthGrid, monthRange…)
   src/components/QueryState.tsx Chargement → erreur (« Réessayer ») → contenu
   src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth
   src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus

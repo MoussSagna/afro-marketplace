@@ -2,7 +2,7 @@ import { useCategories, type ProviderSearchFilters } from '@afro/common';
 import { useTranslation } from 'react-i18next';
 import { useCategoryName } from '@/i18n/useCategoryName';
 import { useLanguage } from '@/i18n/useLanguage';
-import { shortDay } from './searchDates';
+import { shortDay } from '@/lib/dates';
 
 /** Ce que résume la pilule : « Nourriture · Paris » et « sam. 14 déc. · 80 invités ». */
 export function useSearchSummary(filters: ProviderSearchFilters) {

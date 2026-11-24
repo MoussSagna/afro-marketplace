@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M7 : recherche façon Airbnb, puis correctif des écrans plein écran).
+Dernière mise à jour : 24/11/2026 (lot M8 : profil prestataire).
 
 ## Lots
 
@@ -39,7 +39,36 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
 | M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
 | M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
-| M7  | Recherche façon Airbnb                 | ✅ #28 (correctifs après test de Mouss en cours)                 |
+| M7  | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
+| M8  | Profil prestataire (P5)                | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M8
+
+- **Le profil d'un prestataire** (maquette P5), à l'adresse `/prestataires/[slug]` comme sur le site
+  (`app/prestataires/[slug]/index.tsx`, écran dans `src/features/provider-profile/`). On l'ouvre en touchant une carte
+  de l'Accueil (« À la une ») ou de la Recherche (`profileHref`).
+  - `ProfileGallery` : les photos (couverture puis galerie) défilent de côté, compteur « 1 / 8 photos », bouton Retour.
+    Toucher une photo l'ouvre en grand dans une visionneuse plein écran sur fond noir.
+  - En-tête : « Vérifié », origines, nom, note, nombre d'avis, ville et rayon de déplacement.
+  - Quatre onglets : **Formules** (formules actives avec prix, invités, durée, puis « À propos »), **Avis** (note,
+    avis avec date et réponse du prestataire), **Dispos** (le `Calendar` en lecture seule : jours pris barrés, lus
+    « indisponible » par VoiceOver ; on change de mois et les dispos se rechargent), **Infos** (zone, langues,
+    origines, temps de réponse, statut, politique d'annulation, « Signaler ce profil »).
+  - En bas, toujours visible : « À partir de … » et **« Demander un devis »**. Sans compte, le bouton ouvre la
+    connexion en retenant le profil (on y revient après). Connecté, il ouvre `/prestataires/[slug]/demande`, un écran
+    « Bientôt disponible » en attendant le formulaire du lot M9.
+  - **Signalement** : un motif (arnaque, contenu inapproprié, spam, autre), des détails facultatifs, puis l'envoi
+    (`useCreateReport`, il arrive dans l'admin du site). Il faut être connecté.
+  - Chargement avec le loader Wenzee ; « Profil introuvable » pour une adresse inconnue.
+- Textes : nouvelles clés `profile.*`, `calendar.*` et `languages.*` (noms des langues) dans `@afro/common/i18n`.
+  Les prix des formules, les invités, la durée et la politique d'annulation sont traduits dans `profileText.ts`
+  (mêmes règles que le site, qui garde ses textes français dans `common`).
+- Déplacés pour être partagés : `Calendar` → `src/components/`, les dates → `src/lib/dates.ts`.
+- **Écarts avec la maquette** : pas de cœur (favoris C7, après le MVP) ni de bouton Partager (il faudra l'adresse
+  publique du site pour partager un lien).
+- Tests : 223 tests mobiles. `profile.test.tsx` couvre le chargement et les formules, la visionneuse, les avis, les
+  dispos, les infos, le bouton devis sans compte puis connecté, le signalement, le profil introuvable et l'ouverture
+  depuis une carte de la Recherche. `profileText.test.ts` et `dates.test.ts` pour les petites fonctions.
 
 ## Ce que contient le lot M7
 

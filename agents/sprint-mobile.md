@@ -189,7 +189,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 - Les filtres sont gardés dans l'adresse de l'écran (comme `?categorie=` sur le site) : le bouton retour les retrouve.
 - **Tests** : conversion filtres ↔ paramètres (unitaire), chaque filtre change les résultats (fonctionnel).
 
-### M8 · Profil prestataire (P5)
+### M8 · Profil prestataire (P5) · **fait (voir avancement.md)**
 
 - Galerie qu'on fait glisser + visionneuse plein écran, badges, note, onglets Formules / Avis / Dispos / Infos,
   calendrier des disponibilités, bouton « Demander un devis » toujours visible en bas, signalement.

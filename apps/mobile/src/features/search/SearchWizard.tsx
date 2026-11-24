@@ -12,9 +12,9 @@ import { useLanguage } from '@/i18n/useLanguage';
 import { mainCategories } from '@/lib/categories';
 import { cn } from '@/lib/cn';
 import { useThemeColors } from '@/theme/useTheme';
-import { Calendar } from './Calendar';
+import { Calendar } from '@/components/Calendar';
 import { CATEGORY_PHOTOS } from './categoryPhotos';
-import { shortDay } from './searchDates';
+import { shortDay } from '@/lib/dates';
 
 /** Ce que remplit la recherche plein écran (les autres filtres sont dans le panneau Filtres). */
 export type SearchDraft = Pick<

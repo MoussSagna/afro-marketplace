@@ -1,10 +1,12 @@
 import type { ProviderCard } from '@afro/common';
 import { BadgeCheck } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, View } from 'react-native';
 import { Photo, Rating, Text } from '@/components/ui';
 import { useThemeColors } from '@/theme/useTheme';
 import { priceLabel } from '../providers/priceLabel';
+import { profileHref } from '../providers/profileHref';
 
 type SearchResultCardProps = {
   provider: ProviderCard;
@@ -15,18 +17,20 @@ type SearchResultCardProps = {
 /**
  * Une grande carte de résultat (maquette section 8, façon Airbnb) : grande photo arrondie,
  * pastille « Vérifié », puis nom et note, catégorie et ville, et le prix « dès … ».
- * Le profil complet (lot M8) s'ouvrira au toucher.
+ * Au toucher, elle ouvre le profil complet.
  */
 export function SearchResultCard({ provider, categoryName }: SearchResultCardProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const subtitle = [categoryName, provider.city].filter(Boolean).join(' · ');
   const price = priceLabel(provider.priceFrom);
+  const router = useRouter();
   return (
-    <View
-      className="mt-5"
-      accessible
+    <Pressable
+      className="mt-5 active:opacity-80"
+      accessibilityRole="link"
       accessibilityLabel={[provider.displayName, subtitle, price].join(', ')}
+      onPress={() => router.push(profileHref(provider.slug))}
     >
       <View>
         <Photo uri={provider.coverUrl} className="h-[290px] w-full rounded-[20px]" />
@@ -56,6 +60,6 @@ export function SearchResultCard({ provider, categoryName }: SearchResultCardPro
       <Text size="sm" weight="semibold" className="mt-1 underline">
         {price}
       </Text>
-    </View>
+    </Pressable>
   );
 }

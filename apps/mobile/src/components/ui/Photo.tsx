@@ -18,7 +18,7 @@ type PhotoProps = Omit<ImageProps, 'source'> & {
  * (pas retéléchargée à chaque écran) et apparition en fondu.
  * Sans adresse, on garde un fond sable à la place de la photo.
  */
-export function Photo({ uri, alt, className, ...props }: PhotoProps) {
+export function Photo({ uri, alt, className, style, ...props }: PhotoProps) {
   const colors = useThemeColors();
   return (
     <Image
@@ -30,8 +30,8 @@ export function Photo({ uri, alt, className, ...props }: PhotoProps) {
       accessibilityLabel={alt}
       accessibilityRole={alt ? 'image' : undefined}
       className={className}
-      style={{ backgroundColor: colors.secondary }}
       {...props}
+      style={[{ backgroundColor: colors.secondary }, style]}
     />
   );
 }
