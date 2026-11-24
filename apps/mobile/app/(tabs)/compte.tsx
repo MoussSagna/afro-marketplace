@@ -1,11 +1,10 @@
-import { ComingSoonScreen } from '@/features/coming-soon/ComingSoonScreen';
+import { SignInRequired } from '@/features/auth/SignInRequired';
+import { AccountScreen } from '@/features/auth/screens/AccountScreen';
 
 export default function AccountTab() {
   return (
-    <ComingSoonScreen
-      title="Compte"
-      lot="M12"
-      description="Tes informations, tes notifications et le passage en mode prestataire."
-    />
+    <SignInRequired title="Compte" reason="Connecte-toi pour retrouver ton compte et tes infos.">
+      <AccountScreen />
+    </SignInRequired>
   );
 }

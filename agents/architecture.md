@@ -105,6 +105,7 @@ Plan complet : [`sprint-mobile.md`](sprint-mobile.md).
 apps/mobile/
   app/                 Les écrans pour Expo Router : un fichier = une adresse
   app/(tabs)/          Les 5 onglets du mode client ; « (tabs) » ne compte pas dans l'adresse (Accueil = « / »)
+  app/(auth)/          Les écrans de connexion (/bienvenue, /inscription, /verification, /connexion…)
   src/features/        Le code des écrans, par fonctionnalité (comme le web) ; app/ ne fait que les réexporter
   src/components/ui/   Composants de base (Button, Input, Card…), équivalents des composants shadcn du site
   src/components/brand/ Logo Wenzee (SVG)
@@ -114,6 +115,7 @@ apps/mobile/
   src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
+  src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth
   src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
   src/stores/          Session (Zustand + AsyncStorage)
@@ -134,4 +136,7 @@ apps/mobile/
   React vont dans `src/providers/`.
 - Styles : NativeWind (`className`). Les couleurs viennent de `packages/config/tailwind/tokens.json` via
   `preset.cjs` ; le site lit les mêmes valeurs dans `theme.css` (un test vérifie qu'elles sont identiques).
+- Connexion (lot M5) : formulaires React Hook Form + schémas Zod de `common` ; à la fin, `useFinishAuth` range la
+  session (et vide le cache), ferme la pile d'écrans de connexion et revient à l'onglet retenu par `authFlowStore`.
+  Les onglets protégés s'enveloppent dans `<SignInRequired>` (panneau « Connecte-toi » au lieu d'une redirection).
 - Écran de travail `/catalogue` : tous les composants, pour relire le design sur téléphone.

@@ -12,6 +12,10 @@ Construites par `buildSeed(now)` (`packages/common/src/mocks/seed/`). Dates rela
 
 Jeton de démo : `demo:<id>` (en-tête `Authorization: Bearer demo:user-aissatou`).
 
+Connexion par email (lot M5, app mobile) : chaque compte a le mot de passe **`Wenzee2026`** (`DEMO_PASSWORD`, table
+`credentials`). Le code de vérification reçu « par email » est **toujours `123456`** (`DEMO_OTP_CODE`) ; aucun email
+n'est envoyé. Une inscription crée un vrai compte client dans la base de démo (nom « - » en attendant le lot M12).
+
 ## Contenu
 
 - **26 prestataires** en Île-de-France : 22 publiés, 1 `pending_review` (Kompa Vibes Haïti), 1 `changes_requested`
