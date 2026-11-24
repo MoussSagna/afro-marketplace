@@ -58,7 +58,9 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
   n'est connecté. Le bouton retient l'onglet (`authFlowStore`, adresse interne seulement) et, à la fin du parcours,
   `useFinishAuth` ferme les écrans de connexion et y revient. Compte connecté : nom, email et « Se déconnecter »
   (le reste au lot M12).
-- Tests : 336 tests `common` (schémas, handlers, sauvegarde ancienne), 111 tests mobiles dont `auth.test.tsx` :
+- **Barre d'onglets : icônes seules** (demande de Mouss du 24/11, ajoutée à cette PR) : plus de texte sous les
+  icônes, les noms restent lus par VoiceOver / TalkBack. Maquette section 6 mise à jour.
+- Tests : 336 tests `common` (schémas, handlers, sauvegarde ancienne), 112 tests mobiles dont `auth.test.tsx` :
   parcours complet Demandes → inscription → mauvais code → bon code → compte vérifié → retour aux Demandes, erreurs
   sous les champs, email déjà pris, renvoi du code, mauvais mot de passe, Google/Apple, comptes de démo, mot de passe
   oublié jusqu'à la connexion avec le nouveau, déconnexion.

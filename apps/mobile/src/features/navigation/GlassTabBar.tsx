@@ -54,6 +54,7 @@ function Badge({ count, inBall = false }: { count: number; inBall?: boolean }) {
 /**
  * La barre d'onglets en verre (maquette section 6, demande de Mouss du 24/11/2026).
  * - Dépliée : une pilule flottante translucide (flou de ce qui passe derrière), onglet actif en pastille claire.
+ *   Icônes seules, sans texte (demande de Mouss du 24/11) : le nom de l'onglet reste lu par VoiceOver / TalkBack.
  * - Rétractée (on fait défiler vers le bas) : un rond qui ne garde que l'onglet actif et sa pastille.
  *   Toucher le rond, ou remonter, la redéplie.
  * - « Réduire les animations » : elle change d'état sans mouvement.
@@ -160,8 +161,7 @@ export function GlassTabBar({
               onPress={onPress}
               style={[styles.tab, focused && styles.tabActive]}
             >
-              <Icon size={22} color={color} strokeWidth={focused ? 2.4 : 2} />
-              <Text style={[styles.label, { color }, focused && styles.labelActive]}>{label}</Text>
+              <Icon size={24} color={color} strokeWidth={focused ? 2.4 : 2} />
               {badge > 0 ? <Badge count={badge} /> : null}
             </Pressable>
           );
@@ -211,24 +211,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   tab: {
-    width: 64,
-    minHeight: 44,
+    width: 56,
+    height: 48,
     alignItems: 'center',
-    gap: 2,
-    paddingTop: 7,
-    paddingBottom: 6,
+    justifyContent: 'center',
     borderRadius: 999,
   },
   tabActive: {
     backgroundColor: 'rgba(255, 255, 255, 0.7)',
     boxShadow: '0 2px 8px rgba(43, 26, 18, 0.08), inset 0 1px 0 #FFFFFF',
   },
-  label: { fontFamily: 'Inter_600SemiBold', fontSize: 10.5 },
-  labelActive: { fontFamily: 'Inter_700Bold' },
   badge: {
     position: 'absolute',
-    top: 0,
-    right: 10,
+    top: 4,
+    right: 8,
     minWidth: 18,
     height: 18,
     paddingHorizontal: 4,

@@ -79,6 +79,15 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
     expect(screen.getByRole('tab', { name: 'Accueil' })).toBeOnTheScreen();
   });
 
+  it('n’affiche que des icônes : les noms restent pour les lecteurs d’écran', async () => {
+    const { api } = demoApi();
+    await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
+    for (const name of ['Recherche', 'Demandes', 'Messages', 'Compte']) {
+      expect(screen.getByRole('tab', { name })).toBeOnTheScreen();
+      expect(screen.queryByText(name)).toBeNull();
+    }
+  });
+
   it('pas de pastille de non-lus quand personne n’est connecté', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
