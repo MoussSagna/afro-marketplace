@@ -3,8 +3,9 @@ import { Image } from 'expo-image';
 import { MapPin, Minus, Plus, Search, X } from 'lucide-react-native';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutAnimation, Modal, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { LayoutAnimation, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FullScreenModal } from '@/components/FullScreenModal';
 import { Button, Heading, Text } from '@/components/ui';
 import { useCategoryName } from '@/i18n/useCategoryName';
 import { useLanguage } from '@/i18n/useLanguage';
@@ -42,10 +43,9 @@ type SearchWizardProps = {
  */
 export function SearchWizard({ visible, onClose, ...props }: SearchWizardProps) {
   return (
-    <Modal visible={visible} animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      {/* Monté à chaque ouverture : on repart de la recherche actuelle, sur l'étape « Quoi ? ». */}
-      {visible ? <WizardBody onClose={onClose} {...props} /> : null}
-    </Modal>
+    <FullScreenModal visible={visible} onClose={onClose} animationType="fade">
+      <WizardBody onClose={onClose} {...props} />
+    </FullScreenModal>
   );
 }
 
