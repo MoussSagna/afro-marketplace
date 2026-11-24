@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { SignInRequired } from '@/features/auth/SignInRequired';
 import { AccountScreen } from '@/features/auth/screens/AccountScreen';
 
 export default function AccountTab() {
+  const { t } = useTranslation();
   return (
-    <SignInRequired title="Compte" reason="Connecte-toi pour retrouver ton compte et tes infos.">
+    <SignInRequired title={t('tabs.account')} reason={t('account.signIn')}>
       <AccountScreen />
     </SignInRequired>
   );

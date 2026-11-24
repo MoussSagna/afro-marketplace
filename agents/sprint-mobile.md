@@ -124,7 +124,7 @@ pour le site **et** l'app en même temps.
 - Bannière photo, grand titre, recherche en pilule, grille des catégories, « À la une » en défilement horizontal.
 - **Tests** : affichage, chargement, toucher une catégorie ouvre la recherche filtrée.
 
-### M6b · Traduction anglaise (i18n) · **feu vert le 24/11 (app d'abord, site plus tard), après M6c**
+### M6b · Traduction anglaise (i18n) · **fait (voir avancement.md)**
 
 Demande de Mouss du 24/11/2026 : l'app doit pouvoir être traduite en anglais. Plus on le fait tôt, moins il y a de
 textes à reprendre (aujourd'hui : splash, onglets, connexion, Accueil).
@@ -135,7 +135,7 @@ textes à reprendre (aujourd'hui : splash, onglets, connexion, Accueil).
 - **Textes partagés dans `common`** (`packages/common/src/i18n/`) : un fichier par langue, rangé par écran
   (`auth`, `home`, `tabs`…). Un test vérifie que chaque clé existe dans les deux langues.
 - **Messages d'erreur des schémas Zod** (aujourd'hui écrits en français dans `common`) : ils deviennent des clés
-  (`errors.email_invalid`) traduites au moment de l'affichage. Même chose pour les messages renvoyés par les routes
+  (`errors.emailInvalid`) traduites au moment de l'affichage. Même chose pour les messages renvoyés par les routes
   simulées (le `code` stable existe déjà).
 - **Prix et dates** : `formatPrice` et les formats de date prennent la langue (« 25 € » / « €25 »).
 - **Données** : les noms des catégories et des origines sont traduits par leur `slug` ; ce qu'écrivent les

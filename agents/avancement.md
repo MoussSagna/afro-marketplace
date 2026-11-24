@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M6c : thème sombre).
+Dernière mise à jour : 24/11/2026 (lot M6b : traduction anglaise).
 
 ## Lots
 
@@ -36,8 +36,33 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M4b | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
 | M5  | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
 | M6  | Accueil (P1)                           | ✅ fusionné #23                                                  |
-| M6c | Thème sombre / clair                   | 🔍 PR ouverte (maquette validée par Mouss le 24/11)              |
-| M6b | Traduction anglaise                    | à faire (feu vert du 24/11 : app d'abord, site plus tard)        |
+| M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
+| M6b | Traduction anglaise                    | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M6b
+
+- **L'app parle anglais** quand le téléphone est réglé en anglais (`expo-localization`) ; sinon, en français. Le
+  choix de la langue dans Compte arrive au lot M12.
+- **Outil** : `i18next` + `react-i18next`. Dans un écran : `const { t } = useTranslation();` puis
+  `t('home.searchTitle')`. Les clés sont **typées** (`src/types/i18next.d.ts`) : une faute de frappe dans une clé
+  casse `tsc`.
+- **Textes dans `common`** (`packages/common/src/i18n/`, import `@afro/common/i18n`) : `fr.ts` (la référence), `en.ts`
+  (typé `Translations` : TypeScript refuse une clé oubliée), rangés par écran (`tabs`, `home`, `auth`, `errors`…). Le
+  site pourra les reprendre tels quels.
+- **Erreurs** : les schémas Zod gardent leurs messages en français (le site les affiche). L'app retrouve la clé du
+  message (`errorKeyOf` : « Adresse email invalide » → `errors.emailInvalid`) et la traduit (`useErrorText` →
+  `fieldError`). Les erreurs du serveur sont traduites par leur `code` (`apiErrors.email_taken`), avec le message du
+  serveur en secours.
+- **Prix et notes** : `formatPrice(montant, locale)` (« dès 25 € » / « from €25 ») ; `formatRating` suit la langue
+  (« 4,8 » / « 4.8 »). Les catégories sont traduites par leur `slug` (`useCategoryName`) ; les textes écrits par les
+  utilisateurs (noms, descriptions) ne le sont pas.
+- Tout ce qui était déjà affiché est repris : splash, onglets, Accueil, Recherche, « Bientôt disponible », garde
+  « Connecte-toi », tous les écrans de connexion et d'inscription, Compte. Seul l'écran de développement
+  « Composants » reste en français.
+- Tests : 186 tests mobiles. `i18n.test.ts` (common) : mêmes clés et mêmes `{{variables}}` dans les deux langues,
+  chaque message d'erreur des schémas a sa clé, choix de la langue, prix. `english.test.tsx` (mobile) : Accueil en
+  anglais (catégories, prix), garde « Sign in », erreurs du formulaire d'inscription et « email déjà pris » en anglais.
+  Les autres tests restent en français (`jest.setup.ts` fixe le français avant chaque test).
 
 ## Ce que contient le lot M6c
 

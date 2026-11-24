@@ -123,6 +123,8 @@ apps/mobile/
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
   src/stores/          Session (Zustand + AsyncStorage)
   src/theme/           Thème clair / sombre : palette, ThemeRoot (variables CSS), useThemeColors, themeStore
+  src/i18n/            Traduction (i18next) : init (langue du téléphone), useLanguage, useErrorText, useCategoryName ;
+                       les textes eux-mêmes sont dans packages/common/src/i18n/ (fr.ts, en.ts)
   tailwind.config.js   NativeWind : preset partagé @afro/config/tailwind/preset.cjs (couleurs du site)
   global.css           Point d'entrée de NativeWind (importé dans app/_layout.tsx)
   app.json             Nom, icône, identifiants de l'app (Expo)

@@ -1,11 +1,12 @@
 import { signInInputSchema, useSignIn } from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import type { z } from 'zod';
 import { Button, Text } from '@/components/ui';
-import { errorMessage } from '../authErrors';
+import { useErrorText } from '@/i18n/useErrorText';
 import { AuthScreen } from '../components/AuthScreen';
 import { FormAlert } from '../components/FormAlert';
 import { FormInput } from '../components/FormInput';
@@ -15,6 +16,8 @@ import { useFinishAuth } from '../useFinishAuth';
 
 /** Connexion : email et mot de passe, « Mot de passe oublié ? », puis Google / Apple. */
 export function SignInScreen() {
+  const { t } = useTranslation();
+  const { apiError } = useErrorText();
   const router = useRouter();
   const signIn = useSignIn();
   const { openSession, leaveAuth } = useFinishAuth();
@@ -37,13 +40,13 @@ export function SignInScreen() {
   });
 
   return (
-    <AuthScreen title="Content de te revoir" subtitle="Connecte-toi pour continuer.">
+    <AuthScreen title={t('auth.signInTitle')} subtitle={t('auth.signInSubtitle')}>
       <View className="gap-4">
-        <FormAlert message={signIn.isError ? errorMessage(signIn.error) : null} />
+        <FormAlert message={signIn.isError ? apiError(signIn.error) : null} />
         <FormInput
           control={control}
           name="email"
-          label="Email"
+          label={t('auth.email')}
           placeholder="aissatou.diallo@email.fr"
           keyboardType="email-address"
           autoCapitalize="none"
@@ -54,23 +57,23 @@ export function SignInScreen() {
           <FormInput
             control={control}
             name="password"
-            label="Mot de passe"
+            label={t('auth.password')}
             password
             autoComplete="current-password"
             textContentType="password"
           />
           <TextLink className="self-end" onPress={() => router.push('/mot-de-passe-oublie')}>
-            Mot de passe oublié ?
+            {t('auth.forgotPasswordLink')}
           </TextLink>
         </View>
         <Button fullWidth loading={signIn.isPending} onPress={() => void onSubmit()}>
-          Se connecter
+          {t('auth.signIn')}
         </Button>
       </View>
       <View className="flex-row items-center gap-3">
         <View className="h-px flex-1 bg-border" />
         <Text size="sm" tone="muted">
-          ou
+          {t('auth.or')}
         </Text>
         <View className="h-px flex-1 bg-border" />
       </View>
@@ -78,11 +81,11 @@ export function SignInScreen() {
       <View className="items-center">
         <View className="flex-row flex-wrap items-center justify-center gap-x-1">
           <Text size="sm" tone="muted">
-            Pas encore de compte ?
+            {t('auth.noAccount')}
           </Text>
-          <TextLink onPress={() => router.replace('/inscription')}>S’inscrire</TextLink>
+          <TextLink onPress={() => router.replace('/inscription')}>{t('auth.signUp')}</TextLink>
         </View>
-        <TextLink onPress={() => router.push('/comptes-demo')}>Essayer un compte de démo</TextLink>
+        <TextLink onPress={() => router.push('/comptes-demo')}>{t('auth.tryDemo')}</TextLink>
       </View>
     </AuthScreen>
   );

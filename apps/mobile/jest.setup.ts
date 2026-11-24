@@ -14,3 +14,11 @@ jest.mock(
   'react-native-reanimated',
   () => jest.requireActual('./src/test/reanimatedMock').reanimatedMock,
 );
+
+// Les textes de l'app (i18next). Les tests sont écrits en français : on fixe le français
+// avant chaque test, quelle que soit la langue de la machine (un test peut passer en anglais).
+import { i18n } from './src/i18n';
+
+beforeEach(async () => {
+  await i18n.changeLanguage('fr');
+});

@@ -1,8 +1,10 @@
 import { Eye, EyeOff } from 'lucide-react-native';
 import { useState, type ComponentProps } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { Input } from '@/components/ui';
+import { useErrorText } from '@/i18n/useErrorText';
 import { useThemeColors } from '@/theme/useTheme';
 
 type FormInputProps<T extends FieldValues, TOut> = Omit<
@@ -26,6 +28,8 @@ export function FormInput<T extends FieldValues, TOut>({
   password = false,
   ...props
 }: FormInputProps<T, TOut>) {
+  const { t } = useTranslation();
+  const { fieldError } = useErrorText();
   const colors = useThemeColors();
   const [visible, setVisible] = useState(false);
   const Icon = visible ? EyeOff : Eye;
@@ -38,7 +42,7 @@ export function FormInput<T extends FieldValues, TOut>({
           value={field.value ?? ''}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
-          error={fieldState.error?.message}
+          error={fieldError(fieldState.error?.message)}
           secureTextEntry={password && !visible}
           autoCapitalize={password ? 'none' : props.autoCapitalize}
           autoCorrect={password ? false : props.autoCorrect}
@@ -46,9 +50,7 @@ export function FormInput<T extends FieldValues, TOut>({
             password ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={
-                  visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
-                }
+                accessibilityLabel={t(visible ? 'auth.hidePassword' : 'auth.showPassword')}
                 hitSlop={10}
                 onPress={() => setVisible((v) => !v)}
               >
