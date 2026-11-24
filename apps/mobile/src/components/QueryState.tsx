@@ -1,0 +1,54 @@
+import type { ReactNode } from 'react';
+import { ActivityIndicator } from 'react-native';
+import { Button, EmptyState } from '@/components/ui';
+
+type QueryStateProps = {
+  isPending: boolean;
+  isError: boolean;
+  onRetry: () => void;
+  /** Ce que lit VoiceOver pendant le chargement (« Chargement des catégories »). */
+  loadingLabel: string;
+  /** Ce qu'on affiche pendant le chargement (par défaut : une roue). */
+  placeholder?: ReactNode;
+  children: ReactNode;
+};
+
+/**
+ * Les trois états de tout bloc qui charge des données :
+ * chargement → erreur (avec « Réessayer ») → résultat.
+ */
+export function QueryState({
+  isPending,
+  isError,
+  onRetry,
+  loadingLabel,
+  placeholder,
+  children,
+}: QueryStateProps) {
+  if (isPending) {
+    return (
+      placeholder ?? (
+        <ActivityIndicator
+          color="#7A1F0E"
+          accessibilityLabel={loadingLabel}
+          className="self-start py-4"
+        />
+      )
+    );
+  }
+  if (isError) {
+    return (
+      <EmptyState
+        title="Oups, ça n’a pas chargé"
+        description="Vérifie ta connexion puis réessaie."
+        action={
+          <Button variant="outline" size="md" onPress={onRetry}>
+            Réessayer
+          </Button>
+        }
+        className="py-4"
+      />
+    );
+  }
+  return <>{children}</>;
+}

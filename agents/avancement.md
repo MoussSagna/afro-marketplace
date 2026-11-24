@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M5 : connexion et inscription simulées).
+Dernière mise à jour : 24/11/2026 (lot M6 : Accueil de la maquette).
 
 ## Lots
 
@@ -34,7 +34,27 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M3  | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
 | M4  | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
 | M4b | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
-| M5  | Connexion et inscription simulées      | 🔍 PR ouverte                                                    |
+| M5  | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
+| M6  | Accueil (P1)                           | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M6
+
+- **Accueil de la maquette** (`src/features/home/HomeScreen.tsx`) : bannière photo assombrie
+  (`assets/images/banniere-accueil.webp`, la même que la maquette) avec le logo clair et « Des talents qui font vivre
+  nos cultures », recherche en pilule à cheval sur la bannière, les 5 catégories principales avec leurs icônes
+  (`categoryIcons.ts`, SVG de la maquette), « À la une » en défilement horizontal.
+- Toucher la recherche ou « Tout voir » ouvre l'onglet Recherche ; toucher une catégorie l'ouvre filtrée
+  (`/recherche?categorie=beaute`, adresse fabriquée par `searchHref`). En attendant le lot M7, la Recherche affiche
+  juste le filtre reçu (« Catégorie : Beauté »).
+- Nouveaux composants réutilisables : `ProviderCard` (carte prestataire, servira aux résultats de recherche) et
+  `QueryState` (chargement → erreur avec « Réessayer » → contenu).
+- L'ancien accueil provisoire et ses données de démo sont supprimés. Le lien vers l'écran de travail `/catalogue`
+  reste en bas de l'Accueil, seulement en développement (`__DEV__`).
+- Pas encore branché : la cloche des notifications et le cœur des favoris de la maquette (pas de fonctionnalité
+  derrière pour l'instant), et le toucher d'une carte (profil prestataire au lot M8).
+- Tests : 112 tests mobiles. `HomeScreen.test.tsx` : bannière, chargement, catégories principales (sans les
+  sous-catégories), cartes « À la une » et prix, erreur puis « Réessayer », catégorie → Recherche filtrée, pilule →
+  Recherche.
 
 ## Ce que contient le lot M5
 

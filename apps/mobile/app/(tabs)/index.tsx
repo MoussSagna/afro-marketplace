@@ -1,3 +1,3 @@
-import { WelcomeScreen } from '@/features/welcome/WelcomeScreen';
+import { HomeScreen } from '@/features/home/HomeScreen';
 
-export default WelcomeScreen;
+export default HomeScreen;
