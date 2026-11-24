@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M7 : recherche façon Airbnb).
+Dernière mise à jour : 24/11/2026 (lot M7 : recherche façon Airbnb, puis correctif des écrans plein écran).
 
 ## Lots
 
@@ -39,7 +39,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
 | M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
 | M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
-| M7  | Recherche façon Airbnb                 | 🔍 PR ouverte (maquette section 8 validée le 24/11)              |
+| M7  | Recherche façon Airbnb                 | ✅ #28 (correctifs après test de Mouss en cours)                 |
 
 ## Ce que contient le lot M7
 
@@ -64,6 +64,10 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
   - pas de cœur, car les favoris (C7) sont prévus après le MVP ;
   - pas de « Autour de moi » ni de « Recherche récente » ;
   - un seul curseur de budget (maximum), car le serveur ne filtre pas sur un minimum.
+- **Correctif après le test de Mouss (24/11)** : la Recherche et les Filtres plein écran passaient sous l'heure et
+  l'encoche du téléphone. Une `<Modal>` s'ouvre dans une fenêtre native à part, hors du `SafeAreaProvider` de l'app :
+  `src/components/FullScreenModal.tsx` lui donne le sien (démarré avec les marges de l'app) et réserve aussi la barre
+  du bas sur Android. À réutiliser pour tout écran plein écran.
 - Les villes proposées à l'étape « Où ? » sont celles des prestataires (les plus fournies d'abord) ; le vrai serveur
   aura sa propre liste (lot 10).
 - Tests : 203 tests mobiles. `search.test.tsx` couvre :

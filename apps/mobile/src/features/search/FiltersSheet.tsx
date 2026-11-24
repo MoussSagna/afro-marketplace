@@ -7,8 +7,9 @@ import {
 import { X } from 'lucide-react-native';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, Switch, View } from 'react-native';
+import { Pressable, ScrollView, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FullScreenModal } from '@/components/FullScreenModal';
 import { Button, Chip, Heading, Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { cn } from '@/lib/cn';
@@ -37,10 +38,9 @@ type FiltersSheetProps = {
  */
 export function FiltersSheet({ visible, onClose, ...props }: FiltersSheetProps) {
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose} statusBarTranslucent>
-      {/* Monté à chaque ouverture : on repart des filtres actuels. */}
-      {visible ? <FiltersBody onClose={onClose} {...props} /> : null}
-    </Modal>
+    <FullScreenModal visible={visible} onClose={onClose} animationType="slide">
+      <FiltersBody onClose={onClose} {...props} />
+    </FullScreenModal>
   );
 }
 
