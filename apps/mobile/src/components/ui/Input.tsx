@@ -2,6 +2,7 @@ import { useId, useState, type ComponentProps, type ReactNode } from 'react';
 import { TextInput, View } from 'react-native';
 import { cn } from '@/lib/cn';
 import { Text } from './Text';
+import { useThemeColors } from '@/theme/useTheme';
 
 type InputProps = ComponentProps<typeof TextInput> & {
   /** Le libellé au-dessus du champ (obligatoire : c'est aussi ce que lit VoiceOver). */
@@ -34,6 +35,7 @@ export function Input({
   onBlur,
   ...props
 }: InputProps) {
+  const colors = useThemeColors();
   const [focused, setFocused] = useState(false);
   const messageId = useId();
   const message = error ?? hint;
@@ -57,7 +59,7 @@ export function Input({
           aria-invalid={Boolean(error)}
           aria-describedby={message ? messageId : undefined}
           editable={editable}
-          placeholderTextColor="#6B4A36"
+          placeholderTextColor={colors['muted-foreground']}
           className={cn('flex-1 py-3 font-sans text-body text-foreground', className)}
           onFocus={(event) => {
             setFocused(true);

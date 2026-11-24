@@ -124,7 +124,7 @@ pour le site **et** l'app en même temps.
 - Bannière photo, grand titre, recherche en pilule, grille des catégories, « À la une » en défilement horizontal.
 - **Tests** : affichage, chargement, toucher une catégorie ouvre la recherche filtrée.
 
-### M6b · Traduction anglaise (i18n) · **proposé le 24/11, en attente du feu vert de Mouss**
+### M6b · Traduction anglaise (i18n) · **feu vert le 24/11 (app d'abord, site plus tard), après M6c**
 
 Demande de Mouss du 24/11/2026 : l'app doit pouvoir être traduite en anglais. Plus on le fait tôt, moins il y a de
 textes à reprendre (aujourd'hui : splash, onglets, connexion, Accueil).
@@ -147,7 +147,7 @@ textes à reprendre (aujourd'hui : splash, onglets, connexion, Accueil).
 - **Tests** : clés complètes dans les deux langues (unitaire) ; Accueil et Inscription affichés en anglais, erreurs
   du formulaire en anglais (fonctionnels).
 
-### M6c · Thème sombre / clair · **proposé le 24/11, en attente du feu vert de Mouss**
+### M6c · Thème sombre / clair · **maquette validée le 24/11, fait (voir avancement.md)**
 
 Demande de Mouss du 24/11/2026 : un thème sombre en plus du thème clair actuel. Comme pour la barre d'onglets, on
 passe **d'abord par la maquette** : Mouss valide les couleurs sombres, puis on code.

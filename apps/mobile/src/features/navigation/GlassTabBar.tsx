@@ -19,11 +19,32 @@ import {
   View,
 } from 'react-native';
 import { useReduceMotion } from '@/lib/useReduceMotion';
+import { useColorSchemeName } from '@/theme/useTheme';
 import { useTabBarStore } from './tabBarStore';
 
-// Couleurs de la maquette (section 6).
-const ACTIVE = '#7A1F0E'; // primary
-const INACTIVE = '#4D3426';
+/** Les deux verres de la maquette : clair (section 6) et fumé (thème sombre, section 7). */
+const GLASS = {
+  light: {
+    tint: 'light',
+    active: '#7A1F0E',
+    inactive: '#4D3426',
+    veil: 'rgba(255, 255, 255, 0.45)',
+    edge: 'rgba(255, 255, 255, 0.6)',
+    activeBackground: 'rgba(255, 255, 255, 0.7)',
+    shadow: '0 10px 30px rgba(43, 26, 18, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+    badgeEdge: '#FFFFFF',
+  },
+  dark: {
+    tint: 'dark',
+    active: '#F3B618',
+    inactive: '#C4A68E',
+    veil: 'rgba(38, 25, 18, 0.62)',
+    edge: 'rgba(235, 217, 198, 0.14)',
+    activeBackground: 'rgba(255, 255, 255, 0.1)',
+    shadow: '0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14)',
+    badgeEdge: '#261912',
+  },
+} as const;
 const SUN = '#F3B618'; // accent : la pastille de non-lus
 const INK = '#2B1A12';
 
@@ -43,9 +64,12 @@ const ICONS: Record<string, LucideIcon> = {
   compte: UserRound,
 };
 
-function Badge({ count, inBall = false }: { count: number; inBall?: boolean }) {
+function Badge({ count, edge, inBall = false }: { count: number; edge: string; inBall?: boolean }) {
   return (
-    <View style={[styles.badge, inBall && styles.badgeInBall]} importantForAccessibility="no">
+    <View
+      style={[styles.badge, { borderColor: edge }, inBall && styles.badgeInBall]}
+      importantForAccessibility="no"
+    >
       <Text style={styles.badgeText}>{count > 99 ? '99+' : count}</Text>
     </View>
   );
@@ -58,6 +82,7 @@ function Badge({ count, inBall = false }: { count: number; inBall?: boolean }) {
  * - Rétractée (on fait défiler vers le bas) : un rond qui ne garde que l'onglet actif et sa pastille.
  *   Toucher le rond, ou remonter, la redéplie.
  * - « Réduire les animations » : elle change d'état sans mouvement.
+ * - Thème sombre : verre fumé, onglet actif en soleil (maquette section 7).
  * Le flou vient d'expo-blur : réel sur iPhone ; sur Android, un voile translucide sans flou.
  */
 export function GlassTabBar({
@@ -71,6 +96,7 @@ export function GlassTabBar({
   const collapsed = useTabBarStore((s) => s.collapsed);
   const expand = useTabBarStore((s) => s.expand);
   const reduceMotion = useReduceMotion();
+  const glass = GLASS[useColorSchemeName()];
   const fullWidth = width - SIDE_MARGIN * 2;
 
   // 0 = dépliée, 1 = rond. Animated de React Native (la largeur ne passe pas par le fil natif).
@@ -122,12 +148,19 @@ export function GlassTabBar({
 
   return (
     <Animated.View
-      style={[styles.bar, { bottom: insets.bottom + 10 }, barStyle]}
+      style={[
+        styles.bar,
+        { bottom: insets.bottom + 10, borderColor: glass.edge, boxShadow: glass.shadow },
+        barStyle,
+      ]}
       testID="glass-tab-bar"
     >
       {/* Le verre : flou + voile clair + reflet en haut. */}
-      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFill} />
-      <View style={[StyleSheet.absoluteFill, styles.veil]} pointerEvents="none" />
+      <BlurView intensity={50} tint={glass.tint} style={StyleSheet.absoluteFill} />
+      <View
+        style={[StyleSheet.absoluteFill, { backgroundColor: glass.veil }]}
+        pointerEvents="none"
+      />
 
       {/* Les 5 onglets (barre dépliée). */}
       <Animated.View
@@ -143,7 +176,7 @@ export function GlassTabBar({
           const Icon = ICONS[route.name] ?? House;
           const label = options.title ?? route.name;
           const badge = Number(options.tabBarBadge ?? 0);
-          const color = focused ? ACTIVE : INACTIVE;
+          const color = focused ? glass.active : glass.inactive;
           const onPress = () => {
             const event = emitter.emit({
               type: 'tabPress',
@@ -159,10 +192,13 @@ export function GlassTabBar({
               accessibilityState={{ selected: focused }}
               accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
               onPress={onPress}
-              style={[styles.tab, focused && styles.tabActive]}
+              style={[
+                styles.tab,
+                focused && [styles.tabActive, { backgroundColor: glass.activeBackground }],
+              ]}
             >
               <Icon size={24} color={color} strokeWidth={focused ? 2.4 : 2} />
-              {badge > 0 ? <Badge count={badge} /> : null}
+              {badge > 0 ? <Badge count={badge} edge={glass.badgeEdge} /> : null}
             </Pressable>
           );
         })}
@@ -181,8 +217,8 @@ export function GlassTabBar({
           onPress={expand}
           style={styles.ballButton}
         >
-          <ActiveIcon size={26} color={ACTIVE} strokeWidth={2.4} />
-          {activeBadge > 0 ? <Badge count={activeBadge} inBall /> : null}
+          <ActiveIcon size={26} color={glass.active} strokeWidth={2.4} />
+          {activeBadge > 0 ? <Badge count={activeBadge} edge={glass.badgeEdge} inBall /> : null}
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -196,10 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.6)',
-    boxShadow: '0 10px 30px rgba(43, 26, 18, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
   },
-  veil: { backgroundColor: 'rgba(255, 255, 255, 0.45)' },
   tabs: {
     position: 'absolute',
     left: 0,
@@ -218,7 +251,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   tabActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     boxShadow: '0 2px 8px rgba(43, 26, 18, 0.08), inset 0 1px 0 #FFFFFF',
   },
   badge: {
@@ -230,7 +262,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: 9,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
     backgroundColor: SUN,
     alignItems: 'center',
     justifyContent: 'center',

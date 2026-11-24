@@ -14,3 +14,14 @@ declare module '*/tailwind.config' {
   const config: Config;
   export default config;
 }
+
+// Les couleurs des thèmes clair et sombre (packages/config/tailwind/palette.cjs).
+declare module '@afro/config/tailwind/palette.cjs' {
+  const palette: {
+    light: Record<string, string>;
+    dark: Record<string, string>;
+    names: string[];
+    toRgbChannels(hex: string): string;
+  };
+  export default palette;
+}

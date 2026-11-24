@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Card, Photo, Rating, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { priceLabel } from './priceLabel';
+import { useThemeColors } from '@/theme/useTheme';
 
 type ProviderCardProps = {
   provider: ProviderCardData;
@@ -15,6 +16,7 @@ type ProviderCardProps = {
  * photo, nom, note, ville et prix. Le profil complet (lot M8) s'ouvrira au toucher.
  */
 export function ProviderCard({ provider, className }: ProviderCardProps) {
+  const colors = useThemeColors();
   return (
     <Card
       className={cn('overflow-hidden', className)}
@@ -29,7 +31,7 @@ export function ProviderCard({ provider, className }: ProviderCardProps) {
               {provider.displayName}
             </Text>
             {provider.isProVerified ? (
-              <BadgeCheck size={16} color="#2E6B3F" accessibilityLabel="Vérifié" />
+              <BadgeCheck size={16} color={colors.success} accessibilityLabel="Vérifié" />
             ) : null}
           </View>
           <Rating value={provider.ratingAverage} count={provider.ratingCount} />

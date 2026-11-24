@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { GlassTabBar } from './GlassTabBar';
 import { useClientUnreadCount } from './useClientUnreadCount';
+import { useThemeColors } from '@/theme/useTheme';
 
 /**
  * Les 5 onglets du mode client (maquette) : Accueil, Recherche, Demandes, Messages, Compte.
@@ -9,11 +10,12 @@ import { useClientUnreadCount } from './useClientUnreadCount';
  * La barre est la nôtre (GlassTabBar) : en verre, flottante, rétractable au défilement.
  */
 export function ClientTabsLayout() {
+  const colors = useThemeColors();
   const unread = useClientUnreadCount();
   return (
     <Tabs
       tabBar={(props) => <GlassTabBar {...props} />}
-      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: '#FDF7F0' } }}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.background } }}
     >
       <Tabs.Screen name="index" options={{ title: 'Accueil' }} />
       <Tabs.Screen name="recherche" options={{ title: 'Recherche' }} />

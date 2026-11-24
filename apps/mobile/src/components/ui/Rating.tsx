@@ -2,9 +2,7 @@ import { Star } from 'lucide-react-native';
 import { View } from 'react-native';
 import { cn, formatRating } from '@/lib/cn';
 import { Text } from './Text';
-
-const OCHRE = '#D9822B';
-const EMPTY = '#D9C2AA';
+import { useThemeColors } from '@/theme/useTheme';
 
 type RatingProps = {
   /** Note de 0 à 5 (décimales acceptées). */
@@ -24,6 +22,7 @@ export function ratingLabel(value: number, count?: number): string {
 
 /** Une note en étoiles : « ★ 4,9 (38) ». Les étoiles sont décoratives. */
 export function Rating({ value, count, variant = 'compact', className }: RatingProps) {
+  const colors = useThemeColors();
   if (count === 0) {
     return (
       <Text size="sm" tone="muted" className={className}>
@@ -41,7 +40,7 @@ export function Rating({ value, count, variant = 'compact', className }: RatingP
     >
       <View className="flex-row" importantForAccessibility="no-hide-descendants">
         {variant === 'compact' ? (
-          <Star size={16} color={OCHRE} fill={OCHRE} />
+          <Star size={16} color={colors.ochre} fill={colors.ochre} />
         ) : (
           Array.from({ length: 5 }, (_, index) => {
             const filled = value - index >= 0.5;
@@ -49,8 +48,8 @@ export function Rating({ value, count, variant = 'compact', className }: RatingP
               <Star
                 key={index}
                 size={16}
-                color={filled ? OCHRE : EMPTY}
-                fill={filled ? OCHRE : 'transparent'}
+                color={filled ? colors.ochre : colors.input}
+                fill={filled ? colors.ochre : 'transparent'}
               />
             );
           })

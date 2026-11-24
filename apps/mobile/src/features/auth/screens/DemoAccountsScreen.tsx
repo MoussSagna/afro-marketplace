@@ -6,6 +6,7 @@ import { errorMessage } from '../authErrors';
 import { AuthScreen } from '../components/AuthScreen';
 import { FormAlert } from '../components/FormAlert';
 import { useFinishAuth } from '../useFinishAuth';
+import { useThemeColors } from '@/theme/useTheme';
 
 const ROLE_LABELS = { client: 'Client', provider: 'Prestataire', admin: 'Admin' } as const;
 
@@ -17,6 +18,7 @@ function iconFor(account: DemoAccount) {
 
 /** Comptes de démo (P8), comme sur le site : on choisit un compte et on est connecté. */
 export function DemoAccountsScreen() {
+  const colors = useThemeColors();
   const accounts = useDemoAccounts();
   const signInAsDemo = useSignInAsDemo();
   const { openSession, leaveAuth } = useFinishAuth();
@@ -37,7 +39,7 @@ export function DemoAccountsScreen() {
     >
       <FormAlert message={signInAsDemo.isError ? errorMessage(signInAsDemo.error) : null} />
       {accounts.isPending ? (
-        <ActivityIndicator accessibilityLabel="Chargement" color="#7A1F0E" />
+        <ActivityIndicator accessibilityLabel="Chargement" color={colors.primary} />
       ) : null}
       {accounts.isError ? <FormAlert message="Impossible de charger les comptes de démo." /> : null}
       <View className="gap-3">
@@ -54,7 +56,7 @@ export function DemoAccountsScreen() {
             >
               <Card className="flex-row gap-3 p-4">
                 <View className="h-10 w-10 items-center justify-center rounded-full bg-muted">
-                  <Icon size={20} color="#7A1F0E" />
+                  <Icon size={20} color={colors.primary} />
                 </View>
                 <View className="flex-1 gap-1">
                   <Text weight="bold">{account.label}</Text>

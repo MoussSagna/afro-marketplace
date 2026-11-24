@@ -4,12 +4,14 @@ import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, Badge, Button, Card, Heading, Text } from '@/components/ui';
 import { useSessionStore } from '@/stores/session';
+import { useThemeColors } from '@/theme/useTheme';
 
 /**
  * Onglet Compte, connecté (version courte) : qui je suis, et « Se déconnecter ».
  * Le reste (infos, notifications, mode prestataire) arrive au lot M12.
  */
 export function AccountScreen() {
+  const colors = useThemeColors();
   const user = useSessionStore((s) => s.user);
   const signOut = useSessionStore((s) => s.signOut);
   const queryClient = useQueryClient();
@@ -45,7 +47,7 @@ export function AccountScreen() {
         <Button
           variant="outline"
           fullWidth
-          icon={<LogOut size={18} color="#7A1F0E" />}
+          icon={<LogOut size={18} color={colors.primary} />}
           onPress={onSignOut}
         >
           Se déconnecter

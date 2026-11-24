@@ -3,6 +3,7 @@ import { Check, Circle } from 'lucide-react-native';
 import { View } from 'react-native';
 import { Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { useThemeColors } from '@/theme/useTheme';
 
 const STRENGTH = [
   { label: '', bars: 0, className: 'bg-border' },
@@ -48,6 +49,7 @@ export function PasswordRulesList({ value }: { value: string }) {
 
 /** Une ligne cochée (vert) ou non (gris). */
 export function RuleLine({ ok, label }: { ok: boolean; label: string }) {
+  const colors = useThemeColors();
   const Icon = ok ? Check : Circle;
   return (
     <View
@@ -55,7 +57,11 @@ export function RuleLine({ ok, label }: { ok: boolean; label: string }) {
       accessible
       accessibilityLabel={`${label} : ${ok ? 'oui' : 'pas encore'}`}
     >
-      <Icon size={14} color={ok ? '#2E6B3F' : '#6B4A36'} strokeWidth={ok ? 3 : 2} />
+      <Icon
+        size={14}
+        color={ok ? colors.success : colors['muted-foreground']}
+        strokeWidth={ok ? 3 : 2}
+      />
       <Text size="caption" tone={ok ? 'success' : 'muted'}>
         {label}
       </Text>

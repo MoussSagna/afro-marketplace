@@ -6,9 +6,11 @@ import { useSessionStore } from '@/stores/session';
 import { HOME, useAuthFlowStore } from '../authFlowStore';
 import { AuthScreen } from '../components/AuthScreen';
 import { useFinishAuth } from '../useFinishAuth';
+import { useThemeColors } from '@/theme/useTheme';
 
 /** « C'est bon ! » : fin du parcours (compte vérifié ou mot de passe changé). On est déjà connecté. */
 export function VerifiedScreen() {
+  const colors = useThemeColors();
   const { reason } = useLocalSearchParams<{ reason?: string }>();
   const firstName = useSessionStore((s) => s.user?.firstName);
   const redirectTo = useAuthFlowStore((s) => s.redirectTo);
@@ -19,7 +21,7 @@ export function VerifiedScreen() {
     <AuthScreen back={false}>
       <View className="flex-1 items-center justify-center gap-3">
         <View className="mb-2 h-24 w-24 items-center justify-center rounded-full bg-success-muted">
-          <PartyPopper size={44} color="#2E6B3F" />
+          <PartyPopper size={44} color={colors.success} />
         </View>
         <Heading className="text-center">C’est bon !</Heading>
         <Text tone="muted" className="text-center">

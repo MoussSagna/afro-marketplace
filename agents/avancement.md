@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M6 : Accueil de la maquette).
+Dernière mise à jour : 24/11/2026 (lot M6c : thème sombre).
 
 ## Lots
 
@@ -35,7 +35,30 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M4  | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
 | M4b | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
 | M5  | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
-| M6  | Accueil (P1)                           | 🔍 PR ouverte                                                    |
+| M6  | Accueil (P1)                           | ✅ fusionné #23                                                  |
+| M6c | Thème sombre / clair                   | 🔍 PR ouverte (maquette validée par Mouss le 24/11)              |
+| M6b | Traduction anglaise                    | à faire (feu vert du 24/11 : app d'abord, site plus tard)        |
+
+## Ce que contient le lot M6c
+
+- **Thème sombre**, d'après la maquette section 7 validée par Mouss le 24/11 (« c'est parfait, intègre »).
+- **Une seule liste de couleurs, deux thèmes** : `packages/config/tailwind/palette.cjs` construit le thème clair
+  (les couleurs du site, `tokens.json` → `color`) et le thème sombre (`tokens.json` → `colorDark`), avec les mêmes
+  noms (`primary`, `muted-foreground`…).
+- Dans le preset NativeWind, chaque couleur lit une **variable CSS** (`bg-primary` → `rgb(var(--color-primary))`).
+  `ThemeRoot` (`src/theme/`, posé dans `AppProviders`) donne aux variables les valeurs du thème actif avec `vars()` de
+  NativeWind : tous les écrans changent de couleur sans être réécrits. `global.css` garde les valeurs claires par
+  défaut.
+- Pour ce qui ne passe pas par `className` (icônes lucide, roues de chargement, fond des écrans) :
+  `useThemeColors()` renvoie les couleurs du thème actif. Plus aucune couleur écrite en dur dans les écrans (sauf le
+  splash, qui garde son fond terre, et la photo de la bannière).
+- Le thème suit le **réglage du téléphone** (`useColorSchemeName`). Le choix « Clair / Sombre / Automatique » est
+  prêt dans `themeStore` et aura son écran dans Compte (lot M12).
+- Barre d'onglets : verre fumé en sombre (flou `tint="dark"`, onglet actif soleil). Le fondu du splash va vers le
+  fond du thème actif.
+- Tests : 182 tests mobiles. `preset.test.ts` : thème clair identique au site, chaque couleur lit sa variable,
+  thème sombre complet, contrastes AA des textes en sombre. `theme.test.tsx` : suit le téléphone, clair par défaut,
+  le choix passe avant le téléphone, couleurs sombres posées autour de l'app.
 
 ## Ce que contient le lot M6
 

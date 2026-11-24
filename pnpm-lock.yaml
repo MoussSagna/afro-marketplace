@@ -24,6 +24,9 @@ importers:
       '@afro/common':
         specifier: workspace:*
         version: link:../../packages/common
+      '@afro/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@expo-google-fonts/inter':
         specifier: ^0.4.2
         version: 0.4.2
@@ -127,9 +130,6 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@types/react@19.3.0)(react@19.3.0)
     devDependencies:
-      '@afro/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@react-native/jest-preset':
         specifier: ^0.88.1
         version: 0.88.1(@babel/core@7.29.13)(react@19.3.0)

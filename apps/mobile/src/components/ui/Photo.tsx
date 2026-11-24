@@ -1,5 +1,6 @@
 import { Image, type ImageProps } from 'expo-image';
 import { cssInterop } from 'nativewind';
+import { useThemeColors } from '@/theme/useTheme';
 
 // expo-image ne connaît pas `className` : on dit à NativeWind de le traduire en `style`.
 cssInterop(Image, { className: 'style' });
@@ -18,6 +19,7 @@ type PhotoProps = Omit<ImageProps, 'source'> & {
  * Sans adresse, on garde un fond sable à la place de la photo.
  */
 export function Photo({ uri, alt, className, ...props }: PhotoProps) {
+  const colors = useThemeColors();
   return (
     <Image
       source={uri ? { uri } : undefined}
@@ -28,7 +30,7 @@ export function Photo({ uri, alt, className, ...props }: PhotoProps) {
       accessibilityLabel={alt}
       accessibilityRole={alt ? 'image' : undefined}
       className={className}
-      style={{ backgroundColor: '#F3E6D8' }}
+      style={{ backgroundColor: colors.secondary }}
       {...props}
     />
   );
