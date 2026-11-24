@@ -1,14 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import { SignInRequired } from '@/features/auth/SignInRequired';
 import { ComingSoonScreen } from '@/features/coming-soon/ComingSoonScreen';
 
 export default function MessagesTab() {
+  const { t } = useTranslation();
   return (
-    <SignInRequired title="Messages" reason="Connecte-toi pour discuter avec les prestataires.">
-      <ComingSoonScreen
-        title="Messages"
-        lot="M10"
-        description="Discuter avec les prestataires à qui tu as demandé un devis."
-      />
+    <SignInRequired title={t('tabs.messages')} reason={t('messages.signIn')}>
+      <ComingSoonScreen title={t('tabs.messages')} lot="M10" description={t('messages.soon')} />
     </SignInRequired>
   );
 }

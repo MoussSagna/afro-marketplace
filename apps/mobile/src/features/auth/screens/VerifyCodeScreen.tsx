@@ -1,9 +1,16 @@
-import { DEMO_OTP_CODE, otpPurposeSchema, useResendOtp, useVerifyOtp } from '@afro/common';
+import {
+  DEMO_OTP_CODE,
+  authMessages,
+  otpPurposeSchema,
+  useResendOtp,
+  useVerifyOtp,
+} from '@afro/common';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, Text } from '@/components/ui';
-import { errorMessage } from '../authErrors';
+import { useErrorText } from '@/i18n/useErrorText';
 import { AuthScreen } from '../components/AuthScreen';
 import { CodeInput } from '../components/CodeInput';
 import { TextLink } from '../components/TextLink';
@@ -33,6 +40,8 @@ function useCountdown(from: number) {
  * - Mot de passe oublié : le code mène au choix du nouveau mot de passe.
  */
 export function VerifyCodeScreen() {
+  const { t } = useTranslation();
+  const { apiError } = useErrorText();
   const router = useRouter();
   const params = useLocalSearchParams<{ email?: string; purpose?: string }>();
   const email = params.email ?? '';
@@ -46,7 +55,7 @@ export function VerifyCodeScreen() {
 
   function submit(value: string) {
     if (value.length < 6) {
-      setCodeError('Le code contient 6 chiffres');
+      setCodeError(authMessages.otpFormat);
       return;
     }
     if (verify.isPending) return;
@@ -61,7 +70,7 @@ export function VerifyCodeScreen() {
             router.replace({ pathname: '/nouveau-mot-de-passe', params: { email, code: value } });
           }
         },
-        onError: (error) => setCodeError(errorMessage(error)),
+        onError: (error) => setCodeError(apiError(error)),
       },
     );
   }
@@ -88,12 +97,10 @@ export function VerifyCodeScreen() {
 
   return (
     <AuthScreen
-      title="Vérifie ton email"
+      title={t('auth.verifyTitle')}
       subtitle={
         <Text tone="muted">
-          {purpose === 'sign-up'
-            ? 'On a envoyé un code à 6 chiffres à '
-            : 'Si un compte existe, on a envoyé un code à 6 chiffres à '}
+          {purpose === 'sign-up' ? t('auth.codeSentTo') : t('auth.codeSentIfExists')}
           <Text weight="semibold">{email}</Text>
         </Text>
       }
@@ -106,39 +113,38 @@ export function VerifyCodeScreen() {
           editable={!verify.isPending}
         />
         <View className="rounded-md bg-secondary/60 p-3">
-          <Text size="sm">{`Version de démo : aucun email n’est envoyé, le code est ${DEMO_OTP_CODE}.`}</Text>
+          <Text size="sm">{t('auth.demoCode', { code: DEMO_OTP_CODE })}</Text>
         </View>
         <View className="flex-row flex-wrap items-center gap-x-1">
           <Text size="sm" tone="muted">
-            Code reçu par erreur ?
+            {t('auth.wrongEmail')}
           </Text>
-          <TextLink onPress={() => router.back()}>Modifier l’email</TextLink>
+          <TextLink onPress={() => router.back()}>{t('auth.changeEmail')}</TextLink>
         </View>
         <View className="flex-row flex-wrap items-center gap-x-1">
           {countdown.left > 0 ? (
-            <Text
-              size="sm"
-              tone="muted"
-            >{`Pas reçu ? Renvoyer dans ${formatSeconds(countdown.left)}`}</Text>
+            <Text size="sm" tone="muted">
+              {t('auth.resendIn', { time: formatSeconds(countdown.left) })}
+            </Text>
           ) : (
             <>
               <Text size="sm" tone="muted">
-                Pas reçu ?
+                {t('auth.notReceived')}
               </Text>
               <TextLink onPress={onResend} disabled={resend.isPending}>
-                Renvoyer le code
+                {t('auth.resend')}
               </TextLink>
             </>
           )}
         </View>
         {resend.isSuccess && countdown.left > 0 ? (
           <Text size="sm" tone="success" accessibilityLiveRegion="polite">
-            Nouveau code envoyé.
+            {t('auth.codeResent')}
           </Text>
         ) : null}
       </View>
       <Button fullWidth loading={verify.isPending} onPress={() => submit(code)} className="mt-auto">
-        Confirmer
+        {t('auth.confirm')}
       </Button>
     </AuthScreen>
   );

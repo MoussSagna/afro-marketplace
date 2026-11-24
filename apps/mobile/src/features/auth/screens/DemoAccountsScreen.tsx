@@ -1,14 +1,13 @@
 import { useDemoAccounts, useSignInAsDemo, type DemoAccount } from '@afro/common';
 import { Briefcase, Shield, UserRound } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { Badge, Card, Text } from '@/components/ui';
-import { errorMessage } from '../authErrors';
+import { useErrorText } from '@/i18n/useErrorText';
 import { AuthScreen } from '../components/AuthScreen';
 import { FormAlert } from '../components/FormAlert';
 import { useFinishAuth } from '../useFinishAuth';
 import { useThemeColors } from '@/theme/useTheme';
-
-const ROLE_LABELS = { client: 'Client', provider: 'Prestataire', admin: 'Admin' } as const;
 
 function iconFor(account: DemoAccount) {
   if (account.roles.includes('admin')) return Shield;
@@ -18,6 +17,8 @@ function iconFor(account: DemoAccount) {
 
 /** Comptes de démo (P8), comme sur le site : on choisit un compte et on est connecté. */
 export function DemoAccountsScreen() {
+  const { t } = useTranslation();
+  const { apiError } = useErrorText();
   const colors = useThemeColors();
   const accounts = useDemoAccounts();
   const signInAsDemo = useSignInAsDemo();
@@ -33,15 +34,12 @@ export function DemoAccountsScreen() {
   }
 
   return (
-    <AuthScreen
-      title="Comptes de démo"
-      subtitle="Choisis un compte pour découvrir l’app, sans mot de passe."
-    >
-      <FormAlert message={signInAsDemo.isError ? errorMessage(signInAsDemo.error) : null} />
+    <AuthScreen title={t('auth.demoTitle')} subtitle={t('auth.demoSubtitle')}>
+      <FormAlert message={signInAsDemo.isError ? apiError(signInAsDemo.error) : null} />
       {accounts.isPending ? (
-        <ActivityIndicator accessibilityLabel="Chargement" color={colors.primary} />
+        <ActivityIndicator accessibilityLabel={t('common.loading')} color={colors.primary} />
       ) : null}
-      {accounts.isError ? <FormAlert message="Impossible de charger les comptes de démo." /> : null}
+      {accounts.isError ? <FormAlert message={t('auth.demoLoadError')} /> : null}
       <View className="gap-3">
         {accounts.data?.map((account) => {
           const Icon = iconFor(account);
@@ -49,7 +47,7 @@ export function DemoAccountsScreen() {
             <Pressable
               key={account.userId}
               accessibilityRole="button"
-              accessibilityLabel={`Se connecter : ${account.label}`}
+              accessibilityLabel={t('auth.demoSignInAs', { label: account.label })}
               disabled={signInAsDemo.isPending}
               onPress={() => choose(account)}
               className="active:opacity-80"
@@ -65,7 +63,7 @@ export function DemoAccountsScreen() {
                   </Text>
                   <View className="mt-1 flex-row flex-wrap gap-1">
                     {account.roles.map((role) => (
-                      <Badge key={role}>{ROLE_LABELS[role]}</Badge>
+                      <Badge key={role}>{t(`auth.roles.${role}`)}</Badge>
                     ))}
                   </View>
                 </View>

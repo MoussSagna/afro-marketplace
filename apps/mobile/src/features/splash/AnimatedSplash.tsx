@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
@@ -92,6 +93,7 @@ type AnimatedSplashProps = {
  */
 export function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
   const reduceMotion = useReducedMotion();
+  const { t: translate } = useTranslation();
   // Le fondu final va vers le fond de l'app : crème en thème clair, brun en thème sombre.
   const appBackground = useThemeColors().background;
   // L'horloge commune. 0,6 = tout est affiché, avant le fondu (état « figé »).
@@ -130,7 +132,7 @@ export function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
       style={StyleSheet.absoluteFill}
       accessible
       accessibilityRole="image"
-      accessibilityLabel="Wenzee, chargement"
+      accessibilityLabel={translate('splash.label')}
       testID="animated-splash"
     >
       {/* Le fond terre, plus chaud au centre (dégradé radial de la maquette). */}
@@ -231,7 +233,7 @@ export function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
 
         <Animated.View style={tagline}>
           <Text size="sm" className="mt-5 tracking-wide text-secondary">
-            Les talents qui font vivre nos cultures
+            {translate('splash.tagline')}
           </Text>
         </Animated.View>
       </View>

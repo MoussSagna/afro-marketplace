@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { useErrorText } from '@/i18n/useErrorText';
 import { useThemeColors } from '@/theme/useTheme';
 
 type CheckboxProps = {
@@ -23,6 +24,7 @@ export function Checkbox({
   error,
 }: CheckboxProps) {
   const colors = useThemeColors();
+  const { fieldError } = useErrorText();
   return (
     <View className="gap-1">
       <Pressable
@@ -46,7 +48,7 @@ export function Checkbox({
       </Pressable>
       {error ? (
         <Text size="caption" weight="medium" tone="destructive" accessibilityLiveRegion="polite">
-          {error}
+          {fieldError(error)}
         </Text>
       ) : null}
     </View>

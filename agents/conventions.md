@@ -6,6 +6,9 @@
 - **Commentaires, messages d'erreur, textes affichés, noms de tests, commits, PR, docs** : **français**.
 - Les messages d'erreur des schémas et des règles sont prêts à être affichés et tutoient l'utilisateur
   (« Choisis la date de l'événement »).
+- **App mobile, depuis M6b** : aucun texte affiché écrit en dur dans un écran. On ajoute la clé dans
+  `packages/common/src/i18n/fr.ts` **et** `en.ts`, puis `t('section.cle')`. Un nouveau message d'erreur d'un schéma
+  va aussi dans `fr.errors` (sinon il s'affiche en français). Le site n'est pas encore traduit.
 
 ## Données
 

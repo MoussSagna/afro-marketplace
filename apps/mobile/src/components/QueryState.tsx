@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 import { Button, EmptyState } from '@/components/ui';
 import { useThemeColors } from '@/theme/useTheme';
@@ -27,6 +28,7 @@ export function QueryState({
   children,
 }: QueryStateProps) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   if (isPending) {
     return (
       placeholder ?? (
@@ -41,11 +43,11 @@ export function QueryState({
   if (isError) {
     return (
       <EmptyState
-        title="Oups, ça n’a pas chargé"
-        description="Vérifie ta connexion puis réessaie."
+        title={t('common.loadError')}
+        description={t('common.loadErrorHint')}
         action={
           <Button variant="outline" size="md" onPress={onRetry}>
-            Réessayer
+            {t('common.retry')}
           </Button>
         }
         className="py-4"

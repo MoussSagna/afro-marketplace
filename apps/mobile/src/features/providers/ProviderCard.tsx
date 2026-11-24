@@ -1,5 +1,6 @@
 import type { ProviderCard as ProviderCardData } from '@afro/common';
 import { BadgeCheck } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Card, Photo, Rating, Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -17,6 +18,7 @@ type ProviderCardProps = {
  */
 export function ProviderCard({ provider, className }: ProviderCardProps) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   return (
     <Card
       className={cn('overflow-hidden', className)}
@@ -31,7 +33,11 @@ export function ProviderCard({ provider, className }: ProviderCardProps) {
               {provider.displayName}
             </Text>
             {provider.isProVerified ? (
-              <BadgeCheck size={16} color={colors.success} accessibilityLabel="Vérifié" />
+              <BadgeCheck
+                size={16}
+                color={colors.success}
+                accessibilityLabel={t('common.verified')}
+              />
             ) : null}
           </View>
           <Rating value={provider.ratingAverage} count={provider.ratingCount} />

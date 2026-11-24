@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { useErrorText } from '@/i18n/useErrorText';
 
 const LENGTH = 6;
 
@@ -19,6 +21,9 @@ type CodeInputProps = {
  * les cases ne font qu'afficher ses chiffres.
  */
 export function CodeInput({ value, onChange, error, editable = true }: CodeInputProps) {
+  const { t } = useTranslation();
+  const { fieldError } = useErrorText();
+  const shownError = fieldError(error);
   const [focused, setFocused] = useState(true);
   return (
     <View className="gap-2">
@@ -62,15 +67,15 @@ export function CodeInput({ value, onChange, error, editable = true }: CodeInput
           autoComplete="one-time-code"
           maxLength={LENGTH}
           caretHidden
-          accessibilityLabel="Code à 6 chiffres"
-          accessibilityHint={error}
+          accessibilityLabel={t('auth.codeLabel')}
+          accessibilityHint={shownError}
           style={styles.hidden}
           importantForAccessibility="yes"
         />
       </View>
       {error ? (
         <Text size="caption" weight="medium" tone="destructive" accessibilityLiveRegion="polite">
-          {error}
+          {shownError}
         </Text>
       ) : null}
     </View>

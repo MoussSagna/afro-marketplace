@@ -1,14 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import { SignInRequired } from '@/features/auth/SignInRequired';
 import { ComingSoonScreen } from '@/features/coming-soon/ComingSoonScreen';
 
 export default function RequestsTab() {
+  const { t } = useTranslation();
   return (
-    <SignInRequired title="Demandes" reason="Connecte-toi pour suivre tes demandes de devis.">
-      <ComingSoonScreen
-        title="Demandes"
-        lot="M10"
-        description="Suivre tes demandes de devis, les devis reçus et tes réservations."
-      />
+    <SignInRequired title={t('tabs.requests')} reason={t('requests.signIn')}>
+      <ComingSoonScreen title={t('tabs.requests')} lot="M10" description={t('requests.soon')} />
     </SignInRequired>
   );
 }

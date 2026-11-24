@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Animated,
   Easing,
@@ -97,6 +98,7 @@ export function GlassTabBar({
   const expand = useTabBarStore((s) => s.expand);
   const reduceMotion = useReduceMotion();
   const glass = GLASS[useColorSchemeName()];
+  const { t } = useTranslation();
   const fullWidth = width - SIDE_MARGIN * 2;
 
   // 0 = dépliée, 1 = rond. Animated de React Native (la largeur ne passe pas par le fil natif).
@@ -213,7 +215,7 @@ export function GlassTabBar({
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`Afficher les onglets, ${activeOptions.title ?? activeRoute.name} actif`}
+          accessibilityLabel={t('tabs.showTabs', { tab: activeOptions.title ?? activeRoute.name })}
           onPress={expand}
           style={styles.ballButton}
         >

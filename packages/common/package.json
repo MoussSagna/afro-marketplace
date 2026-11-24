@@ -6,7 +6,8 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./mocks": "./src/mocks/index.ts"
+    "./mocks": "./src/mocks/index.ts",
+    "./i18n": "./src/i18n/index.ts"
   },
   "scripts": {
     "lint": "eslint .",

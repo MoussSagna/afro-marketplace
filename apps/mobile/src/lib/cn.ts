@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { localeOf } from '@afro/common/i18n';
+import { currentLanguage } from '@/i18n/currentLanguage';
 
 /**
  * Assemble des classes Tailwind (même fonction que `cn` sur le site) :
@@ -9,14 +11,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const decimal = new Intl.NumberFormat('fr-FR', {
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
+const decimals = new Map<string, Intl.NumberFormat>();
 
-/** 4.9 → « 4,9 » (note avec une décimale, à la française). */
-export function formatRating(value: number): string {
-  return decimal.format(value);
+/**
+ * 4.9 → « 4,9 » en français, « 4.9 » en anglais (note avec une décimale).
+ * Sans langue précisée : celle de l'app.
+ */
+export function formatRating(value: number, locale = localeOf(currentLanguage())): string {
+  let format = decimals.get(locale);
+  if (!format) {
+    format = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    decimals.set(locale, format);
+  }
+  return format.format(value);
 }
 
 /** « Aïssatou Diallo » → « AD » (pastille d'avatar sans photo). */

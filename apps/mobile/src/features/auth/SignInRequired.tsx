@@ -1,6 +1,7 @@
 import { usePathname, useRouter } from 'expo-router';
 import { LockKeyhole } from 'lucide-react-native';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Heading, Text } from '@/components/ui';
@@ -24,6 +25,7 @@ type SignInRequiredProps = {
  * Comme sur le site, c'est du confort : le vrai contrôle se fait côté serveur.
  */
 export function SignInRequired({ title, reason, children }: SignInRequiredProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const user = useSessionStore((s) => s.user);
   const pathname = usePathname();
@@ -47,17 +49,17 @@ export function SignInRequired({ title, reason, children }: SignInRequiredProps)
           <LockKeyhole size={34} color={colors.primary} />
         </View>
         <Heading level={2} className="text-center">
-          Connecte-toi
+          {t('guard.title')}
         </Heading>
         <Text size="sm" tone="muted" className="text-center">
           {reason}
         </Text>
         <View className="mt-3 w-full gap-3">
           <Button fullWidth onPress={() => open('/bienvenue')}>
-            Se connecter
+            {t('guard.signIn')}
           </Button>
           <Button fullWidth variant="outline" onPress={() => open('/inscription')}>
-            Créer un compte
+            {t('guard.signUp')}
           </Button>
         </View>
       </View>

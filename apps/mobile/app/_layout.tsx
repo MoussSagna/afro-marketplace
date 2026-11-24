@@ -1,5 +1,7 @@
 // En premier : ce qui manque au moteur JavaScript du téléphone (URL, crypto.randomUUID…).
 import '@/lib/polyfills';
+// Puis les textes de l'app, en français ou en anglais selon le téléphone.
+import '@/i18n';
 import '../global.css';
 import { Stack } from 'expo-router';
 import { SplashGate } from '@/features/splash/SplashGate';

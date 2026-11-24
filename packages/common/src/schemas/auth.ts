@@ -8,25 +8,44 @@ import { text } from './common';
  * Supabase Auth prendra le relais au lot 10, avec les mêmes schémas.
  */
 
+/**
+ * Les messages d'erreur des formulaires de connexion, en français.
+ * Le site les affiche tels quels ; l'app les traduit (voir i18n/, clés « errors.* »).
+ */
+export const authMessages = {
+  emailInvalid: 'Adresse email invalide',
+  passwordTooLong: 'Mot de passe trop long (72 caractères maximum)',
+  passwordLength: 'Au moins 8 caractères',
+  passwordUpperDigit: 'Une majuscule et un chiffre',
+  otpFormat: 'Le code contient 6 chiffres',
+  firstNameRequired: 'Indique ton prénom',
+  acceptTerms: 'Accepte les conditions pour continuer',
+  passwordRequired: 'Indique ton mot de passe',
+} as const;
+
 /** Le code reçu « par email » en démo (aucun email n'est envoyé). */
 export const DEMO_OTP_CODE = '123456';
 
 /** Un email, nettoyé (espaces, majuscules) avant d'être vérifié. */
-export const emailSchema = z.string().trim().toLowerCase().pipe(z.email('Adresse email invalide'));
+export const emailSchema = z.string().trim().toLowerCase().pipe(z.email(authMessages.emailInvalid));
 
 /** Les règles d'un mot de passe, une par une (affichées et cochées en direct sur l'écran). */
 export const passwordRules = [
-  { id: 'length', label: 'Au moins 8 caractères', test: (value: string) => value.length >= 8 },
+  {
+    id: 'length',
+    label: authMessages.passwordLength,
+    test: (value: string) => value.length >= 8,
+  },
   {
     id: 'upper-digit',
-    label: 'Une majuscule et un chiffre',
+    label: authMessages.passwordUpperDigit,
     test: (value: string) => /[A-Z]/.test(value) && /\d/.test(value),
   },
 ] as const;
 
 export const passwordSchema = z
   .string()
-  .max(72, 'Mot de passe trop long (72 caractères maximum)')
+  .max(72, authMessages.passwordTooLong)
   .refine(passwordRules[0].test, passwordRules[0].label)
   .refine(passwordRules[1].test, passwordRules[1].label);
 
@@ -39,16 +58,16 @@ export function passwordStrength(value: string): 0 | 1 | 2 | 3 {
 }
 
 /** Le code de vérification : exactement 6 chiffres. */
-export const otpCodeSchema = z.string().regex(/^\d{6}$/, 'Le code contient 6 chiffres');
+export const otpCodeSchema = z.string().regex(/^\d{6}$/, authMessages.otpFormat);
 
 /** Pourquoi on vérifie un code : fin d'inscription, ou mot de passe oublié. */
 export const otpPurposeSchema = z.enum(['sign-up', 'reset-password']);
 
 export const signUpInputSchema = z.object({
-  firstName: text(1, 50, 'Indique ton prénom'),
+  firstName: text(1, 50, authMessages.firstNameRequired),
   email: emailSchema,
   password: passwordSchema,
-  acceptTerms: z.literal(true, 'Accepte les conditions pour continuer'),
+  acceptTerms: z.literal(true, authMessages.acceptTerms),
 });
 
 export const verifyOtpInputSchema = z.object({
@@ -64,7 +83,7 @@ export const resendOtpInputSchema = z.object({
 
 export const signInInputSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, 'Indique ton mot de passe'),
+  password: z.string().min(1, authMessages.passwordRequired),
 });
 
 export const forgotPasswordInputSchema = z.object({ email: emailSchema });
