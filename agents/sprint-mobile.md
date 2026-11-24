@@ -94,10 +94,13 @@ pour le site **et** l'app en même temps.
 ### M4 · Navigation et splash screen
 
 - Les 5 onglets du mode client (Accueil, Recherche, Demandes, Messages, Compte), les icônes, la pastille de non-lus.
-- Le **splash animé** de la maquette (section 0) : écran natif Expo statique, puis l'animation Moti du logo Wenzee ;
+- Le **splash animé** de la maquette (section 0) : écran natif Expo statique, puis l'animation du logo Wenzee
+  (faite avec Reanimated directement, voir avancement.md) ;
   logo complet directement si « Réduire les animations » est activé.
 - Icône de l'app (export PNG de `wenzee-app-icon.svg`).
 - Les écrans encore vides affichent « Bientôt disponible (lot Mx) », comme on l'avait fait sur le site.
+- Ajout demandé par Mouss le 24/11/2026 : barre d'onglets flottante en verre (façon iPhone) qui se rétracte en un
+  rond au défilement (maquette, section 6), intégrée après sa validation.
 - **Tests** : on passe d'un onglet à l'autre ; le splash disparaît une fois l'app prête.
 
 ### M5 · Connexion et inscription

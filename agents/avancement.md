@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (lot M3 : données de démo sur le téléphone).
+Dernière mise à jour : 24/11/2026 (lot M4 : onglets, splash animé et icône de l'app).
 
 ## Lots
 
@@ -31,8 +31,32 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M0  | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
 | M1  | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
 | M2  | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
-| M3  | Données mockées sur téléphone          | 🔍 PR ouverte                                                    |
-| M4  | Onglets + splash animé + icône         | à faire                                                          |
+| M3  | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
+| M4  | Onglets + splash animé + icône         | 🔍 PR ouverte (barre en verre rétractable : maquette à valider)  |
+| M5  | Connexion et inscription simulées      | à faire                                                          |
+
+## Ce que contient le lot M4
+
+- **Onglets du mode client** (`app/(tabs)/`, `src/features/navigation/ClientTabsLayout.tsx`) : Accueil (l'écran de
+  bienvenue provisoire, l'accueil complet arrive en M6), Recherche (M7), Demandes (M10), Messages (M10), Compte (M12).
+  Les onglets vides affichent « Bientôt disponible » et leur lot (`ComingSoonScreen`). Icônes lucide.
+- **Pastille de non-lus** sur Messages (`useClientUnreadCount`) : même requête et même cache que `useUnreadCount` de
+  `common`, mais seulement si quelqu'un est connecté. VoiceOver lit « Messages, 2 non lus ».
+- **Splash** : écran natif statique (`expo-splash-screen`, fond terre + symbole, réglé dans `app.json`) tant que
+  polices et données chargent (`useAppReady`), puis le **splash animé** de la maquette (`AnimatedSplash`, 3,2 s) par-
+  dessus l'app déjà dessinée (`SplashGate`). Fait avec **Reanimated** directement (pas Moti : Moti n'est pas garanti
+  avec Reanimated 4, et une seule horloge `t` suffit pour rejouer les étapes des @keyframes de la maquette).
+  « Réduire les animations » : logo complet sans mouvement, 0,9 s.
+- **Icône de l'app** : `assets/images/icon.png` (1024 px, carré plein, iOS arrondit lui-même),
+  `adaptive-icon.png` (Android, symbole seul dans la zone sûre) et `splash-icon.png`, exportés de
+  `/mnt/project-files/marque-wenzee/wenzee-app-icon.svg`. Visibles seulement dans un vrai build (lot M16) :
+  Expo Go garde sa propre icône et son propre écran de démarrage.
+- **Demande de Mouss du 24/11** : barre d'onglets flottante en **verre** (façon iPhone) qui se **rétracte en un rond**
+  (onglet actif + pastille) au défilement. Maquette section 6, en attente de sa validation ; la PR garde la barre
+  classique d'ici là.
+- Tests : 90 tests mobiles. Nouveaux : `ClientTabsLayout.test.tsx` (passer d'un onglet à l'autre, pastille),
+  `SplashGate.test.tsx` (natif gardé pendant le chargement, splash animé puis retiré, version courte si animations
+  réduites). Outils de test partagés : `src/test/demoApi.tsx`, faux Reanimated `src/test/reanimatedMock.tsx`.
 
 ## Ce que contient le lot M3
 

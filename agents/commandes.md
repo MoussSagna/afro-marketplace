@@ -58,6 +58,13 @@ Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod
   `app/_layout.tsx`). Pour vérifier après une mise à jour de MSW : supprimer ces globales dans Node, puis
   `require` MSW (voir `webEvents.test.ts`).
 - Mobile : AsyncStorage est remplacé par son faux officiel (en mémoire) dans `jest.setup.ts`.
+- Mobile : Reanimated 4 ne se charge pas dans Jest (moteur natif « worklets ») et ses faux officiels non plus :
+  `jest.setup.ts` le remplace par `src/test/reanimatedMock.tsx`. Un écran qui utilise une autre fonction de
+  Reanimated doit l'y ajouter.
+- Mobile : `renderRouter` (Expo Router) passe Jest en faux minuteurs et les laisse actifs : un appel au faux serveur
+  fait ensuite hors de l'écran ne finit jamais. Remettre `jest.useRealTimers()` dans `afterEach`.
+- Mobile : l'icône et l'écran de démarrage natif (`app.json`) ne se voient pas dans Expo Go, seulement dans un vrai
+  build (lot M16). Le splash animé, lui, se voit dans Expo Go.
 - Mobile : vérifier que Metro assemble bien l'app sans téléphone :
   `cd apps/mobile && CI=1 pnpm exec expo export --platform ios --output-dir /tmp/expo-out`.
 - Mobile : pour tester sur ton téléphone, il faut être sur le même réseau Wi-Fi que l'ordinateur
