@@ -60,7 +60,9 @@ Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod
 - Mobile : AsyncStorage est remplacé par son faux officiel (en mémoire) dans `jest.setup.ts`.
 - Mobile : Reanimated 4 ne se charge pas dans Jest (moteur natif « worklets ») et ses faux officiels non plus :
   `jest.setup.ts` le remplace par `src/test/reanimatedMock.tsx`. Un écran qui utilise une autre fonction de
-  Reanimated doit l'y ajouter.
+  Reanimated doit l'y ajouter. **Mais** `expo-router/testing-library` remplace à son tour Reanimated par un objet
+  vide : un composant rendu avec `renderRouter` (ex. la barre d'onglets) ne doit pas utiliser Reanimated. La barre
+  utilise donc `Animated` de React Native ; le splash (rendu hors routeur) garde Reanimated.
 - Mobile : `renderRouter` (Expo Router) passe Jest en faux minuteurs et les laisse actifs : un appel au faux serveur
   fait ensuite hors de l'écran ne finit jamais. Remettre `jest.useRealTimers()` dans `afterEach`.
 - Mobile : l'icône et l'écran de démarrage natif (`app.json`) ne se voient pas dans Expo Go, seulement dans un vrai

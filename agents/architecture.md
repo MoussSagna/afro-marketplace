@@ -114,7 +114,7 @@ apps/mobile/
   src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
-  src/features/navigation/ Barre d'onglets client et pastille de non-lus
+  src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
   src/stores/          Session (Zustand + AsyncStorage)
   tailwind.config.js   NativeWind : preset partagé @afro/config/tailwind/preset.cjs (couleurs du site)

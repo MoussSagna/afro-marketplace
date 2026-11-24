@@ -1,38 +1,20 @@
-import { ApiError, createHttpApiClient, type ApiClient } from '@afro/common';
-import { createHandlers, createMockDb } from '@afro/common/mocks';
-import { QueryClient } from '@tanstack/react-query';
+import { ApiError, type ApiClient } from '@afro/common';
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { createMockFetch } from '@/lib/api/mockFetch';
+import { View } from 'react-native';
 import { mainCategories } from '@/lib/categories';
-import { AppProviders } from '@/providers/AppProviders';
-import { DemoDataScreen } from './DemoDataScreen';
-
-// L'écran utilise useRouter (bouton Retour) : on n'a pas besoin de vraie navigation ici.
-jest.mock('expo-router', () => ({
-  Stack: { Screen: () => null },
-  useRouter: () => ({ back: jest.fn() }),
-}));
-
-/** Un client API branché sur une base de démo neuve (comme dans l'app). */
-function demoApi() {
-  const db = createMockDb({ now: () => new Date('2026-11-23T10:00:00Z') });
-  return { db, api: createHttpApiClient({ fetchFn: createMockFetch(createHandlers(db)) }) };
-}
+import { demoApi, testProviders } from '@/test/demoApi';
+import { DemoDataSections } from './DemoDataSections';
 
 function renderScreen(api: ApiClient) {
-  // Pas de nouvel essai automatique : on veut voir l'erreur tout de suite.
-  const queryClient = new QueryClient({
-    // gcTime infini : pas de minuteur de nettoyage qui garderait Jest ouvert après les tests.
-    defaultOptions: { queries: { retry: false, gcTime: Infinity } },
-  });
   return render(
-    <AppProviders apiClient={api} queryClient={queryClient}>
-      <DemoDataScreen />
-    </AppProviders>,
+    <View>
+      <DemoDataSections />
+    </View>,
+    { wrapper: testProviders(api) },
   );
 }
 
-describe('Écran « Données de démo » (lot M3)', () => {
+describe('Données de démo : catégories et prestataires à la une (lot M3)', () => {
   it('affiche le chargement, puis les catégories et les prestataires à la une', async () => {
     const { db, api } = demoApi();
     await renderScreen(api);

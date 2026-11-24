@@ -1,13 +1,16 @@
 import { fireEvent } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
+import { demoApi, testProviders } from '@/test/demoApi';
 import { WelcomeScreen } from '../welcome/WelcomeScreen';
 import { CatalogueScreen } from './CatalogueScreen';
 
 const routes = { index: WelcomeScreen, catalogue: CatalogueScreen };
 
+afterEach(() => jest.useRealTimers()); // renderRouter laisse les faux minuteurs actifs
+
 describe('Catalogue des composants (lot M2)', () => {
   it("s'ouvre depuis l'écran de bienvenue et revient en arrière", async () => {
-    await renderRouter(routes, { initialUrl: '/' });
+    await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(demoApi().api) });
 
     await fireEvent.press(screen.getByRole('link', { name: 'Voir les composants' }));
     expect(await screen.findByText('Catalogue des composants')).toBeOnTheScreen();
@@ -19,7 +22,7 @@ describe('Catalogue des composants (lot M2)', () => {
   });
 
   it('montre toutes les familles de composants', async () => {
-    await renderRouter(routes, { initialUrl: '/catalogue' });
+    await renderRouter(routes, { initialUrl: '/catalogue', wrapper: testProviders(demoApi().api) });
     for (const title of [
       'Logo',
       'Typographie',
@@ -34,7 +37,7 @@ describe('Catalogue des composants (lot M2)', () => {
   });
 
   it('coche et décoche une origine en touchant sa pastille', async () => {
-    await renderRouter(routes, { initialUrl: '/catalogue' });
+    await renderRouter(routes, { initialUrl: '/catalogue', wrapper: testProviders(demoApi().api) });
     const mali = screen.getByRole('button', { name: 'Mali' });
     expect(mali).not.toBeSelected();
     await fireEvent.press(mali);
@@ -44,7 +47,7 @@ describe('Catalogue des composants (lot M2)', () => {
   });
 
   it("affiche l'exemple d'erreur de champ", async () => {
-    await renderRouter(routes, { initialUrl: '/catalogue' });
+    await renderRouter(routes, { initialUrl: '/catalogue', wrapper: testProviders(demoApi().api) });
     expect(
       screen.getByText("Ce prestataire n'est pas disponible ce jour-là. Choisis une autre date."),
     ).toBeOnTheScreen();
