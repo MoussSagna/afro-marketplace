@@ -6,19 +6,26 @@ import { Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { cn } from '@/lib/cn';
 import { useThemeColors } from '@/theme/useTheme';
-import { isoDay, longDay, monthGrid, monthTitle, todayIso, weekdayInitials } from './searchDates';
+import { isoDay, longDay, monthGrid, monthTitle, todayIso, weekdayInitials } from '@/lib/dates';
 
 type CalendarProps = {
   /** Le jour choisi (« 2026-12-14 »), s'il y en a un. */
   value?: string;
-  onChange(isoDate: string): void;
+  /** Sans `onChange`, le calendrier se lit seulement (onglet Dispos d'un profil). */
+  onChange?(isoDate: string): void;
+  /** Les jours où le prestataire n'est pas libre : barrés, en rouge pâle. */
+  unavailable?: ReadonlySet<string>;
+  /** Prévient quand on change de mois (pour charger ses dispos). */
+  onMonthChange?(year: number, month: number): void;
 };
 
 /**
- * Un calendrier d'un mois (étape « Quand ? ») : on change de mois avec les flèches,
- * les jours passés sont barrés et ne se touchent pas, le jour choisi est en terre.
+ * Un calendrier d'un mois : on change de mois avec les flèches, les jours passés sont barrés.
+ * - Pour choisir un jour (étape « Quand ? » de la recherche) : le jour choisi est en terre.
+ * - Pour lire des disponibilités (profil) : les jours indisponibles sont barrés sur fond rouge pâle,
+ *   et VoiceOver lit « …, disponible » ou « …, indisponible ».
  */
-export function Calendar({ value, onChange }: CalendarProps) {
+export function Calendar({ value, onChange, unavailable, onMonthChange }: CalendarProps) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const colors = useThemeColors();
@@ -29,11 +36,11 @@ export function Calendar({ value, onChange }: CalendarProps) {
     month: Number(start.slice(5, 7)) - 1,
   });
   const isCurrentMonth = isoDay(month.year, month.month, 1) <= today;
-  const move = (delta: number) =>
-    setMonth(({ year, month: m }) => {
-      const next = new Date(Date.UTC(year, m + delta, 1));
-      return { year: next.getUTCFullYear(), month: next.getUTCMonth() };
-    });
+  const move = (delta: number) => {
+    const next = new Date(Date.UTC(month.year, month.month + delta, 1));
+    setMonth({ year: next.getUTCFullYear(), month: next.getUTCMonth() });
+    onMonthChange?.(next.getUTCFullYear(), next.getUTCMonth());
+  };
 
   return (
     <View className="mt-4">
@@ -42,7 +49,7 @@ export function Calendar({ value, onChange }: CalendarProps) {
         <View className="flex-row gap-2">
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={t('search.previousMonth')}
+            accessibilityLabel={t('calendar.previousMonth')}
             accessibilityState={{ disabled: isCurrentMonth }}
             disabled={isCurrentMonth}
             onPress={() => move(-1)}
@@ -55,7 +62,7 @@ export function Calendar({ value, onChange }: CalendarProps) {
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={t('search.nextMonth')}
+            accessibilityLabel={t('calendar.nextMonth')}
             onPress={() => move(1)}
             className="h-9 w-9 items-center justify-center rounded-full border border-border"
           >
@@ -82,11 +89,53 @@ export function Calendar({ value, onChange }: CalendarProps) {
           const iso = isoDay(month.year, month.month, day);
           const past = iso < today;
           const selected = iso === value;
+          const label = longDay(iso, locale);
+          const dayText = (
+            <Text
+              size="sm"
+              weight={selected ? 'bold' : 'medium'}
+              tone={selected ? 'inverse' : past ? 'muted' : 'default'}
+              className={past ? 'line-through opacity-60' : undefined}
+            >
+              {String(day)}
+            </Text>
+          );
+          if (!onChange) {
+            const busy = unavailable?.has(iso) ?? false;
+            return (
+              <View
+                key={iso}
+                className="h-10 w-[14.28%] items-center justify-center"
+                accessible
+                accessibilityLabel={
+                  past
+                    ? label
+                    : `${label}, ${busy ? t('calendar.unavailable') : t('calendar.available')}`
+                }
+              >
+                <View
+                  className={cn(
+                    'h-10 w-10 items-center justify-center rounded-full',
+                    busy && !past && 'bg-destructive/15',
+                  )}
+                >
+                  <Text
+                    size="sm"
+                    weight="medium"
+                    tone={past ? 'muted' : busy ? 'destructive' : 'default'}
+                    className={past || busy ? 'line-through opacity-60' : undefined}
+                  >
+                    {String(day)}
+                  </Text>
+                </View>
+              </View>
+            );
+          }
           return (
             <View key={iso} className="h-10 w-[14.28%] items-center justify-center">
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={longDay(iso, locale)}
+                accessibilityLabel={label}
                 accessibilityState={{ selected, disabled: past }}
                 disabled={past}
                 onPress={() => onChange(iso)}
@@ -95,14 +144,7 @@ export function Calendar({ value, onChange }: CalendarProps) {
                   selected && 'bg-primary',
                 )}
               >
-                <Text
-                  size="sm"
-                  weight={selected ? 'bold' : 'medium'}
-                  tone={selected ? 'inverse' : past ? 'muted' : 'default'}
-                  className={past ? 'line-through opacity-60' : undefined}
-                >
-                  {String(day)}
-                </Text>
+                {dayText}
               </Pressable>
             </View>
           );

@@ -4,7 +4,7 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { demoApi, testProviders } from '@/test/demoApi';
 import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
 import { useTabBarStore } from '../navigation/tabBarStore';
-import { isoDay, longDay } from './searchDates';
+import { isoDay, longDay } from '@/lib/dates';
 import { SearchScreen } from './SearchScreen';
 import { BUDGET_LIMIT } from './BudgetSlider';
 

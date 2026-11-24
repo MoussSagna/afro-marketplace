@@ -1,5 +1,5 @@
 /*
- * Les dates de la recherche, au format ISO « 2026-12-14 » (comme partout dans common).
+ * Les dates des calendriers (recherche, disponibilités), au format ISO « 2026-12-14 » (comme partout dans common).
  * On compte en jours du calendrier, sans heure : le jour de l'événement.
  */
 
@@ -68,4 +68,19 @@ export function weekdayInitials(locale: string): string[] {
   const format = new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: 'UTC' });
   // Le 5 janvier 2026 est un lundi.
   return Array.from({ length: 7 }, (_, i) => format.format(new Date(Date.UTC(2026, 0, 5 + i))));
+}
+
+/** Le premier et le dernier jour d'un mois (« 2026-12-01 » → « 2026-12-31 »), pour demander ses dispos. */
+export function monthRange(year: number, month: number): { from: string; to: string } {
+  const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return { from: isoDay(year, month, 1), to: isoDay(year, month, days) };
+}
+
+/** « mars 2026 » / « March 2026 » : la date d'un avis. */
+export function monthYear(isoDateTime: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(isoDateTime));
 }
