@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M4 : onglets, splash animé et icône de l'app).
+Dernière mise à jour : 24/11/2026 (lot M4 bis : barre d'onglets en verre rétractable).
 
 ## Lots
 
@@ -32,8 +32,28 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M1  | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
 | M2  | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
 | M3  | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
-| M4  | Onglets + splash animé + icône         | 🔍 PR ouverte (barre en verre rétractable : maquette à valider)  |
+| M4  | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
+| M4b | Barre d'onglets en verre rétractable   | 🔍 PR ouverte (validée par Mouss le 24/11)                       |
 | M5  | Connexion et inscription simulées      | à faire                                                          |
+
+## Ce que contient le lot M4 bis
+
+- **Barre d'onglets en verre** (`src/features/navigation/GlassTabBar.tsx`, branchée par `tabBar` dans
+  `ClientTabsLayout`) : pilule flottante translucide (flou `expo-blur` + voile clair + reflet), onglet actif en
+  pastille claire, pastille de non-lus. Maquette section 6, **validée par Mouss le 24/11/2026**.
+- **Rétractable** : on fait défiler vers le bas → elle se rétracte en un rond (onglet actif + pastille) ; on remonte,
+  on touche le rond ou on change d'onglet → elle revient. État partagé dans un store Zustand (`tabBarStore.ts`) ;
+  chaque écran qui défile branche `useCollapseOnScroll()` sur son `onScroll` (règle testable : `scrollDecision`).
+  « Réduire les animations » : changement d'état sans mouvement (`src/lib/useReduceMotion.ts`).
+- Fait avec `Animated` de React Native (pas Reanimated) : voir le piège dans `commandes.md`.
+- Flou réel sur iPhone ; sur Android, voile translucide sans flou (le flou Android d'`expo-blur` demande d'envelopper
+  tout l'écran, on verra au besoin).
+- **Accueil provisoire** : il affiche maintenant les données de démo (catégories, prestataires à la une, ancien
+  écran `/donnees` supprimé) pour avoir de quoi défiler. Les écrans laissent `TAB_BAR_SPACE` en bas.
+- Accessibilité : onglets en rôle `tab` avec état « sélectionné », rond annoncé « Afficher les onglets, Accueil
+  actif », onglets masqués aux lecteurs d'écran quand la barre est rétractée.
+- Tests : 97 tests mobiles (`ClientTabsLayout.test.tsx` : rétraction au défilement, retour en remontant ou au
+  toucher ; `useCollapseOnScroll.test.ts`).
 
 ## Ce que contient le lot M4
 
@@ -52,8 +72,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
   `/mnt/project-files/marque-wenzee/wenzee-app-icon.svg`. Visibles seulement dans un vrai build (lot M16) :
   Expo Go garde sa propre icône et son propre écran de démarrage.
 - **Demande de Mouss du 24/11** : barre d'onglets flottante en **verre** (façon iPhone) qui se **rétracte en un rond**
-  (onglet actif + pastille) au défilement. Maquette section 6, en attente de sa validation ; la PR garde la barre
-  classique d'ici là.
+  au défilement → faite au lot M4 bis.
 - Tests : 90 tests mobiles. Nouveaux : `ClientTabsLayout.test.tsx` (passer d'un onglet à l'autre, pastille),
   `SplashGate.test.tsx` (natif gardé pendant le chargement, splash animé puis retiré, version courte si animations
   réduites). Outils de test partagés : `src/test/demoApi.tsx`, faux Reanimated `src/test/reanimatedMock.tsx`.

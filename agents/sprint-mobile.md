@@ -100,7 +100,7 @@ pour le site **et** l'app en même temps.
 - Icône de l'app (export PNG de `wenzee-app-icon.svg`).
 - Les écrans encore vides affichent « Bientôt disponible (lot Mx) », comme on l'avait fait sur le site.
 - Ajout demandé par Mouss le 24/11/2026 : barre d'onglets flottante en verre (façon iPhone) qui se rétracte en un
-  rond au défilement (maquette, section 6), intégrée après sa validation.
+  rond au défilement (maquette, section 6). Validée le 24/11, intégrée au lot M4 bis.
 - **Tests** : on passe d'un onglet à l'autre ; le splash disparaît une fois l'app prête.
 
 ### M5 · Connexion et inscription
