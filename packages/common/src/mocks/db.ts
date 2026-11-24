@@ -1,5 +1,6 @@
 import { mockDataSchema, type MockData } from './data';
 import { buildSeed } from './seed/buildSeed';
+import { DEMO_PASSWORD } from './seed/people';
 
 /** Un stockage clé/valeur comme le localStorage (on accepte aussi un faux, pour les tests). */
 export interface KeyValueStorage {
@@ -63,7 +64,16 @@ export function createMockDb(options: MockDbOptions = {}): MockDb {
       const raw = storage.getItem(storageKey);
       if (!raw) return null;
       const parsed = mockDataSchema.safeParse(JSON.parse(raw));
-      return parsed.success ? parsed.data : null;
+      if (!parsed.success) return null;
+      // Sauvegarde d'avant la connexion par email (M5) : on donne le mot de passe de démo à chacun.
+      if (parsed.data.credentials.length === 0) {
+        parsed.data.credentials = parsed.data.users.map((user) => ({
+          userId: user.id,
+          email: user.email.toLowerCase(),
+          password: DEMO_PASSWORD,
+        }));
+      }
+      return parsed.data;
     } catch {
       return null;
     }

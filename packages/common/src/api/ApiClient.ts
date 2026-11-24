@@ -15,6 +15,7 @@ import type {
   CulturalOrigin,
   DeclineQuoteRequestInput,
   DemoAccount,
+  ForgotPasswordInput,
   Media,
   MediaInput,
   Message,
@@ -34,6 +35,8 @@ import type {
   QuoteRequestDetails,
   QuoteRequestSummary,
   ReplyToReviewInput,
+  ResendOtpInput,
+  ResetPasswordInput,
   Report,
   ReportStatus,
   ResolveReportInput,
@@ -42,10 +45,14 @@ import type {
   SendMessageInput,
   Session,
   SetUserStatusInput,
+  SignInInput,
+  SignUpInput,
+  SignUpResult,
   Unavailability,
   UpdateMeInput,
   UpdateProviderProfileInput,
   User,
+  VerifyOtpInput,
 } from '../types';
 
 /** De quel côté l'utilisateur regarde ses demandes et réservations (compte à deux rôles). */
@@ -71,6 +78,21 @@ export interface ApiClient {
   updateMe(input: UpdateMeInput): Promise<User>;
   /** Anonymise le compte (RGPD). */
   deleteMe(): Promise<void>;
+
+  // --- Connexion et inscription par email (lot M5, simulées jusqu'au back-end)
+  /** Crée une inscription en attente et « envoie » un code à 6 chiffres. */
+  signUp(input: SignUpInput): Promise<SignUpResult>;
+  /**
+   * Vérifie le code. Fin d'inscription : crée le compte et renvoie la session.
+   * Mot de passe oublié : renvoie null, on passe au choix du nouveau mot de passe.
+   */
+  verifyOtp(input: VerifyOtpInput): Promise<Session | null>;
+  resendOtp(input: ResendOtpInput): Promise<void>;
+  signIn(input: SignInInput): Promise<Session>;
+  /** Répond toujours pareil, que le compte existe ou non (on ne révèle pas qui est inscrit). */
+  forgotPassword(input: ForgotPasswordInput): Promise<void>;
+  /** Change le mot de passe (code vérifié) et ouvre la session. */
+  resetPassword(input: ResetPasswordInput): Promise<Session>;
 
   // --- Catalogue et recherche (lots 0 et 3)
   listCategories(): Promise<Category[]>;

@@ -57,6 +57,21 @@ describe('createMockDb', () => {
       expect(second.data.users[0]!.firstName).toBe('Modifiée');
     });
 
+    it('relit une sauvegarde d’avant la connexion par email (sans ses tables)', () => {
+      const storage = memoryStorage();
+      const first = createMockDb({ now: () => NOW, storage });
+      first.update((data) => void (data.users[0]!.firstName = 'Avant M5'));
+      const saved = JSON.parse(storage.store.get(DEFAULT_STORAGE_KEY)!);
+      delete saved.credentials;
+      delete saved.pendingSignUps;
+      storage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(saved));
+
+      const second = createMockDb({ now: () => NOW, storage });
+      expect(second.data.users[0]!.firstName).toBe('Avant M5');
+      // Chacun reçoit le mot de passe de démo, pour pouvoir se connecter par email.
+      expect(second.data.credentials).toHaveLength(second.data.users.length);
+    });
+
     it('ignore une sauvegarde abîmée ou d’un ancien format', () => {
       const storage = memoryStorage();
       storage.setItem(DEFAULT_STORAGE_KEY, '{"users": "pas un tableau"}');

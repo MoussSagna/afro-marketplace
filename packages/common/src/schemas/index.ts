@@ -12,3 +12,4 @@ export * from './messaging';
 export * from './review';
 export * from './moderation';
 export * from './views';
+export * from './auth';

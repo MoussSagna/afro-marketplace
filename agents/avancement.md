@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M4 bis : barre d'onglets en verre rétractable).
+Dernière mise à jour : 24/11/2026 (lot M5 : connexion et inscription simulées).
 
 ## Lots
 
@@ -33,8 +33,37 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M2  | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
 | M3  | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
 | M4  | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
-| M4b | Barre d'onglets en verre rétractable   | 🔍 PR ouverte (validée par Mouss le 24/11)                       |
-| M5  | Connexion et inscription simulées      | à faire                                                          |
+| M4b | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
+| M5  | Connexion et inscription simulées      | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M5
+
+- **Côté `common`** (servira aussi au site et au vrai back-end) : schémas Zod `schemas/auth.ts` (email nettoyé,
+  règles du mot de passe `passwordRules` affichées et cochées en direct, `passwordStrength` pour la jauge, code à
+  6 chiffres), 6 méthodes de l'`ApiClient` (`signUp`, `verifyOtp`, `resendOtp`, `signIn`, `forgotPassword`,
+  `resetPassword`) et leurs hooks (`useSignUp`…), routes **simulées** `POST /api/auth/…` dans
+  `mocks/handlers/auth.ts`. Code de démo **toujours `123456`** (`DEMO_OTP_CODE`), aucun email envoyé.
+- La base de démo a deux tables de plus : `credentials` (email + mot de passe, en clair car c'est une démo) et
+  `pendingSignUps` (inscriptions en attente du code). Les comptes de démo ont le mot de passe **`Wenzee2026`**
+  (`DEMO_PASSWORD`). Une sauvegarde d'avant M5 est complétée toute seule au démarrage.
+- **Écrans** (`src/features/auth/`, adresses dans `app/(auth)/`) : Bienvenue (`/bienvenue`), Inscription
+  (`/inscription`, jauge de force + règles en direct + case des conditions), Code (`/verification`, 6 cases sur un
+  seul champ invisible, vérifié dès le 6e chiffre, renvoi après 30 s, « Modifier l'email »), Connexion
+  (`/connexion`, œil pour afficher le mot de passe), Mot de passe oublié, Nouveau mot de passe (règles + confirmation),
+  Compte vérifié (« C'est bon ! »), Comptes de démo (`/comptes-demo`, P8). Google et Apple : « Bientôt disponible ».
+- Formulaires avec **React Hook Form + zodResolver**, comme sur le site (`FormInput` relie un champ au formulaire).
+  Les erreurs du serveur s'affichent sous le bon champ (email déjà pris) ou en haut du formulaire (mauvais mot de
+  passe).
+- **Gardes** : Demandes, Messages et Compte montrent un panneau « Connecte-toi » (`SignInRequired`) quand personne
+  n'est connecté. Le bouton retient l'onglet (`authFlowStore`, adresse interne seulement) et, à la fin du parcours,
+  `useFinishAuth` ferme les écrans de connexion et y revient. Compte connecté : nom, email et « Se déconnecter »
+  (le reste au lot M12).
+- **Barre d'onglets : icônes seules** (demande de Mouss du 24/11, ajoutée à cette PR) : plus de texte sous les
+  icônes, les noms restent lus par VoiceOver / TalkBack. Maquette section 6 mise à jour.
+- Tests : 336 tests `common` (schémas, handlers, sauvegarde ancienne), 112 tests mobiles dont `auth.test.tsx` :
+  parcours complet Demandes → inscription → mauvais code → bon code → compte vérifié → retour aux Demandes, erreurs
+  sous les champs, email déjà pris, renvoi du code, mauvais mot de passe, Google/Apple, comptes de démo, mot de passe
+  oublié jusqu'à la connexion avec le nouveau, déconnexion.
 
 ## Ce que contient le lot M4 bis
 
@@ -88,7 +117,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
   `common` attend un stockage synchrone (le localStorage) : `src/lib/storage/preloadedStorage.ts` lit la clé une fois
   au démarrage, puis répond depuis une copie en mémoire et écrit dans AsyncStorage à chaque modification.
 - **Session** : store Zustand gardé dans AsyncStorage (`src/stores/session.ts`, rechargé au démarrage). Les écrans
-  de connexion arrivent au lot M5.
+  de connexion sont arrivés au lot M5.
 - **TanStack Query** : `src/providers/AppProviders.tsx` (QueryClient + ApiClient), autour de toute l'app dans
   `app/_layout.tsx`. Les écrans utilisent les hooks de `common` (`useCategories`, `useFeaturedProviders`…).
 - **Photos** : composant `Photo` (`expo-image`, cache mémoire + disque, fondu) pour les photos `picsum.photos`.
