@@ -8,12 +8,8 @@ configure({ asyncUtilTimeout: 5000 });
 // (Le préfixe « mock » permet à Jest d'utiliser la variable dans jest.mock.)
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 
-// Reanimated (animations) a besoin du moteur natif « worklets », absent de Node :
-// on le remplace par un petit faux (src/test/reanimatedMock.tsx).
-jest.mock(
-  'react-native-reanimated',
-  () => jest.requireActual('./src/test/reanimatedMock').reanimatedMock,
-);
+// Reanimated (animations) a besoin du moteur natif « worklets », absent de Node : on le remplace
+// par un petit faux (src/test/reanimatedMock.tsx), branché dans jest.config.js (moduleNameMapper).
 
 // Les textes de l'app (i18next). Les tests sont écrits en français : on fixe le français
 // avant chaque test, quelle que soit la langue de la machine (un test peut passer en anglais).

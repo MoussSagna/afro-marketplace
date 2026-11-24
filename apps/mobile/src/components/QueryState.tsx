@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator } from 'react-native';
+import { WenzeeLoader } from '@/components/brand/WenzeeLoader';
 import { Button, EmptyState } from '@/components/ui';
-import { useThemeColors } from '@/theme/useTheme';
 
 type QueryStateProps = {
   isPending: boolean;
@@ -10,7 +9,7 @@ type QueryStateProps = {
   onRetry: () => void;
   /** Ce que lit VoiceOver pendant le chargement (« Chargement des catégories »). */
   loadingLabel: string;
-  /** Ce qu'on affiche pendant le chargement (par défaut : une roue). */
+  /** Ce qu'on affiche pendant le chargement (par défaut : le loader Wenzee). */
   placeholder?: ReactNode;
   children: ReactNode;
 };
@@ -27,17 +26,10 @@ export function QueryState({
   placeholder,
   children,
 }: QueryStateProps) {
-  const colors = useThemeColors();
   const { t } = useTranslation();
   if (isPending) {
     return (
-      placeholder ?? (
-        <ActivityIndicator
-          color={colors.primary}
-          accessibilityLabel={loadingLabel}
-          className="self-start py-4"
-        />
-      )
+      placeholder ?? <WenzeeLoader size={48} label={loadingLabel} className="self-center py-4" />
     );
   }
   if (isError) {

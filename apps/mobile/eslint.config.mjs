@@ -11,8 +11,8 @@ export default [
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {
-    // Fichiers de configuration en CommonJS, lus par Node (Metro, Babel, Jest).
-    files: ['*.js'],
+    // Fichiers de configuration en CommonJS, lus par Node (Metro, Babel, Jest), et les relais de faux de Jest.
+    files: ['*.js', 'src/test/*.js'],
     languageOptions: { globals: globals.node, sourceType: 'commonjs' },
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
