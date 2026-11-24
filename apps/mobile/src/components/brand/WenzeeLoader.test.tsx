@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { i18n } from '@/i18n';
 import { useThemeStore } from '@/theme/themeStore';
-import { LOADER_FULL_LOGO, WenzeeLoader, loaderFrame } from './WenzeeLoader';
+import { LOADER_FULL_LOGO, loaderFrame } from './loaderFrame';
+import { WenzeeLoader } from './WenzeeLoader';
 
 const CREAM = '#FDF7F0';
 const EARTH = '#7A1F0E';

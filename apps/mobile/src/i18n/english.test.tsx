@@ -112,4 +112,20 @@ describe('L’app en anglais (lot M6b)', () => {
       await screen.findByText('An account already exists with this email. Sign in.'),
     ).toBeOnTheScreen();
   });
+
+  it('affiche la Recherche en anglais : pilule, catégories, nombre de résultats, filtres', async () => {
+    const { api } = demoApi();
+    const { total } = await api.searchProviders({}); // avant renderRouter (faux minuteurs)
+    await renderRouter(routes, { initialUrl: '/recherche', wrapper: testProviders(api) });
+    expect(screen.getByRole('search', { name: /^What are you looking for\?/ })).toBeOnTheScreen();
+    expect(await screen.findByText(`${total} providers`)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Food' })).toBeOnTheScreen();
+    await press('Filters');
+    expect(
+      await screen.findByRole('button', { name: `Show ${total} providers` }),
+    ).toBeOnTheScreen();
+    expect(screen.getByRole('adjustable', { name: 'Maximum budget' })).toHaveAccessibilityValue({
+      text: 'No limit',
+    });
+  });
 });

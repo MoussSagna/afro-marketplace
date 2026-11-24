@@ -174,7 +174,7 @@ passe **d'abord par la maquette** : Mouss valide les couleurs sombres, puis on c
 Demande de Mouss du 24/11/2026 : un loader qui reprend le logo animé du splash. Composant `WenzeeLoader`, en boucle,
 clair / sombre, « Réduire les animations » respecté ; il remplace les roues grises.
 
-### M7 · Recherche et filtres (P2) · **façon Airbnb, maquette section 8 validée le 24/11**
+### M7 · Recherche et filtres (P2) · **façon Airbnb, maquette section 8 validée le 24/11, fait (voir avancement.md)**
 
 Demande de Mouss du 24/11 : « une recherche comme sur l'application Airbnb ». On reprend les usages, pas l'identité :
 pilule en haut qui s'ouvre en plein écran avec des étapes repliables (Quoi ? → Où ? → Quand ? → Combien

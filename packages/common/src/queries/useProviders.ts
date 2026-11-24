@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import type { ProviderSearchFilters } from '../types';
 import { useApiClient } from './ApiClientContext';
 import { queryKeys } from './queryKeys';
@@ -9,6 +9,23 @@ export function useProviderSearch(filters: ProviderSearchFilters) {
   return useQuery({
     queryKey: queryKeys.providers.search(filters),
     queryFn: () => api.searchProviders(filters),
+    placeholderData: keepPreviousData,
+  });
+}
+
+/**
+ * La même recherche, page après page, pour une liste qui charge la suite en défilant (app mobile).
+ * `data.pages` contient les pages déjà chargées ; `fetchNextPage()` demande la suivante.
+ */
+export function useInfiniteProviderSearch(filters: Omit<ProviderSearchFilters, 'page'>) {
+  const api = useApiClient();
+  return useInfiniteQuery({
+    queryKey: queryKeys.providers.searchPages(filters),
+    queryFn: ({ pageParam }) => api.searchProviders({ ...filters, page: pageParam }),
+    initialPageParam: 1,
+    // Encore des résultats après cette page ? Alors la suivante, sinon on s'arrête (undefined).
+    getNextPageParam: (last) =>
+      last.page * last.pageSize < last.total ? last.page + 1 : undefined,
     placeholderData: keepPreviousData,
   });
 }

@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M6d : loader Wenzee).
+Dernière mise à jour : 24/11/2026 (lot M7 : recherche façon Airbnb).
 
 ## Lots
 
@@ -38,8 +38,46 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M6  | Accueil (P1)                           | ✅ fusionné #23                                                  |
 | M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
 | M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
-| M6d | Loader Wenzee (logo du splash)         | 🔍 PR ouverte (maquette section 9 validée le 24/11)              |
-| M7  | Recherche façon Airbnb                 | à faire, après M6d (maquette section 8 validée le 24/11)         |
+| M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
+| M7  | Recherche façon Airbnb                 | 🔍 PR ouverte (maquette section 8 validée le 24/11)              |
+
+## Ce que contient le lot M7
+
+- **L'onglet Recherche façon Airbnb** (maquette section 8, validée par Mouss le 24/11), dans `src/features/search/` :
+  - `SearchPill` : la pilule du haut qui résume la recherche (« Nourriture · Paris », « sam. 14 déc. · 80 invités »),
+    la flèche qui efface tout, et le bouton Filtres avec le nombre de filtres actifs.
+  - `CategoryBar` : la rangée de catégories à icônes, soulignée sur la catégorie choisie.
+  - `SearchResultCard` : grandes cartes photo (pastille « Vérifié », note, catégorie et ville, prix « dès … »).
+  - `SearchWizard` : la recherche en plein écran, en 4 étapes repliables (Quoi ? → Où ? → Quand ? → Combien
+    d'invités ?). Chaque choix ferme son étape et ouvre la suivante (`LayoutAnimation`). Rien n'est appliqué avant
+    « Rechercher ». `Calendar` : un mois, jours passés barrés.
+  - `FiltersSheet` : les filtres en plein écran (tri, budget avec histogramme et curseur `BudgetSlider`, note
+    minimale, origines, profils vérifiés), avec « Voir N prestataires » compté en direct.
+  - Chargement : le loader Wenzee ; la page suivante se charge en arrivant en bas (`useInfiniteProviderSearch`,
+    nouveau dans `common`). « Aucun résultat » avec « Retirer les filtres ».
+- **Les filtres vivent dans l'adresse de l'écran** (`/recherche?categorie=nourriture&ville=Paris&date=…`), avec les
+  mêmes noms que sur le site : `filtersFromParams` / `paramsFromFilters` / `countActiveFilters` sont passés du site
+  à `packages/common/src/utils/searchParams.ts` (et leurs tests avec). `useSearchFilters` (mobile) les lit avec
+  `useLocalSearchParams` et les écrit avec `router.setParams`. L'Accueil ouvre donc une recherche toute prête.
+- **Écarts avec la maquette**, faute de données ou de fonctionnalité pour l'instant :
+  - une seule photo par carte, sans points de défilement, car la recherche ne renvoie que la photo de couverture ;
+  - pas de cœur, car les favoris (C7) sont prévus après le MVP ;
+  - pas de « Autour de moi » ni de « Recherche récente » ;
+  - un seul curseur de budget (maximum), car le serveur ne filtre pas sur un minimum.
+- Les villes proposées à l'étape « Où ? » sont celles des prestataires (les plus fournies d'abord) ; le vrai serveur
+  aura sa propre liste (lot 10).
+- Tests : 203 tests mobiles. `search.test.tsx` couvre :
+  - chargement puis cartes ;
+  - catégorie dans l'adresse ;
+  - parcours complet Quoi → Où → Quand → Invités → Rechercher ;
+  - « Tout effacer » et croix ;
+  - filtres avec compte en direct ;
+  - « Aucun résultat » ;
+  - flèche qui efface ;
+  - page suivante ;
+  - dates FR et EN.
+
+  Recherche en anglais dans `english.test.tsx`.
 
 ## Ce que contient le lot M6d
 

@@ -1,7 +1,7 @@
+import { filtersFromParams, paramsFromFilters } from '@afro/common';
 import type { ProviderSearchFilters } from '@afro/common';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
-import { filtersFromParams, paramsFromFilters } from './searchParams';
 
 /**
  * Les filtres de recherche, lus et écrits dans l'adresse de la page.
