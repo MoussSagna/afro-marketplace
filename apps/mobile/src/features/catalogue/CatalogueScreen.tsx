@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Logo } from '@/components/brand/Logo';
+import { WenzeeLoader } from '@/components/brand/WenzeeLoader';
 import {
   Accent,
   Avatar,
@@ -59,6 +60,17 @@ export function CatalogueScreen() {
           <View className="flex-row items-center gap-4 rounded-xl bg-primary p-4">
             <Logo variant="light" height={32} />
             <Logo variant="symbol" height={32} />
+          </View>
+        </Section>
+
+        <Section title="Loader">
+          <View className="flex-row items-end justify-around">
+            <WenzeeLoader size={110} />
+            <WenzeeLoader size={64} />
+            <WenzeeLoader size={36} />
+          </View>
+          <View className="items-center rounded-xl bg-sidebar p-4">
+            <WenzeeLoader size={64} onDark message="Sur fond brun" />
           </View>
         </Section>
 

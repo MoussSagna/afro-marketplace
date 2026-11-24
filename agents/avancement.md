@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M6b : traduction anglaise).
+Dernière mise à jour : 24/11/2026 (lot M6d : loader Wenzee).
 
 ## Lots
 
@@ -37,7 +37,28 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M5  | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
 | M6  | Accueil (P1)                           | ✅ fusionné #23                                                  |
 | M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
-| M6b | Traduction anglaise                    | 🔍 PR ouverte                                                    |
+| M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
+| M6d | Loader Wenzee (logo du splash)         | 🔍 PR ouverte (maquette section 9 validée le 24/11)              |
+| M7  | Recherche façon Airbnb                 | à faire, après M6d (maquette section 8 validée le 24/11)         |
+
+## Ce que contient le lot M6d
+
+- **Le loader Wenzee** (`src/components/brand/WenzeeLoader.tsx`), d'après la maquette section 9 validée par Mouss
+  le 24/11 : le logo du splash qui se dessine en boucle (1,8 s). La boucle se trace, le lien orange s'y noue, le
+  losange apparaît, puis tout s'efface et recommence. Boucle rouille en thème clair, ivoire en thème sombre ou avec
+  `onDark` (sur une photo, le menu brun). « Réduire les animations » : logo entier qui respire doucement.
+- Utilisation : `<WenzeeLoader size={110} message="…" />` (110 pleine page, 64 une section, 36 une liste). Il se
+  présente à VoiceOver comme une barre de progression, nommée par `label`, sinon `message`, sinon « Chargement ».
+- Il remplace les roues grises : `QueryState` (Accueil, et tous les futurs écrans qui chargent) et les comptes de
+  démo. Le bouton « en cours » garde sa petite roue (le logo serait illisible dans un bouton). Visible aussi dans
+  l'écran de développement « Composants ».
+- Les tracés du logo sont partagés avec le splash : `src/components/brand/logoPaths.ts` (ex-`splashPaths.ts`).
+  Les étapes du dessin sont une fonction pure, `loaderFrame(t)`, testée sans animation.
+- **Correctif des tests** : `expo-router/testing-library` remplaçait Reanimated par un objet vide dans les tests qui
+  l'importent. Notre faux est maintenant branché dans `jest.config.js` (`moduleNameMapper`), pour les deux noms
+  (`react-native-reanimated` et `react-native-reanimated/mock`) : tous les tests ont le même faux.
+- Tests : 193 tests mobiles (dont 7 pour le loader : nom pour VoiceOver en français et en anglais, message, couleurs
+  clair / sombre / `onDark`, étapes de la boucle, animations réduites, un masque SVG par loader).
 
 ## Ce que contient le lot M6b
 

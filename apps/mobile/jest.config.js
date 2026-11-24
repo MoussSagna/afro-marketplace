@@ -13,6 +13,11 @@ module.exports = {
   // Même raccourci que dans tsconfig.json : « @/theme » = « src/theme ».
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    // Reanimated : notre faux (src/test/reanimatedMock.tsx), partout. Même « react-native-reanimated/mock »,
+    // que `expo-router/testing-library` charge à son import (sous Jest, son faux à lui finit vide : {}).
+    '^react-native-reanimated$': '<rootDir>/src/test/reanimatedJest.js',
+    // (un autre fichier, sinon Jest prend les deux pour le même module et le faux se rappelle lui-même)
+    '^react-native-reanimated/mock$': '<rootDir>/src/test/reanimatedJestMock.js',
     // Pour React Native, lucide pointe vers des fichiers .mjs que Jest ne sait pas lire :
     // dans les tests, on prend sa version CommonJS (identique).
     '^lucide-react-native$':

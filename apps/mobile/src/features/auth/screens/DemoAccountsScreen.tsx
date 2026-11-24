@@ -1,7 +1,8 @@
 import { useDemoAccounts, useSignInAsDemo, type DemoAccount } from '@afro/common';
 import { Briefcase, Shield, UserRound } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { WenzeeLoader } from '@/components/brand/WenzeeLoader';
 import { Badge, Card, Text } from '@/components/ui';
 import { useErrorText } from '@/i18n/useErrorText';
 import { AuthScreen } from '../components/AuthScreen';
@@ -36,9 +37,7 @@ export function DemoAccountsScreen() {
   return (
     <AuthScreen title={t('auth.demoTitle')} subtitle={t('auth.demoSubtitle')}>
       <FormAlert message={signInAsDemo.isError ? apiError(signInAsDemo.error) : null} />
-      {accounts.isPending ? (
-        <ActivityIndicator accessibilityLabel={t('common.loading')} color={colors.primary} />
-      ) : null}
+      {accounts.isPending ? <WenzeeLoader size={64} className="py-6" /> : null}
       {accounts.isError ? <FormAlert message={t('auth.demoLoadError')} /> : null}
       <View className="gap-3">
         {accounts.data?.map((account) => {

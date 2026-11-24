@@ -27,7 +27,7 @@ import Svg, {
 } from 'react-native-svg';
 import { Text } from '@/components/ui';
 import { useThemeColors } from '@/theme/useTheme';
-import { ARCH_LEFT, ARCH_RIGHT, LENGTHS, WEAVE, WORDMARK } from './splashPaths';
+import { ARCH_LEFT, ARCH_RIGHT, LENGTHS, WEAVE, WORDMARK } from '@/components/brand/logoPaths';
 
 /** Durée de l'animation complète (la maquette faisait 4 s ; on garde les mêmes étapes, en 3,2 s). */
 export const SPLASH_DURATION_MS = 3200;
