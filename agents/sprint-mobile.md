@@ -124,6 +124,51 @@ pour le site **et** l'app en même temps.
 - Bannière photo, grand titre, recherche en pilule, grille des catégories, « À la une » en défilement horizontal.
 - **Tests** : affichage, chargement, toucher une catégorie ouvre la recherche filtrée.
 
+### M6b · Traduction anglaise (i18n) · **proposé le 24/11, en attente du feu vert de Mouss**
+
+Demande de Mouss du 24/11/2026 : l'app doit pouvoir être traduite en anglais. Plus on le fait tôt, moins il y a de
+textes à reprendre (aujourd'hui : splash, onglets, connexion, Accueil).
+
+- **Outil** : `i18next` + `react-i18next` (le standard React, marche aussi sur le site) et `expo-localization` pour
+  lire la langue du téléphone. Français par défaut, anglais en second ; si le téléphone est dans une autre langue,
+  on reste en français.
+- **Textes partagés dans `common`** (`packages/common/src/i18n/`) : un fichier par langue, rangé par écran
+  (`auth`, `home`, `tabs`…). Un test vérifie que chaque clé existe dans les deux langues.
+- **Messages d'erreur des schémas Zod** (aujourd'hui écrits en français dans `common`) : ils deviennent des clés
+  (`errors.email_invalid`) traduites au moment de l'affichage. Même chose pour les messages renvoyés par les routes
+  simulées (le `code` stable existe déjà).
+- **Prix et dates** : `formatPrice` et les formats de date prennent la langue (« 25 € » / « €25 »).
+- **Données** : les noms des catégories et des origines sont traduits par leur `slug` ; ce qu'écrivent les
+  utilisateurs (descriptions, messages, avis) n'est pas traduit.
+- On reprend tous les textes déjà affichés dans l'app (lots M1 à M6), puis chaque lot suivant écrit ses textes
+  directement en clés. Choix de la langue dans Compte au lot M12 (en attendant : celle du téléphone).
+- **Le site** : même fichiers de traduction, mais beaucoup plus de pages à reprendre : lot à part, à placer quand
+  Mouss le décide (question n° 13).
+- **Tests** : clés complètes dans les deux langues (unitaire) ; Accueil et Inscription affichés en anglais, erreurs
+  du formulaire en anglais (fonctionnels).
+
+### M6c · Thème sombre / clair · **proposé le 24/11, en attente du feu vert de Mouss**
+
+Demande de Mouss du 24/11/2026 : un thème sombre en plus du thème clair actuel. Comme pour la barre d'onglets, on
+passe **d'abord par la maquette** : Mouss valide les couleurs sombres, puis on code.
+
+1. **Maquette** (`/mnt/project-files/maquette-mobile/`, nouvelle section 7) : les écrans déjà faits en sombre
+   (Accueil, Connexion/Inscription, barre d'onglets en verre, un onglet « Connecte-toi ») et la palette sombre
+   (fond brun très foncé, cartes un ton plus clair, textes crème, rouille et soleil gardés pour les accents, contrastes
+   vérifiés AA).
+2. **Code**, une fois la maquette validée :
+   - Les couleurs de `packages/config/tailwind/tokens.json` gagnent une valeur sombre. NativeWind les lit en
+     variables CSS : `bg-background`, `text-foreground`… changent seuls de valeur, sans réécrire les écrans.
+   - Les quelques couleurs écrites en dur (icônes lucide, barre en verre, `#7A1F0E`…) passent par un petit hook
+     `useThemeColors()`.
+   - Par défaut, l'app suit le réglage du téléphone ; un choix « Clair / Sombre / Automatique » arrive dans Compte
+     (lot M12), gardé dans AsyncStorage.
+   - Barre d'onglets : verre sombre (`tint="dark"`). Le splash reste tel quel (déjà sur fond terre).
+   - **Tests** : chaque couleur a sa valeur sombre (unitaire, comme le test du preset) ; un écran rendu en sombre
+     utilise bien les classes sombres (fonctionnel).
+3. **Le site** : mêmes couleurs, la mécanique Tailwind `dark:` existe déjà côté shadcn : lot à part si Mouss le veut
+   (question n° 14).
+
 ### M7 · Recherche et filtres (P2)
 
 - Résumé de la recherche en haut, filtres rapides en pastilles, cartes prestataires, chargement de la page suivante
