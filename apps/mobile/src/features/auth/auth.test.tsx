@@ -8,7 +8,7 @@ import { demoApi, testProviders } from '@/test/demoApi';
 import { ComingSoonScreen } from '../coming-soon/ComingSoonScreen';
 import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
 import { useTabBarStore } from '../navigation/tabBarStore';
-import { WelcomeScreen } from '../welcome/WelcomeScreen';
+import { HomeScreen } from '../home/HomeScreen';
 import { useAuthFlowStore } from './authFlowStore';
 import { AccountScreen } from './screens/AccountScreen';
 import { AuthWelcomeScreen } from './screens/AuthWelcomeScreen';
@@ -25,7 +25,7 @@ import { SignInRequired } from './SignInRequired';
 const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': WelcomeScreen,
+  '(tabs)/index': HomeScreen,
   '(tabs)/recherche': () => <ComingSoonScreen title="Recherche" lot="M7" description="…" />,
   '(tabs)/demandes': () => (
     <SignInRequired title="Demandes" reason="Connecte-toi pour suivre tes demandes de devis.">
@@ -190,7 +190,7 @@ describe('Connexion', () => {
     expect(screen.getByLabelText('Mot de passe')).toHaveProp('secureTextEntry', false);
     await type('Mot de passe', DEMO_PASSWORD);
     await press('Se connecter');
-    expect(await screen.findByText(/Bonjour/)).toBeOnTheScreen();
+    expect(await screen.findByText(/Des talents qui font vivre/)).toBeOnTheScreen();
     expect(screen).toHavePathname('/');
     expect(useSessionStore.getState().user?.id).toBe(user.id);
   });
@@ -207,7 +207,7 @@ describe('Connexion', () => {
     await fireEvent.press(
       await screen.findByRole('button', { name: `Se connecter : ${client.label}` }),
     );
-    expect(await screen.findByText(/Bonjour/)).toBeOnTheScreen();
+    expect(await screen.findByText(/Des talents qui font vivre/)).toBeOnTheScreen();
     expect(useSessionStore.getState().user?.id).toBe(client.userId);
   });
 });

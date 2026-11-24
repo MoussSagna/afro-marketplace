@@ -115,6 +115,9 @@ apps/mobile/
   src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
+  src/features/home/   Accueil (bannière, catégories, « À la une »)
+  src/features/providers/ ProviderCard (carte prestataire) et priceLabel
+  src/components/QueryState.tsx Chargement → erreur (« Réessayer ») → contenu
   src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth
   src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated

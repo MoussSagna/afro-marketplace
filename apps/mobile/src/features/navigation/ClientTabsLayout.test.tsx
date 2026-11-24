@@ -4,7 +4,7 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { useSessionStore } from '@/stores/session';
 import { demoApi, testProviders } from '@/test/demoApi';
 import { ComingSoonScreen } from '../coming-soon/ComingSoonScreen';
-import { WelcomeScreen } from '../welcome/WelcomeScreen';
+import { HomeScreen } from '../home/HomeScreen';
 import { ClientTabsLayout } from './ClientTabsLayout';
 import { useTabBarStore } from './tabBarStore';
 
@@ -15,7 +15,7 @@ const soon = (title: string, lot: string) =>
 
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': WelcomeScreen,
+  '(tabs)/index': HomeScreen,
   '(tabs)/recherche': soon('Recherche', 'M7'),
   '(tabs)/demandes': soon('Demandes', 'M10'),
   '(tabs)/messages': soon('Messages', 'M10'),
@@ -37,7 +37,7 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
   it('ouvre l’Accueil puis passe d’un onglet à l’autre', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    expect(screen.getByText(/Bonjour/)).toBeOnTheScreen();
+    expect(screen.getByText(/Des talents qui font vivre/)).toBeOnTheScreen();
     expect(screen.getByRole('tab', { name: 'Accueil' })).toBeSelected();
 
     await fireEvent.press(screen.getByRole('tab', { name: 'Recherche' }));
