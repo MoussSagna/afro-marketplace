@@ -1,9 +1,11 @@
 export { Avatar } from './Avatar';
+export { BackHeader } from './BackHeader';
 export { Badge } from './Badge';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Chip } from './Chip';
 export { EmptyState } from './EmptyState';
 export { Input } from './Input';
+export { Photo } from './Photo';
 export { Rating, ratingLabel } from './Rating';
 export { Accent, Heading, Text } from './Text';

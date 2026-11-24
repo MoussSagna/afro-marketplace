@@ -5,8 +5,10 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   // Par défaut Jest ne transforme pas node_modules. Il faut pourtant traduire React Native,
   // Expo et nos paquets du monorepo (du TypeScript brut). Le motif tient compte du dossier .pnpm.
+  // msw dépend de paquets publiés seulement en ESM (fichiers .mjs, « until-async ») : on les compile aussi.
+  transform: { '\\.mjs$': 'babel-jest' },
   transformIgnorePatterns: [
-    'node_modules/(?!(?:\\.pnpm/[^/]+/node_modules/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|expo-router|standard-navigation|lucide-react-native|nativewind|@afro/.*|zod))',
+    'node_modules/(?!(?:\\.pnpm/[^/]+/node_modules/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|expo-router|standard-navigation|lucide-react-native|nativewind|@afro/.*|zod|until-async)|.*\\.mjs$)',
   ],
   // Même raccourci que dans tsconfig.json : « @/theme » = « src/theme ».
   moduleNameMapper: {

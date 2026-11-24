@@ -49,7 +49,15 @@ Toujours relancer `pnpm install` : un lot peut ajouter une dépendance (ex. `zod
 - Mobile : `render` (Testing Library React Native 14) et `renderRouter` (Expo Router) sont **asynchrones** :
   toujours `await render(...)`, sinon « `render` function has not been called ».
 - Mobile : un paquet de `node_modules` écrit en ESM fait planter Jest (« Must use import to load ES Module ») ?
-  Ajoute son nom à `transformIgnorePatterns` dans `apps/mobile/jest.config.js` (ex. `standard-navigation`).
+  Ajoute son nom à `transformIgnorePatterns` dans `apps/mobile/jest.config.js` (ex. `standard-navigation`,
+  `until-async`). Les fichiers `.mjs` (dépendances de MSW) sont déjà tous compilés (`transform` + motif).
+- Mobile : un test qui crée un `QueryClient` doit mettre `gcTime: Infinity`, sinon le minuteur de nettoyage
+  garde Jest ouvert (« A worker process has failed to exit gracefully », ou blocage quand on lance un seul fichier).
+- Mobile : MSW a besoin d'API web absentes de Hermes (`MessageEvent`, `BroadcastChannel`…) dès son import.
+  `src/lib/polyfills` doit être importé **avant** `@afro/common/mocks` (c'est fait dans `lib/api/client.ts` et
+  `app/_layout.tsx`). Pour vérifier après une mise à jour de MSW : supprimer ces globales dans Node, puis
+  `require` MSW (voir `webEvents.test.ts`).
+- Mobile : AsyncStorage est remplacé par son faux officiel (en mémoire) dans `jest.setup.ts`.
 - Mobile : vérifier que Metro assemble bien l'app sans téléphone :
   `cd apps/mobile && CI=1 pnpm exec expo export --platform ios --output-dir /tmp/expo-out`.
 - Mobile : pour tester sur ton téléphone, il faut être sur le même réseau Wi-Fi que l'ordinateur

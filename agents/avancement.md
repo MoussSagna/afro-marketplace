@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 23/11/2026 (lot M2 : thème NativeWind et composants de base de l'app mobile).
+Dernière mise à jour : 23/11/2026 (lot M3 : données de démo sur le téléphone).
 
 ## Lots
 
@@ -30,8 +30,37 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | --- | -------------------------------------- | ---------------------------------------------------------------- |
 | M0  | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
 | M1  | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
-| M2  | Thème NativeWind + composants de base  | 🔍 PR ouverte                                                    |
-| M3  | Données mockées sur téléphone          | à faire                                                          |
+| M2  | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
+| M3  | Données mockées sur téléphone          | 🔍 PR ouverte                                                    |
+| M4  | Onglets + splash animé + icône         | à faire                                                          |
+
+## Ce que contient le lot M3
+
+- **Les mocks tournent dans l'app, sans serveur ni réseau** : le client API est le même que sur le site
+  (`createHttpApiClient`), seul son `fetch` change. `src/lib/api/mockFetch.ts` construit une `Request` et la donne
+  aux handlers MSW de `common` avec `getResponse` (pas de Service Worker sur téléphone). Route inconnue : 404 au
+  format de l'API. Le jour du back-end, on retire ce `fetch` et c'est tout.
+- **Base de démo sauvegardée** : `prepareDemoData()` (`src/lib/demoData.ts`), lancée au démarrage pendant le
+  chargement des polices, recharge la base depuis AsyncStorage. AsyncStorage est asynchrone alors que la base de
+  `common` attend un stockage synchrone (le localStorage) : `src/lib/storage/preloadedStorage.ts` lit la clé une fois
+  au démarrage, puis répond depuis une copie en mémoire et écrit dans AsyncStorage à chaque modification.
+- **Session** : store Zustand gardé dans AsyncStorage (`src/stores/session.ts`, rechargé au démarrage). Les écrans
+  de connexion arrivent au lot M5.
+- **TanStack Query** : `src/providers/AppProviders.tsx` (QueryClient + ApiClient), autour de toute l'app dans
+  `app/_layout.tsx`. Les écrans utilisent les hooks de `common` (`useCategories`, `useFeaturedProviders`…).
+- **Photos** : composant `Photo` (`expo-image`, cache mémoire + disque, fondu) pour les photos `picsum.photos`.
+- **Compléments pour Hermes** (`src/lib/polyfills/`) : `URL` complète (`react-native-url-polyfill`),
+  `crypto.randomUUID` (`expo-crypto`) et des versions minimales d'`EventTarget`, `Event`, `MessageEvent`,
+  `CloseEvent`, `BroadcastChannel`. MSW y fait référence dès son chargement (partie WebSocket) : sans elles, l'app
+  planterait au démarrage. Vérifié en chargeant MSW dans Node privé de ces API.
+- **Écran de travail `/donnees`** (bouton « Voir les données de démo ») : catégories et prestataires à la une,
+  avec les états chargement / erreur (« Réessayer ») / résultat. Remplacé par l'accueil au lot M6.
+- `BackHeader` (bouton Retour + titre) partagé par les écrans de travail.
+- Tests : 84 tests mobiles. Nouveaux : `mockFetch.test.ts` (catégories, jeton, erreurs, POST, 404),
+  `preloadedStorage.test.ts`, `demoData.test.ts` (rechargement et sauvegarde de la base et de la session),
+  `session.test.ts`, `webEvents.test.ts`, `DemoDataScreen.test.tsx` (chargement → résultat, erreur → réessayer).
+- Limite : la persistance ne se « voit » pas encore à l'écran (rien ne modifie la base avant M9) ; elle est
+  couverte par les tests.
 
 ## Ce que contient le lot M2
 

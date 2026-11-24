@@ -1,12 +1,13 @@
-import { Stack, useRouter } from 'expo-router';
-import { ChevronLeft, Mail, Search } from 'lucide-react-native';
+import { Stack } from 'expo-router';
+import { Mail, Search } from 'lucide-react-native';
 import { useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Logo } from '@/components/brand/Logo';
 import {
   Accent,
   Avatar,
+  BackHeader,
   Badge,
   Button,
   Card,
@@ -36,7 +37,6 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
  * sur un vrai téléphone. Écran de travail, il n'apparaît pas dans la navigation de l'app.
  */
 export function CatalogueScreen() {
-  const router = useRouter();
   const [origins, setOrigins] = useState<string[]>(['Sénégal']);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,17 +49,7 @@ export function CatalogueScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <Stack.Screen options={{ title: 'Catalogue' }} />
-      <View className="flex-row items-center gap-3 px-4 py-2">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Retour"
-          onPress={() => router.back()}
-          className="min-h-touch min-w-touch items-center justify-center rounded-full border border-border bg-card"
-        >
-          <ChevronLeft size={22} color="#2B1A12" />
-        </Pressable>
-        <Text weight="bold">Catalogue des composants</Text>
-      </View>
+      <BackHeader title="Catalogue des composants" />
 
       <ScrollView contentContainerClassName="gap-8 px-5 pb-12 pt-2">
         <Section title="Logo">

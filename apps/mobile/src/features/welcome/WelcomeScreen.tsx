@@ -7,7 +7,7 @@ import { Logo } from '@/components/brand/Logo';
 import { Accent, Button, Card, Heading, Text } from '@/components/ui';
 
 /**
- * Écran provisoire (lots M1 et M2) : il prouve que tout est branché.
+ * Écran provisoire (lots M1 à M3) : il prouve que tout est branché.
  * - Le thème Wenzee (NativeWind, polices, logo).
  * - Le code partagé de packages/common (formatPrice).
  * Il sera remplacé par le splash et l'accueil (lots M4 et M6).
@@ -32,6 +32,9 @@ export function WelcomeScreen() {
         </Card>
         <Link href="/catalogue" asChild>
           <Button variant="outline">Voir les composants</Button>
+        </Link>
+        <Link href="/donnees" asChild>
+          <Button variant="outline">Voir les données de démo</Button>
         </Link>
       </View>
     </SafeAreaView>
