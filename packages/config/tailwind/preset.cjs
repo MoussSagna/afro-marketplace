@@ -1,4 +1,4 @@
-// Preset Tailwind (v3) pour l'app mobile (NativeWind), construit à partir de tokens.json.
+// Preset Tailwind (v3) pour l'app mobile (NativeWind), construit à partir de tokens.json (via palette.cjs).
 // Le site (Tailwind v4) lit les mêmes valeurs dans theme.css. Un test de l'app mobile
 // (apps/mobile/src/theme/preset.test.ts) vérifie que les deux restent identiques.
 const tokens = require('./tokens.json');
@@ -6,35 +6,40 @@ const tokens = require('./tokens.json');
 const c = tokens.color;
 const px = (value) => value; // NativeWind comprend les valeurs en px.
 
-/** Mêmes noms de couleurs que le site : bg-primary, text-muted-foreground, bg-success-muted… */
+/**
+ * Mêmes noms de couleurs que le site : bg-primary, text-muted-foreground, bg-success-muted…
+ * Chaque couleur lit une variable CSS (« --color-primary »), dont la valeur dépend du thème
+ * clair ou sombre (voir palette.cjs et apps/mobile/src/theme/). `<alpha-value>` garde `bg-primary/10`.
+ */
+const v = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
 const colors = {
-  background: c.background.value,
-  foreground: c.foreground.value,
-  card: { DEFAULT: c.card.value, foreground: c.foreground.value },
+  background: v('background'),
+  foreground: v('foreground'),
+  card: { DEFAULT: v('card'), foreground: v('card-foreground') },
   primary: {
-    DEFAULT: c.primary.value,
-    hover: c.primaryHover.value,
-    foreground: c.primaryForeground.value,
+    DEFAULT: v('primary'),
+    hover: v('primary-hover'),
+    foreground: v('primary-foreground'),
   },
-  secondary: { DEFAULT: c.secondary.value, foreground: c.secondaryForeground.value },
-  muted: { DEFAULT: c.muted.value, foreground: c.mutedForeground.value },
-  accent: { DEFAULT: c.accent.value, foreground: c.accentForeground.value },
-  cta: { DEFAULT: c.cta.value, hover: c.ctaHover.value, foreground: c.cta.foreground },
-  'title-accent': c.titleAccent.value,
-  ochre: c.ochre.value,
-  clay: c.clay.value,
-  border: c.border.value,
-  input: c.input.value,
-  ring: c.ring.value,
-  destructive: { DEFAULT: c.destructive.value, foreground: c.primaryForeground.value },
-  success: { DEFAULT: c.success.value, muted: c.success.background },
-  warning: { DEFAULT: c.warning.value, muted: c.warning.background },
+  secondary: { DEFAULT: v('secondary'), foreground: v('secondary-foreground') },
+  muted: { DEFAULT: v('muted'), foreground: v('muted-foreground') },
+  accent: { DEFAULT: v('accent'), foreground: v('accent-foreground') },
+  cta: { DEFAULT: v('cta'), hover: v('cta-hover'), foreground: v('cta-foreground') },
+  'title-accent': v('title-accent'),
+  ochre: v('ochre'),
+  clay: v('clay'),
+  border: v('border'),
+  input: v('input'),
+  ring: v('ring'),
+  destructive: { DEFAULT: v('destructive'), foreground: v('destructive-foreground') },
+  success: { DEFAULT: v('success'), muted: v('success-muted') },
+  warning: { DEFAULT: v('warning'), muted: v('warning-muted') },
   sidebar: {
-    DEFAULT: c.sidebar.value,
-    foreground: c.sidebar.foreground,
-    primary: c.sidebar.activeBackground,
-    'primary-foreground': c.sidebar.activeForeground,
-    accent: c.accent.value,
+    DEFAULT: v('sidebar'),
+    foreground: v('sidebar-foreground'),
+    primary: v('sidebar-primary'),
+    'primary-foreground': v('sidebar-primary-foreground'),
+    accent: v('accent'),
   },
 };
 

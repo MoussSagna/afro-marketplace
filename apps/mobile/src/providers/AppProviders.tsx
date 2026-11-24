@@ -3,6 +3,7 @@ import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 import { apiClient as defaultApiClient } from '@/lib/api/client';
 import { createQueryClient } from '@/lib/queryClient';
+import { ThemeRoot } from '@/theme/ThemeRoot';
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -14,7 +15,7 @@ interface AppProvidersProps {
 /**
  * Tout ce dont les écrans ont besoin autour d'eux (comme AppProviders sur le site) :
  * le cache TanStack Query et le client API lu par les hooks de `common`
- * (useCategories, useFeaturedProviders…).
+ * (useCategories, useFeaturedProviders…), et les couleurs du thème clair ou sombre (ThemeRoot).
  */
 export function AppProviders({
   children,
@@ -24,7 +25,9 @@ export function AppProviders({
   const [client] = useState(() => queryClient ?? createQueryClient());
   return (
     <QueryClientProvider client={client}>
-      <ApiClientProvider client={apiClient}>{children}</ApiClientProvider>
+      <ApiClientProvider client={apiClient}>
+        <ThemeRoot>{children}</ThemeRoot>
+      </ApiClientProvider>
     </QueryClientProvider>
   );
 }

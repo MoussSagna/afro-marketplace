@@ -9,6 +9,7 @@
     "./eslint": "./eslint/index.js",
     "./tailwind/theme.css": "./tailwind/theme.css",
     "./tailwind/preset.cjs": "./tailwind/preset.cjs",
+    "./tailwind/palette.cjs": "./tailwind/palette.cjs",
     "./tailwind/tokens.json": "./tailwind/tokens.json"
   },
   "dependencies": {

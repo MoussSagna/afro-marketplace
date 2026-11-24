@@ -3,6 +3,7 @@ import { useState, type ComponentProps } from 'react';
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { Input } from '@/components/ui';
+import { useThemeColors } from '@/theme/useTheme';
 
 type FormInputProps<T extends FieldValues, TOut> = Omit<
   ComponentProps<typeof Input>,
@@ -25,6 +26,7 @@ export function FormInput<T extends FieldValues, TOut>({
   password = false,
   ...props
 }: FormInputProps<T, TOut>) {
+  const colors = useThemeColors();
   const [visible, setVisible] = useState(false);
   const Icon = visible ? EyeOff : Eye;
   return (
@@ -50,7 +52,7 @@ export function FormInput<T extends FieldValues, TOut>({
                 hitSlop={10}
                 onPress={() => setVisible((v) => !v)}
               >
-                <Icon size={20} color="#6B4A36" />
+                <Icon size={20} color={colors['muted-foreground']} />
               </Pressable>
             ) : undefined
           }

@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Les couleurs du thème clair, par défaut (packages/config/tailwind/palette.cjs).
+ * Le thème actif (clair ou sombre) les remplace autour de toute l'app : voir src/theme/ThemeRoot.tsx.
+ * Un test vérifie que ces valeurs restent celles de palette.cjs.
+ */
+@layer base {
+  :root {
+    --color-background: 253 247 240;
+    --color-foreground: 43 26 18;
+    --color-card: 255 255 255;
+    --color-card-foreground: 43 26 18;
+    --color-primary: 122 31 14;
+    --color-primary-hover: 99 24 10;
+    --color-primary-foreground: 253 247 240;
+    --color-secondary: 235 217 198;
+    --color-secondary-foreground: 43 26 18;
+    --color-muted: 246 236 225;
+    --color-muted-foreground: 107 74 54;
+    --color-accent: 243 182 24;
+    --color-accent-foreground: 43 26 18;
+    --color-cta: 240 164 34;
+    --color-cta-hover: 217 130 43;
+    --color-cta-foreground: 43 26 18;
+    --color-title-accent: 194 97 31;
+    --color-ochre: 217 130 43;
+    --color-clay: 185 152 122;
+    --color-border: 234 217 199;
+    --color-input: 217 194 170;
+    --color-ring: 217 130 43;
+    --color-destructive: 180 35 24;
+    --color-destructive-foreground: 253 247 240;
+    --color-success: 46 107 63;
+    --color-success-muted: 227 240 230;
+    --color-warning: 140 90 16;
+    --color-warning-muted: 252 239 208;
+    --color-sidebar: 43 26 18;
+    --color-sidebar-foreground: 235 217 198;
+    --color-sidebar-primary: 253 247 240;
+    --color-sidebar-primary-foreground: 43 26 18;
+  }
+}

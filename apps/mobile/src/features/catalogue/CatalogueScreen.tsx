@@ -20,6 +20,7 @@ import {
 } from '@/components/ui';
 // Une image importée devient une « source » pour <Image> (géré par Metro).
 import emptyImage from '../../../assets/images/aucun-resultat.webp';
+import { useThemeColors } from '@/theme/useTheme';
 
 const ORIGINS = ['Sénégal', 'Mali', "Côte d'Ivoire", 'Cameroun'];
 
@@ -37,6 +38,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
  * sur un vrai téléphone. Écran de travail, il n'apparaît pas dans la navigation de l'app.
  */
 export function CatalogueScreen() {
+  const colors = useThemeColors();
   const [origins, setOrigins] = useState<string[]>(['Sénégal']);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -114,7 +116,7 @@ export function CatalogueScreen() {
             autoCapitalize="none"
             value={email}
             onChangeText={setEmail}
-            icon={<Mail size={16} color="#6B4A36" />}
+            icon={<Mail size={16} color={colors['muted-foreground']} />}
             hint="On ne le partage jamais."
           />
           <Input
@@ -125,7 +127,7 @@ export function CatalogueScreen() {
           <Input
             label="Recherche"
             placeholder="Traiteur, DJ…"
-            icon={<Search size={16} color="#6B4A36" />}
+            icon={<Search size={16} color={colors['muted-foreground']} />}
           />
         </Section>
 

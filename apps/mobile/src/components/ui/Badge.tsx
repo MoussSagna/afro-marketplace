@@ -14,7 +14,7 @@ export const badgeVariants = cva(
         success: 'bg-success-muted',
         warning: 'bg-warning-muted',
         sun: 'bg-accent',
-        destructive: 'bg-[#FBE4E1]',
+        destructive: 'bg-destructive/15',
         primary: 'bg-primary',
       },
     },

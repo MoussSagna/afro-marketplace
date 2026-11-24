@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { SplashGate } from '@/features/splash/SplashGate';
 import { useAppReady } from '@/features/splash/useAppReady';
 import { AppProviders } from '@/providers/AppProviders';
+import { useThemeColors } from '@/theme/useTheme';
 
 /**
  * La racine de la navigation (Expo Router : un fichier dans app/ = un écran).
@@ -14,11 +15,15 @@ import { AppProviders } from '@/providers/AppProviders';
  */
 export default function RootLayout() {
   const ready = useAppReady();
+  const colors = useThemeColors();
   return (
     <SplashGate ready={ready}>
       <AppProviders>
         <Stack
-          screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#FDF7F0' } }}
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.background },
+          }}
         />
       </AppProviders>
     </SplashGate>

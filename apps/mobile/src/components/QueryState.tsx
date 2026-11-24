@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { Button, EmptyState } from '@/components/ui';
+import { useThemeColors } from '@/theme/useTheme';
 
 type QueryStateProps = {
   isPending: boolean;
@@ -25,11 +26,12 @@ export function QueryState({
   placeholder,
   children,
 }: QueryStateProps) {
+  const colors = useThemeColors();
   if (isPending) {
     return (
       placeholder ?? (
         <ActivityIndicator
-          color="#7A1F0E"
+          color={colors.primary}
           accessibilityLabel={loadingLabel}
           className="self-start py-4"
         />

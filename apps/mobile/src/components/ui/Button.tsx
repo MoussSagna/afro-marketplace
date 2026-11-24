@@ -2,6 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ComponentProps, ReactNode } from 'react';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 import { cn } from '@/lib/cn';
+import { useThemeColors } from '@/theme/useTheme';
 
 /** Mêmes variantes que le bouton du site. Toutes en pilule (maquette v2). */
 export const buttonVariants = cva('flex-row items-center justify-center gap-2 rounded-full', {
@@ -64,6 +65,7 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
+  const colors = useThemeColors();
   const isDisabled = Boolean(disabled) || loading;
   const textClass = buttonTextVariants({ variant, size });
 
@@ -83,7 +85,13 @@ export function Button({
       {loading ? (
         <ActivityIndicator
           testID="button-loading"
-          color={variant === 'primary' || variant === 'destructive' ? '#FDF7F0' : '#2B1A12'}
+          color={
+            variant === 'primary' || variant === 'destructive'
+              ? colors['primary-foreground']
+              : variant === 'cta' || variant === undefined || variant === null
+                ? colors['cta-foreground']
+                : colors.foreground
+          }
         />
       ) : (
         icon

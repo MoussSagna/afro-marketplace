@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Heading, Text } from '@/components/ui';
 import { useSessionStore } from '@/stores/session';
 import { useAuthFlowStore } from './authFlowStore';
+import { useThemeColors } from '@/theme/useTheme';
 
 type SignInRequiredProps = {
   /** Le titre de l'onglet (« Demandes »). */
@@ -23,6 +24,7 @@ type SignInRequiredProps = {
  * Comme sur le site, c'est du confort : le vrai contrôle se fait côté serveur.
  */
 export function SignInRequired({ title, reason, children }: SignInRequiredProps) {
+  const colors = useThemeColors();
   const user = useSessionStore((s) => s.user);
   const pathname = usePathname();
   const router = useRouter();
@@ -42,7 +44,7 @@ export function SignInRequired({ title, reason, children }: SignInRequiredProps)
       </View>
       <View className="flex-1 items-center justify-center gap-3 px-9">
         <View className="mb-2 h-20 w-20 items-center justify-center rounded-full bg-secondary">
-          <LockKeyhole size={34} color="#7A1F0E" />
+          <LockKeyhole size={34} color={colors.primary} />
         </View>
         <Heading level={2} className="text-center">
           Connecte-toi

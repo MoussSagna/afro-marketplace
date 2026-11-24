@@ -16,6 +16,7 @@ import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
 import { ProviderCard } from '../providers/ProviderCard';
 import { searchHref } from '../search/searchHref';
 import { CATEGORY_ICONS } from './categoryIcons';
+import { useThemeColors } from '@/theme/useTheme';
 
 /** Un titre de section avec son lien « Tout voir ». */
 function SectionTitle({
@@ -76,6 +77,7 @@ function CategoryTile({ category, onPress }: { category: Category; onPress: () =
  * Toucher la recherche ou une catégorie ouvre l'onglet Recherche (filtré sur la catégorie).
  */
 export function HomeScreen() {
+  const colors = useThemeColors();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const onScroll = useCollapseOnScroll();
@@ -126,7 +128,7 @@ export function HomeScreen() {
             className="flex-row items-center gap-3 rounded-full border border-border bg-card py-1.5 pl-5 pr-1.5 active:opacity-90"
             style={{ boxShadow: '0 12px 32px rgba(43, 26, 18, 0.16)' }}
           >
-            <Search size={20} color="#6B4A36" />
+            <Search size={20} color={colors['muted-foreground']} />
             <View className="flex-1">
               <Text size="sm" weight="semibold">
                 Que cherches-tu ?
@@ -136,7 +138,7 @@ export function HomeScreen() {
               </Text>
             </View>
             <View className="h-11 w-11 items-center justify-center rounded-full bg-cta">
-              <ArrowRight size={20} color="#2B1A12" />
+              <ArrowRight size={20} color={colors['cta-foreground']} />
             </View>
           </Pressable>
         </View>

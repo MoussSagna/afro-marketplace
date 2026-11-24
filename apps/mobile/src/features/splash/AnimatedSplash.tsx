@@ -25,6 +25,7 @@ import Svg, {
   Stop,
 } from 'react-native-svg';
 import { Text } from '@/components/ui';
+import { useThemeColors } from '@/theme/useTheme';
 import { ARCH_LEFT, ARCH_RIGHT, LENGTHS, WEAVE, WORDMARK } from './splashPaths';
 
 /** Durée de l'animation complète (la maquette faisait 4 s ; on garde les mêmes étapes, en 3,2 s). */
@@ -91,6 +92,8 @@ type AnimatedSplashProps = {
  */
 export function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
   const reduceMotion = useReducedMotion();
+  // Le fondu final va vers le fond de l'app : crème en thème clair, brun en thème sombre.
+  const appBackground = useThemeColors().background;
   // L'horloge commune. 0,6 = tout est affiché, avant le fondu (état « figé »).
   const t = useSharedValue(reduceMotion ? 0.6 : 0);
 
@@ -252,7 +255,10 @@ export function AnimatedSplash({ onFinish }: AnimatedSplashProps) {
       </Animated.View>
 
       {/* Le fondu vers la couleur de fond de l'app. */}
-      <Animated.View style={[StyleSheet.absoluteFill, styles.fade, fadeOut]} pointerEvents="none" />
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { backgroundColor: appBackground }, fadeOut]}
+        pointerEvents="none"
+      />
     </View>
   );
 }
@@ -269,5 +275,4 @@ const styles = StyleSheet.create({
   },
   dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: SUN },
   strip: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 16, opacity: 0.8 },
-  fade: { backgroundColor: CREAM },
 });

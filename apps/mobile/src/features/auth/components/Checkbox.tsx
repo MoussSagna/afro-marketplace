@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { Text } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { useThemeColors } from '@/theme/useTheme';
 
 type CheckboxProps = {
   checked: boolean;
@@ -21,6 +22,7 @@ export function Checkbox({
   children,
   error,
 }: CheckboxProps) {
+  const colors = useThemeColors();
   return (
     <View className="gap-1">
       <Pressable
@@ -36,7 +38,9 @@ export function Checkbox({
             checked ? 'border-primary bg-primary' : error ? 'border-destructive' : 'border-input',
           )}
         >
-          {checked ? <Check size={16} color="#FDF7F0" strokeWidth={3} /> : null}
+          {checked ? (
+            <Check size={16} color={colors['primary-foreground']} strokeWidth={3} />
+          ) : null}
         </View>
         <View className="flex-1">{children}</View>
       </Pressable>

@@ -122,6 +122,7 @@ apps/mobile/
   src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
   src/stores/          Session (Zustand + AsyncStorage)
+  src/theme/           Thème clair / sombre : palette, ThemeRoot (variables CSS), useThemeColors, themeStore
   tailwind.config.js   NativeWind : preset partagé @afro/config/tailwind/preset.cjs (couleurs du site)
   global.css           Point d'entrée de NativeWind (importé dans app/_layout.tsx)
   app.json             Nom, icône, identifiants de l'app (Expo)
@@ -138,7 +139,7 @@ apps/mobile/
 - Attention : `src/app/` est interdit (Expo Router le prendrait pour le dossier des routes) ; les fournisseurs
   React vont dans `src/providers/`.
 - Styles : NativeWind (`className`). Les couleurs viennent de `packages/config/tailwind/tokens.json` via
-  `preset.cjs` ; le site lit les mêmes valeurs dans `theme.css` (un test vérifie qu'elles sont identiques).
+  `palette.cjs` (thèmes clair et sombre) et `preset.cjs` (chaque couleur lit une variable CSS posée par `ThemeRoot`) ; le site lit les mêmes valeurs dans `theme.css` (un test vérifie qu'elles sont identiques).
 - Connexion (lot M5) : formulaires React Hook Form + schémas Zod de `common` ; à la fin, `useFinishAuth` range la
   session (et vide le cache), ferme la pile d'écrans de connexion et revient à l'onglet retenu par `authFlowStore`.
   Les onglets protégés s'enveloppent dans `<SignInRequired>` (panneau « Connecte-toi » au lieu d'une redirection).
