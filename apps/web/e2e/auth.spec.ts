@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 /** « Se connecter » depuis la navbar de l'accueil (dans le menu sur téléphone). */
 async function openLoginFromHome(page: Page, isMobile: boolean) {
   if (isMobile) await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
-  await page.getByRole('link', { name: 'Se connecter' }).click();
+  await page.getByRole('link', { name: 'Se connecter', exact: true }).click();
 }
 
 test.describe('connexion de démo', () => {
@@ -44,6 +44,6 @@ test.describe('connexion de démo', () => {
 
     await expect(page).toHaveURL('/');
     if (isMobile) await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
-    await expect(page.getByRole('link', { name: 'Se connecter' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Se connecter', exact: true })).toBeVisible();
   });
 });

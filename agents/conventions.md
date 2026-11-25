@@ -57,7 +57,13 @@
 - Survols et éléments actifs de menu : `bg-muted`, pas `bg-accent` (le soleil est réservé aux pastilles).
 - Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
-- Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main ; sur photo ou fond sombre, `variant="light"`. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
+- Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main ; sur photo ou fond sombre, `variant="light"`.
+- En-tête : une seule navbar pour tout le site (`components/layout/Navbar.tsx`) ; ne pas recréer d'en-tête propre à une page. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
+- Piège du `Button` shadcn : avec une icône dedans, `has-[>svg]:px-3` écrase les marges passées en `className`.
+  Pour élargir un bouton avec icône, ajouter aussi `has-[>svg]:px-…`.
+- Piège des marges responsives : un raccourci `lg:p-8` réécrit les 4 marges et efface un `md:pl-…` plus spécifique ;
+  préférer des côtés explicites, ou une plage (`lg:max-[1399px]:pl-8`). Les points de rupture arbitraires
+  (`min-[1400px]:`) ne passent pas toujours après `sm:`/`lg:` dans la feuille générée.
 - **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices :
   `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`. Composants de base dans
   `apps/mobile/src/components/ui/` ; on n'ajoute pas de couleur en dur (sauf les icônes lucide, qui prennent un code hexa).

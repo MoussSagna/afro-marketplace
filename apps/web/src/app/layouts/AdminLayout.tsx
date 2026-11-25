@@ -1,6 +1,6 @@
 import { Flag, LayoutDashboard, UserCheck, Users } from 'lucide-react';
 import { Outlet } from 'react-router';
-import { AppHeader } from '@/components/layout/AppHeader';
+import { Navbar } from '@/components/layout/Navbar';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 
@@ -17,7 +17,7 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <AppHeader spaceLabel="Admin" />
+      <Navbar spaceLabel="Admin" />
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:flex-row">
         <SpaceNav
           items={items}

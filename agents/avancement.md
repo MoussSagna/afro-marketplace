@@ -1,6 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (site : section « Explorez nos univers », branche `feat/web-categories-mosaic`).
+Dernière mise à jour : 25/11/2026 (site : section « Deux façons d'utiliser Wenzee » et navbar unique, branche
+`feat/web-user-types`).
 
 ## Site en ligne (Vercel)
 
@@ -66,9 +67,36 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
+## Site : la navbar du hero sur toutes les pages (25/11/2026)
+
+Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-validation.md).
+
+- Les 4 gabarits (public, client, pro, admin) utilisent `Navbar` ; `AppHeader` est supprimé.
+- Accueil : inchangé (transparente puis floutée). Ailleurs : collée en haut, fond brun dès le départ.
+- Espaces : badge « Espace client / pro / Admin », bascule de mode (texte court jusqu'à 1280 px), menu du compte
+  (prénom à partir de 1280 px). « Se connecter » ramène à la page en cours.
+- « Prestataires » est souligné sur la recherche, les catégories et les profils.
+- Tests : `Navbar.test.tsx` (autres pages, espace pro, lien actif), `auth.test.tsx`, `Brand.test.tsx` (logo clair).
+
+## Site : section « Deux façons d'utiliser Wenzee » (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-user-types`, à relire. Méthode et cycles :
+[`docs/user-types-section-validation.md`](../docs/user-types-section-validation.md).
+
+- 3ᵉ section de l'accueil, sous « Explorez nos univers » : en-tête centré, deux cartes côte à côte (≥ 1024 px),
+  **sans aucune photo** (illustrations vectorielles à partir des icônes lucide).
+- Carte « Pour les prestataires » : « Référencer mon activité » → `/devenir-prestataire` ; « Déjà inscrit ? Se
+  connecter » → `/connexion?retour=%2Fpro`. Carte « Pour les particuliers » : « Organiser mon événement » →
+  `/recherche` ; connexion → `/connexion`.
+- Données : `features/home/lib/userTypes.ts` ; composants `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration`.
+- **Fonds unis** (demande de Mouss) : cette section en sable clair (`bg-muted`), « Explorez nos univers » en ivoire,
+  sans motifs ni cercles décoratifs.
+- Tests : `UserTypesSection.test.tsx`, `e2e/user-types.spec.ts` ; `e2e/auth.spec.ts` cherche maintenant « Se
+  connecter » en nom exact (les cartes ont des liens « Déjà inscrit ? Se connecter »).
+
 ## Site : section « Explorez nos univers » (25/11/2026)
 
-Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-categories-mosaic`, à relire. Méthode et cycles :
+Demande de Mouss, d'après sa maquette. ✅ Fusionné (#46). Méthode et cycles :
 [`docs/categories-section-validation.md`](../docs/categories-section-validation.md).
 
 - 2ᵉ section de l'accueil, sous le hero : texte éditorial à gauche (« Découvrez nos univers événementiels »,

@@ -1,7 +1,7 @@
 import { CalendarDays, FileText, LayoutDashboard, MessageCircle, Star, Store } from 'lucide-react';
 import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
-import { AppHeader } from '@/components/layout/AppHeader';
+import { Navbar } from '@/components/layout/Navbar';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
@@ -29,15 +29,20 @@ export function ProLayout() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <AppHeader spaceLabel="Espace pro">
-        <Button asChild variant="outline" size="sm">
+      <Navbar spaceLabel="Espace pro">
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="border-white/50 bg-white/10 text-white hover:bg-white hover:text-foreground"
+        >
           <Link to="/espace/demandes" aria-label="Passer en mode client">
-            {/* Texte court sur téléphone pour que l'en-tête tienne sur une ligne. */}
-            <span className="sm:hidden">Mode client</span>
-            <span className="hidden sm:inline">Passer en mode client</span>
+            {/* Texte court jusqu'à 1280 px pour que la navbar tienne sur une ligne. */}
+            <span className="xl:hidden">Mode client</span>
+            <span className="hidden xl:inline">Passer en mode client</span>
           </Link>
         </Button>
-      </AppHeader>
+      </Navbar>
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:flex-row">
         <SpaceNav
           items={items}

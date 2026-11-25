@@ -103,3 +103,9 @@ recomposés ; aucun débordement horizontal (4 formats).
 | Photos en 320 px                   | Traiteur, Beauté, Speaker, Show, Décoration : vignettes de l'app (320 × 320), un peu floues sur écran haute densité. Prévoir ~700 px de large (1 000 px pour la carte DJ).                                                                |
 | « Voir toutes les catégories »     | Il n'existe pas de page listant toutes les catégories : le bouton mène à `/recherche` (tous les prestataires).                                                                                                                            |
 | Bouton plus étroit que la maquette | 301 px contre ~370 : police Inter (design system) plus étroite que celle de la maquette.                                                                                                                                                  |
+
+## 6. Ajustement du 25/11/2026 : fond uni
+
+À la demande de Mouss, la section n'a plus de décor (cercles sable, motifs losanges) : fond ivoire uni
+(`bg-background`). La section suivante, « Deux façons d'utiliser Wenzee », a un fond sable clair pour s'en distinguer
+(voir `user-types-section-validation.md`, section 6).
