@@ -199,7 +199,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 
 ## Sprint 3 : demander un devis et discuter
 
-### M9 · Demande de devis (C1)
+### M9 · Demande de devis (C1) · **fait (voir avancement.md)**
 
 - Formulaire en 3 étapes (Formule → Événement → Message), barre de progression, vérification de la date
   (règle n° 3), écran « Demande envoyée ».

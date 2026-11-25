@@ -1,8 +1,12 @@
 import {
   addDays,
   ApiError,
+  emptyQuoteRequestForm,
   EVENT_TYPE_LABELS,
   formatOfferingPrice,
+  quoteRequestFormSchema,
+  toCreateQuoteRequestInput,
+  type QuoteRequestFormValues,
   toIsoDate,
   useApiClient,
   useCreateQuoteRequest,
@@ -32,12 +36,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useSessionStore } from '@/stores/session';
-import {
-  emptyQuoteRequestForm,
-  quoteRequestFormSchema,
-  toCreateQuoteRequestInput,
-  type QuoteRequestFormValues,
-} from '../lib/requestForm';
 
 /**
  * C1 : le formulaire de demande de devis.

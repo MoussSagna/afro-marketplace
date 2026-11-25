@@ -17,6 +17,8 @@ type CalendarProps = {
   unavailable?: ReadonlySet<string>;
   /** Prévient quand on change de mois (pour charger ses dispos). */
   onMonthChange?(year: number, month: number): void;
+  /** Le premier jour qu'on peut choisir (aujourd'hui par défaut ; demain pour un devis). */
+  firstDay?: string;
 };
 
 /**
@@ -24,12 +26,14 @@ type CalendarProps = {
  * - Pour choisir un jour (étape « Quand ? » de la recherche) : le jour choisi est en terre.
  * - Pour lire des disponibilités (profil) : les jours indisponibles sont barrés sur fond rouge pâle,
  *   et VoiceOver lit « …, disponible » ou « …, indisponible ».
+ * - Les deux à la fois (date d'une demande de devis) : on choisit un jour, les jours pris sont barrés
+ *   en rouge, mais restent touchables pour que le formulaire explique pourquoi ils sont refusés.
  */
-export function Calendar({ value, onChange, unavailable, onMonthChange }: CalendarProps) {
+export function Calendar({ value, onChange, unavailable, onMonthChange, firstDay }: CalendarProps) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const colors = useThemeColors();
-  const today = todayIso();
+  const today = firstDay ?? todayIso();
   const start = value ?? today;
   const [month, setMonth] = useState({
     year: Number(start.slice(0, 4)),
@@ -89,19 +93,19 @@ export function Calendar({ value, onChange, unavailable, onMonthChange }: Calend
           const iso = isoDay(month.year, month.month, day);
           const past = iso < today;
           const selected = iso === value;
+          const busy = !past && (unavailable?.has(iso) ?? false);
           const label = longDay(iso, locale);
           const dayText = (
             <Text
               size="sm"
               weight={selected ? 'bold' : 'medium'}
-              tone={selected ? 'inverse' : past ? 'muted' : 'default'}
-              className={past ? 'line-through opacity-60' : undefined}
+              tone={selected ? 'inverse' : past ? 'muted' : busy ? 'destructive' : 'default'}
+              className={past || (busy && !selected) ? 'line-through opacity-60' : undefined}
             >
               {String(day)}
             </Text>
           );
           if (!onChange) {
-            const busy = unavailable?.has(iso) ?? false;
             return (
               <View
                 key={iso}
@@ -116,7 +120,7 @@ export function Calendar({ value, onChange, unavailable, onMonthChange }: Calend
                 <View
                   className={cn(
                     'h-10 w-10 items-center justify-center rounded-full',
-                    busy && !past && 'bg-destructive/15',
+                    busy && 'bg-destructive/15',
                   )}
                 >
                   <Text
@@ -135,7 +139,7 @@ export function Calendar({ value, onChange, unavailable, onMonthChange }: Calend
             <View key={iso} className="h-10 w-[14.28%] items-center justify-center">
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={label}
+                accessibilityLabel={busy ? `${label}, ${t('calendar.unavailable')}` : label}
                 accessibilityState={{ selected, disabled: past }}
                 disabled={past}
                 onPress={() => onChange(iso)}

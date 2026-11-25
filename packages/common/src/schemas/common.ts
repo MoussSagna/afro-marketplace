@@ -24,7 +24,9 @@ export const isoDateTimeSchema = z.iso.datetime();
 export const isoDateSchema = z.iso.date();
 
 /** Code postal français à 5 chiffres. */
-export const postalCodeSchema = z.string().regex(/^\d{5}$/, 'Code postal à 5 chiffres');
+/** Le message d'un code postal mal écrit (traduit dans l'app via errorKeyOf). */
+export const POSTAL_CODE_MESSAGE = 'Code postal à 5 chiffres';
+export const postalCodeSchema = z.string().regex(/^\d{5}$/, POSTAL_CODE_MESSAGE);
 
 /** Coordonnées GPS, pour calculer les distances (et plus tard la carte). */
 export const locationSchema = z.object({

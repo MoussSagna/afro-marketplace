@@ -4,10 +4,28 @@ import {
   idSchema,
   isoDateSchema,
   isoDateTimeSchema,
+  POSTAL_CODE_MESSAGE,
   postalCodeSchema,
   text,
   timestamps,
 } from './common';
+
+/**
+ * Les messages d'erreur de la demande de devis (C1), en français comme tous les schémas.
+ * Rangés ici pour que l'app les traduise (errors.* dans i18n, voir errorKeyOf).
+ */
+export const quoteRequestMessages = {
+  eventTypeRequired: 'Choisis le type d’événement',
+  eventDateRequired: 'Choisis la date de l’événement',
+  eventCityRequired: 'Indique la ville de l’événement',
+  postalCode: POSTAL_CODE_MESSAGE,
+  wholeNumber: 'Indique un nombre entier',
+  guestRange: 'Entre 1 et 5 000 invités',
+  budgetInvalid: 'Budget invalide',
+  budgetOrder: 'Le budget maximum doit être supérieur au minimum',
+  messageTooShort: 'Décris ton besoin en quelques phrases (20 caractères minimum)',
+  dateUnavailable: 'Ce prestataire n’est pas disponible ce jour-là. Choisis une autre date.',
+} as const;
 
 export const eventTypeSchema = z.enum([
   'wedding',
@@ -70,20 +88,20 @@ export const createQuoteRequestInputSchema = z
     clientType: clientTypeSchema,
     eventType: eventTypeSchema,
     // Une date vide (champ non rempli) est refusée avec un message clair.
-    eventDate: z.iso.date({ error: 'Choisis la date de l’événement' }),
-    eventCity: text(1, 80, 'Indique la ville de l’événement'),
+    eventDate: z.iso.date({ error: quoteRequestMessages.eventDateRequired }),
+    eventCity: text(1, 80, quoteRequestMessages.eventCityRequired),
     eventPostalCode: postalCodeSchema,
     guestCount: z.number().int().min(1, 'Au moins 1 invité').max(5000).optional(),
     budgetMin: amountInCentsSchema.optional(),
     budgetMax: amountInCentsSchema.optional(),
-    message: text(20, 2000, 'Décris ton besoin en quelques phrases (20 caractères minimum)'),
+    message: text(20, 2000, quoteRequestMessages.messageTooShort),
   })
   .refine(
     (input) =>
       input.budgetMin === undefined ||
       input.budgetMax === undefined ||
       input.budgetMax >= input.budgetMin,
-    { message: 'Le budget maximum doit être supérieur au minimum', path: ['budgetMax'] },
+    { message: quoteRequestMessages.budgetOrder, path: ['budgetMax'] },
   );
 
 /** Le prestataire décline une demande (S3), avec un motif. */

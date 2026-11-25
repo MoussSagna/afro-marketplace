@@ -1,3 +1,3 @@
-import { QuoteRequestSoonScreen } from '@/features/provider-profile/QuoteRequestSoonScreen';
+import { QuoteRequestScreen } from '@/features/quote-request/QuoteRequestScreen';
 
-export default QuoteRequestSoonScreen;
+export default QuoteRequestScreen;

@@ -13,6 +13,11 @@ export function todayIso(now = new Date()): string {
   return isoDay(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
+/** Demain, sur le téléphone : le premier jour qu'on peut demander pour un devis. */
+export function tomorrowIso(now = new Date()): string {
+  return todayIso(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+}
+
 /** Une date ISO comme objet Date « à midi UTC », pour l'afficher sans décalage de fuseau. */
 function noonUtc(iso: string) {
   return new Date(`${iso}T12:00:00Z`);
