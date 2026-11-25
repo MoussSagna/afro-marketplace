@@ -57,8 +57,21 @@
 - Survols et éléments actifs de menu : `bg-muted`, pas `bg-accent` (le soleil est réservé aux pastilles).
 - Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
-- Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
+- Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main ; sur photo ou fond sombre, `variant="light"`. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
 - **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices :
   `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`. Composants de base dans
   `apps/mobile/src/components/ui/` ; on n'ajoute pas de couleur en dur (sauf les icônes lucide, qui prennent un code hexa).
 - Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.
+
+## Validation visuelle (tout développement visuel)
+
+Demandée par Mouss le 25/11/2026, pour le hero puis pour **tous** les écrans : **coder → capturer → comparer → corriger →
+recapturer**.
+
+1. Analyser la maquette avant de coder (dimensions, positions, cadrages) ; elle est la référence, sans ajout personnel.
+2. Capturer le rendu réel avec Playwright **à la résolution exacte de la maquette** (et en tablette / mobile).
+3. Lister les écarts par priorité ; chaque correction répond à un écart identifié.
+4. **3 cycles maximum** (première intégration comprise) ; les écarts restants sont documentés, pas cachés.
+5. Documenter dans `docs/<sujet>-validation.md` (mesures, écarts, corrections). **Les captures ne sont pas commitées**
+   (choix de Mouss, 25/11/2026) : elles restent en local, hors du dépôt.
+   Exemple : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).

@@ -115,6 +115,25 @@ export const routes: RouteObject[] = [
             }),
           },
           {
+            // Liens de la navbar de l'accueil : pages « bientôt disponible » (hors MVP).
+            path: 'evenements',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/ComingSoonPages')).EventsPage,
+            }),
+          },
+          {
+            path: 'offres',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/ComingSoonPages')).DealsPage,
+            }),
+          },
+          {
+            path: 'favoris',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/ComingSoonPages')).FavoritesPage,
+            }),
+          },
+          {
             path: 'faq',
             lazy: async () => ({
               Component: (await import('@/features/static/pages/FaqPage')).FaqPage,

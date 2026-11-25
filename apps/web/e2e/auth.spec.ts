@@ -1,4 +1,10 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+/** « Se connecter » depuis la navbar de l'accueil (dans le menu sur téléphone). */
+async function openLoginFromHome(page: Page, isMobile: boolean) {
+  if (isMobile) await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
+  await page.getByRole('link', { name: 'Se connecter' }).click();
+}
 
 test.describe('connexion de démo', () => {
   for (const { account, url, title } of [
@@ -6,9 +12,9 @@ test.describe('connexion de démo', () => {
     { account: 'Saveurs de Dakar, prestataire', url: '/pro', title: 'Tableau de bord' },
     { account: 'Admin', url: '/admin', title: 'Vue d’ensemble' },
   ]) {
-    test(`« ${account} » arrive dans son espace`, async ({ page }) => {
+    test(`« ${account} » arrive dans son espace`, async ({ page, isMobile }) => {
       await page.goto('/');
-      await page.getByRole('link', { name: 'Connexion' }).click();
+      await openLoginFromHome(page, isMobile);
       await page.getByRole('button', { name: `Se connecter : ${account}` }).click();
 
       await expect(page).toHaveURL(url);
@@ -28,7 +34,7 @@ test.describe('connexion de démo', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Messages' })).toBeVisible();
   });
 
-  test('se déconnecter ramène à l’accueil', async ({ page }) => {
+  test('se déconnecter ramène à l’accueil', async ({ page, isMobile }) => {
     await page.goto('/connexion');
     await page.getByRole('button', { name: 'Se connecter : Aïssatou, cliente' }).click();
     await expect(page).toHaveURL('/espace/demandes');
@@ -37,6 +43,7 @@ test.describe('connexion de démo', () => {
     await page.getByRole('menuitem', { name: 'Se déconnecter' }).click();
 
     await expect(page).toHaveURL('/');
-    await expect(page.getByRole('link', { name: 'Connexion' })).toBeVisible();
+    if (isMobile) await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
+    await expect(page.getByRole('link', { name: 'Se connecter' })).toBeVisible();
   });
 });

@@ -109,10 +109,10 @@ describe('Gardes de routes', () => {
 });
 
 describe('Menu du compte et gabarits', () => {
-  it('affiche « Connexion » quand personne n’est connecté', async () => {
+  it('affiche « Se connecter » sur l’accueil quand personne n’est connecté', async () => {
     renderRoute('/');
 
-    const link = await screen.findByRole('link', { name: 'Connexion' });
+    const link = await screen.findByRole('link', { name: 'Se connecter' });
     // Depuis l'accueil : pas de retour, on arrivera dans son espace.
     expect(link).toHaveAttribute('href', '/connexion');
   });
@@ -163,7 +163,8 @@ describe('Menu du compte et gabarits', () => {
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/'));
     expect(useSessionStore.getState().user).toBeNull();
-    expect(await screen.findByRole('link', { name: 'Connexion' })).toBeInTheDocument();
+    // Retour à l'accueil : la navbar du hero propose « Se connecter ».
+    expect(await screen.findByRole('link', { name: 'Se connecter' })).toBeInTheDocument();
   });
 
   it('propose l’administration seulement à l’admin', async () => {

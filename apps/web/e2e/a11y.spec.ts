@@ -25,7 +25,7 @@ async function expectNoSeriousViolations(page: Page) {
 }
 
 const PUBLIC_PAGES: [string, string][] = [
-  ['/', 'Les talents afro pour tous vos événements'],
+  ['/', 'Trouvez les talents qui subliment'],
   ['/recherche', 'Rechercher un prestataire'],
   ['/prestataires/saveurs-de-dakar', 'Saveurs de Dakar'],
   ['/connexion', 'Connexion'],
