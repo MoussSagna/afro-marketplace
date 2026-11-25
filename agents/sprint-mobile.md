@@ -267,6 +267,9 @@ sections du profil dans l'app, sauf les photos qui restent sur le site) · fait.
 
 ### M16 · Qualité et préparation des tests sur téléphones
 
+Fait en version économe (parcours de bout en bout + `eas.json`) ; Moti, hors ligne et passe d'accessibilité reportés.
+Voir `avancement.md`.
+
 - Parcours de bout en bout (les parcours clés de l'étape 3, version mobile) : voir `questions-ouvertes.md`
   pour l'outil (Maestro ou tests de parcours Testing Library).
 - Accessibilité (VoiceOver / TalkBack : libellés, tailles de cible, contrastes), animations d'apparition Moti,
