@@ -17,6 +17,7 @@ import { Avatar, BackHeader, Badge, Button, EmptyState, Heading, Text } from '@/
 import { useLanguage } from '@/i18n/useLanguage';
 import { shortDate } from '@/lib/dates';
 import { useThemeColors } from '@/theme/useTheme';
+import { BookingPanel } from '../bookings/BookingPanel';
 import { conversationHref } from '../messaging/conversationHref';
 import { QuoteCard } from '../messaging/QuoteCard';
 import { RequestInfoRows } from '../requests/RequestInfoRows';
@@ -137,6 +138,8 @@ function RequestDetail({ details, sent }: { details: QuoteRequestDetails; sent: 
         </View>
 
         {open ? <Availability providerId={details.provider.id} date={request.eventDate} /> : null}
+
+        {details.booking ? <BookingPanel booking={details.booking} side="provider" /> : null}
 
         {latest ? (
           <View className="gap-2">

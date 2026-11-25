@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M14b : envoyer un devis).
+Dernière mise à jour : 25/11/2026 (lot M15a : agenda pro).
 
 ## Lots
 
@@ -48,7 +48,25 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M12b | Compte (C8)                                | ✅ fusionné #35                                                  |
 | M13  | Bascule pro et tableau de bord (S2)        | ✅ fusionné #36                                                  |
 | M14a | Demandes reçues et messagerie pro (S3, S5) | ✅ fusionné #37                                                  |
-| M14b | Envoyer un devis (S4)                      | 🔍 PR ouverte                                                    |
+| M14b | Envoyer un devis (S4)                      | ✅ fusionné #38                                                  |
+| M15a | Agenda pro (S6)                            | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M15a
+
+M15 est découpé en deux petites PR : **M15a, l'agenda** (S6), puis **M15b, le profil pro** (S7).
+
+- **L'onglet Agenda** (`AgendaScreen`, maquette S6), mêmes règles que la page Agenda du site :
+  - le mois en grand, avec les flèches (on ne remonte pas avant le mois en cours) ;
+  - **réservé** (fond terre) : toucher le jour ouvre la demande, qui montre maintenant « La réservation » (adresse,
+    montants, politique) en lecture seule (`BookingPanel side="provider"`) ;
+  - **bloqué** (barré) : toucher le libère ; **libre** : toucher le bloque. Les jours passés ne se touchent pas ;
+  - dessous : les réservations du mois, puis **« Réservations max par jour »** (1 à 20, règle n° 3), avec
+    « Enregistrer » qui n'apparaît qu'après un changement.
+- VoiceOver lit l'état de chaque jour et ce que fait le toucher (« samedi 19 décembre 2026, libre, toucher pour
+  bloquer »).
+- Codes d'erreur du serveur traduits : `already_blocked`, `booked_date`, `not_provider`, `not_found`,
+  `invalid_input`.
+- **Tests** : `agenda.test.tsx` (bloquer puis libérer, jour réservé → la demande, réglage max par jour).
 
 ## Ce que contient le lot M14b
 

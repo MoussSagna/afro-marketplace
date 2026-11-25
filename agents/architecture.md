@@ -132,7 +132,7 @@ apps/mobile/
                        NotificationsScreen (/mon-compte/notifications), ChoiceSheet, useSaveAccount
   src/features/pro/    Mode prestataire (M13, M14) : ProTabsLayout (barre brune, app/pro/(tabs)/), ProOnly (garde),
                        DashboardScreen (/pro), ProRequestDetailScreen (/pro/demande/[id], disponibilité),
-                       DeclineRequestSheet, QuoteFormScreen (/pro/devis/[id]), clientName, useSwitchMode, requestUrgency, ProSoonScreen (onglets à venir).
+                       DeclineRequestSheet, QuoteFormScreen (/pro/devis/[id]), AgendaScreen (/pro/agenda), clientName, useSwitchMode, requestUrgency, ProSoonScreen (onglets à venir).
                        Les listes Demandes et Messages, et la conversation, sont celles du client avec `side="provider"`
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
