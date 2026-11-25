@@ -89,3 +89,25 @@ export function monthYear(isoDateTime: string, locale: string): string {
     timeZone: 'UTC',
   }).format(new Date(isoDateTime));
 }
+
+/**
+ * L'heure d'un message, courte comme dans une messagerie (heure du téléphone) :
+ * « 14:05 » si c'est aujourd'hui, « 3 déc. » / « 3 Dec » sinon.
+ */
+export function messageTime(isoDateTime: string, locale: string, now = new Date()): string {
+  const date = new Date(isoDateTime);
+  const sameDay = todayIso(date) === todayIso(now);
+  return new Intl.DateTimeFormat(
+    locale,
+    sameDay ? { hour: '2-digit', minute: '2-digit' } : { day: 'numeric', month: 'short' },
+  ).format(date);
+}
+
+/** « 6 déc. » / « 6 Dec » : une date ISO sans heure (fin de validité d'un devis…). */
+export function shortDate(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(noonUtc(iso));
+}

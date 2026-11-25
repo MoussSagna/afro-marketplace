@@ -28,6 +28,7 @@ import { useSessionStore } from '@/stores/session';
 import { useThemeColors } from '@/theme/useTheme';
 import { FormAlert } from '../auth/components/FormAlert';
 import { SignInRequired } from '../auth/SignInRequired';
+import { conversationHref } from '../messaging/conversationHref';
 import { EventStep, MessageStep, OfferingStep } from './QuoteSteps';
 import { quoteSummary } from './quoteSummary';
 
@@ -115,7 +116,7 @@ function QuoteForm({ details }: { details: ProviderDetails }) {
   const [offeringId, setOfferingId] = useState<string | undefined>(() =>
     offerings.some((o) => o.id === formule && o.isActive) ? formule : undefined,
   );
-  const [sent, setSent] = useState<QuoteRequestFormValues>();
+  const [sent, setSent] = useState<{ values: QuoteRequestFormValues; conversationId: string }>();
   const { control, trigger, setError, getValues, handleSubmit, formState } =
     useForm<QuoteRequestFormValues>({
       resolver: zodResolver(quoteRequestFormSchema),
@@ -141,17 +142,26 @@ function QuoteForm({ details }: { details: ProviderDetails }) {
 
   const send = handleSubmit(async (values) => {
     try {
-      // Le serveur ouvre aussi la conversation avec le prestataire (messagerie : lot M10).
-      await createRequest.mutateAsync(
+      const created = await createRequest.mutateAsync(
         toCreateQuoteRequestInput(values, { providerId: profile.id, offeringId }),
       );
-      setSent(values);
+      // Le serveur a ouvert la conversation avec le prestataire : on garde son adresse.
+      const request = await api.getQuoteRequest(created.id);
+      setSent({ values, conversationId: request.conversationId });
     } catch (error) {
       setError('root', { message: apiError(error) });
     }
   });
 
-  if (sent) return <QuoteSent name={profile.displayName} values={sent} />;
+  if (sent) {
+    return (
+      <QuoteSent
+        name={profile.displayName}
+        values={sent.values}
+        conversationId={sent.conversationId}
+      />
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -242,7 +252,15 @@ function QuoteForm({ details }: { details: ProviderDetails }) {
 }
 
 /** « Demande envoyée ! » : le délai de réponse, le récapitulatif, et la suite. */
-function QuoteSent({ name, values }: { name: string; values: QuoteRequestFormValues }) {
+function QuoteSent({
+  name,
+  values,
+  conversationId,
+}: {
+  name: string;
+  values: QuoteRequestFormValues;
+  conversationId: string;
+}) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const router = useRouter();
@@ -272,7 +290,7 @@ function QuoteSent({ name, values }: { name: string; values: QuoteRequestFormVal
         </Card>
       </ScrollView>
       <View className="gap-2 px-5 pb-2">
-        <Button fullWidth onPress={() => router.replace('/messages')}>
+        <Button fullWidth onPress={() => router.replace(conversationHref(conversationId))}>
           {t('quote.openConversation')}
         </Button>
         <Button fullWidth variant="ghost" onPress={() => router.replace('/')}>
