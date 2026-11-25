@@ -1,4 +1,13 @@
-import { ApiError, useDeleteMe, useUpdateMe, type User } from '@afro/common';
+import {
+  ApiError,
+  accountDefaults,
+  accountFormSchema,
+  toUpdateMeInput,
+  useDeleteMe,
+  useUpdateMe,
+  type AccountFormValues,
+  type User,
+} from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle2, Trash2 } from 'lucide-react';
 import { useId, useState } from 'react';
@@ -28,14 +37,7 @@ import { Label } from '@/components/ui/label';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useSessionStore } from '@/stores/session';
 import type { z } from 'zod';
-import {
-  NOTIFICATION_CHANNELS,
-  NOTIFICATION_TOPICS,
-  accountDefaults,
-  accountFormSchema,
-  toUpdateMeInput,
-  type AccountFormValues,
-} from '../lib/accountForm';
+import { NOTIFICATION_CHANNELS, NOTIFICATION_TOPICS } from '../lib/accountForm';
 
 /** C8 : mes informations, mes préférences de notification, et la suppression du compte. */
 export function AccountPage() {

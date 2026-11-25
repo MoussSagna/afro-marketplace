@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M12a : laisser un avis).
+Dernière mise à jour : 25/11/2026 (lot M12b : le compte).
 
 ## Lots
 
@@ -44,12 +44,45 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M9   | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
 | M10  | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
 | M11  | Devis et réservations (C3, C5)         | ✅ fusionné #33                                                  |
-| M12a | Laisser un avis (C6)                   | 🔍 PR ouverte                                                    |
-| M12b | Compte (C8)                            | à venir                                                          |
+| M12a | Laisser un avis (C6)                   | ✅ fusionné #34                                                  |
+| M12b | Compte (C8)                            | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M12b
+
+- **L'onglet Compte** (C8, `src/features/account/AccountScreen.tsx`) :
+  - En haut : l'avatar, le nom et l'email.
+  - **L'encart brun** : « Tu es prestataire ? Devenir pro » ouvre la page « Devenir prestataire » du site (l'inscription
+    pro se fait là-bas). Pour un prestataire : « Mode prestataire » et « Ouvrir le site » (la bascule dans l'app
+    arrive en M13).
+  - **Mes informations** (`/mon-compte/informations`) : prénom, nom, téléphone vérifié (l'email ne se change pas
+    encore), « Enregistrer » ; puis **« Supprimer mon compte »** avec confirmation. Le serveur anonymise le compte
+    (question n° 7) et refuse s'il reste une réservation à venir (message traduit). Supprimé : déconnecté, retour à
+    l'accueil.
+  - **Notifications** (`/mon-compte/notifications`) : pour chaque sujet (demandes et devis, messages, réservations,
+    nouveautés), un interrupteur par canal (email, SMS, notification). Rien n'est envoyé en démo.
+  - **Apparence** (Automatique / Clair / Sombre) et **Langue** (Automatique / Français / English) dans un panneau du
+    bas (`ChoiceSheet`). Les deux choix sont **gardés sur le téléphone** (`themeStore`, `i18n/languageStore`, rechargés
+    au démarrage dans `prepareDemoData`).
+  - **Aide et FAQ** et les **pages légales** (CGU, confidentialité, mentions légales) ouvrent les pages du site : un
+    seul texte à tenir à jour, et les textes juridiques sont encore provisoires (question n° 6).
+  - **Réinitialiser les données de démo** avec confirmation (`resetDemoData` : la base repart du jeu de démo ; un
+    compte créé pendant les essais est déconnecté). **Se déconnecter**.
+- L'adresse du site est dans `src/lib/site.ts` (`EXPO_PUBLIC_SITE_URL`, sinon `https://afromarket.vercel.app`,
+  **à confirmer**, question n° 14).
+- **Partagé avec le site** : le formulaire du compte (`accountFormSchema`, `accountDefaults`, `toUpdateMeInput`, les
+  clés des notifications) passe dans `packages/common/src/utils/accountForm.ts`. Les messages `userMessages` (nom,
+  téléphone) sont traduits.
+- Pas fait : la ligne « Mes avis » de la maquette (la liste de mes avis laissés), pas prévue dans le lot ; à ajouter
+  si tu la veux.
+- Textes : `account.*` et les codes d'erreur de suppression dans `apiErrors`.
+- Tests : 267 tests mobiles. `account.test.tsx` (qui je suis et liens vers le site, apparence et langue, réinitialiser,
+  modifier mes informations, notifications, suppression refusée puis acceptée), `demoData.test.ts` (réinitialisation)
+  et `languageStore.test.ts`.
+- **Jalon M1** : avec ce lot, tout le parcours client est là. C'est le moment de tester sur ton téléphone.
 
 ## Ce que contient le lot M12a
 
-M12 est découpé en deux petites PR : **M12a, laisser un avis** (celle-ci), puis **M12b, le compte**.
+M12 est découpé en deux petites PR : **M12a, laisser un avis**, puis **M12b, le compte**.
 
 - **Laisser un avis** (C6, `src/features/reviews/LeaveReviewScreen.tsx`), à l'adresse `/avis/[id]` (id = la
   réservation), ouvert par « Laisser un avis » dans Mes réservations (M11).

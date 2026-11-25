@@ -10,7 +10,7 @@ import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
 import { useTabBarStore } from '../navigation/tabBarStore';
 import { HomeScreen } from '../home/HomeScreen';
 import { useAuthFlowStore } from './authFlowStore';
-import { AccountScreen } from './screens/AccountScreen';
+import { AccountScreen } from '../account/AccountScreen';
 import { AuthWelcomeScreen } from './screens/AuthWelcomeScreen';
 import { DemoAccountsScreen } from './screens/DemoAccountsScreen';
 import { ForgotPasswordScreen } from './screens/ForgotPasswordScreen';

@@ -223,7 +223,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 - Réservations à venir / passées, adresse et téléphone révélés, annulation avec le remboursement prévu affiché.
 - **Tests** : accepter crée la réservation ; annulation selon la politique ; bouton « Laisser un avis » au bon moment.
 
-### M12 · Avis et compte (C6, C8) · **en deux PR : M12a avis (fait), M12b compte**
+### M12 · Avis et compte (C6, C8) · **fait en deux PR : M12a avis, M12b compte (voir avancement.md)**
 
 - Laisser un avis (grandes étoiles, sous-notes « les trois ou aucune », commentaire).
 - Compte : informations, notifications, aide et FAQ, pages légales, « Réinitialiser les données de démo »,

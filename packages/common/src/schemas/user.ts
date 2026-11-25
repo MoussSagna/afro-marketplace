@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import { idSchema, text, timestamps } from './common';
 
+/** Les messages d'erreur du compte (traduits via errorKeyOf, voir i18n/fr.ts). */
+export const userMessages = {
+  lastNameRequired: 'Indique ton nom',
+  phoneInvalid: 'Numéro de téléphone invalide',
+} as const;
+
 export const userRoleSchema = z.enum(['client', 'provider', 'admin']);
 export const userStatusSchema = z.enum(['active', 'suspended', 'banned', 'deleted']);
 export const authProviderSchema = z.enum(['email', 'google', 'apple']);
@@ -25,7 +31,7 @@ export const notificationPrefsSchema = z.object({
 export const frenchPhoneSchema = z
   .string()
   .trim()
-  .regex(/^(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}$/, 'Numéro de téléphone invalide');
+  .regex(/^(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}$/, userMessages.phoneInvalid);
 
 /** Toute personne inscrite : client, prestataire (via son profil) ou admin. */
 export const userSchema = z.object({
@@ -59,7 +65,7 @@ export const publicUserSchema = z.object({
 /** Formulaire « Mon compte » (C8). */
 export const updateMeInputSchema = z.object({
   firstName: text(1, 50, 'Indique ton prénom'),
-  lastName: text(1, 50, 'Indique ton nom'),
+  lastName: text(1, 50, userMessages.lastNameRequired),
   phone: frenchPhoneSchema.optional(),
   notificationPrefs: notificationPrefsSchema,
 });

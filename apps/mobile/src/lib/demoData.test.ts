@@ -1,7 +1,7 @@
 import { DEFAULT_STORAGE_KEY, mockDb } from '@afro/common/mocks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SESSION_STORAGE_KEY, useSessionStore } from '@/stores/session';
-import { prepareDemoData } from './demoData';
+import { prepareDemoData, resetDemoData } from './demoData';
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -54,5 +54,19 @@ describe('prepareDemoData : les données de démo survivent à la fermeture de l
     await prepareDemoData();
     expect(useSessionStore.getState().token).toBe(`demo:${user.id}`);
     expect(useSessionStore.getState().user?.id).toBe(user.id);
+  });
+
+  it('réinitialise la base, et dit si la personne connectée existe encore', () => {
+    const user = mockDb.data.users[0]!;
+    const count = mockDb.data.quoteRequests.length;
+    mockDb.update((data) => {
+      data.quoteRequests = [];
+    });
+    useSessionStore.setState({ user, token: `demo:${user.id}` });
+    expect(resetDemoData()).toBe(true);
+    expect(mockDb.data.quoteRequests).toHaveLength(count);
+
+    useSessionStore.setState({ user: { ...user, id: 'user-cree-en-essai' }, token: 'x' });
+    expect(resetDemoData()).toBe(false);
   });
 });
