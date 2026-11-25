@@ -6,3 +6,4 @@ export * from './slugify';
 export * from './searchParams';
 export * from './quoteRequestForm';
 export * from './reviewForm';
+export * from './accountForm';

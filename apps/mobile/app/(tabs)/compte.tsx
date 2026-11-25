@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { SignInRequired } from '@/features/auth/SignInRequired';
-import { AccountScreen } from '@/features/auth/screens/AccountScreen';
+import { AccountScreen } from '@/features/account/AccountScreen';
 
 export default function AccountTab() {
   const { t } = useTranslation();

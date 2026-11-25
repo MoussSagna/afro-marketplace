@@ -2,6 +2,7 @@ import { authMessages } from '../schemas/auth';
 import { cancelBookingMessages } from '../schemas/booking';
 import { acceptQuoteMessages } from '../schemas/quote';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
+import { userMessages } from '../schemas/user';
 import { reviewMessages } from '../utils/reviewForm';
 
 /**
@@ -318,8 +319,72 @@ export const fr = {
   },
   account: {
     signIn: 'Connecte-toi pour retrouver ton compte et tes infos.',
-    soon: 'Bientôt ici : tes informations, tes notifications et le passage en mode prestataire.',
     signOut: 'Se déconnecter',
+    proTitle: 'Tu es prestataire ?',
+    proHint:
+      'Crée ton profil gratuitement et reçois des demandes. L’inscription se fait sur le site.',
+    becomePro: 'Devenir pro',
+    proModeTitle: 'Mode prestataire',
+    proModeHint:
+      'Passer en mode pro depuis l’app arrive au lot M13. En attendant, ton espace pro est sur le site.',
+    openSite: 'Ouvrir le site',
+    settings: 'Réglages du compte',
+    info: 'Mes informations',
+    notifications: 'Notifications',
+    appearance: 'Apparence',
+    language: 'Langue',
+    help: 'Aide et FAQ',
+    legal: 'CGU · Confidentialité · Mentions légales',
+    resetDemo: 'Réinitialiser les données de démo',
+    resetTitle: 'Réinitialiser les données de démo ?',
+    resetHint:
+      'Les demandes, messages, réservations et avis créés pendant tes essais sont effacés. Tu restes connecté.',
+    resetConfirm: 'Oui, réinitialiser',
+    resetKeep: 'Annuler',
+    resetDone: 'Les données de démo sont comme au premier jour.',
+    themes: {
+      system: 'Automatique',
+      light: 'Clair',
+      dark: 'Sombre',
+    },
+    languages: {
+      fr: 'Français',
+      en: 'English',
+    },
+    legalPages: {
+      terms: 'Conditions d’utilisation (CGU)',
+      privacy: 'Confidentialité',
+      legalNotice: 'Mentions légales',
+    },
+    close: 'Fermer',
+    infoTitle: 'Mes informations',
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    email: 'Email',
+    emailHint: 'L’email ne se change pas pour l’instant.',
+    phone: 'Téléphone (facultatif)',
+    phoneHint: 'Partagé avec un prestataire seulement après une réservation.',
+    save: 'Enregistrer',
+    saved: 'C’est enregistré.',
+    deleteAccount: 'Supprimer mon compte',
+    deleteTitle: 'Supprimer ton compte ?',
+    deleteHint:
+      'Ton nom et ton email sont effacés, tes demandes en cours sont annulées. Tes avis restent, sans ton nom. C’est définitif.',
+    deleteConfirm: 'Oui, supprimer',
+    deleteKeep: 'Garder mon compte',
+    notificationsTitle: 'Notifications',
+    notificationsHint: 'Choisis comment être prévenu. En démo, rien n’est envoyé.',
+    topics: {
+      quotes: 'Demandes et devis',
+      messages: 'Messages',
+      bookings: 'Réservations et rappels',
+      marketing: 'Nouveautés et bons plans',
+    },
+    channels: {
+      email: 'Email',
+      sms: 'SMS',
+      push: 'Notification',
+    },
   },
   guard: {
     title: 'Connecte-toi',
@@ -565,6 +630,7 @@ export const fr = {
     ...acceptQuoteMessages,
     ...cancelBookingMessages,
     ...reviewMessages,
+    ...userMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -595,6 +661,9 @@ export const fr = {
     not_your_booking: 'Seul le client de cette réservation peut laisser un avis.',
     booking_not_completed: 'Tu pourras laisser un avis après l’événement.',
     already_reviewed: 'Tu as déjà laissé un avis pour cette réservation.',
+    admin_account: 'Un compte admin ne se supprime pas depuis l’application.',
+    upcoming_bookings:
+      'Tu as encore des réservations à venir : annule-les avant de supprimer ton compte.',
   },
   /** Les catégories, par leur slug (les données de démo sont en français). */
   categories: {

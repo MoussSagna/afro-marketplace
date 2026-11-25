@@ -126,6 +126,8 @@ apps/mobile/
   src/features/bookings/ Devis et réservations (M11) : QuoteActions (accepter / refuser + panneau du bas), BookingPanel
                        (ma réservation, annulation), BookingsScreen (/reservations), bookingStatus
   src/features/reviews/ Laisser un avis (M12a) : LeaveReviewScreen (/avis/[id])
+  src/features/account/ Compte (M12b) : AccountScreen, AccountInfoScreen (/mon-compte/informations, suppression),
+                       NotificationsScreen (/mon-compte/notifications), ChoiceSheet, useSaveAccount
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
