@@ -38,13 +38,13 @@ describe('Accueil (lot M6)', () => {
     expect(screen.getByLabelText('Chargement des catégories')).toBeOnTheScreen();
 
     const main = mainCategories(db.data.categories);
-    expect(main).toHaveLength(5);
+    expect(main).toHaveLength(8);
     for (const category of main) {
       expect(await screen.findByRole('button', { name: category.name })).toBeOnTheScreen();
       expect(CATEGORY_ICONS[category.slug]).toBeDefined(); // chaque catégorie a son icône
     }
-    // Les sous-catégories (Traiteur…) n'y sont pas.
-    expect(screen.queryByRole('button', { name: 'Traiteur' })).toBeNull();
+    // Les sous-catégories (Traiteurs…) n'y sont pas.
+    expect(screen.queryByRole('button', { name: 'Traiteurs' })).toBeNull();
 
     expect(await screen.findByText(featured[0]!.displayName)).toBeOnTheScreen();
     expect(screen.queryByLabelText('Chargement des catégories')).toBeNull();
@@ -80,11 +80,11 @@ describe('Accueil (lot M6)', () => {
   it('toucher une catégorie ouvre la Recherche filtrée sur elle', async () => {
     const { db, api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    const beauty = db.data.categories.find((c) => c.slug === 'beaute')!;
+    const beauty = db.data.categories.find((c) => c.slug === 'beaute-soins')!;
 
     await fireEvent.press(await screen.findByRole('button', { name: beauty.name }));
     expect(screen).toHavePathname('/recherche');
-    expect(screen).toHaveSearchParams({ categorie: 'beaute' });
+    expect(screen).toHaveSearchParams({ categorie: 'beaute-soins' });
     // La Recherche s'ouvre avec la catégorie déjà choisie dans sa rangée de catégories.
     expect(
       await screen.findByRole('button', { name: beauty.name, selected: true }),

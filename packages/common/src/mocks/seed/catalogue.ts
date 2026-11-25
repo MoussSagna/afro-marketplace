@@ -1,38 +1,153 @@
 import type { Category, CulturalOrigin } from '../../types';
 
-/** Catégories principales et sous-catégories (étape 2, section 4). */
-export const seedCategories: Category[] = [
-  { id: 'cat-food', name: 'Nourriture', slug: 'nourriture', icon: '🍲', order: 1 },
-  { id: 'cat-caterer', name: 'Traiteur', slug: 'traiteurs', parentId: 'cat-food', order: 1 },
-  { id: 'cat-pastry', name: 'Pâtisserie', slug: 'patisserie', parentId: 'cat-food', order: 2 },
-  { id: 'cat-foodtruck', name: 'Food truck', slug: 'food-trucks', parentId: 'cat-food', order: 3 },
-  { id: 'cat-show', name: 'Spectacle', slug: 'spectacle', icon: '💃', order: 2 },
-  { id: 'cat-dance', name: 'Danse', slug: 'danse', parentId: 'cat-show', order: 1 },
-  { id: 'cat-music', name: 'Musique live', slug: 'musique-live', parentId: 'cat-show', order: 2 },
-  { id: 'cat-dj', name: 'DJ', slug: 'dj', parentId: 'cat-show', order: 3 },
-  { id: 'cat-comedy', name: 'Humour', slug: 'humour', parentId: 'cat-show', order: 4 },
-  { id: 'cat-talk', name: 'Conférence', slug: 'conference', icon: '🎤', order: 3 },
-  { id: 'cat-speaker', name: 'Speaker', slug: 'speakers', parentId: 'cat-talk', order: 1 },
-  { id: 'cat-host', name: 'Animateur', slug: 'animateurs', parentId: 'cat-talk', order: 2 },
-  { id: 'cat-beauty', name: 'Beauté', slug: 'beaute', icon: '✨', order: 4 },
-  { id: 'cat-hair', name: 'Coiffure', slug: 'coiffure', parentId: 'cat-beauty', order: 1 },
-  { id: 'cat-makeup', name: 'Maquillage', slug: 'maquillage', parentId: 'cat-beauty', order: 2 },
-  { id: 'cat-deco', name: 'Décoration', slug: 'decoration', icon: '🎀', order: 5 },
+/**
+ * Une catégorie principale et ses sous-catégories, en format compact.
+ * `sub` : [id, nom, slug]. L'ordre du tableau donne le champ `order`.
+ */
+interface CategoryGroup {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  sub: [id: string, name: string, slug: string][];
+}
+
+/*
+ * L'arborescence des catégories : 8 groupes et leurs sous-catégories.
+ * Inspirée des grands annuaires de prestataires d'événements afro, traduite et adaptée à la France
+ * (cérémonie laïque, wax, gélé, food trucks, humour, speakers…).
+ *
+ * Les identifiants des sous-catégories historiques (cat-caterer, cat-dj, cat-hair…) sont gardés :
+ * les prestataires de démo et les tests y font référence.
+ */
+const CATEGORY_GROUPS: CategoryGroup[] = [
   {
-    id: 'cat-venue-deco',
-    name: 'Décoration de salle',
-    slug: 'decoration-de-salle',
-    parentId: 'cat-deco',
-    order: 1,
+    id: 'cat-planning',
+    name: 'Organisation & lieux',
+    slug: 'organisation-lieux',
+    icon: '📋',
+    sub: [
+      ['cat-planner', 'Organisateurs & wedding planners', 'wedding-planners'],
+      ['cat-day-coordinator', 'Coordinateurs jour J', 'coordinateurs-jour-j'],
+      ['cat-producer', 'Production événementielle', 'production-evenementielle'],
+      ['cat-venue', 'Salles & lieux de réception', 'salles-de-reception'],
+      ['cat-officiant', 'Officiants de cérémonie', 'officiants'],
+      ['cat-travel', 'Agences de voyage', 'agences-de-voyage'],
+    ],
   },
   {
-    id: 'cat-outfits',
-    name: 'Location de tenues',
-    slug: 'location-de-tenues',
-    parentId: 'cat-deco',
-    order: 2,
+    id: 'cat-food',
+    name: 'Traiteur & boissons',
+    slug: 'traiteur-boissons',
+    icon: '🍲',
+    sub: [
+      ['cat-caterer', 'Traiteurs', 'traiteurs'],
+      ['cat-pastry', 'Gâteaux & pâtisserie', 'patisserie'],
+      ['cat-bartender', 'Mixologues & barmans', 'mixologues-barmans'],
+      ['cat-foodtruck', 'Food trucks', 'food-trucks'],
+    ],
+  },
+  {
+    id: 'cat-fashion',
+    name: 'Mode & tenues',
+    slug: 'mode-tenues',
+    icon: '👗',
+    sub: [
+      ['cat-wedding-gown', 'Robes de mariée', 'robes-de-mariee'],
+      ['cat-dresses', 'Robes de soirée', 'robes-de-soiree'],
+      ['cat-bridal-robe', 'Peignoirs de mariée', 'peignoirs-de-mariee'],
+      ['cat-suits', 'Costumes', 'costumes'],
+      ['cat-men-traditional', 'Tenues traditionnelles homme', 'tenues-traditionnelles-homme'],
+      ['cat-fabrics', 'Tissus & wax', 'tissus-wax'],
+      ['cat-tailor', 'Tailleurs & couturières', 'tailleurs-couturieres'],
+      ['cat-stylist', 'Stylistes', 'stylistes'],
+      ['cat-jewelry', 'Bijoux', 'bijoux'],
+      ['cat-beads', 'Perles & accessoires', 'perles-accessoires'],
+      ['cat-outfits', 'Location de tenues', 'location-de-tenues'],
+    ],
+  },
+  {
+    id: 'cat-deco',
+    name: 'Déco & location',
+    slug: 'deco-location',
+    icon: '🎀',
+    sub: [
+      ['cat-venue-deco', 'Décorateurs', 'decorateurs'],
+      ['cat-florist', 'Fleuristes', 'fleuristes'],
+      ['cat-lighting', 'Éclairage & drapés', 'eclairage-drapes'],
+      ['cat-floor', 'Habillage de sol', 'habillage-de-sol'],
+      ['cat-rentals', 'Location de matériel', 'location-de-materiel'],
+      ['cat-stationery', 'Papeterie & signalétique', 'papeterie-signaletique'],
+      ['cat-favors', 'Cadeaux d’invités', 'cadeaux-invites'],
+    ],
+  },
+  {
+    id: 'cat-show',
+    name: 'Musique & animation',
+    slug: 'musique-animation',
+    icon: '💃',
+    sub: [
+      ['cat-dj', 'DJ', 'dj'],
+      ['cat-music', 'Musique live, son & groupes', 'musique-live'],
+      ['cat-dance', 'Danse', 'danse'],
+      ['cat-cultural', 'Animation culturelle', 'animation-culturelle'],
+      ['cat-host', 'Maîtres de cérémonie & animateurs', 'animateurs'],
+      ['cat-effects', 'Effets spéciaux (étincelles & fumée)', 'effets-speciaux'],
+      ['cat-comedy', 'Humour', 'humour'],
+      ['cat-speaker', 'Speakers & conférenciers', 'speakers'],
+    ],
+  },
+  {
+    id: 'cat-beauty',
+    name: 'Beauté & soins',
+    slug: 'beaute-soins',
+    icon: '✨',
+    sub: [
+      ['cat-makeup', 'Maquillage', 'maquillage'],
+      ['cat-hair', 'Coiffure', 'coiffure'],
+      ['cat-headwrap', 'Attache de foulard (gélé, moussor)', 'attache-foulard'],
+      ['cat-henna', 'Henné', 'henne'],
+      ['cat-beauty-general', 'Esthétique & soins', 'esthetique-soins'],
+      ['cat-grooming', 'Barbiers & soins homme', 'barbiers-soins-homme'],
+    ],
+  },
+  {
+    id: 'cat-media',
+    name: 'Photo & vidéo',
+    slug: 'photo-video',
+    icon: '📸',
+    sub: [
+      ['cat-photographer', 'Photographes', 'photographes'],
+      ['cat-videographer', 'Vidéastes', 'videastes'],
+      ['cat-photobooth', 'Photobooths', 'photobooths'],
+      ['cat-content', 'Créateurs de contenu', 'createurs-de-contenu'],
+    ],
+  },
+  {
+    id: 'cat-services',
+    name: 'Services événementiels',
+    slug: 'services-evenementiels',
+    icon: '🤝',
+    sub: [
+      ['cat-staffing', 'Logistique & personnel', 'logistique-personnel'],
+      ['cat-servers', 'Hôtes, hôtesses & serveurs', 'hotes-serveurs'],
+      ['cat-security', 'Sécurité', 'securite'],
+      ['cat-transport', 'Transport & voitures', 'transport'],
+    ],
   },
 ];
+
+/** Catégories principales puis sous-catégories, à plat (c'est ce que renvoie l'API). */
+export const seedCategories: Category[] = CATEGORY_GROUPS.flatMap((group, groupIndex) => [
+  { id: group.id, name: group.name, slug: group.slug, icon: group.icon, order: groupIndex + 1 },
+  ...group.sub.map(([id, name, slug], index) => ({
+    id,
+    name,
+    slug,
+    parentId: group.id,
+    order: index + 1,
+  })),
+]);
 
 export const seedCulturalOrigins: CulturalOrigin[] = [
   { id: 'or-sn', name: 'Sénégal', slug: 'senegal', region: "Afrique de l'Ouest" },

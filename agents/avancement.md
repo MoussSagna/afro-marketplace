@@ -1,7 +1,28 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (site : hero plein écran de l'accueil, branche `feat/web-hero-fullscreen` ;
-avant : données fictives activées sur le site en ligne Vercel).
+Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : hero plein écran
+de l'accueil, branche `feat/web-hero-fullscreen`).
+
+## Données de démo : toutes les catégories (25/11/2026)
+
+Demande de Mouss : « il me faudrait toutes ces catégories », d'après une capture du méga-menu d'un annuaire américain
+de prestataires afro. 🔍 Branche `claude/project-thread-x72gw4`, à relire.
+
+- **`packages/common/src/mocks/seed/catalogue.ts`** : 8 groupes et 50 sous-catégories, en français et adaptés à la
+  France (détail et correspondance des anciens slugs : [`donnees-demo.md`](donnees-demo.md)). Format compact
+  (`CATEGORY_GROUPS`) aplati en `seedCategories`.
+- **11 prestataires ajoutés** pour que chaque groupe ait des résultats (37 au total, 33 publiés).
+- **Clé du localStorage passée en `v2`** : sans ça, les navigateurs (site Vercel compris) gardaient l'ancien jeu.
+- **Web** : rien à coder, le menu « Prestataires », la recherche et les pages catégorie lisent les catégories de l'API.
+  Seuls les slugs des raccourcis du hero (`heroContent.ts`) suivent les nouveaux noms (Show → `musique-animation`,
+  Beauté → `beaute-soins`, Mode → `mode-tenues`, Décoration → `deco-location`). Le méga-menu n'est pas codé.
+- **Mobile** : 8 icônes (`categoryIcons.ts`, 4 nouvelles dessinées dans le même style), traductions anglaises des
+  groupes (`i18n/en.ts`), photos de l'étape « Quoi ? » renommées par slug + Mode (recadrée depuis la maquette) ; les 3
+  groupes sans photo affichent leur icône (question n° 16).
+- **Tests** : `buildSeed.test.ts` (8 groupes, slugs uniques, toutes les catégories des prestataires existent),
+  `search.test.ts` (chaque groupe a un prestataire publié), e2e `discover.spec.ts` (page « Photo & vidéo »),
+  `search.test.tsx` mobile (icône à la place de la photo) ; les tests qui comptaient les résultats (22 → 33) ou citaient
+  les anciens noms suivent.
 
 ## Site en ligne (Vercel)
 

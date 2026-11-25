@@ -18,17 +18,17 @@ describe('Recherche (P2)', () => {
   it('affiche les prestataires publiés et leur nombre', async () => {
     renderRoute('/recherche');
 
-    expect(await screen.findByText('22 prestataires')).toBeInTheDocument();
+    expect(await screen.findByText('33 prestataires')).toBeInTheDocument();
     expect(await resultNames()).toHaveLength(12); // première page
   });
 
   it('cocher « Sénégal » filtre les résultats et l’écrit dans l’adresse', async () => {
     const { router } = renderRoute('/recherche');
-    await screen.findByText('22 prestataires');
+    await screen.findByText('33 prestataires');
 
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Sénégal' }));
 
-    expect(await screen.findByText('4 prestataires')).toBeInTheDocument();
+    expect(await screen.findByText('6 prestataires')).toBeInTheDocument();
     expect(await resultNames()).toContain('Saveurs de Dakar');
     expect(router.state.location.search).toBe('?origines=senegal');
   });
@@ -43,7 +43,7 @@ describe('Recherche (P2)', () => {
 
   it('applique la ville quand on valide le champ', async () => {
     const { router } = renderRoute('/recherche');
-    await screen.findByText('22 prestataires');
+    await screen.findByText('33 prestataires');
 
     await userEvent.type(screen.getByLabelText('Ville'), 'Créteil{Enter}');
 
@@ -62,7 +62,7 @@ describe('Recherche (P2)', () => {
         name: 'Effacer les filtres',
       }),
     );
-    expect(await screen.findByText('22 prestataires')).toBeInTheDocument();
+    expect(await screen.findByText('33 prestataires')).toBeInTheDocument();
   });
 
   it('affiche un message clair si l’API échoue', async () => {
@@ -73,20 +73,21 @@ describe('Recherche (P2)', () => {
   });
 
   it('passe à la page suivante', async () => {
-    const { router } = renderRoute('/recherche');
+    const { router } = renderRoute('/recherche?page=2');
+    await screen.findByText('Page 2 sur 3');
     const firstPage = await resultNames();
 
     await userEvent.click(screen.getByRole('button', { name: 'Suivant' }));
 
-    await waitFor(() => expect(router.state.location.search).toBe('?page=2'));
-    expect(await screen.findByText('Page 2 sur 2')).toBeInTheDocument();
+    await waitFor(() => expect(router.state.location.search).toBe('?page=3'));
+    expect(await screen.findByText('Page 3 sur 3')).toBeInTheDocument();
     await waitFor(async () => expect((await resultNames())[0]).not.toBe(firstPage[0]));
     expect(screen.getByRole('button', { name: 'Suivant' })).toBeDisabled();
   });
 
   it('changer un filtre revient à la première page', async () => {
     const { router } = renderRoute('/recherche?page=2');
-    await screen.findByText('Page 2 sur 2');
+    await screen.findByText('Page 2 sur 3');
 
     await userEvent.click(
       await screen.findByRole('checkbox', { name: 'Pros vérifiés uniquement' }),
@@ -98,10 +99,13 @@ describe('Recherche (P2)', () => {
 
 describe('Page catégorie (P4)', () => {
   it('affiche le titre, les sous-catégories et les prestataires de la catégorie', async () => {
-    renderRoute('/categories/spectacle');
+    renderRoute('/categories/musique-animation');
 
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Spectacle afro en Île-de-France' }),
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Musique & animation afro en Île-de-France',
+      }),
     ).toBeInTheDocument();
     const subCategories = screen.getByRole('list', { name: 'Sous-catégories' });
     expect(within(subCategories).getByRole('link', { name: 'DJ' })).toHaveAttribute(
@@ -118,8 +122,8 @@ describe('Page catégorie (P4)', () => {
   it('donne un titre à l’onglet pour Google', async () => {
     renderRoute('/categories/traiteurs');
 
-    await screen.findByRole('heading', { level: 1, name: 'Traiteur afro en Île-de-France' });
-    await waitFor(() => expect(document.title).toBe('Traiteur afro en Île-de-France · Wenzee'));
+    await screen.findByRole('heading', { level: 1, name: 'Traiteurs afro en Île-de-France' });
+    await waitFor(() => expect(document.title).toBe('Traiteurs afro en Île-de-France · Wenzee'));
   });
 
   it('affiche une 404 pour une catégorie inconnue', async () => {

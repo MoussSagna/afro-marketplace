@@ -65,11 +65,11 @@ export const CATEGORY_SHORTCUTS: CategoryShortcut[] = [
   { label: 'Traiteur', categorySlug: 'traiteurs', icon: ConciergeBell },
   { label: 'Danse', categorySlug: 'danse', icon: PersonStanding },
   { label: 'Musique & DJ', categorySlug: 'dj', icon: Headphones },
-  { label: 'Show', categorySlug: 'spectacle', icon: Star },
+  { label: 'Show', categorySlug: 'musique-animation', icon: Star },
   { label: 'Speaker', categorySlug: 'speakers', icon: Mic },
-  { label: 'Beauté', categorySlug: 'beaute', icon: Sparkles },
-  { label: 'Mode', categorySlug: 'location-de-tenues', icon: Shirt },
-  { label: 'Décoration', categorySlug: 'decoration', icon: Tent },
+  { label: 'Beauté', categorySlug: 'beaute-soins', icon: Sparkles },
+  { label: 'Mode', categorySlug: 'mode-tenues', icon: Shirt },
+  { label: 'Décoration', categorySlug: 'deco-location', icon: Tent },
 ];
 
 /** L'adresse de la recherche filtrée sur une catégorie. */

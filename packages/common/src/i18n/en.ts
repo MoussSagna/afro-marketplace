@@ -907,10 +907,13 @@ export const en: Translations = {
       'You still have upcoming bookings: cancel them before deleting your account.',
   },
   categories: {
-    nourriture: 'Food',
-    spectacle: 'Shows',
-    conference: 'Talks',
-    beaute: 'Beauty',
-    decoration: 'Decoration',
+    'organisation-lieux': 'Planning & venues',
+    'traiteur-boissons': 'Food & drink',
+    'mode-tenues': 'Fashion & attire',
+    'deco-location': 'Decor & rentals',
+    'musique-animation': 'Music & entertainment',
+    'beaute-soins': 'Beauty & grooming',
+    'photo-video': 'Photo & video',
+    'services-evenementiels': 'Event services',
   },
 };

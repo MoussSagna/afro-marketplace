@@ -64,9 +64,9 @@ describe('L’app en anglais (lot M6b)', () => {
     ).toBeOnTheScreen();
     expect(screen.getByRole('search', { name: 'Search for a provider' })).toBeOnTheScreen();
     // Les catégories viennent des données (en français) : on les traduit par leur slug.
-    expect(await screen.findByRole('button', { name: 'Food' })).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Beauty' })).toBeOnTheScreen();
-    expect(screen.queryByRole('button', { name: 'Nourriture' })).toBeNull();
+    expect(await screen.findByRole('button', { name: 'Food & drink' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Beauty & grooming' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Traiteur & boissons' })).toBeNull();
 
     const withPrice = featured.find((p) => p.priceFrom !== undefined)!;
     expect(
@@ -119,7 +119,7 @@ describe('L’app en anglais (lot M6b)', () => {
     await renderRouter(routes, { initialUrl: '/recherche', wrapper: testProviders(api) });
     expect(screen.getByRole('search', { name: /^What are you looking for\?/ })).toBeOnTheScreen();
     expect(await screen.findByText(`${total} providers`)).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Food' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Food & drink' })).toBeOnTheScreen();
     await press('Filters');
     expect(
       await screen.findByRole('button', { name: `Show ${total} providers` }),
