@@ -7,7 +7,7 @@ import {
 } from '@afro/common';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { QueryState } from '@/components/QueryState';
 import { Avatar, Badge, Card, Heading, Text } from '@/components/ui';
@@ -17,6 +17,8 @@ import { dateBlock, shortDay } from '@/lib/dates';
 import { useSessionStore } from '@/stores/session';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
+import { requestHref } from '../requests/requestHref';
+import { clientName } from './clientName';
 import { requestsToHandle, requestUrgency } from './requestUrgency';
 
 /**
@@ -146,14 +148,11 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function clientName(client: { firstName: string; lastNameInitial: string }) {
-  return `${client.firstName} ${client.lastNameInitial}.`;
-}
-
-/** Une demande à traiter : la cliente, l'événement, et le badge d'urgence. */
+/** Une demande à traiter : la cliente, l'événement, et le badge d'urgence. La toucher ouvre S3. */
 function RequestRow({ summary }: { summary: QuoteRequestSummary }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
+  const router = useRouter();
   const { request, client } = summary;
   const name = clientName(client);
   const title = `${name} · ${t(`eventTypes.${request.eventType}`)}`;
@@ -165,10 +164,11 @@ function RequestRow({ summary }: { summary: QuoteRequestSummary }) {
     .join(' · ');
   const urgency = requestUrgency(request);
   return (
-    <Card
-      className="flex-row items-center gap-3 p-3"
-      accessible
+    <Pressable
+      accessibilityRole="button"
       accessibilityLabel={`${title}, ${detail}, ${urgency.label}`}
+      onPress={() => router.push(requestHref(request.id, 'provider'))}
+      className="flex-row items-center gap-3 rounded-2xl border border-border bg-card p-3 active:opacity-80"
     >
       <Avatar name={name} uri={client.avatarUrl} size="sm" />
       <View className="min-w-0 flex-1">
@@ -180,7 +180,7 @@ function RequestRow({ summary }: { summary: QuoteRequestSummary }) {
         </Text>
       </View>
       <Badge variant={urgency.tone}>{urgency.label}</Badge>
-    </Card>
+    </Pressable>
   );
 }
 

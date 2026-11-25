@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M13 : bascule pro et tableau de bord).
+Dernière mise à jour : 25/11/2026 (lot M14a : demandes reçues et messagerie pro).
 
 ## Lots
 
@@ -26,27 +26,52 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 - Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
   Plan fusionné (#15). « Go M1 » donné par Mouss le 23/11/2026.
 
-| Lot  | Sujet                                  | État                                                             |
-| ---- | -------------------------------------- | ---------------------------------------------------------------- |
-| M0   | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
-| M1   | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
-| M2   | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
-| M3   | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
-| M4   | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
-| M4b  | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
-| M5   | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
-| M6   | Accueil (P1)                           | ✅ fusionné #23                                                  |
-| M6c  | Thème sombre / clair                   | ✅ fusionné #25                                                  |
-| M6b  | Traduction anglaise                    | ✅ fusionné #26                                                  |
-| M6d  | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
-| M7   | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
-| M8   | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
-| M9   | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
-| M10  | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
-| M11  | Devis et réservations (C3, C5)         | ✅ fusionné #33                                                  |
-| M12a | Laisser un avis (C6)                   | ✅ fusionné #34                                                  |
-| M12b | Compte (C8)                            | ✅ fusionné #35                                                  |
-| M13  | Bascule pro et tableau de bord (S2)    | 🔍 PR ouverte                                                    |
+| Lot  | Sujet                                      | État                                                             |
+| ---- | ------------------------------------------ | ---------------------------------------------------------------- |
+| M0   | Sprint planning                            | ✅ fusionné #15 (+ #16)                                          |
+| M1   | Squelette Expo + monorepo + tests + CI     | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
+| M2   | Thème NativeWind + composants de base      | ✅ fusionné #18                                                  |
+| M3   | Données mockées sur téléphone              | ✅ fusionné #19                                                  |
+| M4   | Onglets + splash animé + icône             | ✅ fusionné #20                                                  |
+| M4b  | Barre d'onglets en verre rétractable       | ✅ fusionné #21                                                  |
+| M5   | Connexion et inscription simulées          | ✅ fusionné #22                                                  |
+| M6   | Accueil (P1)                               | ✅ fusionné #23                                                  |
+| M6c  | Thème sombre / clair                       | ✅ fusionné #25                                                  |
+| M6b  | Traduction anglaise                        | ✅ fusionné #26                                                  |
+| M6d  | Loader Wenzee (logo du splash)             | ✅ fusionné #27                                                  |
+| M7   | Recherche façon Airbnb                     | ✅ fusionné #28 (+ correctif encoche #29)                        |
+| M8   | Profil prestataire (P5)                    | ✅ fusionné #30                                                  |
+| M9   | Demande de devis en 3 étapes (C1)          | ✅ fusionné #31                                                  |
+| M10  | Mes demandes et messagerie (C2, C4)        | ✅ fusionné #32                                                  |
+| M11  | Devis et réservations (C3, C5)             | ✅ fusionné #33                                                  |
+| M12a | Laisser un avis (C6)                       | ✅ fusionné #34                                                  |
+| M12b | Compte (C8)                                | ✅ fusionné #35                                                  |
+| M13  | Bascule pro et tableau de bord (S2)        | ✅ fusionné #36                                                  |
+| M14a | Demandes reçues et messagerie pro (S3, S5) | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M14a
+
+M14 est découpé en deux petites PR : **M14a, les demandes reçues et la messagerie pro**, puis **M14b, envoyer un
+devis** (S4).
+
+- **Les onglets pro passent dans une pile** : `app/pro/_layout.tsx` est une pile (Stack), les 5 onglets sont dans
+  `app/pro/(tabs)/` (les adresses ne changent pas : `/pro`, `/pro/demandes`…). Ça permet d'ouvrir un détail
+  **par-dessus** les onglets, sans la barre : `/pro/demande/[id]` et `/pro/conversations/[id]`.
+- **Demandes reçues** (onglet Demandes, S3) : le même écran que « Mes demandes » du client, avec `side="provider"` :
+  titre « Demandes reçues », une carte par client (avatar, « Aïssatou D. »), le badge d'urgence du tableau de bord,
+  onglets En cours / Réservées / Archivées. Une demande du tableau de bord s'ouvre aussi en la touchant.
+- **Le détail d'une demande** (`ProRequestDetailScreen`) : le client et la date de réception, l'événement (avec
+  « Organisé » : particulier ou entreprise), son message, **la disponibilité vérifiée** (« Tu es libre ce jour-là »
+  ou non, lue dans les jours indisponibles, comme la recherche), le dernier devis envoyé, la date d'expiration.
+  En bas : **Message** et **Décliner**.
+- **Décliner** (`DeclineRequestSheet`) : un panneau du bas, trois motifs proposés à toucher ou un motif libre,
+  obligatoire (`quoteRequestMessages.declineReasonRequired`, traduit). Le client lit le motif dans la conversation.
+- **Messagerie pro** (S5) : la liste et la conversation du client, avec `side="provider"` (nom du client, pas de
+  boutons Accepter / Refuser sous les devis). Pastille des non-lus sur l'onglet Messages pro
+  (`useUnreadMessages(side)`, qui remplace `useClientUnreadCount`).
+- Correctif M13 : le nom du client s'affichait avec deux points (« D.. ») ; `clientName` le corrige.
+- **Tests** : `proRequests.test.tsx` (liste, détail, jour pris, décliner, répondre, devis sans boutons) et
+  `clientName.test.ts`.
 
 ## Ce que contient le lot M13
 
@@ -415,7 +440,7 @@ M12 est découpé en deux petites PR : **M12a, laisser un avis**, puis **M12b, l
 - **Onglets du mode client** (`app/(tabs)/`, `src/features/navigation/ClientTabsLayout.tsx`) : Accueil (l'écran de
   bienvenue provisoire, l'accueil complet arrive en M6), Recherche (M7), Demandes (M10), Messages (M10), Compte (M12).
   Les onglets vides affichent « Bientôt disponible » et leur lot (`ComingSoonScreen`). Icônes lucide.
-- **Pastille de non-lus** sur Messages (`useClientUnreadCount`) : même requête et même cache que `useUnreadCount` de
+- **Pastille de non-lus** sur Messages (`useClientUnreadCount`, devenu `useUnreadMessages` en M14a) : même requête et même cache que `useUnreadCount` de
   `common`, mais seulement si quelqu'un est connecté. VoiceOver lit « Messages, 2 non lus ».
 - **Splash** : écran natif statique (`expo-splash-screen`, fond terre + symbole, réglé dans `app.json`) tant que
   polices et données chargent (`useAppReady`), puis le **splash animé** de la maquette (`AnimatedSplash`, 3,2 s) par-

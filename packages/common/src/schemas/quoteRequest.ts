@@ -25,6 +25,7 @@ export const quoteRequestMessages = {
   budgetOrder: 'Le budget maximum doit être supérieur au minimum',
   messageTooShort: 'Décris ton besoin en quelques phrases (20 caractères minimum)',
   dateUnavailable: 'Ce prestataire n’est pas disponible ce jour-là. Choisis une autre date.',
+  declineReasonRequired: 'Indique un motif',
 } as const;
 
 export const eventTypeSchema = z.enum([
@@ -106,5 +107,5 @@ export const createQuoteRequestInputSchema = z
 
 /** Le prestataire décline une demande (S3), avec un motif. */
 export const declineQuoteRequestInputSchema = z.object({
-  reason: text(3, 500, 'Indique un motif'),
+  reason: text(3, 500, quoteRequestMessages.declineReasonRequired),
 });

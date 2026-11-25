@@ -1,4 +1,4 @@
-import { formatPrice, useQuoteRequests, type QuoteRequestSummary } from '@afro/common';
+import { formatPrice, useQuoteRequests, type QuoteRequestSummary, type Side } from '@afro/common';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,36 +6,59 @@ import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import emptyImage from '../../../assets/images/aucun-resultat.webp';
 import { QueryState } from '@/components/QueryState';
-import { Badge, Button, EmptyState, Heading, Photo, Text } from '@/components/ui';
+import { Avatar, Badge, Button, EmptyState, Heading, Photo, Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { cn } from '@/lib/cn';
 import { shortDay } from '@/lib/dates';
 import { requestStatus } from '../messaging/requestStatus';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
+import { clientName } from '../pro/clientName';
+import { requestUrgency } from '../pro/requestUrgency';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
 import { requestHref } from './requestHref';
 import { REQUEST_TABS, requestTab, type RequestTab } from './requestTab';
 
-const TAB_LABELS = {
-  open: 'requests.tabOpen',
-  booked: 'requests.tabBooked',
-  closed: 'requests.tabClosed',
-} as const;
-const EMPTY_TITLES = {
-  open: 'requests.emptyOpen',
-  booked: 'requests.emptyBooked',
-  closed: 'requests.emptyClosed',
+/** Les textes de chaque côté : « Mes demandes » (client) ou « Demandes reçues » (prestataire). */
+const TEXTS = {
+  client: {
+    title: 'requests.title',
+    tabs: { open: 'requests.tabOpen', booked: 'requests.tabBooked', closed: 'requests.tabClosed' },
+    empty: {
+      open: 'requests.emptyOpen',
+      booked: 'requests.emptyBooked',
+      closed: 'requests.emptyClosed',
+    },
+    emptyHint: 'requests.emptyHint',
+  },
+  provider: {
+    title: 'proRequests.title',
+    tabs: {
+      open: 'requests.tabOpen',
+      booked: 'requests.tabBooked',
+      closed: 'proRequests.tabClosed',
+    },
+    empty: {
+      open: 'proRequests.emptyOpen',
+      booked: 'proRequests.emptyBooked',
+      closed: 'proRequests.emptyClosed',
+    },
+    emptyHint: 'proRequests.emptyHint',
+  },
 } as const;
 
 /**
- * L'onglet Demandes (C2, maquette « Mes demandes ») : trois onglets comme sur le site
- * (en cours, réservées, terminées), et une carte par demande avec son badge.
- * En haut à droite : « Mes réservations » (C5, lot M11).
+ * L'onglet Demandes, des deux côtés, comme sur le site :
+ * - client (C2, « Mes demandes ») : une carte par prestataire ; en haut à droite,
+ *   « Mes réservations » (C5, lot M11) ;
+ * - prestataire (S3, « Demandes reçues », lot M14) : une carte par client, avec le badge
+ *   d'urgence du tableau de bord (rouge avant expiration).
+ * Trois onglets : en cours, réservées, terminées (« archivées » côté prestataire).
  */
-export function RequestsScreen() {
+export function RequestsScreen({ side = 'client' }: { side?: Side }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const requests = useQuoteRequests('client');
+  const requests = useQuoteRequests(side);
+  const texts = TEXTS[side];
   const onScroll = useCollapseOnScroll();
   const [tab, setTab] = useState<RequestTab>('open');
 
@@ -48,10 +71,12 @@ export function RequestsScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="px-5 pt-2">
         <View className="flex-row items-center justify-between gap-3">
-          <Heading>{t('requests.title')}</Heading>
-          <Button variant="secondary" size="sm" onPress={() => router.push('/reservations')}>
-            {t('requests.myBookings')}
-          </Button>
+          <Heading>{t(texts.title)}</Heading>
+          {side === 'client' ? (
+            <Button variant="secondary" size="sm" onPress={() => router.push('/reservations')}>
+              {t('requests.myBookings')}
+            </Button>
+          ) : null}
         </View>
         <View
           accessibilityRole="tablist"
@@ -61,7 +86,7 @@ export function RequestsScreen() {
           {REQUEST_TABS.map((value) => {
             const on = tab === value;
             const n = count(value);
-            const label = t(TAB_LABELS[value]);
+            const label = t(texts.tabs[value]);
             return (
               <Pressable
                 key={value}
@@ -88,7 +113,7 @@ export function RequestsScreen() {
           data={shown}
           keyExtractor={(item) => item.request.id}
           accessibilityLabel={t('requests.list')}
-          renderItem={({ item }) => <RequestCard summary={item} />}
+          renderItem={({ item }) => <RequestCard summary={item} side={side} />}
           onScroll={onScroll}
           scrollEventThrottle={16}
           contentContainerClassName="gap-2.5 px-5 pt-3.5"
@@ -103,12 +128,14 @@ export function RequestsScreen() {
             <EmptyState
               className="flex-1"
               image={emptyImage}
-              title={t(EMPTY_TITLES[tab])}
-              description={t('requests.emptyHint')}
+              title={t(texts.empty[tab])}
+              description={t(texts.emptyHint)}
               action={
-                <Button size="md" onPress={() => router.navigate('/recherche')}>
-                  {t('requests.findProvider')}
-                </Button>
+                side === 'client' ? (
+                  <Button size="md" onPress={() => router.navigate('/recherche')}>
+                    {t('requests.findProvider')}
+                  </Button>
+                ) : undefined
               }
             />
           }
@@ -118,12 +145,14 @@ export function RequestsScreen() {
   );
 }
 
-function RequestCard({ summary }: { summary: QuoteRequestSummary }) {
+function RequestCard({ summary, side }: { summary: QuoteRequestSummary; side: Side }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const router = useRouter();
-  const { request, provider, latestQuote } = summary;
-  const status = requestStatus(request, 'client');
+  const { request, provider, client, latestQuote } = summary;
+  const isClient = side === 'client';
+  const name = isClient ? provider.displayName : clientName(client);
+  const status = isClient ? requestStatus(request, 'client') : requestUrgency(request);
   const event = [
     t(`eventTypes.${request.eventType}`),
     shortDay(request.eventDate, locale),
@@ -139,17 +168,21 @@ function RequestCard({ summary }: { summary: QuoteRequestSummary }) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={[provider.displayName, status.label, event, quote]
-        .filter(Boolean)
-        .join(', ')}
-      onPress={() => router.push(requestHref(request.id))}
+      accessibilityLabel={[name, status.label, event, quote].filter(Boolean).join(', ')}
+      onPress={() => router.push(requestHref(request.id, side))}
       className="flex-row gap-3 rounded-2xl border border-border bg-card p-2.5 active:opacity-80"
     >
-      <Photo uri={provider.coverUrl} className="h-[72px] w-[72px] rounded-xl" />
+      {isClient ? (
+        <Photo uri={provider.coverUrl} className="h-[72px] w-[72px] rounded-xl" />
+      ) : (
+        <View className="h-[72px] w-[60px] items-center justify-center">
+          <Avatar name={name} uri={client.avatarUrl} />
+        </View>
+      )}
       <View className="min-w-0 flex-1 justify-center gap-1">
         <View className="flex-row items-start justify-between gap-2">
           <Text size="sm" weight="bold" numberOfLines={1} className="shrink">
-            {provider.displayName}
+            {name}
           </Text>
           <Badge variant={status.tone}>{status.label}</Badge>
         </View>
