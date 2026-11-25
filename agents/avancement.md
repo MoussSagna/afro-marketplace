@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M15c : modifier son profil dans l'app).
+Dernière mise à jour : 25/11/2026 (lot M16 : parcours de bout en bout et build de test → jalon M2).
 
 ## Lots
 
@@ -51,7 +51,26 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M14b | Envoyer un devis (S4)                      | ✅ fusionné #38                                                  |
 | M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
-| M15c | Modifier son profil dans l'app (S7)        | 🔍 PR ouverte                                                    |
+| M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
+| M16  | Parcours de bout en bout, build de test    | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M16 (jalon M2)
+
+Version économe, à la demande de Mouss : l'essentiel pour dire « l'app mockée est complète ».
+
+- **Parcours de bout en bout** (`src/features/journeys/parcours.test.tsx`) : sur une même base de démo, la cliente
+  demande un devis, le prestataire l'envoie, la cliente l'accepte, le prestataire voit la réservation. On passe d'un
+  compte à l'autre comme deux téléphones. Outil : Testing Library (question n° 11), sans émulateur, dans la CI.
+- **Build de test installable** (`apps/mobile/eas.json`) : profil `preview` (installation directe, APK sur Android)
+  et `production`. Aucun secret dans le dépôt. Pour le lancer (une fois, depuis `apps/mobile`) :
+  1. créer un compte gratuit sur expo.dev, puis `npx eas-cli login` ;
+  2. `npx eas-cli init` (relie l'app à ton compte et ajoute son identifiant dans `app.json`) ;
+  3. Android : `npx eas-cli build -p android --profile preview` → un lien pour installer l'APK, sans compte Google
+     payant ;
+  4. iPhone : il faut le compte Apple développeur (question n° 12), puis `--profile preview -p ios`.
+- **Reporté** (pas indispensable au jalon) : animations d'apparition Moti, bandeau hors ligne (inutile tant que
+  les données sont mockées dans l'app), passe d'accessibilité complète sur appareil (VoiceOver / TalkBack).
+- **Jalon M2 atteint** : l'app mockée est complète. Prochaine étape, sur le feu vert de Mouss : le back-end Supabase.
 
 ## Ce que contient le lot M15c
 
