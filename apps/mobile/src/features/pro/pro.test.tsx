@@ -41,8 +41,6 @@ async function open(initialUrl: string, userId: string, prepare?: (db: MockDb) =
   return ctx;
 }
 
-const press = (name: string | RegExp) => fireEvent.press(screen.getByRole('button', { name }));
-
 /** Ce que le tableau de bord doit montrer pour le prestataire de démo (Saveurs de Dakar). */
 function expected(db: MockDb) {
   const provider = db.data.providers.find((p) => p.userId === DEMO_PROVIDER_ID)!;
@@ -98,13 +96,11 @@ describe('Mode prestataire (lot M13)', () => {
     }
   });
 
-  it('les onglets pro encore vides annoncent leur lot, et Profil ramène au mode client', async () => {
+  it('l’onglet Profil ramène au mode client', async () => {
     await act(() => useModeStore.setState({ mode: 'pro' }));
     await open('/pro', DEMO_PROVIDER_ID);
     await fireEvent.press(await screen.findByRole('tab', { name: 'Profil' }));
-    expect(screen.getByText('Lot M15')).toBeOnTheScreen();
-
-    await press('Revenir en mode client');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Revenir en mode client' }));
     expect(useModeStore.getState().mode).toBe('client');
     expect(screen).toHavePathname('/compte');
     expect(screen.getByTestId('glass-tab-bar')).toBeOnTheScreen();

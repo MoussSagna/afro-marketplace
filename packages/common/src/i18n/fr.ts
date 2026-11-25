@@ -1,6 +1,7 @@
 import { authMessages } from '../schemas/auth';
 import { cancelBookingMessages } from '../schemas/booking';
 import { acceptQuoteMessages } from '../schemas/quote';
+import { reviewReplyMessages } from '../schemas/review';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
 import { userMessages } from '../schemas/user';
 import { quoteFormMessages } from '../utils/quoteForm';
@@ -80,8 +81,6 @@ export const fr = {
     nextDates: 'Prochaines dates',
     noNextDates: 'Pas de réservation à venir.',
     switchToClient: 'Revenir en mode client',
-    soonTitle: 'Bientôt dans l’app',
-    soonProfile: 'Ton profil pro (aperçu, sections, avis reçus, pause) arrive au lot M15.',
   },
   home: {
     titleStart: 'Des talents qui font vivre ',
@@ -239,6 +238,48 @@ export const fr = {
     sent: 'Devis envoyé ! Le client le voit dans la conversation.',
     action: 'Envoyer un devis',
     actionNewVersion: 'Nouvelle version du devis',
+  },
+  /** Mon profil pro (S7, lot M15b). */
+  proProfile: {
+    title: 'Mon profil',
+    loading: 'Chargement de ton profil',
+    preview: 'Aperçu de ta carte dans la recherche',
+    sections: 'Sections du profil',
+    presentation: 'Présentation et catégorie',
+    offerings: 'Formules et prix',
+    photos: 'Photos',
+    zone: 'Zone et capacité',
+    cancellation: 'Annulation',
+    reviews: 'Avis reçus',
+    legal: 'Informations légales (SIRET)',
+    onSite: 'sur le site',
+    onSiteHint:
+      'Pour l’instant, ces sections se modifient sur le site. Elles arrivent dans l’app au lot M15c.',
+    toAnswer_one: '{{count}} sans réponse',
+    toAnswer_other: '{{count}} sans réponse',
+    visible: 'Profil visible',
+    visibleHint: 'Mets-le en pause pendant tes vacances : il disparaît de la recherche.',
+    paused:
+      'Ton profil est en pause : il n’apparaît plus dans la recherche et ne reçoit plus de demandes. Tes réservations en cours ne changent pas.',
+    changesRequested: 'Corrections demandées : {{reason}}',
+    finishOnSite: 'Terminer mon inscription sur le site',
+    publicPage: 'Voir ma page publique',
+  },
+  /** Les avis reçus, côté prestataire (S8, lot M15b). */
+  proReviews: {
+    title: 'Avis reçus',
+    loading: 'Chargement de tes avis',
+    allAnswered: 'Tu as répondu à tous les avis.',
+    toAnswer_one: '{{count}} avis sans réponse.',
+    toAnswer_other: '{{count}} avis sans réponse.',
+    emptyTitle: 'Pas encore d’avis',
+    emptyHint: 'Tes clients pourront laisser un avis une fois la prestation terminée.',
+    reviewBy: 'Avis de {{name}}',
+    hidden: 'Masqué par la modération',
+    yourReply: 'Ta réponse',
+    replyLabel: 'Répondre à {{name}}',
+    replyHint: 'Ta réponse sera visible sur ton profil. Tu ne pourras répondre qu’une fois.',
+    publish: 'Publier la réponse',
   },
   requests: {
     signIn: 'Connecte-toi pour suivre tes demandes de devis.',
@@ -767,6 +808,7 @@ export const fr = {
     ...reviewMessages,
     ...userMessages,
     ...quoteFormMessages,
+    ...reviewReplyMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -793,6 +835,8 @@ export const fr = {
     quote_expired: 'Ce devis a expiré. Demande une nouvelle version au prestataire.',
     quote_not_found: 'Devis introuvable.',
     quote_request_not_found: 'Demande introuvable.',
+    review_not_found: 'Avis introuvable.',
+    already_replied: 'Tu as déjà répondu à cet avis.',
     not_provider: 'Réservé aux prestataires.',
     already_blocked: 'Cette date est déjà bloquée.',
     booked_date: 'Cette date est réservée : annule la réservation pour la libérer.',

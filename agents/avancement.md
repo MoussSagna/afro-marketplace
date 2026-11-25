@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M15a : agenda pro).
+Dernière mise à jour : 25/11/2026 (lot M15b : profil pro et avis reçus).
 
 ## Lots
 
@@ -49,11 +49,29 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M13  | Bascule pro et tableau de bord (S2)        | ✅ fusionné #36                                                  |
 | M14a | Demandes reçues et messagerie pro (S3, S5) | ✅ fusionné #37                                                  |
 | M14b | Envoyer un devis (S4)                      | ✅ fusionné #38                                                  |
-| M15a | Agenda pro (S6)                            | 🔍 PR ouverte                                                    |
+| M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
+| M15b | Profil pro et avis reçus (S7, S8)          | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M15b
+
+- **L'onglet Profil** (`ProProfileScreen`, maquette S7) :
+  - l'aperçu de sa carte dans la recherche (`ProviderCard preview`, qui ne s'ouvre pas) et l'état du profil ;
+  - la note « en pause » ou « corrections demandées », et « Terminer mon inscription sur le site » si besoin ;
+  - les sections : **Avis reçus** (pastille « N sans réponse ») s'ouvre dans l'app ; Présentation, Formules (nombre),
+    Photos (nombre), Zone, Annulation et Informations légales **s'ouvrent sur le site** pour l'instant
+    (`SITE_PAGES.providerProfile`) : elles arrivent dans l'app au lot M15c ;
+  - **« Profil visible »** : un interrupteur qui met en pause (ou réactive) le profil ;
+  - « Voir ma page publique » (si en ligne) et « Revenir en mode client ».
+- **Avis reçus** (`/pro/avis`, `ReceivedReviewsScreen`, S8) : la note (règle n° 8), chaque avis avec ses sous-notes,
+  et la **réponse publique**, obligatoire et unique (`reviewReplyMessages`, traduit).
+- L'écran provisoire `ProSoonScreen` est supprimé : tous les onglets pro sont remplis.
+- **Tests** : `proProfile.test.tsx` (aperçu et sections, section ouverte sur le site, pause puis réactivation,
+  répondre à un avis).
 
 ## Ce que contient le lot M15a
 
-M15 est découpé en deux petites PR : **M15a, l'agenda** (S6), puis **M15b, le profil pro** (S7).
+M15 est découpé en petites PR : **M15a, l'agenda** (S6), **M15b, le profil pro** (S7), puis **M15c, modifier les
+sections du profil dans l'app**.
 
 - **L'onglet Agenda** (`AgendaScreen`, maquette S6), mêmes règles que la page Agenda du site :
   - le mois en grand, avec les flèches (on ne remonte pas avant le mois en cours) ;

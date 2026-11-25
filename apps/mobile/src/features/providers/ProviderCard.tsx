@@ -12,19 +12,22 @@ import { useThemeColors } from '@/theme/useTheme';
 type ProviderCardProps = {
   provider: ProviderCardData;
   className?: string;
+  /** Aperçu seulement (« Mon profil », lot M15b) : la carte ne s'ouvre pas. */
+  preview?: boolean;
 };
 
 /**
  * La carte d'un prestataire (maquette : « À la une », résultats de recherche) :
  * photo, nom, note, ville et prix. Au toucher, elle ouvre le profil complet.
  */
-export function ProviderCard({ provider, className }: ProviderCardProps) {
+export function ProviderCard({ provider, className, preview = false }: ProviderCardProps) {
   const colors = useThemeColors();
   const { t } = useTranslation();
   const router = useRouter();
   return (
     <Pressable
-      accessibilityRole="link"
+      accessibilityRole={preview ? undefined : 'link'}
+      disabled={preview}
       accessibilityLabel={`${provider.displayName}, ${provider.city}, ${priceLabel(provider.priceFrom)}`}
       onPress={() => router.push(profileHref(provider.slug))}
       className={cn('active:opacity-80', className)}
