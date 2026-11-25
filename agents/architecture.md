@@ -120,6 +120,9 @@ apps/mobile/
                        FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse de l'écran)
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
+  src/features/messaging/ Messagerie (M10) : ConversationsScreen, ConversationScreen (fil + devis), MessageBubble,
+                       MessageComposer, QuoteCard, requestStatus (badge d'une demande)
+  src/features/requests/ Mes demandes (M10) : RequestsScreen (3 onglets), RequestDetailScreen (annuler, poser une question)
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)

@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M9 : demande de devis en 3 étapes).
+Dernière mise à jour : 25/11/2026 (lot M10 : mes demandes et messagerie).
 
 ## Lots
 
@@ -41,7 +41,34 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
 | M7  | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
 | M8  | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
-| M9  | Demande de devis en 3 étapes (C1)      | 🔍 PR ouverte                                                    |
+| M9  | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
+| M10 | Mes demandes et messagerie (C2, C4)    | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M10
+
+- **Messagerie** (C4, `src/features/messaging/`) :
+  - L'onglet **Messages** : une conversation par demande, la plus récente en haut, l'aperçu du dernier message
+    (« Toi : … » si c'est le mien), et la pastille soleil des non-lus (aussi sur l'onglet, déjà là depuis M4).
+    Tirer vers le bas recharge ; sans conversation, un état vide renvoie vers la Recherche.
+  - Le **fil** (`/conversations/[id]`, par-dessus les onglets) : en-tête avec le prestataire, l'événement et le badge
+    de la demande ; les messages (les miens à droite en terre), les messages automatiques au centre, et **les devis
+    dans le fil** (`QuoteCard` : lignes, total, acompte ; accepter arrive en M11). Les coordonnées masquées par le
+    serveur (règle n° 7) s'affichent en pastille « coordonnées masquées », avec « Les coordonnées s'affichent après
+    la réservation ». La zone d'écriture reste collée au clavier ; une demande close ferme la conversation.
+  - Rafraîchi toutes les 7 s (`MESSAGING_REFRESH_MS`, comme le site) ; le fil est marqué lu à l'ouverture.
+  - « Ouvrir la conversation » (fin de la demande de devis, M9) ouvre maintenant le bon fil.
+- **Mes demandes** (C2, `src/features/requests/`) :
+  - L'onglet **Demandes** : trois onglets « En cours · 3 », « Réservées · 1 », « Terminées » (`requestTab`), une carte
+    par demande (photo, prestataire, badge, « Mariage · sam. 12 déc. · 120 invités », total du devis).
+  - Le **détail** (`/demande/[id]`) : badge, événement, lieu, budget, mon message, le dernier devis, « Poser une
+    question » (le fil) et « Annuler la demande » avec confirmation (demande en attente ou avec devis).
+  - Les badges (`messaging/requestStatus.ts`) suivent les mêmes règles que le site, traduits (`requestStatus.*`).
+- Les adresses `/conversations/[id]` et `/demande/[id]` évitent de se mélanger avec les onglets `/messages` et
+  `/demandes`.
+- Textes : `messages.*`, `quoteCard.*`, `requestStatus.*`, `requests.*`.
+- Tests : 245 tests mobiles. `messaging.test.tsx` (connexion demandée, liste et non-lus, fil marqué lu avec le devis,
+  envoi avec numéro masqué, conversation fermée, liste vide) et `requests.test.tsx` (3 onglets et badges, détail et
+  « Poser une question », annulation confirmée, liste vide), plus `requestStatus.test.ts` et `dates.test.ts`.
 
 ## Ce que contient le lot M9
 

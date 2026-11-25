@@ -12,6 +12,7 @@ const Empty = () => null;
 const routes = {
   index: Empty,
   messages: Empty,
+  'conversations/[id]': Empty,
   'prestataires/[slug]/index': Empty,
   'prestataires/[slug]/demande': QuoteRequestScreen,
   '(auth)/bienvenue': Empty,
@@ -149,8 +150,12 @@ describe('Demande de devis (lot M9)', () => {
       status: 'pending',
     });
 
+    // « Ouvrir la conversation » mène au fil créé avec la demande.
+    const conversation = db.data.conversations.find(
+      (c) => c.quoteRequestId === db.data.quoteRequests.at(-1)!.id,
+    )!;
     await press('Ouvrir la conversation');
-    expect(screen).toHavePathname('/messages');
+    expect(screen).toHavePathname(`/conversations/${conversation.id}`);
   });
 
   it('refuse un jour où le prestataire est déjà pris (règle n° 3)', async () => {

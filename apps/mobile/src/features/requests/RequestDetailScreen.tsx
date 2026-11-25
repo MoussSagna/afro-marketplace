@@ -1,0 +1,200 @@
+import {
+  formatPrice,
+  isQuoteRequestOpen,
+  useCancelQuoteRequest,
+  useQuoteRequest,
+  type QuoteRequestDetails,
+} from '@afro/common';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { CheckCircle2 } from 'lucide-react-native';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { QueryState } from '@/components/QueryState';
+import { BackHeader, Badge, Button, Card, EmptyState, Heading, Photo, Text } from '@/components/ui';
+import { useErrorText } from '@/i18n/useErrorText';
+import { useLanguage } from '@/i18n/useLanguage';
+import { longDay, shortDate } from '@/lib/dates';
+import { useThemeColors } from '@/theme/useTheme';
+import { conversationHref } from '../messaging/conversationHref';
+import { QuoteCard } from '../messaging/QuoteCard';
+import { requestStatus } from '../messaging/requestStatus';
+import { profileHref } from '../providers/profileHref';
+
+/**
+ * Le détail d'une demande (C2 → C3) : le prestataire, l'événement, le message envoyé,
+ * le dernier devis, puis « Poser une question » (la conversation) et « Annuler la demande ».
+ * Accepter un devis arrive au lot M11.
+ */
+export function RequestDetailScreen() {
+  const { t } = useTranslation();
+  const { id = '' } = useLocalSearchParams<{ id: string }>();
+  const details = useQuoteRequest(id);
+  return (
+    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
+      <BackHeader title={t('requests.detailTitle')} />
+      <QueryState
+        isPending={details.isPending}
+        isError={details.isError && !isNotFound(details.error)}
+        onRetry={() => void details.refetch()}
+        loadingLabel={t('requests.loading')}
+      >
+        {details.data ? (
+          <RequestDetail details={details.data} />
+        ) : (
+          <EmptyState className="flex-1" title={t('requests.notFound')} />
+        )}
+      </QueryState>
+    </SafeAreaView>
+  );
+}
+
+function isNotFound(error: unknown) {
+  return typeof error === 'object' && error !== null && 'status' in error && error.status === 404;
+}
+
+function RequestDetail({ details }: { details: QuoteRequestDetails }) {
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
+  const colors = useThemeColors();
+  const router = useRouter();
+  const { apiError } = useErrorText();
+  const { request, provider, quotes, conversationId } = details;
+  const cancel = useCancelQuoteRequest(request.id);
+  const [confirming, setConfirming] = useState(false);
+  const status = requestStatus(request, 'client');
+  const latest = [...quotes].sort((a, b) => b.version - a.version)[0];
+  const euros = (cents: number) => formatPrice(cents, locale);
+  const budget =
+    request.budgetMin !== undefined && request.budgetMax !== undefined
+      ? `${euros(request.budgetMin)} – ${euros(request.budgetMax)}`
+      : request.budgetMax !== undefined
+        ? euros(request.budgetMax)
+        : request.budgetMin !== undefined
+          ? euros(request.budgetMin)
+          : undefined;
+  const rows = [
+    { label: t('requests.event'), value: t(`eventTypes.${request.eventType}`) },
+    { label: t('requests.date'), value: longDay(request.eventDate, locale) },
+    request.guestCount
+      ? { label: t('requests.guests'), value: String(request.guestCount) }
+      : undefined,
+    { label: t('requests.place'), value: `${request.eventCity} (${request.eventPostalCode})` },
+    budget ? { label: t('requests.budget'), value: budget } : undefined,
+  ].filter((row) => row !== undefined);
+
+  return (
+    <ScrollView contentContainerClassName="gap-5 px-5 pb-10 pt-2">
+      <Card className="flex-row items-center gap-3 p-2.5">
+        <Photo uri={provider.coverUrl} className="h-14 w-14 rounded-xl" />
+        <View className="min-w-0 flex-1 gap-1">
+          <Text
+            weight="bold"
+            accessibilityRole="link"
+            onPress={() => router.push(profileHref(provider.slug))}
+          >
+            {provider.displayName}
+          </Text>
+          <Badge variant={status.tone}>{status.label}</Badge>
+        </View>
+      </Card>
+
+      {request.status === 'cancelled' && cancel.isSuccess ? (
+        <View
+          accessibilityRole="alert"
+          className="flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
+        >
+          <CheckCircle2 size={18} color={colors.success} />
+          <Text size="sm" tone="success">
+            {t('requests.cancelled')}
+          </Text>
+        </View>
+      ) : null}
+
+      <View>
+        {rows.map((row) => (
+          <View
+            key={row.label}
+            className="flex-row justify-between gap-4 border-b border-border py-2.5"
+            accessible
+            accessibilityLabel={`${row.label} : ${row.value}`}
+          >
+            <Text size="sm" tone="muted">
+              {row.label}
+            </Text>
+            <Text size="sm" weight="semibold" className="flex-1 text-right">
+              {row.value}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <View className="gap-1.5">
+        <Heading level={3}>{t('requests.yourMessage')}</Heading>
+        <Text size="sm" tone="muted">
+          {request.message}
+        </Text>
+      </View>
+
+      <View className="gap-2">
+        <Heading level={3}>{t('requests.latestQuote')}</Heading>
+        {latest ? (
+          <QuoteCard quote={latest} />
+        ) : (
+          <Text size="sm" tone="muted">
+            {t('requests.noQuote', { date: shortDate(request.expiresAt.slice(0, 10), locale) })}
+          </Text>
+        )}
+      </View>
+
+      <Button
+        variant="outline"
+        fullWidth
+        onPress={() => router.push(conversationHref(conversationId))}
+      >
+        {t('requests.askQuestion')}
+      </Button>
+
+      {isQuoteRequestOpen(request.status) ? (
+        confirming ? (
+          <Card className="gap-3 p-4">
+            <Text weight="bold">{t('requests.cancelTitle')}</Text>
+            <Text size="sm" tone="muted">
+              {t('requests.cancelHint')}
+            </Text>
+            {cancel.isError ? (
+              <Text size="sm" tone="destructive" accessibilityRole="alert">
+                {apiError(cancel.error)}
+              </Text>
+            ) : null}
+            <View className="flex-row gap-2">
+              <View className="flex-1">
+                <Button variant="outline" size="md" fullWidth onPress={() => setConfirming(false)}>
+                  {t('requests.cancelKeep')}
+                </Button>
+              </View>
+              <View className="flex-1">
+                <Button
+                  variant="destructive"
+                  size="md"
+                  fullWidth
+                  loading={cancel.isPending}
+                  onPress={() =>
+                    cancel.mutate(undefined, { onSuccess: () => setConfirming(false) })
+                  }
+                >
+                  {t('requests.cancelConfirm')}
+                </Button>
+              </View>
+            </View>
+          </Card>
+        ) : (
+          <Button variant="ghost" fullWidth onPress={() => setConfirming(true)}>
+            {t('requests.cancel')}
+          </Button>
+        )
+      ) : null}
+    </ScrollView>
+  );
+}

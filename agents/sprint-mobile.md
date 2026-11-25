@@ -205,7 +205,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
   (règle n° 3), écran « Demande envoyée ».
 - **Tests** : schéma de saisie (unitaire), date indisponible refusée, envoi qui ouvre la conversation.
 
-### M10 · Mes demandes et messagerie (C2, C4)
+### M10 · Mes demandes et messagerie (C2, C4) · **fait (voir avancement.md)**
 
 - Mes demandes en 3 onglets avec leurs badges d'état ; détail d'une demande (annuler, poser une question).
 - Liste des conversations, fil de messages avec le devis affiché dans le fil, coordonnées masquées (règle n° 7),

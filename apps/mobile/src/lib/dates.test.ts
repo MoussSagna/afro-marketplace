@@ -1,4 +1,4 @@
-import { monthGrid, monthRange, monthYear } from './dates';
+import { messageTime, monthGrid, monthRange, monthYear, shortDate } from './dates';
 
 describe('dates des calendriers', () => {
   it('donne le premier et le dernier jour d’un mois', () => {
@@ -14,5 +14,15 @@ describe('dates des calendriers', () => {
   it('écrit le mois d’un avis', () => {
     expect(monthYear('2026-03-14T10:00:00Z', 'fr-FR')).toBe('mars 2026');
     expect(monthYear('2026-03-14T10:00:00Z', 'en-GB')).toBe('March 2026');
+  });
+
+  it('écrit l’heure d’un message : l’heure aujourd’hui, la date sinon', () => {
+    const now = new Date(2026, 10, 25, 18, 0);
+    const today = new Date(2026, 10, 25, 14, 5).toISOString();
+    const before = new Date(2026, 11 - 9, 3, 9, 0).toISOString(); // 3 mars
+    expect(messageTime(today, 'fr-FR', now)).toBe('14:05');
+    expect(messageTime(before, 'fr-FR', now)).toBe('3 mars');
+    expect(shortDate('2026-12-06', 'fr-FR')).toBe('6 déc.');
+    expect(shortDate('2026-12-06', 'en-GB')).toBe('6 Dec');
   });
 });
