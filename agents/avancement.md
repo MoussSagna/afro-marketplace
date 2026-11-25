@@ -1,6 +1,19 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M15c : modifier son profil dans l'app).
+Dernière mise à jour : 25/11/2026 (données fictives activées sur le site en ligne Vercel).
+
+## Site en ligne (Vercel)
+
+Le 25/11/2026, Mouss a déployé `apps/web` sur Vercel : les pages étaient vides. Cause : Vercel construit en
+mode « production », qui ne lit pas `.env.development`, donc `VITE_USE_MOCKS` était absent et MSW ne
+démarrait pas (les appels `/api` partaient vers un serveur qui n'existe pas).
+
+- `apps/web/.env.production` : `VITE_USE_MOCKS=true` tant que le back-end Supabase n'existe pas
+  (test : `src/lib/envProduction.test.ts`). Le jour du back-end : `VITE_USE_MOCKS=false` dans les variables
+  du projet Vercel (elles passent avant le fichier) ou dans ce fichier.
+- `apps/web/vercel.json` : toutes les URL renvoient vers `index.html` (sinon un rechargement sur
+  `/recherche` donne une 404). Les vrais fichiers (`mockServiceWorker.js`, `assets/`) restent servis tels quels.
+- Les données fictives vivent dans le navigateur de chaque visiteur : ce qu'il modifie n'est vu que par lui.
 
 ## Lots
 
@@ -51,7 +64,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M14b | Envoyer un devis (S4)                      | ✅ fusionné #38                                                  |
 | M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
-| M15c | Modifier son profil dans l'app (S7)        | 🔍 PR ouverte                                                    |
+| M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
 ## Ce que contient le lot M15c
 

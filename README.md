@@ -53,7 +53,7 @@ L'app mobile (`apps/mobile`) réutilise `packages/common`. Plan : `agents/sprint
 
 ## Données mockées
 
-Il n'y a pas encore de back-end. Quand `VITE_USE_MOCKS=true` (déjà le cas en développement, voir `apps/web/.env.development`), MSW intercepte les appels à `/api` et répond avec les données de `packages/common/src/mocks`. Les écrans ne savent pas que c'est faux : le jour du vrai back-end, on change l'implémentation de l'`ApiClient`, pas les écrans.
+Il n'y a pas encore de back-end. Quand `VITE_USE_MOCKS=true` (déjà le cas en développement et sur le site en ligne, voir `apps/web/.env.development` et `apps/web/.env.production`), MSW intercepte les appels à `/api` et répond avec les données de `packages/common/src/mocks`. Les écrans ne savent pas que c'est faux : le jour du vrai back-end, on change l'implémentation de l'`ApiClient`, pas les écrans.
 
 ## Ajouter un composant shadcn/ui
 
