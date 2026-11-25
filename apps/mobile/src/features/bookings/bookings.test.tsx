@@ -138,7 +138,7 @@ describe('Devis et réservations (lot M11)', () => {
     ).toBeOnTheScreen();
     await press(`Laisser un avis ${pastName}`);
     expect(screen).toHavePathname(`/avis/${past.id}`);
-    expect(screen.getByText('Laisser un avis arrive au lot M12.')).toBeOnTheScreen();
+    expect(await screen.findByText('Ta note générale')).toBeOnTheScreen();
   });
 
   it('pas de « Laisser un avis » quand l’avis est déjà donné', async () => {

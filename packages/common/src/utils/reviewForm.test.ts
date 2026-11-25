@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { initialReviewForm, reviewFormSchema, toCreateReviewInput } from './reviewForm';
+import {
+  initialReviewForm,
+  reviewFormSchema,
+  reviewMessages,
+  toCreateReviewInput,
+} from './reviewForm';
 
 describe('formulaire « Laisser un avis »', () => {
   it('exige une note générale', () => {
     const result = reviewFormSchema.safeParse(initialReviewForm);
     expect(result.success).toBe(false);
-    expect(result.error?.issues[0]?.message).toBe('Choisis une note de 1 à 5 étoiles');
+    expect(result.error?.issues[0]?.message).toBe(reviewMessages.ratingRequired);
   });
 
   it('les sous-notes : les trois ou aucune', () => {
