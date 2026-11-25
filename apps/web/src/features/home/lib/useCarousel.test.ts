@@ -57,24 +57,9 @@ describe('useCarousel', () => {
     expect(result.current.index).toBe(1);
   });
 
-  it('le bouton pause arrête le défilement, lecture le relance', () => {
-    const { result } = renderHook(() => useCarousel(3, options));
-
-    act(() => result.current.togglePlay());
-    expect(result.current.playing).toBe(false);
-    act(() => vi.advanceTimersByTime(20000));
-    expect(result.current.index).toBe(0);
-
-    act(() => result.current.togglePlay());
-    expect(result.current.playing).toBe(true);
-    act(() => vi.advanceTimersByTime(6000));
-    expect(result.current.index).toBe(1);
-  });
-
-  it('« réduire les animations » : aucun défilement automatique ni bouton lecture', () => {
+  it('« réduire les animations » : aucun défilement automatique', () => {
     const { result } = renderHook(() => useCarousel(3, { ...options, autoplay: false }));
 
-    expect(result.current.canPlay).toBe(false);
     act(() => vi.advanceTimersByTime(20000));
     expect(result.current.index).toBe(0);
   });

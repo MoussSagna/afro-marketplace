@@ -1,16 +1,7 @@
 import { motion } from 'motion/react';
-import { Link, Outlet, useLocation } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { Navbar } from '@/components/layout/Navbar';
-import { Logo } from '@/components/Logo';
-
-const FOOTER_LINKS = [
-  { to: '/comment-ca-marche', label: 'Comment ça marche' },
-  { to: '/devenir-prestataire', label: 'Devenir prestataire' },
-  { to: '/faq', label: 'FAQ' },
-  { to: '/cgu', label: 'CGU' },
-  { to: '/mentions-legales', label: 'Mentions légales' },
-  { to: '/confidentialite', label: 'Confidentialité' },
-];
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 /**
  * Gabarit des pages publiques : en-tête, contenu, pied de page.
@@ -31,25 +22,7 @@ export function PublicLayout() {
       >
         <Outlet />
       </motion.main>
-      <footer className="border-t py-8 text-sm text-muted-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4">
-          <Logo className="h-7" />
-          <nav aria-label="Liens utiles">
-            <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-              {FOOTER_LINKS.map((link) => (
-                <li key={link.to}>
-                  <Link to={link.to} className="hover:text-foreground hover:underline">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <p className="text-center">
-            Prestataires afro en Île-de-France · Version de développement (données fictives)
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

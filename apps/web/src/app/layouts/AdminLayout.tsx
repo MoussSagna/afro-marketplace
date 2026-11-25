@@ -1,6 +1,7 @@
 import { Flag, LayoutDashboard, UserCheck, Users } from 'lucide-react';
 import { Outlet } from 'react-router';
 import { Navbar } from '@/components/layout/Navbar';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 
@@ -35,6 +36,7 @@ export function AdminLayout() {
           <Outlet />
         </main>
       </div>
+      <SiteFooter />
     </div>
   );
 }

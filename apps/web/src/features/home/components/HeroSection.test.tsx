@@ -45,32 +45,30 @@ describe("Hero de l'accueil", () => {
     expect(router.state.location.search).toBe('?categorie=traiteurs');
   });
 
-  it('la pagination change de photo, au clic et aux flèches du clavier', async () => {
+  it('pas de pagination ni de bouton pause (demande de Mouss)', async () => {
     renderRoute('/');
 
-    const dots = await screen.findByRole('group', { name: 'Choisir une ambiance' });
-    const [first, second, third] = within(dots).getAllByRole('button');
-    expect(first).toHaveAttribute('aria-current', 'true');
-    expect(first).toHaveAccessibleName('1 sur 3 : Mariage afro et caribéen');
-
-    await userEvent.click(second!);
-    expect(second).toHaveAttribute('aria-current', 'true');
-    expect(first).not.toHaveAttribute('aria-current');
-
-    fireEvent.keyDown(second!, { key: 'ArrowRight' });
-    expect(third).toHaveAttribute('aria-current', 'true');
-    fireEvent.keyDown(third!, { key: 'ArrowRight' });
-    expect(first).toHaveAttribute('aria-current', 'true'); // retour au début
-    fireEvent.keyDown(first!, { key: 'ArrowLeft' });
-    expect(third).toHaveAttribute('aria-current', 'true');
+    await screen.findByRole('heading', { level: 1, name: /Trouvez les talents/ });
+    expect(screen.queryByRole('group', { name: 'Choisir une ambiance' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /diaporama/ })).not.toBeInTheDocument();
   });
 
-  it('le bouton pause arrête le diaporama et peut le relancer', async () => {
-    renderRoute('/');
+  it('un balayage au doigt passe à la photo suivante, puis revient', async () => {
+    const { container } = renderRoute('/');
 
-    const pause = await screen.findByRole('button', { name: 'Mettre en pause le diaporama' });
-    await userEvent.click(pause);
-    expect(screen.getByRole('button', { name: 'Relancer le diaporama' })).toBeInTheDocument();
+    await screen.findByRole('heading', { level: 1, name: /Trouvez les talents/ });
+    const hero = container.querySelector('section[aria-labelledby="hero-title"]')!;
+    const active = () =>
+      container.querySelector('[data-active="true"]')?.getAttribute('data-slide');
+    expect(active()).toBe('mariage');
+
+    fireEvent.pointerDown(hero, { clientX: 300, clientY: 400 });
+    fireEvent.pointerUp(hero, { clientX: 100, clientY: 410 });
+    expect(active()).toBe('soiree');
+
+    fireEvent.pointerDown(hero, { clientX: 100, clientY: 400 });
+    fireEvent.pointerUp(hero, { clientX: 300, clientY: 400 });
+    expect(active()).toBe('mariage');
   });
 });
 

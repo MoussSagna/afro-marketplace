@@ -1,7 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : section « Deux
-façons d'utiliser Wenzee » et navbar unique, branche `feat/web-user-types`).
+Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : pied de page unique et
+carrousel du hero sans contrôles, branche `feat/web-footer`).
 
 ## Données de démo : toutes les catégories (25/11/2026)
 
@@ -18,7 +18,7 @@ de prestataires afro. 🔍 Branche `claude/project-thread-x72gw4`, à relire.
   Beauté → `beaute-soins`, Mode → `mode-tenues`, Décoration → `deco-location`). Le méga-menu n'est pas codé.
 - **Mobile** : 8 icônes (`categoryIcons.ts`, 4 nouvelles dessinées dans le même style), traductions anglaises des
   groupes (`i18n/en.ts`), photos de l'étape « Quoi ? » renommées par slug + Mode (recadrée depuis la maquette) ; les 3
-  groupes sans photo affichent leur icône (question n° 17).
+  groupes sans photo affichent leur icône (question n° 18).
 - **Tests** : `buildSeed.test.ts` (8 groupes, slugs uniques, toutes les catégories des prestataires existent),
   `search.test.ts` (chaque groupe a un prestataire publié), e2e `discover.spec.ts` (page « Photo & vidéo »),
   `search.test.tsx` mobile (icône à la place de la photo) ; les tests qui comptaient les résultats (22 → 33) ou citaient
@@ -88,6 +88,19 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
+## Site : pied de page unique (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-footer`, à relire. Validation :
+[`docs/footer-validation.md`](../docs/footer-validation.md).
+
+- `SiteFooter` dans les 4 gabarits : marque + réseaux sociaux, Découvrir, Je suis, Aide & Support, Restez informé,
+  barre légale. 5 colonnes à partir de 1400 px, disposition tablette en dessous, 2 colonnes puis 1 sur mobile.
+- Réseaux sociaux non cliquables (pas encore de comptes) ; lettre d'information sans back-end (message honnête) ;
+  nouvelle page `/contact` « bientôt disponible » (question n° 17).
+- Tests : `SiteFooter.test.tsx`, `e2e/footer.spec.ts` ; tests du logo et des pages légales adaptés.
+- Au passage (demande de Mouss) : **pagination et bouton pause du carrousel du hero retirés** ; le défilement
+  automatique, la pause au survol et le balayage restent (`docs/hero-integration-validation.md`, section 9).
+
 ## Site : la navbar du hero sur toutes les pages (25/11/2026)
 
 Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-validation.md).
@@ -101,7 +114,7 @@ Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-vali
 
 ## Site : section « Deux façons d'utiliser Wenzee » (25/11/2026)
 
-Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-user-types`, à relire. Méthode et cycles :
+Demande de Mouss, d'après sa maquette. ✅ Fusionné (#47). Méthode et cycles :
 [`docs/user-types-section-validation.md`](../docs/user-types-section-validation.md).
 
 - 3ᵉ section de l'accueil, sous « Explorez nos univers » : en-tête centré, deux cartes côte à côte (≥ 1024 px),

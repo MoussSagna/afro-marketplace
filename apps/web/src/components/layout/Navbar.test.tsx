@@ -101,7 +101,8 @@ describe("Navbar de l'accueil", () => {
 
     await screen.findByRole('heading', { level: 1, name: 'Questions fréquentes' });
     // La FAQ a son propre <header> dans un <article> : on part du logo de la navbar.
-    const header = screen.getByRole('link', { name: 'Wenzee, accueil' }).closest('header')!;
+    // (le pied de page a aussi un lien « Wenzee, accueil » : le premier est celui de la navbar)
+    const header = screen.getAllByRole('link', { name: 'Wenzee, accueil' })[0]!.closest('header')!;
     expect(header).not.toHaveAttribute('data-scrolled'); // jamais transparente hors de l'accueil
     expect(header).toHaveClass('sticky', 'bg-foreground/95');
     expect(within(header).getByRole('link', { name: 'Notre mission' })).toBeInTheDocument();
