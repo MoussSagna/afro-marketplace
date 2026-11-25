@@ -1,7 +1,7 @@
 import { CalendarCheck, FileText, MessageCircle, UserRound } from 'lucide-react';
 import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
-import { AppHeader } from '@/components/layout/AppHeader';
+import { Navbar } from '@/components/layout/Navbar';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
@@ -26,17 +26,22 @@ export function ClientLayout() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <AppHeader spaceLabel="Espace client">
+      <Navbar spaceLabel="Espace client">
         {isProvider && (
-          <Button asChild variant="outline" size="sm">
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="border-white/50 bg-white/10 text-white hover:bg-white hover:text-foreground"
+          >
             <Link to="/pro" aria-label="Passer en mode prestataire">
-              {/* Texte court sur téléphone pour que l'en-tête tienne sur une ligne. */}
-              <span className="sm:hidden">Mode pro</span>
-              <span className="hidden sm:inline">Passer en mode prestataire</span>
+              {/* Texte court jusqu'à 1280 px pour que la navbar tienne sur une ligne. */}
+              <span className="xl:hidden">Mode pro</span>
+              <span className="hidden xl:inline">Passer en mode prestataire</span>
             </Link>
           </Button>
         )}
-      </AppHeader>
+      </Navbar>
       <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         <SpaceNav items={items} label="Espace client" variant="top" className="mb-6 border-b" />
         <main>

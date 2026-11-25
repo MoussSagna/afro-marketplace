@@ -31,7 +31,8 @@ export function UserMenu() {
             {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
-          <span className="hidden sm:inline">{user.firstName}</span>
+          {/* Le prénom à partir de 1280 px : la navbar tient sur une ligne même dans les espaces. */}
+          <span className="hidden xl:inline">{user.firstName}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">

@@ -1,4 +1,3 @@
-import { paramsFromFilters } from '@afro/common';
 import {
   ConciergeBell,
   Headphones,
@@ -10,6 +9,7 @@ import {
   Tent,
   type LucideIcon,
 } from 'lucide-react';
+import { HOME_CATEGORIES } from './homeCategories';
 
 /** Une photo du carrousel de l'accueil. */
 export interface HeroSlide {
@@ -60,19 +60,14 @@ export interface CategoryShortcut {
   icon: LucideIcon;
 }
 
-/** Les 8 catégories populaires, dans l'ordre de la maquette. */
+/** Les 8 catégories populaires du hero, dans l'ordre de la maquette. */
 export const CATEGORY_SHORTCUTS: CategoryShortcut[] = [
-  { label: 'Traiteur', categorySlug: 'traiteurs', icon: ConciergeBell },
-  { label: 'Danse', categorySlug: 'danse', icon: PersonStanding },
-  { label: 'Musique & DJ', categorySlug: 'dj', icon: Headphones },
-  { label: 'Show', categorySlug: 'musique-animation', icon: Star },
-  { label: 'Speaker', categorySlug: 'speakers', icon: Mic },
-  { label: 'Beauté', categorySlug: 'beaute-soins', icon: Sparkles },
-  { label: 'Mode', categorySlug: 'mode-tenues', icon: Shirt },
-  { label: 'Décoration', categorySlug: 'deco-location', icon: Tent },
+  { ...HOME_CATEGORIES.traiteur, icon: ConciergeBell },
+  { ...HOME_CATEGORIES.danse, icon: PersonStanding },
+  { ...HOME_CATEGORIES.musique, icon: Headphones },
+  { ...HOME_CATEGORIES.show, icon: Star },
+  { ...HOME_CATEGORIES.speaker, icon: Mic },
+  { ...HOME_CATEGORIES.beaute, icon: Sparkles },
+  { ...HOME_CATEGORIES.mode, icon: Shirt },
+  { ...HOME_CATEGORIES.decoration, icon: Tent },
 ];
-
-/** L'adresse de la recherche filtrée sur une catégorie. */
-export function categorySearchUrl(categorySlug: string) {
-  return `/recherche?${paramsFromFilters({ category: categorySlug }).toString()}`;
-}

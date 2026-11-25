@@ -2,12 +2,17 @@ import { useCategories, useFeaturedProviders } from '@afro/common';
 import { motion } from 'motion/react';
 import { useLocation } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ExploreCategoriesSection } from '@/features/home/components/ExploreCategoriesSection';
 import { HeroSection } from '@/features/home/components/HeroSection';
+import { UserTypesSection } from '@/features/home/components/UserTypesSection';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { HowItWorks } from '../components/HowItWorks';
 import { ProviderCard } from '../components/ProviderCard';
 
-/** P1 : l'accueil. Hero plein écran (recherche, catégories, carrousel), prestataires à la une, comment ça marche. */
+/**
+ * P1 : l'accueil. Hero plein écran (recherche, catégories, carrousel), « Explorez nos univers »,
+ * « Deux façons d'utiliser Wenzee », prestataires à la une, comment ça marche.
+ */
 export function HomePage() {
   usePageMeta(
     'Prestataires afro pour vos événements',
@@ -36,6 +41,10 @@ export function HomePage() {
           )
         }
       />
+
+      <ExploreCategoriesSection />
+
+      <UserTypesSection />
 
       <section className="mx-auto max-w-6xl px-4 py-12" aria-labelledby="featured-title">
         <h2 id="featured-title" className="mb-6 font-display text-2xl font-semibold">

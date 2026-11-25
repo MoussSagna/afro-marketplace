@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { categorySearchUrl, type CategoryShortcut } from '../lib/heroContent';
+import type { CategoryShortcut } from '../lib/heroContent';
+import { categorySearchUrl } from '../lib/homeCategories';
 
 /**
  * Les catégories populaires du hero : une tuile en verre fumé + son nom.

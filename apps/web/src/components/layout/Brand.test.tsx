@@ -7,9 +7,10 @@ describe('Marque Wenzee (logo)', () => {
     renderRoute('/faq');
     const home = await screen.findByRole('link', { name: 'Wenzee, accueil' });
     expect(home).toHaveAttribute('href', '/');
+    // Navbar sur fond brun : version claire du logo (même tracé).
     expect(within(home).getByRole('img', { name: 'Wenzee' })).toHaveAttribute(
       'src',
-      '/wenzee-logo.svg',
+      '/wenzee-logo-light.svg',
     );
   });
 

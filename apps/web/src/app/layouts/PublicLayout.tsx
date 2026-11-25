@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
 import { Link, Outlet, useLocation } from 'react-router';
-import { AppHeader } from '@/components/layout/AppHeader';
 import { Navbar } from '@/components/layout/Navbar';
 import { Logo } from '@/components/Logo';
 
@@ -15,13 +14,13 @@ const FOOTER_LINKS = [
 
 /**
  * Gabarit des pages publiques : en-tête, contenu, pied de page.
- * Sur l'accueil, l'en-tête est la navbar transparente posée sur le hero plein écran.
+ * La même navbar partout ; sur l'accueil, elle est transparente et posée sur le hero plein écran.
  */
 export function PublicLayout() {
   const { pathname } = useLocation();
   return (
     <div className="flex min-h-dvh flex-col">
-      {pathname === '/' ? <Navbar /> : <AppHeader />}
+      <Navbar overlay={pathname === '/'} />
       {/* Transition douce entre deux pages (désactivée si « réduire les animations »). */}
       <motion.main
         key={pathname}

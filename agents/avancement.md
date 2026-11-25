@@ -1,7 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : hero plein écran
-de l'accueil, branche `feat/web-hero-fullscreen`).
+Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : section « Deux
+façons d'utiliser Wenzee » et navbar unique, branche `feat/web-user-types`).
 
 ## Données de démo : toutes les catégories (25/11/2026)
 
@@ -14,11 +14,11 @@ de prestataires afro. 🔍 Branche `claude/project-thread-x72gw4`, à relire.
 - **11 prestataires ajoutés** pour que chaque groupe ait des résultats (37 au total, 33 publiés).
 - **Clé du localStorage passée en `v2`** : sans ça, les navigateurs (site Vercel compris) gardaient l'ancien jeu.
 - **Web** : rien à coder, le menu « Prestataires », la recherche et les pages catégorie lisent les catégories de l'API.
-  Seuls les slugs des raccourcis du hero (`heroContent.ts`) suivent les nouveaux noms (Show → `musique-animation`,
+  Seuls les slugs des 8 catégories de l'accueil (`homeCategories.ts` : raccourcis du hero et mosaïque) suivent les nouveaux noms (Show → `musique-animation`,
   Beauté → `beaute-soins`, Mode → `mode-tenues`, Décoration → `deco-location`). Le méga-menu n'est pas codé.
 - **Mobile** : 8 icônes (`categoryIcons.ts`, 4 nouvelles dessinées dans le même style), traductions anglaises des
   groupes (`i18n/en.ts`), photos de l'étape « Quoi ? » renommées par slug + Mode (recadrée depuis la maquette) ; les 3
-  groupes sans photo affichent leur icône (question n° 16).
+  groupes sans photo affichent leur icône (question n° 17).
 - **Tests** : `buildSeed.test.ts` (8 groupes, slugs uniques, toutes les catégories des prestataires existent),
   `search.test.ts` (chaque groupe a un prestataire publié), e2e `discover.spec.ts` (page « Photo & vidéo »),
   `search.test.tsx` mobile (icône à la place de la photo) ; les tests qui comptaient les résultats (22 → 33) ou citaient
@@ -88,10 +88,50 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
+## Site : la navbar du hero sur toutes les pages (25/11/2026)
+
+Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-validation.md).
+
+- Les 4 gabarits (public, client, pro, admin) utilisent `Navbar` ; `AppHeader` est supprimé.
+- Accueil : inchangé (transparente puis floutée). Ailleurs : collée en haut, fond brun dès le départ.
+- Espaces : badge « Espace client / pro / Admin », bascule de mode (texte court jusqu'à 1280 px), menu du compte
+  (prénom à partir de 1280 px). « Se connecter » ramène à la page en cours.
+- « Prestataires » est souligné sur la recherche, les catégories et les profils.
+- Tests : `Navbar.test.tsx` (autres pages, espace pro, lien actif), `auth.test.tsx`, `Brand.test.tsx` (logo clair).
+
+## Site : section « Deux façons d'utiliser Wenzee » (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-user-types`, à relire. Méthode et cycles :
+[`docs/user-types-section-validation.md`](../docs/user-types-section-validation.md).
+
+- 3ᵉ section de l'accueil, sous « Explorez nos univers » : en-tête centré, deux cartes côte à côte (≥ 1024 px),
+  **sans aucune photo** (illustrations vectorielles à partir des icônes lucide).
+- Carte « Pour les prestataires » : « Référencer mon activité » → `/devenir-prestataire` ; « Déjà inscrit ? Se
+  connecter » → `/connexion?retour=%2Fpro`. Carte « Pour les particuliers » : « Organiser mon événement » →
+  `/recherche` ; connexion → `/connexion`.
+- Données : `features/home/lib/userTypes.ts` ; composants `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration`.
+- **Fonds unis** (demande de Mouss) : cette section en sable clair (`bg-muted`), « Explorez nos univers » en ivoire,
+  sans motifs ni cercles décoratifs.
+- Tests : `UserTypesSection.test.tsx`, `e2e/user-types.spec.ts` ; `e2e/auth.spec.ts` cherche maintenant « Se
+  connecter » en nom exact (les cartes ont des liens « Déjà inscrit ? Se connecter »).
+
+## Site : section « Explorez nos univers » (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. ✅ Fusionné (#46). Méthode et cycles :
+[`docs/categories-section-validation.md`](../docs/categories-section-validation.md).
+
+- 2ᵉ section de l'accueil, sous le hero : texte éditorial à gauche (« Découvrez nos univers événementiels »,
+  bouton « Voir toutes les catégories » → `/recherche`), **mosaïque photo asymétrique** à droite (8 cartes, DJ en grand).
+- Cartes : photo pleine carte, dégradé, nom ; survol = carte soulevée + zoom léger ; lien vers `/recherche?categorie=…`.
+- Données : `features/home/lib/homeCategories.ts` (source unique des 8 catégories, aussi utilisée par le hero) et
+  `lib/categoryMosaic.ts` (photo, cadrage, place de chaque carte).
+- Photos : `public/images/categories/` (vignettes de l'app) + photos du hero. **Pas de photo de DJ ni de mode** :
+  provisoires (question n° 16).
+- Tests : `ExploreCategoriesSection.test.tsx`, `e2e/explore.spec.ts`.
+
 ## Site : hero plein écran de l'accueil (25/11/2026)
 
-Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). 🔍 Branche
-`feat/web-hero-fullscreen`, à relire. Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
+Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). ✅ Fusionné (#44). Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
 
 - **Navbar de l'accueil** (`components/layout/Navbar.tsx`) : transparente sur la photo au chargement, puis collée en haut
   avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrolled.ts`). Accueil, Prestataires (menu des

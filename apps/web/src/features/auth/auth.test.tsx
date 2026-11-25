@@ -117,10 +117,12 @@ describe('Menu du compte et gabarits', () => {
     expect(link).toHaveAttribute('href', '/connexion');
   });
 
-  it('garde la page en cours dans le lien « Connexion »', async () => {
+  it('garde la page en cours dans le lien « Se connecter »', async () => {
     renderRoute('/devenir-prestataire');
 
-    const link = await screen.findByRole('link', { name: 'Connexion' });
+    const link = within(await screen.findByRole('banner')).getByRole('link', {
+      name: 'Se connecter',
+    });
     expect(link).toHaveAttribute('href', '/connexion?retour=%2Fdevenir-prestataire');
   });
 

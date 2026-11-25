@@ -1,7 +1,7 @@
 import { useCategories } from '@afro/common';
 import { ChevronDown, Menu } from 'lucide-react';
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router';
+import { useState, type ReactNode } from 'react';
+import { Link, NavLink, useLocation } from 'react-router';
 import { Logo } from '@/components/Logo';
 import {
   Dialog,
@@ -33,19 +33,41 @@ const LINKS_AFTER = [
 const focusRing =
   'outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-foreground';
 
+interface NavbarProps {
+  /**
+   * Accueil seulement : posée sur la photo du hero, transparente tant qu'on n'a pas défilé.
+   * Ailleurs (faux) : collée en haut de la page, toujours sur son fond brun.
+   */
+  overlay?: boolean;
+  /** Petit badge à côté du logo (« Espace pro », « Admin »). */
+  spaceLabel?: string;
+  /** Actions propres à un espace (bascule client ↔ prestataire…). */
+  children?: ReactNode;
+}
+
 /**
- * La navbar de l'accueil, posée sur le hero :
- * - au chargement, totalement transparente (texte et logo clairs sur la photo) ;
- * - dès que la page défile, elle reste en haut et prend un fond brun translucide flouté.
+ * La navbar de toute l'application (même design partout) :
+ * - sur l'accueil (`overlay`), totalement transparente au chargement, puis fond brun translucide flouté au défilement ;
+ * - sur les autres pages, collée en haut avec ce même fond brun dès le départ.
  * Sur téléphone et tablette, les liens passent dans un menu latéral.
  */
-export function Navbar() {
+export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
   const scrolled = useScrolled();
+  // Fond brun : toujours hors de l'accueil, après le défilement sur l'accueil.
+  const solid = !overlay || scrolled;
   const user = useSessionStore((state) => state.user);
   const lastSpace = useSessionStore((state) => state.lastSpace);
   const categories = useCategories();
   const mainCategories = categories.data?.filter((category) => !category.parentId) ?? [];
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  // Se connecter depuis une page : on y revient ensuite (pas depuis l'accueil : on arrive dans son espace).
+  const here = location.pathname + location.search;
+  const loginUrl = here === '/' ? '/connexion' : `/connexion?retour=${encodeURIComponent(here)}`;
+  // « Prestataires » est souligné sur la recherche, les catégories et les profils.
+  const onProviders = /^\/(recherche|categories|prestataires)(\/|$)/.test(location.pathname);
+  // « Mon espace » : seulement sur les pages publiques (dans un espace, le menu de l'espace suffit).
+  const showSpaceLink = !spaceLabel && !children;
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -57,23 +79,32 @@ export function Navbar() {
 
   return (
     <header
-      data-scrolled={scrolled}
+      data-scrolled={overlay ? scrolled : undefined}
       className={cn(
-        'fixed inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter] duration-300',
-        scrolled
-          ? 'bg-foreground/75 shadow-pop backdrop-blur-md backdrop-saturate-150'
-          : 'bg-transparent',
+        'inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter] duration-300',
+        overlay ? 'fixed' : 'sticky',
+        !solid && 'bg-transparent',
+        solid && overlay && 'bg-foreground/75 shadow-pop backdrop-blur-md backdrop-saturate-150',
+        // Hors accueil, sur fond clair : presque opaque pour garder le même brun.
+        solid && !overlay && 'bg-foreground/95 shadow-pop backdrop-blur-md backdrop-saturate-150',
       )}
     >
       <div
         className={cn(
           'mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 sm:px-6 lg:px-8 2xl:px-[4.2vw]',
-          scrolled ? 'h-16 lg:h-[72px]' : 'h-[72px] lg:h-[84px]',
+          solid ? 'h-16 lg:h-[72px]' : 'h-[72px] lg:h-[84px]',
         )}
       >
-        <Link to="/" aria-label="Wenzee, accueil" className={cn('shrink-0 rounded-md', focusRing)}>
-          <Logo variant="light" className="h-10 sm:h-11 lg:h-10 2xl:h-12" />
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link to="/" aria-label="Wenzee, accueil" className={cn('rounded-md', focusRing)}>
+            <Logo variant="light" className="h-9 sm:h-10 2xl:h-12" />
+          </Link>
+          {spaceLabel && (
+            <span className="hidden rounded-full bg-white/15 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white sm:inline-flex">
+              {spaceLabel}
+            </span>
+          )}
+        </div>
 
         <nav aria-label="Navigation principale" className="hidden lg:block">
           <ul className="flex items-center gap-4 xl:gap-7 2xl:gap-9">
@@ -88,7 +119,7 @@ export function Navbar() {
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger
                   className={cn(
-                    linkClass({ isActive: false }),
+                    linkClass({ isActive: onProviders }),
                     'flex items-center gap-1 data-[state=open]:text-white data-[state=open]:after:scale-x-100',
                   )}
                 >
@@ -121,20 +152,27 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-3 lg:gap-2 xl:gap-3">
+          {children}
           {user ? (
-            <div className="hidden items-center gap-2 lg:flex">
-              <Link
-                to={SPACE_HOME[lastSpace]}
-                className={cn('rounded-full px-4 py-2 font-medium hover:bg-white/10', focusRing)}
-              >
-                Mon espace
-              </Link>
+            <div className="flex items-center gap-2">
+              {showSpaceLink && (
+                <Link
+                  to={SPACE_HOME[lastSpace]}
+                  className={cn(
+                    'hidden rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap hover:bg-white/10 lg:block xl:text-[15px]',
+                    focusRing,
+                  )}
+                >
+                  Mon espace
+                </Link>
+              )}
+              {/* Le menu du compte reste visible sur téléphone (pour se déconnecter, changer d'espace). */}
               <UserMenu />
             </div>
           ) : (
             <div className="hidden items-center gap-2 lg:flex xl:gap-3">
               <Link
-                to="/connexion"
+                to={loginUrl}
                 className={cn(
                   'flex h-10 items-center rounded-full border-[1.5px] border-white/90 px-4 text-sm font-semibold whitespace-nowrap transition-colors hover:bg-white hover:text-foreground xl:h-11 xl:px-5 xl:text-[15px]',
                   focusRing,
@@ -143,7 +181,7 @@ export function Navbar() {
                 Se connecter
               </Link>
               <Link
-                to="/connexion"
+                to={loginUrl}
                 className={cn(
                   'flex h-10 items-center rounded-full bg-cta px-4 text-sm font-semibold whitespace-nowrap text-cta-foreground transition-colors hover:bg-cta-hover xl:h-11 xl:px-6 xl:text-[15px]',
                   focusRing,
@@ -172,6 +210,7 @@ export function Navbar() {
                 categories={mainCategories}
                 signedIn={!!user}
                 spaceHome={SPACE_HOME[lastSpace]}
+                loginUrl={loginUrl}
                 onNavigate={() => setMenuOpen(false)}
               />
             </DialogContent>
@@ -186,11 +225,12 @@ interface MobileMenuProps {
   categories: { id: string; slug: string; name: string }[];
   signedIn: boolean;
   spaceHome: string;
+  loginUrl: string;
   onNavigate: () => void;
 }
 
 /** Le contenu du menu latéral (téléphone, tablette) : mêmes liens que la navbar. */
-function MobileMenu({ categories, signedIn, spaceHome, onNavigate }: MobileMenuProps) {
+function MobileMenu({ categories, signedIn, spaceHome, loginUrl, onNavigate }: MobileMenuProps) {
   const itemClass = ({ isActive }: { isActive: boolean }) =>
     cn(
       'flex min-h-12 items-center rounded-md px-3 text-lg font-medium hover:bg-muted',
@@ -249,14 +289,14 @@ function MobileMenu({ categories, signedIn, spaceHome, onNavigate }: MobileMenuP
         ) : (
           <>
             <Link
-              to="/connexion"
+              to={loginUrl}
               onClick={onNavigate}
               className="flex h-12 items-center justify-center rounded-full border-2 border-foreground font-semibold"
             >
               Se connecter
             </Link>
             <Link
-              to="/connexion"
+              to={loginUrl}
               onClick={onNavigate}
               className="flex h-12 items-center justify-center rounded-full bg-cta font-semibold text-cta-foreground hover:bg-cta-hover"
             >
