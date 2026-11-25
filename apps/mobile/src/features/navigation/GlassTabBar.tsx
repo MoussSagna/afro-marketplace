@@ -45,6 +45,17 @@ const GLASS = {
     shadow: '0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14)',
     badgeEdge: '#261912',
   },
+  /** Mode prestataire (maquette, partie 6) : brun fumé, dans les deux thèmes, pour savoir où l'on est. */
+  pro: {
+    tint: 'dark',
+    active: '#F3B618',
+    inactive: '#D9C2AA',
+    veil: 'rgba(60, 40, 30, 0.62)',
+    edge: 'rgba(235, 217, 198, 0.18)',
+    activeBackground: 'rgba(255, 255, 255, 0.12)',
+    shadow: '0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
+    badgeEdge: '#2B1A12',
+  },
 } as const;
 const SUN = '#F3B618'; // accent : la pastille de non-lus
 const INK = '#2B1A12';
@@ -56,8 +67,8 @@ const SIDE_MARGIN = 16;
 /** Place à laisser en bas des écrans pour que la barre ne cache pas la fin du contenu. */
 export const TAB_BAR_SPACE = BAR_HEIGHT + 40;
 
-/** L'icône de chaque onglet (nom du fichier dans app/(tabs)/). */
-const ICONS: Record<string, LucideIcon> = {
+/** L'icône de chaque onglet client (nom du fichier dans app/(tabs)/). */
+const CLIENT_TAB_ICONS: Record<string, LucideIcon> = {
   index: House,
   recherche: Search,
   demandes: Inbox,
@@ -86,18 +97,28 @@ function Badge({ count, edge, inBall = false }: { count: number; edge: string; i
  * - Thème sombre : verre fumé, onglet actif en soleil (maquette section 7).
  * Le flou vient d'expo-blur : réel sur iPhone ; sur Android, un voile translucide sans flou.
  */
+type GlassTabBarProps = BottomTabBarProps & {
+  /** « pro » : la barre brune du mode prestataire. */
+  variant?: 'client' | 'pro';
+  /** L'icône de chaque onglet, par nom de fichier. */
+  icons?: Record<string, LucideIcon>;
+};
+
 export function GlassTabBar({
   state,
   descriptors,
   emitter,
   navigateToTab,
   insets,
-}: BottomTabBarProps) {
+  variant = 'client',
+  icons = CLIENT_TAB_ICONS,
+}: GlassTabBarProps) {
   const { width } = useWindowDimensions();
   const collapsed = useTabBarStore((s) => s.collapsed);
   const expand = useTabBarStore((s) => s.expand);
   const reduceMotion = useReduceMotion();
-  const glass = GLASS[useColorSchemeName()];
+  const scheme = useColorSchemeName();
+  const glass = GLASS[variant === 'pro' ? 'pro' : scheme];
   const { t } = useTranslation();
   const fullWidth = width - SIDE_MARGIN * 2;
 
@@ -145,7 +166,7 @@ export function GlassTabBar({
 
   const activeRoute = state.routes[state.index]!;
   const activeOptions = descriptors[activeRoute.key]!.options;
-  const ActiveIcon = ICONS[activeRoute.name] ?? House;
+  const ActiveIcon = icons[activeRoute.name] ?? House;
   const activeBadge = Number(activeOptions.tabBarBadge ?? 0);
 
   return (
@@ -155,7 +176,7 @@ export function GlassTabBar({
         { bottom: insets.bottom + 10, borderColor: glass.edge, boxShadow: glass.shadow },
         barStyle,
       ]}
-      testID="glass-tab-bar"
+      testID={variant === 'pro' ? 'glass-tab-bar-pro' : 'glass-tab-bar'}
     >
       {/* Le verre : flou + voile clair + reflet en haut. */}
       <BlurView intensity={50} tint={glass.tint} style={StyleSheet.absoluteFill} />
@@ -175,7 +196,7 @@ export function GlassTabBar({
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key]!;
           const focused = index === state.index;
-          const Icon = ICONS[route.name] ?? House;
+          const Icon = icons[route.name] ?? House;
           const label = options.title ?? route.name;
           const badge = Number(options.tabBarBadge ?? 0);
           const color = focused ? glass.active : glass.inactive;

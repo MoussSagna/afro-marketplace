@@ -236,7 +236,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 
 ## Sprint 5 : le mode prestataire
 
-### M13 · Bascule pro et tableau de bord (S2)
+### M13 · Bascule pro et tableau de bord (S2) · fait
 
 - Bascule client ↔ pro depuis le compte, barre d'onglets brune (Tableau, Demandes, Messages, Agenda, Profil).
 - Tableau de bord : les 3 chiffres, les demandes à traiter (badge rouge avant expiration), les prochaines dates.

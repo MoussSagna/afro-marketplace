@@ -11,7 +11,6 @@ export const SITE_URL = (process.env.EXPO_PUBLIC_SITE_URL ?? 'https://wenzee.exa
 /** Les pages du site ouvertes depuis l'app. */
 export const SITE_PAGES = {
   becomeProvider: '/devenir-prestataire',
-  providerSpace: '/pro',
   legalNotice: '/mentions-legales',
   privacy: '/confidentialite',
   faq: '/faq',

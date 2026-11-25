@@ -111,3 +111,12 @@ export function shortDate(iso: string, locale: string): string {
     timeZone: 'UTC',
   }).format(noonUtc(iso));
 }
+
+/** Le mois abrégé en capitales et le jour, pour une pastille de date : « DÉC. » et « 7 ». */
+export function dateBlock(iso: string, locale: string): { month: string; day: string } {
+  const date = new Date(`${iso}T00:00:00Z`);
+  const month = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' })
+    .format(date)
+    .toLocaleUpperCase(locale);
+  return { month, day: String(date.getUTCDate()) };
+}

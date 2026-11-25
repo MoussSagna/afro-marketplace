@@ -14,6 +14,7 @@ import { useSessionStore } from '@/stores/session';
 import { useThemeStore, type ThemePreference } from '@/theme/themeStore';
 import { useThemeColors } from '@/theme/useTheme';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
+import { useSwitchMode } from '../pro/useSwitchMode';
 import { ChoiceSheet } from './ChoiceSheet';
 
 const THEMES: readonly ThemePreference[] = ['system', 'light', 'dark'];
@@ -22,7 +23,8 @@ type Sheet = 'theme' | 'language' | 'legal' | null;
 
 /**
  * L'onglet Compte, connecté (C8, lot M12b) :
- * - qui je suis, et l'encart brun « Devenir pro » (l'inscription pro se fait sur le site) ;
+ * - qui je suis, et l'encart brun : « Devenir pro » (l'inscription pro se fait sur le site),
+ *   ou « Passer en mode pro » pour un prestataire (lot M13) ;
  * - mes informations, notifications, apparence, langue, aide ;
  * - pages légales, « Réinitialiser les données de démo », « Se déconnecter ».
  */
@@ -37,6 +39,7 @@ export function AccountScreen() {
   const setTheme = useThemeStore((s) => s.setPreference);
   const language = useLanguageStore((s) => s.preference);
   const setLanguage = useLanguageStore((s) => s.setPreference);
+  const { toPro } = useSwitchMode();
   const [sheet, setSheet] = useState<Sheet>(null);
   const [resetting, setResetting] = useState(false);
   const [resetDone, setResetDone] = useState(false);
@@ -92,12 +95,15 @@ export function AccountScreen() {
               {t(isProvider ? 'account.proModeHint' : 'account.proHint')}
             </Text>
           </View>
-          <Button
-            size="sm"
-            onPress={() => open(isProvider ? SITE_PAGES.providerSpace : SITE_PAGES.becomeProvider)}
-          >
-            {t(isProvider ? 'account.openSite' : 'account.becomePro')}
-          </Button>
+          {isProvider ? (
+            <Button size="sm" onPress={toPro}>
+              {t('account.switchToPro')}
+            </Button>
+          ) : (
+            <Button size="sm" onPress={() => open(SITE_PAGES.becomeProvider)}>
+              {t('account.becomePro')}
+            </Button>
+          )}
         </View>
 
         <Card className="px-3.5 py-0">
