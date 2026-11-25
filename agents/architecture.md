@@ -128,6 +128,8 @@ apps/mobile/
   src/features/reviews/ Laisser un avis (M12a) : LeaveReviewScreen (/avis/[id])
   src/features/account/ Compte (M12b) : AccountScreen, AccountInfoScreen (/mon-compte/informations, suppression),
                        NotificationsScreen (/mon-compte/notifications), ChoiceSheet, useSaveAccount
+  src/features/pro/    Mode prestataire (M13) : ProTabsLayout (barre brune, app/pro/), ProOnly (garde),
+                       DashboardScreen (/pro), useSwitchMode, requestUrgency, ProSoonScreen (onglets à venir)
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
@@ -141,7 +143,7 @@ apps/mobile/
   src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
                        (branché par moduleNameMapper dans jest.config.js, voir reanimatedJest*.js)
-  src/stores/          Session (Zustand + AsyncStorage)
+  src/stores/          Session et mode client / pro (Zustand + AsyncStorage)
   src/theme/           Thème clair / sombre : palette, ThemeRoot (variables CSS), useThemeColors, themeStore
   src/i18n/            Traduction (i18next) : init (langue du téléphone), useLanguage, useErrorText, useCategoryName ;
                        les textes eux-mêmes sont dans packages/common/src/i18n/ (fr.ts, en.ts)

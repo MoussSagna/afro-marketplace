@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M12b : le compte).
+Dernière mise à jour : 25/11/2026 (lot M13 : bascule pro et tableau de bord).
 
 ## Lots
 
@@ -45,15 +45,33 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M10  | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
 | M11  | Devis et réservations (C3, C5)         | ✅ fusionné #33                                                  |
 | M12a | Laisser un avis (C6)                   | ✅ fusionné #34                                                  |
-| M12b | Compte (C8)                            | 🔍 PR ouverte                                                    |
+| M12b | Compte (C8)                            | ✅ fusionné #35                                                  |
+| M13  | Bascule pro et tableau de bord (S2)    | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M13
+
+- **La bascule client ↔ pro** : dans Compte, un prestataire voit « Passer en mode pro » (les autres gardent
+  « Devenir pro », qui ouvre le site). Le mode est retenu (`src/stores/mode.ts`, `wenzee:mode`) : en rouvrant l'app,
+  un prestataire en mode pro arrive directement sur son tableau de bord. « Revenir en mode client » est dans l'onglet
+  Profil pro.
+- **La barre d'onglets brune** (`app/pro/_layout.tsx`, `ProTabsLayout`) : la même barre en verre, variante `pro`
+  (brun fumé dans les deux thèmes, pour savoir où l'on est). Onglets Tableau, Demandes (pastille = demandes à
+  traiter), Messages, Agenda, Profil. Les adresses sont `/pro`, `/pro/demandes`… Garde `ProOnly` : il faut être
+  connecté **et** prestataire.
+- **Le tableau de bord** (`/pro`, `DashboardScreen`) : bonjour, nom de l'activité et statut du profil ; les
+  3 chiffres (demandes à traiter, réservations à venir, note) ; « À traiter » : demandes en attente triées par
+  expiration, badge rouge « Expire dans N j » à 2 jours ou moins (`requestUrgency.ts`) ; « Prochaines dates ».
+  Données : `GET /api/me/provider/dashboard` (`useProviderDashboard`, comme sur le site).
+- Demandes et Messages pro arrivent en M14, Agenda et Profil en M15 : ces onglets affichent « Bientôt ».
+- **Tests** : `pro.test.tsx` (bascule réservée aux prestataires, chiffres et demandes affichés, retour client) et
+  `requestUrgency.test.ts`.
 
 ## Ce que contient le lot M12b
 
 - **L'onglet Compte** (C8, `src/features/account/AccountScreen.tsx`) :
   - En haut : l'avatar, le nom et l'email.
   - **L'encart brun** : « Tu es prestataire ? Devenir pro » ouvre la page « Devenir prestataire » du site (l'inscription
-    pro se fait là-bas). Pour un prestataire : « Mode prestataire » et « Ouvrir le site » (la bascule dans l'app
-    arrive en M13).
+    pro se fait là-bas). Pour un prestataire : « Passer en mode pro » (depuis M13).
   - **Mes informations** (`/mon-compte/informations`) : prénom, nom, téléphone vérifié (l'email ne se change pas
     encore), « Enregistrer » ; puis **« Supprimer mon compte »** avec confirmation. Le serveur anonymise le compte
     (question n° 7) et refuse s'il reste une réservation à venir (message traduit). Supprimé : déconnecté, retour à

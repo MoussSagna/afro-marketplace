@@ -69,11 +69,12 @@ export function useCancelBooking(bookingId: string) {
 }
 
 /** S2 : le tableau de bord du prestataire connecté. */
-export function useProviderDashboard() {
+export function useProviderDashboard(options: { enabled?: boolean } = {}) {
   const api = useApiClient();
   return useQuery({
     queryKey: queryKeys.myProvider.dashboard(),
     queryFn: () => api.getProviderDashboard(),
+    enabled: options.enabled ?? true,
   });
 }
 
