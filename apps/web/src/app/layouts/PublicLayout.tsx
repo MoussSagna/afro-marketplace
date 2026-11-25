@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { AppHeader } from '@/components/layout/AppHeader';
+import { Navbar } from '@/components/layout/Navbar';
 import { Logo } from '@/components/Logo';
 
 const FOOTER_LINKS = [
@@ -12,12 +13,15 @@ const FOOTER_LINKS = [
   { to: '/confidentialite', label: 'Confidentialité' },
 ];
 
-/** Gabarit des pages publiques : en-tête, contenu, pied de page. */
+/**
+ * Gabarit des pages publiques : en-tête, contenu, pied de page.
+ * Sur l'accueil, l'en-tête est la navbar transparente posée sur le hero plein écran.
+ */
 export function PublicLayout() {
   const { pathname } = useLocation();
   return (
     <div className="flex min-h-dvh flex-col">
-      <AppHeader />
+      {pathname === '/' ? <Navbar /> : <AppHeader />}
       {/* Transition douce entre deux pages (désactivée si « réduire les animations »). */}
       <motion.main
         key={pathname}

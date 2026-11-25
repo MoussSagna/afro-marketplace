@@ -4,9 +4,9 @@ test('un visiteur cherche, filtre et ouvre un profil', async ({ page, isMobile }
   await page.goto('/');
   await expect(page.getByRole('link', { name: 'Wenzee, accueil' })).toBeVisible();
 
-  // Accueil : recherche « Quoi ? »
+  // Accueil : recherche « Que recherchez-vous ? »
   const search = page.getByRole('search', { name: 'Rechercher un prestataire' });
-  await search.getByLabel('Quoi ?').selectOption('traiteurs');
+  await search.getByLabel('Que recherchez-vous ?').selectOption('traiteurs');
   await search.getByRole('button', { name: 'Rechercher' }).click();
   await expect(page).toHaveURL('/recherche?categorie=traiteurs');
   await expect(page.getByText('5 prestataires')).toBeVisible();

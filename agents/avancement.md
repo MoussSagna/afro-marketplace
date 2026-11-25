@@ -1,6 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (données fictives activées sur le site en ligne Vercel).
+Dernière mise à jour : 25/11/2026 (site : hero plein écran de l'accueil, branche `feat/web-hero-fullscreen` ;
+avant : données fictives activées sur le site en ligne Vercel).
 
 ## Site en ligne (Vercel)
 
@@ -65,6 +66,32 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
+
+## Site : hero plein écran de l'accueil (25/11/2026)
+
+Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). 🔍 Branche
+`feat/web-hero-fullscreen`, à relire. Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
+
+- **Navbar de l'accueil** (`components/layout/Navbar.tsx`) : transparente sur la photo au chargement, puis collée en haut
+  avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrolled.ts`). Accueil, Prestataires (menu des
+  catégories), Événements, Offres & Deals, Notre mission (→ `/comment-ca-marche`), Se connecter, S'inscrire
+  (→ connexion de démo) ; connecté : « Mon espace » + menu du compte. Sur téléphone et tablette : menu latéral.
+  Les autres pages publiques gardent `AppHeader`.
+- **Hero** (`features/home/`) : photo en fond en carrousel (3 ambiances, fondu, zoom lent, auto toutes les 6 s, pause
+  pendant les interactions et bouton pause, points + flèches clavier + balayage), titre « Trouvez les talents qui
+  subliment vos événements. », `SearchBar` flottante (remplace `HeroSearchForm`), 8 catégories populaires vers la
+  recherche filtrée, décor SVG (losanges, vague ivoire et bandes wax).
+- `prefers-reduced-motion` : ni défilement automatique, ni zoom, ni fondu.
+- **Logo** : `<Logo variant="light" />` = la version claire déjà utilisée par l'app (`public/wenzee-logo-light.svg`).
+- **Photos** : `public/images/hero/` (WebP) : mariage, soirée, célébration (3ᵉ photo fournie par Mouss le 25/11).
+- **Ajustement du 25/11** (retour de Mouss) : navbar plus compacte, sur une seule ligne de 1024 à 1920 px ; recherche
+  ramenée à 1120 × 84 px (détail : section 6 de `docs/hero-integration-validation.md`).
+- **Texte et recherche centrés** (demande de Mouss, 25/11) : sur desktop, la photo occupe tout le fond avec un voile
+  centré (section 7).
+- **Cœur « Favoris » retiré de la navbar** (demande de Mouss, 25/11) : `/favoris` reste accessible depuis le menu mobile.
+- **Pages « bientôt disponible »** : `/evenements`, `/offres`, `/favoris` (`features/static/pages/ComingSoonPages.tsx`).
+- **Tests** : `useCarousel.test.ts`, `HeroSection.test.tsx`, `Navbar.test.tsx` ; e2e `hero.spec.ts` ; `HomePage.test.tsx`,
+  `auth.test.tsx`, `auth.spec.ts`, `discover.spec.ts`, `home.spec.ts` et `a11y.spec.ts` suivent les nouveaux textes.
 
 ## Ce que contient le lot M15c
 

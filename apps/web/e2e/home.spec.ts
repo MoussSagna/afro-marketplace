@@ -4,7 +4,7 @@ test("un visiteur voit les prestataires à la une sur l'accueil", async ({ page 
   await page.goto('/');
 
   await expect(
-    page.getByRole('heading', { name: 'Les talents afro pour tous vos événements' }),
+    page.getByRole('heading', { level: 1, name: /Trouvez les talents qui subliment/ }),
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Saveurs de Dakar' })).toBeVisible();
   await expect(page.getByText('Pro vérifié').first()).toBeVisible();
