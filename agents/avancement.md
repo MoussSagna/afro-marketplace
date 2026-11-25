@@ -1,7 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (site : hero plein écran de l'accueil, branche `feat/web-hero-fullscreen` ;
-avant : données fictives activées sur le site en ligne Vercel).
+Dernière mise à jour : 25/11/2026 (site : section « Explorez nos univers », branche `feat/web-categories-mosaic`).
 
 ## Site en ligne (Vercel)
 
@@ -67,10 +66,23 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
+## Site : section « Explorez nos univers » (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-categories-mosaic`, à relire. Méthode et cycles :
+[`docs/categories-section-validation.md`](../docs/categories-section-validation.md).
+
+- 2ᵉ section de l'accueil, sous le hero : texte éditorial à gauche (« Découvrez nos univers événementiels »,
+  bouton « Voir toutes les catégories » → `/recherche`), **mosaïque photo asymétrique** à droite (8 cartes, DJ en grand).
+- Cartes : photo pleine carte, dégradé, nom ; survol = carte soulevée + zoom léger ; lien vers `/recherche?categorie=…`.
+- Données : `features/home/lib/homeCategories.ts` (source unique des 8 catégories, aussi utilisée par le hero) et
+  `lib/categoryMosaic.ts` (photo, cadrage, place de chaque carte).
+- Photos : `public/images/categories/` (vignettes de l'app) + photos du hero. **Pas de photo de DJ ni de mode** :
+  provisoires (question n° 16).
+- Tests : `ExploreCategoriesSection.test.tsx`, `e2e/explore.spec.ts`.
+
 ## Site : hero plein écran de l'accueil (25/11/2026)
 
-Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). 🔍 Branche
-`feat/web-hero-fullscreen`, à relire. Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
+Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). ✅ Fusionné (#44). Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
 
 - **Navbar de l'accueil** (`components/layout/Navbar.tsx`) : transparente sur la photo au chargement, puis collée en haut
   avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrolled.ts`). Accueil, Prestataires (menu des
