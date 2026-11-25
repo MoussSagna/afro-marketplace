@@ -21,15 +21,15 @@ dans du code de production, seulement dans `apps/web/src/mocks` et les tests).
 
 ## `packages/common/src`
 
-| Dossier    | Rôle                                                                                       | À savoir                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `schemas/` | Schémas Zod : entités, formulaires (`…InputSchema`), vues renvoyées par l'API (`views.ts`) | **Source de vérité.** Un fichier par bloc du modèle                                                             |
-| `types/`   | Types déduits des schémas (`z.infer`, `z.input` pour les formulaires)                      | Ne jamais écrire un type à la main s'il peut être déduit                                                        |
-| `rules/`   | Règles métier en fonctions pures                                                           | Voir [`regles-metier.md`](regles-metier.md). Pas d'accès réseau, pas de `Date.now()` : la date est un paramètre |
-| `api/`     | Interface `ApiClient` (toutes les opérations du MVP) + `createHttpApiClient`               | Chaque réponse est validée par Zod. Erreurs : `ApiError { status, code, message }`                              |
-| `queries/` | Hooks TanStack Query + `queryKeys`                                                         | Un hook par opération, ajoutés lot par lot                                                                      |
-| `mocks/`   | Seed, base en mémoire, handlers MSW                                                        | Voir ci-dessous                                                                                                 |
-| `utils/`   | `formatPrice`, outils de dates (`toIsoDate`, `addDays`, `daysBetween`)                     |                                                                                                                 |
+| Dossier    | Rôle                                                                                                    | À savoir                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `schemas/` | Schémas Zod : entités, formulaires (`…InputSchema`), vues renvoyées par l'API (`views.ts`)              | **Source de vérité.** Un fichier par bloc du modèle                                                             |
+| `types/`   | Types déduits des schémas (`z.infer`, `z.input` pour les formulaires)                                   | Ne jamais écrire un type à la main s'il peut être déduit                                                        |
+| `rules/`   | Règles métier en fonctions pures                                                                        | Voir [`regles-metier.md`](regles-metier.md). Pas d'accès réseau, pas de `Date.now()` : la date est un paramètre |
+| `api/`     | Interface `ApiClient` (toutes les opérations du MVP) + `createHttpApiClient`                            | Chaque réponse est validée par Zod. Erreurs : `ApiError { status, code, message }`                              |
+| `queries/` | Hooks TanStack Query + `queryKeys`                                                                      | Un hook par opération, ajoutés lot par lot                                                                      |
+| `mocks/`   | Seed, base en mémoire, handlers MSW                                                                     | Voir ci-dessous                                                                                                 |
+| `utils/`   | `formatPrice`, outils de dates, formulaires partagés site + app (`quoteForm`, `profileForms`, `money`…) | Les messages d'erreur des formulaires sont des constantes, traduites via `errorKeyOf`                           |
 
 ### Le chemin d'une donnée
 
@@ -130,10 +130,12 @@ apps/mobile/
   src/features/reviews/ Laisser un avis (M12a) : LeaveReviewScreen (/avis/[id])
   src/features/account/ Compte (M12b) : AccountScreen, AccountInfoScreen (/mon-compte/informations, suppression),
                        NotificationsScreen (/mon-compte/notifications), ChoiceSheet, useSaveAccount
-  src/features/pro/    Mode prestataire (M13, M14) : ProTabsLayout (barre brune, app/pro/(tabs)/), ProOnly (garde),
+  src/features/pro/    Mode prestataire (M13 à M15) : ProTabsLayout (barre brune, app/pro/(tabs)/), ProOnly (garde),
                        DashboardScreen (/pro), ProRequestDetailScreen (/pro/demande/[id], disponibilité),
                        DeclineRequestSheet, QuoteFormScreen (/pro/devis/[id]), AgendaScreen (/pro/agenda), ProProfileScreen
                        (/pro/profil), ReceivedReviewsScreen (/pro/avis), clientName, useSwitchMode, requestUrgency.
+                       profile-edit/ (M15c) : EditProfileSectionScreen (/pro/modifier/[section]), OfferingsScreen
+                       (/pro/formules), OfferingFormScreen (/pro/formules/[id]), SectionForm, formErrors, profileEdit
                        Les listes Demandes et Messages, et la conversation, sont celles du client avec `side="provider"`
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)

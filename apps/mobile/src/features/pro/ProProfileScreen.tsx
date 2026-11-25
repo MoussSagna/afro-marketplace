@@ -4,7 +4,7 @@ import {
   useSetMyProviderProfilePaused,
   type MyProviderDetails,
 } from '@afro/common';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { ChevronRight, ExternalLink } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, Switch, View } from 'react-native';
@@ -17,15 +17,16 @@ import { SITE_PAGES, siteUrl } from '@/lib/site';
 import { useThemeColors } from '@/theme/useTheme';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
+import { sectionHref } from './profile-edit/profileEdit';
 import { profileHref } from '../providers/profileHref';
 import { ProviderCard } from '../providers/ProviderCard';
 import { useSwitchMode } from './useSwitchMode';
 
 /**
- * « Mon profil » (S7, lot M15b), dernier onglet du mode pro :
+ * « Mon profil » (S7, lots M15b et M15c), dernier onglet du mode pro :
  * - l'aperçu de sa carte dans la recherche, et l'état du profil (« En ligne », « En pause »…) ;
- * - les sections du profil (présentation, formules, photos…) : elles s'ouvrent sur le site
- *   pour l'instant (lot M15c pour les modifier dans l'app) ; « Avis reçus » s'ouvre ici ;
+ * - les sections du profil (avis reçus, présentation, formules, zone…) : elles se modifient
+ *   dans l'app (lot M15c), sauf les photos qui s'ouvrent encore sur le site ;
  * - « Profil visible » : la pause pendant les vacances ;
  * - « Revenir en mode client ».
  */
@@ -71,13 +72,16 @@ function Profile({ details }: { details: MyProviderDetails }) {
     (r) => !r.providerReply && r.status === 'published',
   ).length;
   const onSite = () => void Linking.openURL(siteUrl(SITE_PAGES.providerProfile));
-  const siteRows = [
-    { label: t('proProfile.presentation') },
-    { label: t('proProfile.offerings'), count: offerings.length },
-    { label: t('proProfile.photos'), count: media.length },
-    { label: t('proProfile.zone') },
-    { label: t('proProfile.cancellation') },
-    { label: t('proProfile.legal') },
+  const sections: { label: string; count?: number; href: Href }[] = [
+    { label: t('proProfile.presentation'), href: sectionHref('presentation') },
+    {
+      label: t('proProfile.offerings'),
+      count: offerings.length,
+      href: '/pro/formules',
+    },
+    { label: t('proProfile.zone'), href: sectionHref('zone') },
+    { label: t('proProfile.cancellation'), href: sectionHref('annulation') },
+    { label: t('proProfile.legal'), href: sectionHref('legal') },
   ];
 
   return (
@@ -118,16 +122,22 @@ function Profile({ details }: { details: MyProviderDetails }) {
           badge={toAnswer > 0 ? t('proProfile.toAnswer', { count: toAnswer }) : undefined}
           onPress={() => router.push('/pro/avis')}
         />
-        {siteRows.map((row, index) => (
+        {sections.map((row) => (
           <Row
             key={row.label}
             label={row.label}
             count={row.count}
-            external={t('proProfile.onSite')}
-            onPress={onSite}
-            last={index === siteRows.length - 1}
+            onPress={() => router.push(row.href)}
           />
         ))}
+        {/* Les photos se modifient encore sur le site (envoi d'images : plus tard). */}
+        <Row
+          label={t('proProfile.photos')}
+          count={media.length}
+          external={t('proProfile.onSite')}
+          onPress={onSite}
+          last
+        />
       </Card>
       <Text size="xs" tone="muted">
         {t('proProfile.onSiteHint')}

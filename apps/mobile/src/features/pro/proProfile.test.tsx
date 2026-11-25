@@ -52,12 +52,13 @@ describe('Profil pro (lot M15b)', () => {
     expect(screen.getByRole('button', { name: 'Voir ma page publique' })).toBeOnTheScreen();
   });
 
-  it('une section qui se modifie sur le site ouvre la bonne page', async () => {
+  it('les photos se modifient encore sur le site : la ligne ouvre la bonne page', async () => {
     const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     await open('/pro/profil');
-    await fireEvent.press(
-      await screen.findByRole('link', { name: /^Formules et prix, \d+, sur le site$/ }),
-    );
+    expect(
+      await screen.findByRole('button', { name: /^Formules et prix, \d+$/ }),
+    ).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('link', { name: /^Photos, \d+, sur le site$/ }));
     expect(openURL).toHaveBeenCalledWith('https://wenzee.example/pro/profil');
   });
 
