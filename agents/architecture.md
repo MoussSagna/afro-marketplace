@@ -93,7 +93,7 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/app/` : `App`, `AppProviders` (QueryClient + ApiClient), `routes.tsx`, layouts.
 - `src/features/<fonctionnalité>/` : `components/`, `pages/`, et leurs tests à côté.
 - `src/features/home/` : le hero de l'accueil. `HeroSection` (assemble tout), `HeroCarousel` (photos empilées, fondu,
-  zoom lent), `CarouselControls` (points, flèches, pause), `CategoryShortcuts` (8 raccourcis), `HeroDecor` (motifs SVG) ;
+  zoom lent), `CategoryShortcuts` (8 raccourcis), `HeroDecor` (motifs SVG) ;
   `lib/heroContent.ts` (slides, raccourcis), `lib/useCarousel.ts` (état + défilement automatique).
   La recherche du hero est `features/search/components/SearchBar.tsx`.
   Section « Explorez nos univers » : `ExploreCategoriesSection`, `CategoryMosaic`, `CategoryImageCard` ;
@@ -103,6 +103,8 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil (fixe,
   transparente sur le hero) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
   client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.
+- `src/components/layout/SiteFooter.tsx` : **le pied de page de toutes les pages** (4 gabarits). Contenu dans
+  `footerContent.ts` (liens, réseaux sociaux), `NewsletterForm.tsx`, `SocialIcon.tsx`.
 - `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones) ; `public/images/categories/` :
   photos de la mosaïque des catégories.
 - `src/components/ui/` : composants shadcn/ui copiés dans le projet (modifiables).

@@ -31,6 +31,8 @@ export function HeroCarousel({ slides, index, animate }: HeroCarouselProps) {
         return (
           <motion.div
             key={slide.id}
+            data-slide={slide.id}
+            data-active={active}
             className="absolute inset-0"
             initial={false}
             animate={{ opacity: active ? 1 : 0 }}

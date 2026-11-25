@@ -195,7 +195,18 @@ garde le texte lisible). Si tu veux les voir davantage, on peut décaler le cadr
 disponible » `/favoris` reste dans le menu mobile. Contrôle : plus de lien `/favoris` dans la barre, navbar toujours
 sur une ligne (bord droit à 992 px en 1024, 1601 px en 1671).
 
-## 9. Refaire les captures
+## 9. Contrôles du carrousel retirés (25/11/2026)
+
+À la demande de Mouss, la pagination (points) et le bouton pause sont retirés (`CarouselControls` supprimé).
+Le carrousel continue : défilement automatique toutes les 6 s, pause quand on survole ou utilise la recherche et les
+catégories, pause quand l'onglet est masqué, balayage au doigt, rien ne bouge avec « réduire les animations ».
+Contrôle : hero toujours plein écran (941 px à 1671 × 941), aucun débordement.
+
+**À savoir (accessibilité)** : sans bouton pause, un utilisateur au clavier ne peut plus arrêter le défilement
+autrement qu'en mettant le focus dans le hero (critère WCAG 2.2.2) ; les photos étant décoratives, l'impact reste
+limité, mais à garder en tête pour un audit.
+
+## 10. Refaire les captures
 
 ```sh
 pnpm --filter @afro/web exec vite --port 5179     # dans un terminal

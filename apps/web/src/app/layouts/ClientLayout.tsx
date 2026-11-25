@@ -2,6 +2,7 @@ import { CalendarCheck, FileText, MessageCircle, UserRound } from 'lucide-react'
 import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
 import { Navbar } from '@/components/layout/Navbar';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
@@ -48,6 +49,7 @@ export function ClientLayout() {
           <Outlet />
         </main>
       </div>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (site : section « Deux façons d'utiliser Wenzee » et navbar unique, branche
-`feat/web-user-types`).
+Dernière mise à jour : 25/11/2026 (site : pied de page unique et carrousel du hero sans contrôles, branche
+`feat/web-footer`).
 
 ## Site en ligne (Vercel)
 
@@ -67,6 +67,19 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
 
+## Site : pied de page unique (25/11/2026)
+
+Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-footer`, à relire. Validation :
+[`docs/footer-validation.md`](../docs/footer-validation.md).
+
+- `SiteFooter` dans les 4 gabarits : marque + réseaux sociaux, Découvrir, Je suis, Aide & Support, Restez informé,
+  barre légale. 5 colonnes à partir de 1400 px, disposition tablette en dessous, 2 colonnes puis 1 sur mobile.
+- Réseaux sociaux non cliquables (pas encore de comptes) ; lettre d'information sans back-end (message honnête) ;
+  nouvelle page `/contact` « bientôt disponible » (question n° 17).
+- Tests : `SiteFooter.test.tsx`, `e2e/footer.spec.ts` ; tests du logo et des pages légales adaptés.
+- Au passage (demande de Mouss) : **pagination et bouton pause du carrousel du hero retirés** ; le défilement
+  automatique, la pause au survol et le balayage restent (`docs/hero-integration-validation.md`, section 9).
+
 ## Site : la navbar du hero sur toutes les pages (25/11/2026)
 
 Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-validation.md).
@@ -80,7 +93,7 @@ Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-vali
 
 ## Site : section « Deux façons d'utiliser Wenzee » (25/11/2026)
 
-Demande de Mouss, d'après sa maquette. 🔍 Branche `feat/web-user-types`, à relire. Méthode et cycles :
+Demande de Mouss, d'après sa maquette. ✅ Fusionné (#47). Méthode et cycles :
 [`docs/user-types-section-validation.md`](../docs/user-types-section-validation.md).
 
 - 3ᵉ section de l'accueil, sous « Explorez nos univers » : en-tête centré, deux cartes côte à côte (≥ 1024 px),

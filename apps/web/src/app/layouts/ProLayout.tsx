@@ -2,6 +2,7 @@ import { CalendarDays, FileText, LayoutDashboard, MessageCircle, Star, Store } f
 import { useUnreadCount } from '@afro/common';
 import { Link, Outlet } from 'react-router';
 import { Navbar } from '@/components/layout/Navbar';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SpaceNav, type SpaceNavItem } from '@/components/layout/SpaceNav';
 import { useRememberSpace } from '@/components/layout/useRememberSpace';
 import { Button } from '@/components/ui/button';
@@ -61,6 +62,7 @@ export function ProLayout() {
           <Outlet />
         </main>
       </div>
+      <SiteFooter />
     </div>
   );
 }

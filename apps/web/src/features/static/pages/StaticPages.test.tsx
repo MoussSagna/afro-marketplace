@@ -32,9 +32,14 @@ describe('Pages de contenu (P7)', () => {
 
   it('le pied de page mène aux pages légales', async () => {
     renderRoute('/');
-    const footer = await screen.findByRole('navigation', { name: 'Liens utiles' });
-    for (const name of ['FAQ', 'CGU', 'Mentions légales', 'Confidentialité']) {
-      expect(within(footer).getByRole('link', { name })).toBeInTheDocument();
+    const footer = await screen.findByRole('contentinfo');
+    for (const [name, href] of [
+      ['FAQ', '/faq'],
+      ['Conditions d’utilisation', '/cgu'],
+      ['Mentions légales', '/mentions-legales'],
+      ['Politique de confidentialité', '/confidentialite'],
+    ]) {
+      expect(within(footer).getByRole('link', { name })).toHaveAttribute('href', href);
     }
   });
 });
