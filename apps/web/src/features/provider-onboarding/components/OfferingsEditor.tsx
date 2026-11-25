@@ -8,6 +8,10 @@ import {
   useSaveOffering,
   type MyProviderDetails,
   type Offering,
+  offeringDefaults,
+  offeringFormSchema,
+  toOfferingInput,
+  type OfferingFormValues,
 } from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -33,12 +37,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  offeringDefaults,
-  offeringFormSchema,
-  toOfferingInput,
-  type OfferingFormValues,
-} from '../lib/profileForms';
 
 function describePrice(offering: Offering): string {
   if (offering.pricingType === 'on_quote' || offering.price === undefined) return 'Sur devis';

@@ -10,6 +10,17 @@ import {
   useCulturalOrigins,
   type MyProviderDetails,
   type UpdateProviderProfileInput,
+  areaDefaults,
+  areaFormSchema,
+  availabilityFormSchema,
+  categoriesDefaults,
+  categoriesFormSchema,
+  identityDefaults,
+  identityFormSchema,
+  policyFormSchema,
+  presentationFormSchema,
+  toAreaInput,
+  toIdentityInput,
 } from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { ReactNode } from 'react';
@@ -34,19 +45,6 @@ import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import {
-  areaDefaults,
-  areaFormSchema,
-  availabilityFormSchema,
-  categoriesDefaults,
-  categoriesFormSchema,
-  identityDefaults,
-  identityFormSchema,
-  policyFormSchema,
-  presentationFormSchema,
-  toAreaInput,
-  toIdentityInput,
-} from '../lib/profileForms';
 import { ChipGroup } from './ChipGroup';
 import { GalleryEditor } from './GalleryEditor';
 import { OfferingsEditor } from './OfferingsEditor';

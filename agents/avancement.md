@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M15b : profil pro et avis reçus).
+Dernière mise à jour : 25/11/2026 (lot M15c : modifier son profil dans l'app).
 
 ## Lots
 
@@ -50,7 +50,32 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M14a | Demandes reçues et messagerie pro (S3, S5) | ✅ fusionné #37                                                  |
 | M14b | Envoyer un devis (S4)                      | ✅ fusionné #38                                                  |
 | M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
-| M15b | Profil pro et avis reçus (S7, S8)          | 🔍 PR ouverte                                                    |
+| M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
+| M15c | Modifier son profil dans l'app (S7)        | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M15c
+
+M15c « sans les photos » (choix recommandé à Mouss) : les sections du profil se modifient dans l'app ;
+les photos restent sur le site (l'envoi d'images depuis le téléphone viendra plus tard).
+
+- **Formulaires partagés** : `profileForms.ts` passe du site à `packages/common/src/utils/` (comme `quoteForm`),
+  avec ses messages dans `profileFormMessages` (traduits en anglais via `errorKeyOf`). Le site l'importe de
+  `@afro/common` : mêmes règles et mêmes messages sur le site et dans l'app.
+- **Mon profil** : les lignes Présentation, Formules, Zone, Annulation et Informations légales s'ouvrent dans l'app ;
+  seule la ligne Photos ouvre encore le site.
+- **`/pro/modifier/[section]`** (`EditProfileSectionScreen`, sections `presentation`, `zone`, `annulation`, `legal`) :
+  - Présentation : nom commercial, bio (compteur), catégories (5 max), origines (5 max), langues ;
+  - Zone et capacité : ville, code postal, rayon de déplacement, réservations max par jour ;
+  - Annulation : les 3 politiques en cartes, avec leurs règles de remboursement ;
+  - Infos légales : statut et SIRET (14 chiffres, espaces tolérés).
+  - « Enregistrer » en bas, toujours visible ; les erreurs s'affichent après le premier essai ; une fois enregistré,
+    retour à « Mon profil ».
+- **`/pro/formules`** (`OfferingsScreen`) : la liste des formules (prix, catégorie, invités, « Masquée »),
+  « Ajouter une formule », « Modifier », « Supprimer » avec confirmation.
+- **`/pro/formules/[id]`** (`OfferingFormScreen`, `nouvelle` pour ajouter) : catégorie, titre, description,
+  type de prix, prix en euros (« 28,50 », enregistré en centimes, caché si « sur devis »), invités min / max, visible.
+- **Tests** : `profileEdit.test.tsx` (chaque section : erreur puis enregistrement ; ajouter, modifier, supprimer une
+  formule), `profileEdit.test.ts`, `formErrors.test.ts` ; les tests de `profileForms` ont suivi le fichier dans common.
 
 ## Ce que contient le lot M15b
 
@@ -668,7 +693,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
   - S7 `/pro/profil` : les mêmes sections en onglets (`ProfileSections.tsx`, partagées avec S1), aperçu de la carte
     de recherche, pause / réactivation, lien vers la page publique.
   - Tableau de bord : bandeau tant que le profil n'est pas en ligne (brouillon, en validation, corrections, pause).
-  - Schémas de formulaire séparés : `features/provider-onboarding/lib/profileForms.ts` ; euros ↔ centimes partagés
+  - Schémas de formulaire séparés : `profileForms.ts` (dans `packages/common/src/utils/` depuis M15c) ; euros ↔ centimes partagés
     dans `apps/web/src/lib/money.ts` (dans `packages/common/src/utils/money.ts` depuis M14b).
   - Photos : fichier réduit à 1200 px et gardé en « data URL » dans la base mockée, ou photo d'exemple en un clic.
 - Playwright : `e2e/onboarding.spec.ts` (parcours 5 : une cliente devient prestataire et envoie son profil).

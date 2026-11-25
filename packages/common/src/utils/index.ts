@@ -9,3 +9,4 @@ export * from './reviewForm';
 export * from './accountForm';
 export * from './money';
 export * from './quoteForm';
+export * from './profileForms';

@@ -4,6 +4,7 @@ import { acceptQuoteMessages } from '../schemas/quote';
 import { reviewReplyMessages } from '../schemas/review';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
 import { userMessages } from '../schemas/user';
+import { profileFormMessages } from '../utils/profileForms';
 import { quoteFormMessages } from '../utils/quoteForm';
 import { reviewMessages } from '../utils/reviewForm';
 
@@ -253,8 +254,7 @@ export const fr = {
     reviews: 'Avis reçus',
     legal: 'Informations légales (SIRET)',
     onSite: 'sur le site',
-    onSiteHint:
-      'Pour l’instant, ces sections se modifient sur le site. Elles arrivent dans l’app au lot M15c.',
+    onSiteHint: 'Pour l’instant, les photos se modifient sur le site.',
     toAnswer_one: '{{count}} sans réponse',
     toAnswer_other: '{{count}} sans réponse',
     visible: 'Profil visible',
@@ -264,6 +264,61 @@ export const fr = {
     changesRequested: 'Corrections demandées : {{reason}}',
     finishOnSite: 'Terminer mon inscription sur le site',
     publicPage: 'Voir ma page publique',
+  },
+  /** Modifier une section du profil pro (lot M15c). */
+  proEdit: {
+    save: 'Enregistrer',
+    saved: 'Modifications enregistrées.',
+    displayName: 'Nom commercial',
+    displayNameHint: 'C’est le nom que verront les clients.',
+    bio: 'Présente-toi',
+    bioPlaceholder: 'Ton histoire, ton savoir-faire, ce qui rend tes prestations uniques…',
+    bioCount: '{{count}} / 3 000 caractères',
+    categories: 'Ce que tu proposes (5 maximum)',
+    origins: 'Tes cultures et spécialités (facultatif)',
+    languages: 'Langues parlées',
+    city: 'Ville',
+    postalCode: 'Code postal',
+    travelRadius: 'Jusqu’où te déplaces-tu ? (en km)',
+    travelRadiusHint: '0 si les clients viennent à toi.',
+    maxPerDay: 'Combien d’événements peux-tu assurer le même jour ?',
+    maxPerDayHint: 'Au-delà, la date apparaît comme indisponible sur ton profil.',
+    policyHint: 'Ta politique est copiée dans chaque réservation : elle ne change pas après coup.',
+    policyName: 'Annulation {{policy}}',
+    legalType: 'Tu exerces en tant que',
+    siret: 'SIRET (facultatif)',
+    siretHint: 'Avec un SIRET vérifié, ton profil affiche le badge « Pro vérifié ».',
+    offeringsEmpty: 'Pas encore de formule',
+    offeringsEmptyHint:
+      'Ajoute ta première formule : les clients voient tes prix avant de demander un devis.',
+    addOffering: 'Ajouter une formule',
+    newOffering: 'Nouvelle formule',
+    editOffering: 'Modifier la formule',
+    editShort: 'Modifier',
+    deleteShort: 'Supprimer',
+    edit: 'Modifier {{title}}',
+    delete: 'Supprimer {{title}}',
+    confirmDelete: 'Supprimer « {{title}} » ?',
+    confirmDeleteYes: 'Oui, supprimer',
+    cancel: 'Annuler',
+    inactive: 'Masquée',
+    offeringCategory: 'Catégorie',
+    offeringTitle: 'Titre de la formule',
+    offeringTitlePlaceholder: 'Ex. : Buffet mariage sénégalais',
+    offeringDescription: 'Description (facultatif)',
+    pricingType: 'Type de prix',
+    pricing: {
+      from: 'À partir de',
+      fixed: 'Prix fixe',
+      per_person: 'Par personne',
+      on_quote: 'Sur devis',
+    },
+    price: 'Prix (€)',
+    minGuests: 'Invités minimum',
+    maxGuests: 'Invités maximum',
+    guestsHint: 'Facultatif',
+    active: 'Formule visible sur mon profil',
+    saveOffering: 'Enregistrer la formule',
   },
   /** Les avis reçus, côté prestataire (S8, lot M15b). */
   proReviews: {
@@ -809,6 +864,7 @@ export const fr = {
     ...userMessages,
     ...quoteFormMessages,
     ...reviewReplyMessages,
+    ...profileFormMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
