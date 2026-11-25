@@ -3,11 +3,11 @@ import { act, fireEvent } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import AccountTab from '../../../app/(tabs)/compte';
 import HomeTab from '../../../app/(tabs)/index';
-import ProAgendaTab from '../../../app/pro/agenda';
-import ProRequestsTab from '../../../app/pro/demandes';
-import DashboardTab from '../../../app/pro/index';
-import ProMessagesTab from '../../../app/pro/messages';
-import ProProfileTab from '../../../app/pro/profil';
+import ProAgendaTab from '../../../app/pro/(tabs)/agenda';
+import ProRequestsTab from '../../../app/pro/(tabs)/demandes';
+import DashboardTab from '../../../app/pro/(tabs)/index';
+import ProMessagesTab from '../../../app/pro/(tabs)/messages';
+import ProProfileTab from '../../../app/pro/(tabs)/profil';
 import { useModeStore } from '@/stores/mode';
 import { useSessionStore } from '@/stores/session';
 import { demoApi, testProviders } from '@/test/demoApi';
@@ -24,12 +24,12 @@ const routes = {
   '(tabs)/demandes': Empty,
   '(tabs)/messages': Empty,
   '(tabs)/compte': AccountTab,
-  'pro/_layout': ProTabsLayout,
-  'pro/index': DashboardTab,
-  'pro/demandes': ProRequestsTab,
-  'pro/messages': ProMessagesTab,
-  'pro/agenda': ProAgendaTab,
-  'pro/profil': ProProfileTab,
+  'pro/(tabs)/_layout': ProTabsLayout,
+  'pro/(tabs)/index': DashboardTab,
+  'pro/(tabs)/demandes': ProRequestsTab,
+  'pro/(tabs)/messages': ProMessagesTab,
+  'pro/(tabs)/agenda': ProAgendaTab,
+  'pro/(tabs)/profil': ProProfileTab,
 };
 
 async function open(initialUrl: string, userId: string, prepare?: (db: MockDb) => void) {

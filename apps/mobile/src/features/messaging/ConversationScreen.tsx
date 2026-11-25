@@ -6,6 +6,7 @@ import {
   useQuoteRequest,
   type Message,
   type QuoteRequestDetails,
+  type Side,
 } from '@afro/common';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
@@ -19,8 +20,9 @@ import { Badge, EmptyState, Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { shortDay } from '@/lib/dates';
 import { useSessionStore } from '@/stores/session';
-import { QuoteActions } from '../bookings/QuoteActions';
 import { useThemeColors } from '@/theme/useTheme';
+import { QuoteActions } from '../bookings/QuoteActions';
+import { clientName } from '../pro/clientName';
 import { MessageBubble } from './MessageBubble';
 import { MessageComposer } from './MessageComposer';
 import { QuoteCard } from './QuoteCard';
@@ -45,15 +47,16 @@ function threadItems(messages: Message[], quotes: Quote[]): ThreadItem[] {
  * - Le fil : messages, messages automatiques et devis. Il se rafraîchit toutes les 7 s.
  * - En bas : la zone d'écriture, collée au clavier ; une demande close ferme la conversation.
  * À l'ouverture, la conversation est marquée comme lue (la pastille de l'onglet baisse).
+ * Côté prestataire (S5, lot M14) : le nom du client en haut, et pas de boutons sous les devis.
  */
-export function ConversationScreen() {
+export function ConversationScreen({ side = 'client' }: { side?: Side }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const colors = useThemeColors();
   const router = useRouter();
   const { id = '' } = useLocalSearchParams<{ id: string }>();
   const userId = useSessionStore((s) => s.user?.id);
-  const conversations = useConversations('client');
+  const conversations = useConversations(side);
   const summary = conversations.data?.find((c) => c.conversation.id === id);
   const messages = useMessages(id);
   const details = useQuoteRequest(summary?.conversation.quoteRequestId ?? '');
@@ -69,8 +72,12 @@ export function ConversationScreen() {
   const request = details.data?.request;
   const closed =
     request !== undefined && !isQuoteRequestOpen(request.status) && request.status !== 'accepted';
-  const status = request ? requestStatus(request, 'client') : undefined;
-  const name = summary?.providerName ?? '';
+  const status = request ? requestStatus(request, side) : undefined;
+  const name = !summary
+    ? ''
+    : side === 'client'
+      ? summary.providerName
+      : clientName(summary.otherParticipant);
 
   if (conversations.isSuccess && !summary) {
     return (
@@ -93,7 +100,11 @@ export function ConversationScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('messages.back')}
-            onPress={() => (router.canGoBack() ? router.back() : router.replace('/messages'))}
+            onPress={() =>
+              router.canGoBack()
+                ? router.back()
+                : router.replace(side === 'client' ? '/messages' : '/pro/messages')
+            }
             className="min-h-touch min-w-touch items-center justify-center rounded-full border border-border bg-card"
           >
             <ChevronLeft size={22} color={colors.foreground} />
@@ -140,7 +151,9 @@ export function ConversationScreen() {
                 />
               ) : (
                 <QuoteCard key={item.quote.id} quote={item.quote}>
-                  {details.data ? <QuoteActions details={details.data} quote={item.quote} /> : null}
+                  {details.data && side === 'client' ? (
+                    <QuoteActions details={details.data} quote={item.quote} />
+                  ) : null}
                 </QuoteCard>
               ),
             )}

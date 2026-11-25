@@ -1,4 +1,4 @@
-import { useConversations, type ConversationSummary } from '@afro/common';
+import { useConversations, type ConversationSummary, type Side } from '@afro/common';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, RefreshControl, View } from 'react-native';
@@ -12,16 +12,18 @@ import { messageTime } from '@/lib/dates';
 import { useSessionStore } from '@/stores/session';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
+import { clientName } from '../pro/clientName';
 import { conversationHref } from './conversationHref';
 
 /**
  * L'onglet Messages (C4, maquette « Messages ») : une conversation par demande de devis,
  * la plus récente en haut. Pastille soleil = messages non lus. Rafraîchi toutes les 7 s.
+ * Côté prestataire (S5, lot M14), la même liste, au nom des clients.
  */
-export function ConversationsScreen() {
+export function ConversationsScreen({ side = 'client' }: { side?: Side }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const conversations = useConversations('client');
+  const conversations = useConversations(side);
   const onScroll = useCollapseOnScroll();
 
   return (
@@ -39,7 +41,7 @@ export function ConversationsScreen() {
           data={conversations.data ?? []}
           keyExtractor={(item) => item.conversation.id}
           accessibilityLabel={t('messages.list')}
-          renderItem={({ item }) => <ConversationRow summary={item} />}
+          renderItem={({ item }) => <ConversationRow summary={item} side={side} />}
           onScroll={onScroll}
           scrollEventThrottle={16}
           contentContainerStyle={{ paddingBottom: TAB_BAR_SPACE, flexGrow: 1 }}
@@ -54,11 +56,13 @@ export function ConversationsScreen() {
               className="flex-1"
               image={emptyImage}
               title={t('messages.emptyTitle')}
-              description={t('messages.emptyHint')}
+              description={t(side === 'client' ? 'messages.emptyHint' : 'messages.emptyHintPro')}
               action={
-                <Button size="md" onPress={() => router.navigate('/recherche')}>
-                  {t('messages.findProvider')}
-                </Button>
+                side === 'client' ? (
+                  <Button size="md" onPress={() => router.navigate('/recherche')}>
+                    {t('messages.findProvider')}
+                  </Button>
+                ) : undefined
               }
             />
           }
@@ -68,12 +72,13 @@ export function ConversationsScreen() {
   );
 }
 
-function ConversationRow({ summary }: { summary: ConversationSummary }) {
+function ConversationRow({ summary, side }: { summary: ConversationSummary; side: Side }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const router = useRouter();
   const userId = useSessionStore((s) => s.user?.id);
   const { conversation, providerName, otherParticipant, lastMessage, unreadCount } = summary;
+  const name = side === 'client' ? providerName : clientName(otherParticipant);
   const unread = unreadCount > 0;
   const preview = !lastMessage
     ? t('messages.noMessage')
@@ -86,21 +91,21 @@ function ConversationRow({ summary }: { summary: ConversationSummary }) {
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={[
-        providerName,
+        name,
         unread ? t('messages.unread', { count: unreadCount }) : undefined,
         preview,
         time,
       ]
         .filter(Boolean)
         .join(', ')}
-      onPress={() => router.push(conversationHref(conversation.id))}
+      onPress={() => router.push(conversationHref(conversation.id, side))}
       className="flex-row items-center gap-3 border-b border-border px-5 py-3.5 active:bg-muted"
     >
-      <Avatar name={providerName} uri={otherParticipant.avatarUrl} />
+      <Avatar name={name} uri={otherParticipant.avatarUrl} />
       <View className="min-w-0 flex-1">
         <View className="flex-row items-baseline justify-between gap-2">
           <Text size="sm" weight="bold" numberOfLines={1} className="shrink">
-            {providerName}
+            {name}
           </Text>
           <Text size="xs" tone="muted">
             {time}

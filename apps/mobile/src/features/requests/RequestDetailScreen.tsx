@@ -1,5 +1,4 @@
 import {
-  formatPrice,
   isQuoteRequestOpen,
   useCancelQuoteRequest,
   useQuoteRequest,
@@ -15,7 +14,7 @@ import { QueryState } from '@/components/QueryState';
 import { BackHeader, Badge, Button, Card, EmptyState, Heading, Photo, Text } from '@/components/ui';
 import { useErrorText } from '@/i18n/useErrorText';
 import { useLanguage } from '@/i18n/useLanguage';
-import { longDay, shortDate } from '@/lib/dates';
+import { shortDate } from '@/lib/dates';
 import { useThemeColors } from '@/theme/useTheme';
 import { BookingPanel } from '../bookings/BookingPanel';
 import { QuoteActions } from '../bookings/QuoteActions';
@@ -23,6 +22,7 @@ import { conversationHref } from '../messaging/conversationHref';
 import { QuoteCard } from '../messaging/QuoteCard';
 import { requestStatus } from '../messaging/requestStatus';
 import { profileHref } from '../providers/profileHref';
+import { RequestInfoRows } from './RequestInfoRows';
 
 /**
  * Le détail d'une demande (C2 → C3) : le prestataire, l'événement, le message envoyé,
@@ -68,24 +68,6 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
   const [answered, setAnswered] = useState<'booked' | 'declined' | null>(null);
   const status = requestStatus(request, 'client');
   const latest = [...quotes].sort((a, b) => b.version - a.version)[0];
-  const euros = (cents: number) => formatPrice(cents, locale);
-  const budget =
-    request.budgetMin !== undefined && request.budgetMax !== undefined
-      ? `${euros(request.budgetMin)} – ${euros(request.budgetMax)}`
-      : request.budgetMax !== undefined
-        ? euros(request.budgetMax)
-        : request.budgetMin !== undefined
-          ? euros(request.budgetMin)
-          : undefined;
-  const rows = [
-    { label: t('requests.event'), value: t(`eventTypes.${request.eventType}`) },
-    { label: t('requests.date'), value: longDay(request.eventDate, locale) },
-    request.guestCount
-      ? { label: t('requests.guests'), value: String(request.guestCount) }
-      : undefined,
-    { label: t('requests.place'), value: `${request.eventCity} (${request.eventPostalCode})` },
-    budget ? { label: t('requests.budget'), value: budget } : undefined,
-  ].filter((row) => row !== undefined);
 
   return (
     <ScrollView contentContainerClassName="gap-5 px-5 pb-10 pt-2">
@@ -113,23 +95,7 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
         <SuccessAlert color={colors.success}>{t('requests.declined')}</SuccessAlert>
       ) : null}
 
-      <View>
-        {rows.map((row) => (
-          <View
-            key={row.label}
-            className="flex-row justify-between gap-4 border-b border-border py-2.5"
-            accessible
-            accessibilityLabel={`${row.label} : ${row.value}`}
-          >
-            <Text size="sm" tone="muted">
-              {row.label}
-            </Text>
-            <Text size="sm" weight="semibold" className="flex-1 text-right">
-              {row.value}
-            </Text>
-          </View>
-        ))}
-      </View>
+      <RequestInfoRows request={request} />
 
       <View className="gap-1.5">
         <Heading level={3}>{t('requests.yourMessage')}</Heading>

@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { GlassTabBar } from './GlassTabBar';
-import { useClientUnreadCount } from './useClientUnreadCount';
+import { useUnreadMessages } from './useUnreadMessages';
 import { useThemeColors } from '@/theme/useTheme';
 
 /**
@@ -12,7 +12,7 @@ import { useThemeColors } from '@/theme/useTheme';
  */
 export function ClientTabsLayout() {
   const colors = useThemeColors();
-  const unread = useClientUnreadCount();
+  const unread = useUnreadMessages('client');
   const { t } = useTranslation();
   return (
     <Tabs
