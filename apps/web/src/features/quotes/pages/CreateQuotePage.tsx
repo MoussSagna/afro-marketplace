@@ -1,11 +1,17 @@
 import {
   ApiError,
+  emptyLine,
   EVENT_TYPE_LABELS,
   formatEventDate,
   formatPrice,
+  initialQuoteForm,
+  liveTotals,
+  quoteFormSchema,
+  toCreateQuoteInput,
   toIsoDate,
   useCreateQuote,
   useQuoteRequest,
+  type QuoteFormValues,
 } from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Plus, Send, Trash2 } from 'lucide-react';
@@ -26,14 +32,6 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import {
-  emptyLine,
-  initialQuoteForm,
-  liveTotals,
-  quoteFormSchema,
-  toCreateQuoteInput,
-  type QuoteFormValues,
-} from '../lib/quoteForm';
 
 /** S4 : le prestataire envoie un devis (ou une nouvelle version, en reprenant la précédente). */
 export function CreateQuotePage() {

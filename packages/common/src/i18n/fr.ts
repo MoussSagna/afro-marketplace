@@ -3,6 +3,7 @@ import { cancelBookingMessages } from '../schemas/booking';
 import { acceptQuoteMessages } from '../schemas/quote';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
 import { userMessages } from '../schemas/user';
+import { quoteFormMessages } from '../utils/quoteForm';
 import { reviewMessages } from '../utils/reviewForm';
 
 /**
@@ -206,6 +207,39 @@ export const fr = {
     declineConfirm: 'Décliner la demande',
     declined: 'Demande déclinée. Le client a reçu ton motif.',
     close: 'Fermer',
+  },
+  /** Envoyer un devis (S4, lot M14b). */
+  quoteForm: {
+    title: 'Nouveau devis',
+    titleVersion: 'Nouvelle version du devis (n° {{version}})',
+    forWhom: 'Pour {{name}} · {{event}} · {{date}}',
+    replaces:
+      'La version précédente est reprise ci-dessous. Une fois envoyée, le client ne pourra accepter que la nouvelle.',
+    closed: 'Cette demande n’accepte plus de devis.',
+    lines: 'Lignes du devis',
+    line: 'Ligne {{number}}',
+    lineLabel: 'Libellé',
+    lineLabelA11y: 'Libellé de la ligne {{number}}',
+    lineLabelPlaceholder: 'Ex. : Buffet thiéboudienne',
+    quantity: 'Quantité',
+    quantityA11y: 'Quantité de la ligne {{number}}',
+    unitPrice: 'Prix unitaire (€)',
+    unitPriceA11y: 'Prix unitaire de la ligne {{number}}, en euros',
+    lineTotal: 'Total de la ligne {{number}} : {{amount}}',
+    removeLine: 'Supprimer la ligne {{number}}',
+    addLine: 'Ajouter une ligne',
+    depositRate: 'Acompte (%)',
+    validFor: 'Valable',
+    validForDays: '{{count}} jours',
+    validUntil: 'Valable jusqu’au {{date}}',
+    conditions: 'Conditions (facultatif)',
+    conditionsPlaceholder: 'Ex. : sono fournie, déplacement inclus jusqu’à 30 km.',
+    totals: 'Total {{total}}, acompte {{deposit}}',
+    depositShort: 'Total · acompte {{amount}}',
+    send: 'Envoyer',
+    sent: 'Devis envoyé ! Le client le voit dans la conversation.',
+    action: 'Envoyer un devis',
+    actionNewVersion: 'Nouvelle version du devis',
   },
   requests: {
     signIn: 'Connecte-toi pour suivre tes demandes de devis.',
@@ -709,6 +743,7 @@ export const fr = {
     ...cancelBookingMessages,
     ...reviewMessages,
     ...userMessages,
+    ...quoteFormMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -734,6 +769,8 @@ export const fr = {
     quote_not_sent: 'Ce devis n’est plus valable : une autre version l’a remplacé.',
     quote_expired: 'Ce devis a expiré. Demande une nouvelle version au prestataire.',
     quote_not_found: 'Devis introuvable.',
+    quote_request_not_found: 'Demande introuvable.',
+    invalid_valid_until: 'La date de validité est déjà passée.',
     booking_not_found: 'Réservation introuvable.',
     invalid_status: 'Cette action n’est plus possible.',
     not_your_booking: 'Seul le client de cette réservation peut laisser un avis.',

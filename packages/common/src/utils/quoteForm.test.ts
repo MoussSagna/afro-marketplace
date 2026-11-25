@@ -1,13 +1,7 @@
-import type { Quote } from '@afro/common';
+import type { Quote } from '../types';
 import { describe, expect, it } from 'vitest';
-import {
-  centsToEuros,
-  eurosToCents,
-  initialQuoteForm,
-  liveTotals,
-  quoteFormSchema,
-  toCreateQuoteInput,
-} from './quoteForm';
+import { centsToEuros, eurosToCents } from './money';
+import { initialQuoteForm, liveTotals, quoteFormSchema, toCreateQuoteInput } from './quoteForm';
 
 describe('formulaire de devis (S4)', () => {
   it('lit les montants en euros à la française', () => {

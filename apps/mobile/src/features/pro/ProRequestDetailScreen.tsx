@@ -29,12 +29,13 @@ import { requestUrgency } from './requestUrgency';
  * - le client, le badge (rouge avant expiration) et la date de réception ;
  * - l'événement, son message, et si le prestataire est libre ce jour-là (son agenda) ;
  * - le dernier devis envoyé, s'il y en a un ;
- * - en bas : « Message » (la conversation) et « Décliner » (avec un motif).
- * L'envoi d'un devis arrive au lot M14b.
+ * - en bas : « Envoyer un devis » (ou une nouvelle version, lot M14b), « Message » (la conversation)
+ *   et « Décliner » (avec un motif).
+ * Après l'envoi d'un devis, le formulaire revient ici avec `?sent=1` : on l'annonce.
  */
 export function ProRequestDetailScreen() {
   const { t } = useTranslation();
-  const { id = '' } = useLocalSearchParams<{ id: string }>();
+  const { id = '', sent } = useLocalSearchParams<{ id: string; sent?: string }>();
   const details = useQuoteRequest(id);
   const name = details.data ? clientName(details.data.client) : '';
   return (
@@ -47,7 +48,7 @@ export function ProRequestDetailScreen() {
         loadingLabel={t('requests.loading')}
       >
         {details.data ? (
-          <RequestDetail details={details.data} />
+          <RequestDetail details={details.data} sent={sent === '1'} />
         ) : (
           <EmptyState className="flex-1" title={t('requests.notFound')} />
         )}
@@ -60,7 +61,7 @@ function isNotFound(error: unknown) {
   return error instanceof ApiError && error.status === 404;
 }
 
-function RequestDetail({ details }: { details: QuoteRequestDetails }) {
+function RequestDetail({ details, sent }: { details: QuoteRequestDetails; sent: boolean }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const colors = useThemeColors();
@@ -91,6 +92,17 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
           <Badge variant={urgency.tone}>{urgency.label}</Badge>
         </View>
 
+        {sent && request.status === 'quoted' ? (
+          <View
+            accessibilityRole="alert"
+            className="flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
+          >
+            <CheckCircle2 size={18} color={colors.success} />
+            <Text size="sm" tone="success" className="flex-1">
+              {t('quoteForm.sent')}
+            </Text>
+          </View>
+        ) : null}
         {declined && request.status === 'declined' ? (
           <View
             accessibilityRole="alert"
@@ -142,23 +154,33 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
         ) : null}
       </ScrollView>
 
-      <View className="flex-row gap-2 border-t border-border bg-background px-5 pb-2 pt-3">
-        <View className="flex-1">
+      <View className="gap-2 border-t border-border bg-background px-5 pb-2 pt-3">
+        {open ? (
           <Button
-            variant={request.status === 'pending' ? 'ghost' : 'cta'}
             fullWidth
-            onPress={() => router.push(conversationHref(conversationId, 'provider'))}
+            onPress={() => router.push({ pathname: '/pro/devis/[id]', params: { id: request.id } })}
           >
-            {t('proRequests.message')}
+            {latest ? t('quoteForm.actionNewVersion') : t('quoteForm.action')}
           </Button>
-        </View>
-        {request.status === 'pending' ? (
+        ) : null}
+        <View className="flex-row gap-2">
           <View className="flex-1">
-            <Button variant="outline" fullWidth onPress={() => setDeclining(true)}>
-              {t('proRequests.decline')}
+            <Button
+              variant={open ? 'ghost' : 'cta'}
+              fullWidth
+              onPress={() => router.push(conversationHref(conversationId, 'provider'))}
+            >
+              {t('proRequests.message')}
             </Button>
           </View>
-        ) : null}
+          {request.status === 'pending' ? (
+            <View className="flex-1">
+              <Button variant="outline" fullWidth onPress={() => setDeclining(true)}>
+                {t('proRequests.decline')}
+              </Button>
+            </View>
+          ) : null}
+        </View>
       </View>
 
       <DeclineRequestSheet
