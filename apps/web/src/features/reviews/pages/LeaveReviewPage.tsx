@@ -2,9 +2,13 @@ import {
   ApiError,
   canReviewBooking,
   formatEventDate,
+  initialReviewForm,
+  reviewFormSchema,
+  toCreateReviewInput,
   useBookings,
   useCreateReview,
   type BookingSummary,
+  type ReviewFormValues,
 } from '@afro/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft } from 'lucide-react';
@@ -26,12 +30,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { useSessionStore } from '@/stores/session';
 import { StarRatingInput } from '../components/StarRatingInput';
-import {
-  initialReviewForm,
-  reviewFormSchema,
-  toCreateReviewInput,
-  type ReviewFormValues,
-} from '../lib/reviewForm';
 
 const SUB_RATINGS = [
   { name: 'quality', label: 'Qualité de la prestation' },

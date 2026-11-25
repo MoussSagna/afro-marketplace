@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M11 : devis et réservations).
+Dernière mise à jour : 25/11/2026 (lot M12a : laisser un avis).
 
 ## Lots
 
@@ -26,24 +26,49 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 - Plan en 7 sprints et 16 petits lots (M0 → M16), une PR par lot : [`sprint-mobile.md`](sprint-mobile.md).
   Plan fusionné (#15). « Go M1 » donné par Mouss le 23/11/2026.
 
-| Lot | Sujet                                  | État                                                             |
-| --- | -------------------------------------- | ---------------------------------------------------------------- |
-| M0  | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
-| M1  | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
-| M2  | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
-| M3  | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
-| M4  | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
-| M4b | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
-| M5  | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
-| M6  | Accueil (P1)                           | ✅ fusionné #23                                                  |
-| M6c | Thème sombre / clair                   | ✅ fusionné #25                                                  |
-| M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
-| M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
-| M7  | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
-| M8  | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
-| M9  | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
-| M10 | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
-| M11 | Devis et réservations (C3, C5)         | 🔍 PR ouverte                                                    |
+| Lot  | Sujet                                  | État                                                             |
+| ---- | -------------------------------------- | ---------------------------------------------------------------- |
+| M0   | Sprint planning                        | ✅ fusionné #15 (+ #16)                                          |
+| M1   | Squelette Expo + monorepo + tests + CI | ✅ fusionné #17 (testé par Mouss sur son téléphone avec Expo Go) |
+| M2   | Thème NativeWind + composants de base  | ✅ fusionné #18                                                  |
+| M3   | Données mockées sur téléphone          | ✅ fusionné #19                                                  |
+| M4   | Onglets + splash animé + icône         | ✅ fusionné #20                                                  |
+| M4b  | Barre d'onglets en verre rétractable   | ✅ fusionné #21                                                  |
+| M5   | Connexion et inscription simulées      | ✅ fusionné #22                                                  |
+| M6   | Accueil (P1)                           | ✅ fusionné #23                                                  |
+| M6c  | Thème sombre / clair                   | ✅ fusionné #25                                                  |
+| M6b  | Traduction anglaise                    | ✅ fusionné #26                                                  |
+| M6d  | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
+| M7   | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
+| M8   | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
+| M9   | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
+| M10  | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
+| M11  | Devis et réservations (C3, C5)         | ✅ fusionné #33                                                  |
+| M12a | Laisser un avis (C6)                   | 🔍 PR ouverte                                                    |
+| M12b | Compte (C8)                            | à venir                                                          |
+
+## Ce que contient le lot M12a
+
+M12 est découpé en deux petites PR : **M12a, laisser un avis** (celle-ci), puis **M12b, le compte**.
+
+- **Laisser un avis** (C6, `src/features/reviews/LeaveReviewScreen.tsx`), à l'adresse `/avis/[id]` (id = la
+  réservation), ouvert par « Laisser un avis » dans Mes réservations (M11).
+  - En haut : le prestataire et la date de l'événement.
+  - **Ta note générale** : 5 grandes étoiles faciles à toucher (`src/components/StarRatingInput.tsx`, un groupe de
+    boutons radio pour VoiceOver), et le mot qui va avec (« Très bien »). Obligatoire.
+  - **Détails (facultatif, les trois ou aucun)** : qualité, ponctualité, rapport qualité-prix, en petites étoiles.
+  - **Ton commentaire** (facultatif), public avec le prénom et l'initiale du nom.
+  - « Publier mon avis » : « Merci ! Ton avis est publié. » et un bouton vers le profil du prestataire. Le serveur
+    recalcule sa note (règle n° 8) et le bouton disparaît de Mes réservations.
+  - **Règle n° 6** vérifiée avant le formulaire (`canReviewBooking`) : avant l'événement ou avis déjà donné, l'écran
+    explique pourquoi au lieu du formulaire.
+- **Partagé avec le site** : le formulaire (`reviewFormSchema`, `initialReviewForm`, `toCreateReviewInput`) passe de
+  `apps/web/src/features/reviews/lib/reviewForm.ts` à `packages/common/src/utils/reviewForm.ts`, avec ses messages
+  dans `reviewMessages` (traduits dans l'app).
+- Textes : `review.*` et les codes d'erreur des avis dans `apiErrors`.
+- Tests : 258 tests mobiles. `reviews.test.tsx` (note obligatoire, sous-notes « les trois ou aucune », avis enregistré
+  et note du prestataire recalculée, lien vers le profil ; pas de formulaire avant l'événement ; réservation
+  inconnue). Le test du formulaire passe dans `packages/common`.
 
 ## Ce que contient le lot M11
 
@@ -66,7 +91,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
     adresse, boutons « Message » (le fil) et « Annuler » (le détail, où se trouve l'annulation).
   - **Passées** (annulées comprises) : une ligne, et **« Laisser un avis »** seulement si c'est permis (règle n° 6,
     `canReviewBooking` : après l'événement, un seul avis). Sinon « Avis laissé : 4/5 ».
-  - « Laisser un avis » ouvre `/avis/[id]`, qui annonce le lot M12 en attendant le vrai formulaire.
+  - « Laisser un avis » ouvre `/avis/[id]` (le formulaire arrive en M12a).
 - `bookings/bookingStatus.ts` : à venir ou passée, annulable ou non, badge traduit (`bookingStatus.*`).
 - La case à cocher (`Checkbox`) passe de `features/auth/components/` à `src/components/` : elle sert maintenant à deux
   endroits.
@@ -528,7 +553,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
 - Web (`features/reviews/`) :
   - C6 `/espace/avis/:bookingId` : note générale obligatoire, 3 sous-notes facultatives (« les trois ou aucune »),
     commentaire. Étoiles = boutons radio masqués (`StarRatingInput`, clavier et lecteurs d'écran inclus).
-    Schéma de formulaire séparé : `features/reviews/lib/reviewForm.ts`. Après l'envoi, retour sur le profil avec
+    Schéma de formulaire séparé : `packages/common/src/utils/reviewForm.ts` (déplacé en M12a). Après l'envoi, retour sur le profil avec
     « Merci ! Ton avis est publié. » et la nouvelle moyenne.
   - Bouton « Laisser un avis » sur la carte de réservation, seulement si `canReviewBooking` l'autorise ;
     sinon la note laissée s'affiche.

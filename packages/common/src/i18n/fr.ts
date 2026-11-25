@@ -2,6 +2,7 @@ import { authMessages } from '../schemas/auth';
 import { cancelBookingMessages } from '../schemas/booking';
 import { acceptQuoteMessages } from '../schemas/quote';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
+import { reviewMessages } from '../utils/reviewForm';
 
 /**
  * Les textes de l'app en français (la langue de référence).
@@ -220,7 +221,33 @@ export const fr = {
     cancelConfirm: 'Confirmer l’annulation',
     cancelKeep: 'Garder ma réservation',
     cancelled: 'Ta réservation est annulée.',
-    reviewSoon: 'Laisser un avis arrive au lot M12.',
+  },
+  /** Laisser un avis (C6, lot M12). */
+  review: {
+    title: 'Ton avis',
+    loading: 'Chargement de la réservation',
+    notFound: 'Cette réservation est introuvable.',
+    event: '{{event}} · {{date}}',
+    overall: 'Ta note générale',
+    star_one: '{{count}} étoile',
+    star_other: '{{count}} étoiles',
+    words: {
+      '1': 'Décevant',
+      '2': 'Moyen',
+      '3': 'Bien',
+      '4': 'Très bien',
+      '5': 'Excellent',
+    },
+    details: 'Détails (facultatif, les trois ou aucun)',
+    quality: 'Qualité de la prestation',
+    punctuality: 'Ponctualité',
+    value: 'Rapport qualité-prix',
+    comment: 'Ton commentaire (facultatif)',
+    commentPlaceholder: 'Qu’as-tu apprécié ? Qu’est-ce qui pourrait être amélioré ?',
+    commentHint: 'Ton avis sera public, avec ton prénom et l’initiale de ton nom.',
+    publish: 'Publier mon avis',
+    published: 'Merci ! Ton avis est publié.',
+    seeProfile: 'Voir le profil de {{name}}',
   },
   bookingStatus: {
     confirmed: 'Confirmée',
@@ -537,6 +564,7 @@ export const fr = {
     ...quoteRequestMessages,
     ...acceptQuoteMessages,
     ...cancelBookingMessages,
+    ...reviewMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -564,6 +592,9 @@ export const fr = {
     quote_not_found: 'Devis introuvable.',
     booking_not_found: 'Réservation introuvable.',
     invalid_status: 'Cette action n’est plus possible.',
+    not_your_booking: 'Seul le client de cette réservation peut laisser un avis.',
+    booking_not_completed: 'Tu pourras laisser un avis après l’événement.',
+    already_reviewed: 'Tu as déjà laissé un avis pour cette réservation.',
   },
   /** Les catégories, par leur slug (les données de démo sont en français). */
   categories: {
