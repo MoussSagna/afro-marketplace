@@ -1,40 +1,45 @@
-import {
-  addDays,
-  computeDepositAmount,
-  computeQuoteTotal,
-  createQuoteInputSchema,
-  type CreateQuoteInput,
-  type Quote,
-} from '@afro/common';
 import { z } from 'zod';
-import { centsToEuros, eurosToCents } from '@/lib/money';
+import { computeDepositAmount, computeQuoteTotal } from '../rules/quote';
+import { createQuoteInputSchema } from '../schemas/quote';
+import type { CreateQuoteInput, Quote } from '../types';
+import { addDays } from './dates';
+import { centsToEuros, eurosToCents } from './money';
 
-// Les conversions euros ↔ centimes sont partagées avec les formules (lot 7).
-export { centsToEuros, eurosToCents } from '@/lib/money';
+/** Les messages d'erreur du formulaire de devis (traduits via errorKeyOf, voir i18n/fr.ts). */
+export const quoteFormMessages = {
+  lineLabelRequired: 'Décris la ligne',
+  quantityRange: 'Quantité entre 1 et 10 000',
+  unitPriceInvalid: 'Prix invalide (ex. : 28,50)',
+  linesRequired: 'Ajoute au moins une ligne',
+  depositRateRange: 'Un pourcentage entre 0 et 100',
+  validUntilRequired: 'Choisis une date de validité',
+} as const;
 
 const lineSchema = z.object({
-  label: z.string().trim().min(2, 'Décris la ligne').max(200),
+  label: z.string().trim().min(2, quoteFormMessages.lineLabelRequired).max(200),
   quantity: z
     .string()
     .trim()
     .refine(
       (v) => /^\d+$/.test(v) && Number(v) >= 1 && Number(v) <= 10000,
-      'Quantité entre 1 et 10 000',
+      quoteFormMessages.quantityRange,
     ),
-  unitPrice: z.string().refine((v) => eurosToCents(v) !== undefined, 'Prix invalide (ex. : 28,50)'),
+  unitPrice: z
+    .string()
+    .refine((v) => eurosToCents(v) !== undefined, quoteFormMessages.unitPriceInvalid),
 });
 
 /**
- * Le formulaire S4, tel que le prestataire le remplit (texte, euros).
+ * Le formulaire S4 (site et app), tel que le prestataire le remplit (texte, euros).
  * Le total n'est JAMAIS saisi : il est calculé à partir des lignes
  * (ici pour l'affichage, et de nouveau par le serveur).
  */
 export const quoteFormSchema = z.object({
-  lines: z.array(lineSchema).min(1, 'Ajoute au moins une ligne').max(30),
+  lines: z.array(lineSchema).min(1, quoteFormMessages.linesRequired).max(30),
   depositRate: z
     .string()
-    .refine((v) => /^\d+$/.test(v) && Number(v) <= 100, 'Un pourcentage entre 0 et 100'),
-  validUntil: z.iso.date({ error: 'Choisis une date de validité' }),
+    .refine((v) => /^\d+$/.test(v) && Number(v) <= 100, quoteFormMessages.depositRateRange),
+  validUntil: z.iso.date({ error: quoteFormMessages.validUntilRequired }),
   conditions: z.string().max(2000, '2000 caractères maximum'),
 });
 

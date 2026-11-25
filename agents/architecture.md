@@ -106,7 +106,7 @@ apps/mobile/
   app/                 Les écrans pour Expo Router : un fichier = une adresse
   app/(tabs)/          Les 5 onglets du mode client ; « (tabs) » ne compte pas dans l'adresse (Accueil = « / »)
   app/pro/             Le mode prestataire : une pile ; dessous app/pro/(tabs)/ (les 5 onglets bruns, /pro…),
-                       par-dessus /pro/demande/[id] et /pro/conversations/[id] (sans barre d'onglets)
+                       par-dessus /pro/demande/[id], /pro/devis/[id] et /pro/conversations/[id] (sans barre d'onglets)
   app/(auth)/          Les écrans de connexion (/bienvenue, /inscription, /verification, /connexion…)
   src/features/        Le code des écrans, par fonctionnalité (comme le web) ; app/ ne fait que les réexporter
   src/components/ui/   Composants de base (Button, Input, Card…), équivalents des composants shadcn du site
@@ -132,7 +132,7 @@ apps/mobile/
                        NotificationsScreen (/mon-compte/notifications), ChoiceSheet, useSaveAccount
   src/features/pro/    Mode prestataire (M13, M14) : ProTabsLayout (barre brune, app/pro/(tabs)/), ProOnly (garde),
                        DashboardScreen (/pro), ProRequestDetailScreen (/pro/demande/[id], disponibilité),
-                       DeclineRequestSheet, clientName, useSwitchMode, requestUrgency, ProSoonScreen (onglets à venir).
+                       DeclineRequestSheet, QuoteFormScreen (/pro/devis/[id]), clientName, useSwitchMode, requestUrgency, ProSoonScreen (onglets à venir).
                        Les listes Demandes et Messages, et la conversation, sont celles du client avec `side="provider"`
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)

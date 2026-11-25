@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M14a : demandes reçues et messagerie pro).
+Dernière mise à jour : 25/11/2026 (lot M14b : envoyer un devis).
 
 ## Lots
 
@@ -47,7 +47,25 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M12a | Laisser un avis (C6)                       | ✅ fusionné #34                                                  |
 | M12b | Compte (C8)                                | ✅ fusionné #35                                                  |
 | M13  | Bascule pro et tableau de bord (S2)        | ✅ fusionné #36                                                  |
-| M14a | Demandes reçues et messagerie pro (S3, S5) | 🔍 PR ouverte                                                    |
+| M14a | Demandes reçues et messagerie pro (S3, S5) | ✅ fusionné #37                                                  |
+| M14b | Envoyer un devis (S4)                      | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M14b
+
+- **Le formulaire de devis passe dans common** (`packages/common/src/utils/quoteForm.ts`, avec `money.ts` :
+  `eurosToCents`, `centsToEuros`) : le site et l'app ont les mêmes règles et les mêmes calculs (`liveTotals`,
+  `initialQuoteForm`, `toCreateQuoteInput`). Ses messages (`quoteFormMessages`) sont traduits via `errorKeyOf`. Le
+  site importe désormais tout ça depuis `@afro/common`.
+- **« Nouveau devis »** (`/pro/devis/[id]`, `QuoteFormScreen`, maquette S4), ouvert par le bouton « Envoyer un devis »
+  du détail de la demande (ou « Nouvelle version du devis ») :
+  - les lignes, ajoutées une à une : libellé, quantité × prix unitaire, total de la ligne, poubelle pour l'enlever ;
+  - l'acompte en %, la validité (7, 14 ou 30 jours, la date s'affiche), des conditions facultatives ;
+  - **en bas, toujours visibles** : le total et l'acompte calculés en direct, et « Envoyer » ;
+  - pour négocier, la nouvelle version **reprend les lignes de la précédente**, qui est remplacée.
+- Après l'envoi : retour au détail (`router.dismissTo`, avec `?sent=1`) qui annonce « Devis envoyé ! ». Le client
+  voit le devis dans la conversation, avec « Accepter le devis » (lot M11).
+- **Tests** : `quoteForm.test.tsx` (erreurs, total 3 150 € et acompte 945 € comme la maquette, envoi vu côté client,
+  nouvelle version, demande close) ; les tests unitaires du calcul ont suivi le formulaire dans common.
 
 ## Ce que contient le lot M14a
 
@@ -615,7 +633,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
     de recherche, pause / réactivation, lien vers la page publique.
   - Tableau de bord : bandeau tant que le profil n'est pas en ligne (brouillon, en validation, corrections, pause).
   - Schémas de formulaire séparés : `features/provider-onboarding/lib/profileForms.ts` ; euros ↔ centimes partagés
-    dans `apps/web/src/lib/money.ts`.
+    dans `apps/web/src/lib/money.ts` (dans `packages/common/src/utils/money.ts` depuis M14b).
   - Photos : fichier réduit à 1200 px et gardé en « data URL » dans la base mockée, ou photo d'exemple en un clic.
 - Playwright : `e2e/onboarding.spec.ts` (parcours 5 : une cliente devient prestataire et envoie son profil).
 
@@ -649,7 +667,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
   `useMyProviderProfile`, `useUpdateMyProviderProfile`.
 - Web :
   - S4 `/pro/demandes/:id/devis` : lignes dynamiques (`useFieldArray`), total et acompte en direct, montants saisis en
-    euros « à la française » (`features/quotes/lib/quoteForm.ts`), reprise de la version précédente pour négocier.
+    euros « à la française » (`features/quotes/lib/quoteForm.ts`, dans `packages/common/src/utils/quoteForm.ts` depuis M14b), reprise de la version précédente pour négocier.
   - C3 : devis détaillés (`QuoteCard`), « Accepter » (adresse + conditions d'annulation) / « Refuser » ;
     bloc réservation (`BookingPanel`) avec adresse révélée et annulation (`CancelBookingDialog`, remboursement prévu affiché).
   - C5 `/espace/reservations` ; S2 `/pro` (3 chiffres, demandes récentes, prochaines dates) ;

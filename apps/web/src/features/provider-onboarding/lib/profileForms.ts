@@ -1,5 +1,7 @@
 import {
   cancellationPolicySchema,
+  centsToEuros,
+  eurosToCents,
   legalTypeSchema,
   pricingTypeSchema,
   type Offering,
@@ -8,7 +10,6 @@ import {
   type UpdateProviderProfileInput,
 } from '@afro/common';
 import { z } from 'zod';
-import { centsToEuros, eurosToCents } from '@/lib/money';
 
 /*
  * Les formulaires du profil prestataire (onboarding S1 et « Modifier mon profil » S7).

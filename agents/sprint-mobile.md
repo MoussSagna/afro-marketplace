@@ -244,7 +244,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 
 ### M14 · Demandes reçues et devis (S3, S4, S5)
 
-Découpé en deux PR : **M14a** (demandes reçues, décliner, messagerie pro) · fait ; **M14b** (envoyer un devis).
+Découpé en deux PR : **M14a** (demandes reçues, décliner, messagerie pro) · fait ; **M14b** (envoyer un devis) · fait.
 
 - Liste et détail des demandes reçues (disponibilité vérifiée), décliner avec un motif.
 - Envoyer un devis : lignes ajoutées une à une, total et acompte calculés en direct, reprise de la version
