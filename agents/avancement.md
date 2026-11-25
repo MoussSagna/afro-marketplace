@@ -67,8 +67,8 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
     seul texte à tenir à jour, et les textes juridiques sont encore provisoires (question n° 6).
   - **Réinitialiser les données de démo** avec confirmation (`resetDemoData` : la base repart du jeu de démo ; un
     compte créé pendant les essais est déconnecté). **Se déconnecter**.
-- L'adresse du site est dans `src/lib/site.ts` (`EXPO_PUBLIC_SITE_URL`, sinon `https://afromarket.vercel.app`,
-  **à confirmer**, question n° 14).
+- L'adresse du site est dans `src/lib/site.ts` (`EXPO_PUBLIC_SITE_URL`, sinon l'adresse fictive
+  `https://wenzee.example`, **à changer** quand le site aura son domaine, question n° 14).
 - **Partagé avec le site** : le formulaire du compte (`accountFormSchema`, `accountDefaults`, `toUpdateMeInput`, les
   clés des notifications) passe dans `packages/common/src/utils/accountForm.ts`. Les messages `userMessages` (nom,
   téléphone) sont traduits.
