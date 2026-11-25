@@ -96,11 +96,45 @@ describe("Navbar de l'accueil", () => {
     expect(within(header).queryByRole('link', { name: 'Se connecter' })).not.toBeInTheDocument();
   });
 
-  it('les autres pages publiques gardent l’en-tête classique', async () => {
+  it('les autres pages ont la même navbar, collée en haut avec son fond', async () => {
     renderRoute('/faq');
 
     await screen.findByRole('heading', { level: 1, name: 'Questions fréquentes' });
-    expect(document.querySelector('header[data-scrolled]')).toBeNull();
-    expect(screen.getByRole('link', { name: 'Connexion' })).toBeInTheDocument();
+    // La FAQ a son propre <header> dans un <article> : on part du logo de la navbar.
+    const header = screen.getByRole('link', { name: 'Wenzee, accueil' }).closest('header')!;
+    expect(header).not.toHaveAttribute('data-scrolled'); // jamais transparente hors de l'accueil
+    expect(header).toHaveClass('sticky', 'bg-foreground/95');
+    expect(within(header).getByRole('link', { name: 'Notre mission' })).toBeInTheDocument();
+    // Se connecter ramène à la page en cours.
+    expect(within(header).getByRole('link', { name: 'Se connecter' })).toHaveAttribute(
+      'href',
+      '/connexion?retour=%2Ffaq',
+    );
+  });
+
+  it('« Prestataires » est souligné sur la recherche', async () => {
+    renderRoute('/recherche');
+
+    await screen.findByRole('heading', { level: 1, name: 'Rechercher un prestataire' });
+    const header = screen.getByRole('banner');
+    expect(within(header).getByRole('button', { name: 'Prestataires' })).toHaveClass(
+      'font-semibold',
+    );
+    expect(within(header).getByRole('link', { name: 'Accueil' })).not.toHaveAttribute(
+      'aria-current',
+    );
+  });
+
+  it('dans un espace : badge de l’espace, bascule de mode et menu du compte', async () => {
+    renderRoute('/pro', { as: 'user-saveurs-de-dakar' });
+
+    await screen.findByRole('heading', { level: 1, name: 'Tableau de bord' });
+    const header = screen.getByRole('banner');
+    expect(within(header).getByText('Espace pro')).toBeInTheDocument();
+    expect(within(header).getByRole('link', { name: 'Passer en mode client' })).toBeInTheDocument();
+    expect(within(header).getByRole('button', { name: 'Menu de Mamadou' })).toBeInTheDocument();
+    // « Mon espace » est réservé aux pages publiques.
+    expect(within(header).queryByRole('link', { name: 'Mon espace' })).not.toBeInTheDocument();
+    expect(within(header).getByRole('button', { name: 'Prestataires' })).toBeInTheDocument();
   });
 });

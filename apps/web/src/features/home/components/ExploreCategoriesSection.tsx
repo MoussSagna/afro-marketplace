@@ -8,15 +8,11 @@ import { CategoryMosaic } from './CategoryMosaic';
  * 2ᵉ section de l'accueil, sous le hero : « Explorez nos univers ».
  * À gauche le texte éditorial, à droite la mosaïque photo des catégories
  * (les icônes sont déjà dans le hero : ici, on découvre par la photo).
- * Téléphone et tablette : le texte au-dessus, la mosaïque dessous.
+ * Téléphone et tablette : le texte au-dessus, la mosaïque dessous. Fond ivoire uni (demande de Mouss).
  */
 export function ExploreCategoriesSection() {
   return (
-    <section
-      aria-labelledby="explore-title"
-      className="relative isolate overflow-hidden bg-background"
-    >
-      <ExploreDecor />
+    <section aria-labelledby="explore-title" className="bg-background">
       <div className="mx-auto grid max-w-[1660px] gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-[minmax(0,533fr)_minmax(0,1036fr)] lg:items-center lg:gap-[27px] lg:px-8 lg:py-[93px]">
         <div className="max-w-2xl lg:max-w-none lg:pb-[120px]">
           <p className="flex items-center gap-3 text-sm font-bold tracking-[0.08em] text-primary uppercase lg:text-[17px]">
@@ -51,40 +47,5 @@ export function ExploreCategoriesSection() {
         <CategoryMosaic cards={CATEGORY_MOSAIC} />
       </div>
     </section>
-  );
-}
-
-/**
- * Décor discret, avec les jetons du thème : deux grands cercles sable et un motif de
- * losanges emboîtés (le même esprit que le losange du logo et les motifs du hero).
- */
-function ExploreDecor() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute -top-12 left-[31%] hidden size-[440px] rounded-full bg-muted lg:block" />
-      <div className="absolute -bottom-56 left-[24%] hidden size-[560px] rounded-full bg-muted/70 lg:block" />
-      <svg
-        className="absolute -bottom-4 -left-4 h-[260px] w-[520px] text-secondary"
-        viewBox="0 0 520 260"
-        fill="none"
-      >
-        <defs>
-          <pattern id="explore-diamonds" width="88" height="88" patternUnits="userSpaceOnUse">
-            <g stroke="currentColor" strokeWidth="7">
-              <path d="M44 4 L84 44 L44 84 L4 44 Z" />
-              <path d="M44 22 L66 44 L44 66 L22 44 Z" />
-            </g>
-          </pattern>
-        </defs>
-        <path d="M0 20 Q240 120 520 260 L0 260 Z" fill="url(#explore-diamonds)" opacity="0.7" />
-      </svg>
-      <svg
-        className="absolute -top-6 -left-6 hidden h-[150px] w-[150px] text-secondary lg:block"
-        viewBox="0 0 150 150"
-        fill="none"
-      >
-        <path d="M0 0 H150 L0 150 Z" fill="url(#explore-diamonds)" opacity="0.6" />
-      </svg>
-    </div>
   );
 }

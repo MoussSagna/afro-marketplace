@@ -98,8 +98,11 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   La recherche du hero est `features/search/components/SearchBar.tsx`.
   Section « Explorez nos univers » : `ExploreCategoriesSection`, `CategoryMosaic`, `CategoryImageCard` ;
   `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
-- `src/components/layout/Navbar.tsx` : la navbar transparente de l'accueil (`PublicLayout` la choisit quand l'adresse
-  est `/`, sinon `AppHeader`).
+  Section « Deux façons d'utiliser Wenzee » : `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration` ;
+  `lib/userTypes.ts` (textes et liens des deux parcours).
+- `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil (fixe,
+  transparente sur le hero) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
+  client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.
 - `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones) ; `public/images/categories/` :
   photos de la mosaïque des catégories.
 - `src/components/ui/` : composants shadcn/ui copiés dans le projet (modifiables).

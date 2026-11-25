@@ -4,13 +4,14 @@ import { useLocation } from 'react-router';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExploreCategoriesSection } from '@/features/home/components/ExploreCategoriesSection';
 import { HeroSection } from '@/features/home/components/HeroSection';
+import { UserTypesSection } from '@/features/home/components/UserTypesSection';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { HowItWorks } from '../components/HowItWorks';
 import { ProviderCard } from '../components/ProviderCard';
 
 /**
  * P1 : l'accueil. Hero plein écran (recherche, catégories, carrousel), « Explorez nos univers »,
- * prestataires à la une, comment ça marche.
+ * « Deux façons d'utiliser Wenzee », prestataires à la une, comment ça marche.
  */
 export function HomePage() {
   usePageMeta(
@@ -42,6 +43,8 @@ export function HomePage() {
       />
 
       <ExploreCategoriesSection />
+
+      <UserTypesSection />
 
       <section className="mx-auto max-w-6xl px-4 py-12" aria-labelledby="featured-title">
         <h2 id="featured-title" className="mb-6 font-display text-2xl font-semibold">
