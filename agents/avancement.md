@@ -1,6 +1,19 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M16 : parcours de bout en bout et build de test → jalon M2).
+Dernière mise à jour : 25/11/2026 (données fictives activées sur le site en ligne Vercel).
+
+## Site en ligne (Vercel)
+
+Le 25/11/2026, Mouss a déployé `apps/web` sur Vercel : les pages étaient vides. Cause : Vercel construit en
+mode « production », qui ne lit pas `.env.development`, donc `VITE_USE_MOCKS` était absent et MSW ne
+démarrait pas (les appels `/api` partaient vers un serveur qui n'existe pas).
+
+- `apps/web/.env.production` : `VITE_USE_MOCKS=true` tant que le back-end Supabase n'existe pas
+  (test : `src/lib/envProduction.test.ts`). Le jour du back-end : `VITE_USE_MOCKS=false` dans les variables
+  du projet Vercel (elles passent avant le fichier) ou dans ce fichier.
+- `apps/web/vercel.json` : toutes les URL renvoient vers `index.html` (sinon un rechargement sur
+  `/recherche` donne une 404). Les vrais fichiers (`mockServiceWorker.js`, `assets/`) restent servis tels quels.
+- Les données fictives vivent dans le navigateur de chaque visiteur : ce qu'il modifie n'est vu que par lui.
 
 ## Lots
 
@@ -52,25 +65,6 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M15a | Agenda pro (S6)                            | ✅ fusionné #39                                                  |
 | M15b | Profil pro et avis reçus (S7, S8)          | ✅ fusionné #40                                                  |
 | M15c | Modifier son profil dans l'app (S7)        | ✅ fusionné #41                                                  |
-| M16  | Parcours de bout en bout, build de test    | 🔍 PR ouverte                                                    |
-
-## Ce que contient le lot M16 (jalon M2)
-
-Version économe, à la demande de Mouss : l'essentiel pour dire « l'app mockée est complète ».
-
-- **Parcours de bout en bout** (`src/features/journeys/parcours.test.tsx`) : sur une même base de démo, la cliente
-  demande un devis, le prestataire l'envoie, la cliente l'accepte, le prestataire voit la réservation. On passe d'un
-  compte à l'autre comme deux téléphones. Outil : Testing Library (question n° 11), sans émulateur, dans la CI.
-- **Build de test installable** (`apps/mobile/eas.json`) : profil `preview` (installation directe, APK sur Android)
-  et `production`. Aucun secret dans le dépôt. Pour le lancer (une fois, depuis `apps/mobile`) :
-  1. créer un compte gratuit sur expo.dev, puis `npx eas-cli login` ;
-  2. `npx eas-cli init` (relie l'app à ton compte et ajoute son identifiant dans `app.json`) ;
-  3. Android : `npx eas-cli build -p android --profile preview` → un lien pour installer l'APK, sans compte Google
-     payant ;
-  4. iPhone : il faut le compte Apple développeur (question n° 12), puis `--profile preview -p ios`.
-- **Reporté** (pas indispensable au jalon) : animations d'apparition Moti, bandeau hors ligne (inutile tant que
-  les données sont mockées dans l'app), passe d'accessibilité complète sur appareil (VoiceOver / TalkBack).
-- **Jalon M2 atteint** : l'app mockée est complète. Prochaine étape, sur le feu vert de Mouss : le back-end Supabase.
 
 ## Ce que contient le lot M15c
 

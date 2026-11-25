@@ -95,7 +95,9 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/components/ui/` : composants shadcn/ui copiés dans le projet (modifiables).
 - `src/test/` : `setup.ts`, `server.ts` (MSW Node), `renderRoute.tsx`.
 - `e2e/` : Playwright (projets `desktop` et `mobile`).
-- MSW actif si `VITE_USE_MOCKS=true` (`.env.development`, `.env.e2e`).
+- MSW actif si `VITE_USE_MOCKS=true` (`.env.development`, `.env.e2e`, et `.env.production` pour le site
+  Vercel tant qu'il n'y a pas de back-end).
+- `vercel.json` : réécriture de toutes les URL vers `index.html` (application à page unique).
 
 ## `apps/mobile` (depuis le lot M1)
 
