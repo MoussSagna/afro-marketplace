@@ -217,7 +217,7 @@ ci-dessous reste valable (filtres dans l'adresse, nombre de résultats en direct
 
 ## Sprint 4 : réserver et donner son avis → jalon M1
 
-### M11 · Devis et réservations (C3, C5)
+### M11 · Devis et réservations (C3, C5) · **fait (voir avancement.md)**
 
 - Accepter un devis dans un panneau du bas (adresse, conditions d'annulation, case à cocher, règle n° 5) ou le refuser.
 - Réservations à venir / passées, adresse et téléphone révélés, annulation avec le remboursement prévu affiché.

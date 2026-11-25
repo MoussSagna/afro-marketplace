@@ -10,7 +10,7 @@ import { Button, Text } from '@/components/ui';
 import { useErrorText } from '@/i18n/useErrorText';
 import { errorCode } from '../authErrors';
 import { AuthScreen } from '../components/AuthScreen';
-import { Checkbox } from '../components/Checkbox';
+import { Checkbox } from '@/components/Checkbox';
 import { FormAlert } from '../components/FormAlert';
 import { FormInput } from '../components/FormInput';
 import { StrengthMeter, PasswordRulesList } from '../components/PasswordChecks';

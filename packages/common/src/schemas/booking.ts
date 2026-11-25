@@ -54,6 +54,11 @@ export const bookingSchema = z.object({
   ...timestamps,
 });
 
+/** Les messages d'erreur d'annulation (traduits via errorKeyOf, voir i18n/fr.ts). */
+export const cancelBookingMessages = {
+  cancelReasonRequired: 'Indique un motif d’annulation',
+} as const;
+
 export const cancelBookingInputSchema = z.object({
-  reason: text(3, 500, 'Indique un motif d’annulation'),
+  reason: text(3, 500, cancelBookingMessages.cancelReasonRequired),
 });

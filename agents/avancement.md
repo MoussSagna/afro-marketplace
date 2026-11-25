@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (lot M10 : mes demandes et messagerie).
+Dernière mise à jour : 25/11/2026 (lot M11 : devis et réservations).
 
 ## Lots
 
@@ -42,7 +42,44 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M7  | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
 | M8  | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
 | M9  | Demande de devis en 3 étapes (C1)      | ✅ fusionné #31                                                  |
-| M10 | Mes demandes et messagerie (C2, C4)    | 🔍 PR ouverte                                                    |
+| M10 | Mes demandes et messagerie (C2, C4)    | ✅ fusionné #32                                                  |
+| M11 | Devis et réservations (C3, C5)         | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M11
+
+- **Accepter ou refuser un devis** (C3, `src/features/bookings/QuoteActions.tsx`) : sous le dernier devis, dans le
+  détail d'une demande **et** dans le fil de la conversation, « Refuser » et « Accepter le devis ». Rien ne s'affiche
+  si le devis n'attend plus de réponse (remplacé, expiré, déjà accepté).
+  - « Refuser » demande une confirmation sur place ; la demande reste ouverte pour une nouvelle version.
+  - « Accepter le devis » ouvre un **panneau du bas** (`src/components/BottomSheet.tsx`, maquette C3) : prestataire et
+    total, acompte, **adresse de l'événement** (révélée au prestataire seulement maintenant), **conditions
+    d'annulation** (lues sur le profil complet), **case à cocher obligatoire**, « Le paiement se fait directement avec
+    le prestataire », puis « Accepter et réserver ». Le serveur applique la règle n° 5 (`canAcceptQuote`) : ses refus
+    s'affichent traduits (`apiErrors.quote_expired`…).
+  - Une fois accepté : « Réservation confirmée ! » et la section **Ma réservation** dans le détail.
+- **Ma réservation** (`BookingPanel`, dans `/demande/[id]`) : adresse, total, acompte, politique d'annulation, et
+  « Annuler la réservation » (avant le jour J). Avant de confirmer, l'app affiche **ce que prévoit la politique**
+  (règle n° 9, `computeCancellationRefund` : « L'événement est dans 18 jours : 50 % de l'acompte… »), et demande un
+  motif.
+- **Mes réservations** (C5, `/reservations`, bouton « Mes réservations » en haut de l'onglet Demandes) : deux onglets.
+  - **À venir** (la plus proche d'abord) : grande photo, badge « Confirmée », prix, « sam. 12 déc. · dans 18 jours »,
+    adresse, boutons « Message » (le fil) et « Annuler » (le détail, où se trouve l'annulation).
+  - **Passées** (annulées comprises) : une ligne, et **« Laisser un avis »** seulement si c'est permis (règle n° 6,
+    `canReviewBooking` : après l'événement, un seul avis). Sinon « Avis laissé : 4/5 ».
+  - « Laisser un avis » ouvre `/avis/[id]`, qui annonce le lot M12 en attendant le vrai formulaire.
+- `bookings/bookingStatus.ts` : à venir ou passée, annulable ou non, badge traduit (`bookingStatus.*`).
+- La case à cocher (`Checkbox`) passe de `features/auth/components/` à `src/components/` : elle sert maintenant à deux
+  endroits.
+- Les messages des schémas `acceptQuoteMessages` (schemas/quote.ts) et `cancelBookingMessages` (schemas/booking.ts)
+  sont sortis en constantes pour être traduits (`errors.*`), comme ceux de la demande de devis.
+- Textes : `quoteCard.*` (accepter, refuser), `acceptQuote.*`, `cancellationPolicies.*`, `bookings.*`,
+  `bookingStatus.*`, et les codes d'erreur d'acceptation et d'annulation dans `apiErrors`.
+- **Pas encore là** : le téléphone du prestataire après réservation (maquette C5). L'API ne le renvoie pas encore
+  (question n° 13).
+- Tests : 255 tests mobiles. `bookings.test.tsx` (accepter avec adresse et case obligatoires puis réservation créée,
+  refuser avec confirmation, boutons dans la conversation, réservations à venir / passées et « Laisser un avis »,
+  pas de bouton si l'avis existe, annulation avec motif et remboursement affiché, liste vide) et
+  `bookingStatus.test.ts`.
 
 ## Ce que contient le lot M10
 
@@ -52,7 +89,7 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
     Tirer vers le bas recharge ; sans conversation, un état vide renvoie vers la Recherche.
   - Le **fil** (`/conversations/[id]`, par-dessus les onglets) : en-tête avec le prestataire, l'événement et le badge
     de la demande ; les messages (les miens à droite en terre), les messages automatiques au centre, et **les devis
-    dans le fil** (`QuoteCard` : lignes, total, acompte ; accepter arrive en M11). Les coordonnées masquées par le
+    dans le fil** (`QuoteCard` : lignes, total, acompte ; accepter et refuser depuis M11). Les coordonnées masquées par le
     serveur (règle n° 7) s'affichent en pastille « coordonnées masquées », avec « Les coordonnées s'affichent après
     la réservation ». La zone d'écriture reste collée au clavier ; une demande close ferme la conversation.
   - Rafraîchi toutes les 7 s (`MESSAGING_REFRESH_MS`, comme le site) ; le fil est marqué lu à l'ouverture.

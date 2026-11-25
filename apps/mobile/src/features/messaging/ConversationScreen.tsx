@@ -19,6 +19,7 @@ import { Badge, EmptyState, Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { shortDay } from '@/lib/dates';
 import { useSessionStore } from '@/stores/session';
+import { QuoteActions } from '../bookings/QuoteActions';
 import { useThemeColors } from '@/theme/useTheme';
 import { MessageBubble } from './MessageBubble';
 import { MessageComposer } from './MessageComposer';
@@ -138,7 +139,9 @@ export function ConversationScreen() {
                   isMine={item.message.senderId === userId}
                 />
               ) : (
-                <QuoteCard key={item.quote.id} quote={item.quote} />
+                <QuoteCard key={item.quote.id} quote={item.quote}>
+                  {details.data ? <QuoteActions details={details.data} quote={item.quote} /> : null}
+                </QuoteCard>
               ),
             )}
           </ScrollView>

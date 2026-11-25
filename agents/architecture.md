@@ -123,10 +123,14 @@ apps/mobile/
   src/features/messaging/ Messagerie (M10) : ConversationsScreen, ConversationScreen (fil + devis), MessageBubble,
                        MessageComposer, QuoteCard, requestStatus (badge d'une demande)
   src/features/requests/ Mes demandes (M10) : RequestsScreen (3 onglets), RequestDetailScreen (annuler, poser une question)
+  src/features/bookings/ Devis et réservations (M11) : QuoteActions (accepter / refuser + panneau du bas), BookingPanel
+                       (ma réservation, annulation), BookingsScreen (/reservations), bookingStatus
   src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
   src/components/FullScreenModal.tsx Fenêtre plein écran (Modal) qui respecte l'encoche : à utiliser pour tout plein écran
+  src/components/BottomSheet.tsx Panneau qui monte du bas (fond assombri, croix, poignée), ex. « Accepter le devis »
+  src/components/Checkbox.tsx Case à cocher avec son texte (conditions d'inscription, d'un devis…)
   src/lib/dates.ts     Dates des calendriers (isoDay, longDay, monthGrid, monthRange…)
   src/components/QueryState.tsx Chargement → erreur (« Réessayer ») → contenu
   src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth
