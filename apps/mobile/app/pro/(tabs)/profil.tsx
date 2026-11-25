@@ -1,17 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { ProOnly } from '@/features/pro/ProOnly';
-import { ProSoonScreen } from '@/features/pro/ProSoonScreen';
+import { ProProfileScreen } from '@/features/pro/ProProfileScreen';
 
-export default function ProProfilTab() {
+export default function ProProfileTab() {
   const { t } = useTranslation();
   return (
     <ProOnly title={t('tabs.profile')}>
-      <ProSoonScreen
-        title={t('tabs.profile')}
-        lot="M15"
-        description={t('pro.soonProfile')}
-        withSwitch
-      />
+      <ProProfileScreen />
     </ProOnly>
   );
 }

@@ -37,6 +37,11 @@ export const createReviewInputSchema = z.object({
   comment: text(0, 2000, '').optional(),
 });
 
+/** Les messages d'erreur de la réponse à un avis (traduits via errorKeyOf, voir i18n/fr.ts). */
+export const reviewReplyMessages = {
+  replyRequired: 'La réponse est vide',
+} as const;
+
 export const replyToReviewInputSchema = z.object({
-  reply: text(2, 1000, 'La réponse est vide'),
+  reply: text(2, 1000, reviewReplyMessages.replyRequired),
 });

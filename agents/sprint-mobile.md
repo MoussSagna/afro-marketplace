@@ -253,7 +253,8 @@ Découpé en deux PR : **M14a** (demandes reçues, décliner, messagerie pro) ·
 
 ### M15 · Agenda et profil pro (S6, S7)
 
-Découpé en deux PR : **M15a** (agenda) · fait ; **M15b** (profil pro).
+Découpé en PR : **M15a** (agenda) · fait ; **M15b** (profil pro, avis reçus, pause) · fait ; **M15c** (modifier les
+sections du profil dans l'app).
 
 - Agenda du mois : réservé / bloqué / libre, toucher un jour pour le bloquer, réglage « max par jour ».
 - Mon profil : aperçu de la carte, sections modifiables, avis reçus avec réponse, pause du profil.
