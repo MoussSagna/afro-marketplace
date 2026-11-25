@@ -5,7 +5,9 @@ import { renderRoute } from '@/test/renderRoute';
 describe('Marque Wenzee (logo)', () => {
   it("l'en-tête affiche le logo, qui ramène à l'accueil", async () => {
     renderRoute('/faq');
-    const home = await screen.findByRole('link', { name: 'Wenzee, accueil' });
+    // Le premier lien « Wenzee, accueil » est celui de la navbar (le pied de page a le sien).
+    const [home] = await screen.findAllByRole('link', { name: 'Wenzee, accueil' });
+    if (!home) throw new Error('Lien du logo introuvable');
     expect(home).toHaveAttribute('href', '/');
     // Navbar sur fond brun : version claire du logo (même tracé).
     expect(within(home).getByRole('img', { name: 'Wenzee' })).toHaveAttribute(

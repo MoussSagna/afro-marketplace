@@ -46,3 +46,12 @@ export function FavoritesPage() {
     />
   );
 }
+
+export function ContactPage() {
+  return (
+    <ComingSoon
+      title="Contactez-nous"
+      description="Une question, une suggestion ? Le formulaire de contact arrive bientôt."
+    />
+  );
+}

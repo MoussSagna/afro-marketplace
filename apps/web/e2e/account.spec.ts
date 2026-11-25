@@ -26,7 +26,7 @@ test('parcours C8 : la cliente modifie son compte ; la suppression attend ses r�
 
 test('les pages légales sont accessibles depuis le pied de page', async ({ page }) => {
   await page.goto('/');
-  const footer = page.getByRole('navigation', { name: 'Liens utiles' });
+  const footer = page.getByRole('navigation', { name: 'Informations légales' });
   await footer.getByRole('link', { name: 'Mentions légales' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mentions légales' })).toBeVisible();
   await expect(page.getByRole('note')).toContainText('relecture juridique');

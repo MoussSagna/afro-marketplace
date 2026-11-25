@@ -3,14 +3,13 @@ import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from '
 import { SearchBar } from '@/features/search/components/SearchBar';
 import { CATEGORY_SHORTCUTS, HERO_AUTOPLAY_MS, HERO_SLIDES } from '../lib/heroContent';
 import { useCarousel } from '../lib/useCarousel';
-import { CarouselControls } from './CarouselControls';
 import { CategoryShortcuts } from './CategoryShortcuts';
 import { HeroCarousel } from './HeroCarousel';
 import { HeroDecor } from './HeroDecor';
 
 /**
- * Le hero plein écran de l'accueil (P1) : photos en carrousel en fond, texte et recherche centrés,
- * recherche flottante, catégories populaires et pagination.
+ * Le hero plein écran de l'accueil (P1) : photos en carrousel en fond (sans pagination, à la demande
+ * de Mouss), texte et recherche centrés, recherche flottante, catégories populaires.
  * La navbar transparente est posée au-dessus par `PublicLayout` (composant `Navbar`).
  */
 export function HeroSection({ notice }: { notice?: ReactNode }) {
@@ -22,7 +21,7 @@ export function HeroSection({ notice }: { notice?: ReactNode }) {
     interval: HERO_AUTOPLAY_MS,
     autoplay: !reduceMotion,
     // Pause pendant que l'utilisateur interagit (clavier ou souris sur la recherche, les
-    // catégories, la pagination) et quand l'onglet n'est pas affiché.
+    // catégories) et quand l'onglet n'est pas affiché.
     paused: focusInside || pointerOnControls || pageHidden,
   });
 
@@ -118,19 +117,6 @@ export function HeroSection({ notice }: { notice?: ReactNode }) {
         </div>
         <div className="mt-7 lg:mt-6" {...pointerHandlers}>
           <CategoryShortcuts shortcuts={CATEGORY_SHORTCUTS} />
-        </div>
-
-        <div className="mt-auto pt-4" {...pointerHandlers}>
-          <CarouselControls
-            labels={HERO_SLIDES.map((slide) => slide.label)}
-            index={carousel.index}
-            onSelect={carousel.goTo}
-            onPrevious={carousel.previous}
-            onNext={carousel.next}
-            canPlay={carousel.canPlay}
-            playing={carousel.playing}
-            onTogglePlay={carousel.togglePlay}
-          />
         </div>
       </div>
     </section>

@@ -10,7 +10,7 @@ interface UseCarouselOptions {
 }
 
 /**
- * L'état d'un carrousel : la slide affichée, avancer / reculer / aller à,
+ * L'état d'un carrousel : la slide affichée, avancer / reculer / aller à (balayage au doigt),
  * et le défilement automatique. Toute navigation manuelle relance le minuteur
  * (on ne change pas de photo une seconde après un clic).
  */
@@ -18,8 +18,6 @@ export function useCarousel(count: number, { interval, autoplay, paused }: UseCa
   const [index, setIndex] = useState(0);
   // Incrémenté à chaque action manuelle : relance le minuteur.
   const [restart, setRestart] = useState(0);
-  // Le bouton pause / lecture : choix explicite de l'utilisateur.
-  const [stopped, setStopped] = useState(false);
 
   const goTo = useCallback(
     (next: number) => {
@@ -31,7 +29,7 @@ export function useCarousel(count: number, { interval, autoplay, paused }: UseCa
   const next = useCallback(() => goTo(index + 1), [goTo, index]);
   const previous = useCallback(() => goTo(index - 1), [goTo, index]);
 
-  const playing = autoplay && !stopped && count > 1;
+  const playing = autoplay && count > 1;
 
   useEffect(() => {
     if (!playing || paused) return;
@@ -44,9 +42,5 @@ export function useCarousel(count: number, { interval, autoplay, paused }: UseCa
     goTo,
     next,
     previous,
-    /** Le défilement automatique est actif (hors pause temporaire). */
-    playing,
-    canPlay: autoplay && count > 1,
-    togglePlay: () => setStopped((value) => !value),
   };
 }

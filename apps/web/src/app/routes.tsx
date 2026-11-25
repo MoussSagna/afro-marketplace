@@ -128,6 +128,12 @@ export const routes: RouteObject[] = [
             }),
           },
           {
+            path: 'contact',
+            lazy: async () => ({
+              Component: (await import('@/features/static/pages/ComingSoonPages')).ContactPage,
+            }),
+          },
+          {
             path: 'favoris',
             lazy: async () => ({
               Component: (await import('@/features/static/pages/ComingSoonPages')).FavoritesPage,

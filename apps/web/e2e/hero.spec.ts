@@ -44,23 +44,20 @@ test.describe("hero plein écran de l'accueil", () => {
     await expect(page).toHaveURL('/recherche?categorie=danse');
   });
 
-  test('la pagination change de photo', async ({ page }) => {
+  test('pas de pagination ; les photos défilent toutes seules', async ({ page }) => {
     await page.goto('/');
-    const dots = page.getByRole('group', { name: 'Choisir une ambiance' });
-    const second = dots.getByRole('button', { name: /^2 sur 3/ });
-    await second.click();
-    await expect(second).toHaveAttribute('aria-current', 'true');
+    await expect(page.getByRole('group', { name: 'Choisir une ambiance' })).toHaveCount(0);
+    const active = page.locator('[data-active="true"]');
+    await expect(active).toHaveAttribute('data-slide', 'mariage');
+    await expect(active).toHaveAttribute('data-slide', 'soiree', { timeout: 9000 });
   });
 
   test('« réduire les animations » : pas de défilement automatique', async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto('/');
-    await expect(page.getByRole('button', { name: /diaporama/ })).toHaveCount(0);
     await page.waitForTimeout(6500);
-    await expect(
-      page.getByRole('group', { name: 'Choisir une ambiance' }).getByRole('button').first(),
-    ).toHaveAttribute('aria-current', 'true');
+    await expect(page.locator('[data-active="true"]')).toHaveAttribute('data-slide', 'mariage');
     await context.close();
   });
 });

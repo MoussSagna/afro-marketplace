@@ -58,7 +58,8 @@
 - Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
 - Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main ; sur photo ou fond sombre, `variant="light"`.
-- En-tête : une seule navbar pour tout le site (`components/layout/Navbar.tsx`) ; ne pas recréer d'en-tête propre à une page. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
+- En-tête et pied de page : une seule navbar (`components/layout/Navbar.tsx`) et un seul pied de page
+  (`components/layout/SiteFooter.tsx`) pour tout le site ; ne pas en recréer pour une page. Les SVG de la marque (versions claire, noire, blanche, icône) sont dans `/mnt/project-files/marque-wenzee/`.
 - Piège du `Button` shadcn : avec une icône dedans, `has-[>svg]:px-3` écrase les marges passées en `className`.
   Pour élargir un bouton avec icône, ajouter aussi `has-[>svg]:px-…`.
 - Piège des marges responsives : un raccourci `lg:p-8` réécrit les 4 marges et efface un `md:pl-…` plus spécifique ;
