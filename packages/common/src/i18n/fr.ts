@@ -1,4 +1,6 @@
 import { authMessages } from '../schemas/auth';
+import { cancelBookingMessages } from '../schemas/booking';
+import { acceptQuoteMessages } from '../schemas/quote';
 import { quoteRequestMessages } from '../schemas/quoteRequest';
 
 /**
@@ -158,6 +160,75 @@ export const fr = {
     cancelConfirm: 'Oui, annuler',
     cancelKeep: 'Garder ma demande',
     cancelled: 'Ta demande est annulée.',
+    declined: 'Devis refusé. Le prestataire peut t’en envoyer un nouveau.',
+    booked: 'Réservation confirmée ! Les coordonnées sont désormais visibles.',
+    myBookings: 'Mes réservations',
+  },
+  /** Accepter un devis (C3, lot M11) : le panneau du bas. */
+  acceptQuote: {
+    title: 'Accepter le devis',
+    summary: '{{provider}} · {{total}}',
+    address: 'Adresse de l’événement',
+    addressPlaceholder: 'Ex. : 12 rue des Fêtes, 94000 Créteil',
+    addressHint: 'Partagée avec le prestataire uniquement après acceptation.',
+    deposit: 'Dont un acompte de {{amount}} à régler au prestataire.',
+    cancellation: 'Annulation : {{policy}}',
+    terms: 'J’accepte le devis et les conditions d’annulation.',
+    termsRequired: 'Coche la case pour accepter les conditions.',
+    offline: 'Le paiement se fait directement avec le prestataire.',
+    confirm: 'Accepter et réserver',
+    close: 'Fermer',
+  },
+  /** Les politiques d'annulation, par leur valeur. */
+  cancellationPolicies: {
+    flexible: 'souple',
+    moderate: 'modérée',
+    strict: 'stricte',
+  },
+  /** Les réservations (C5, lot M11). */
+  bookings: {
+    signIn: 'Connecte-toi pour retrouver tes réservations.',
+    title: 'Réservations',
+    tabs: 'Filtrer les réservations',
+    upcoming: 'À venir',
+    past: 'Passées',
+    loading: 'Chargement des réservations',
+    list: 'Réservations',
+    emptyUpcoming: 'Aucune réservation à venir',
+    emptyPast: 'Aucune réservation passée',
+    emptyHint: 'Une réservation est créée quand tu acceptes le devis d’un prestataire.',
+    seeRequests: 'Voir mes demandes',
+    inDays_one: 'dans {{count}} jour',
+    inDays_other: 'dans {{count}} jours',
+    today: 'aujourd’hui',
+    message: 'Message',
+    cancel: 'Annuler',
+    review: 'Laisser un avis',
+    reviewed: 'Avis laissé : {{rating}}/5',
+    section: 'Ma réservation',
+    address: 'Adresse',
+    total: 'Total',
+    deposit: 'Acompte',
+    policy: 'Annulation',
+    cancelBooking: 'Annuler la réservation',
+    cancelTitle: 'Annuler la réservation ?',
+    cancelRefund:
+      'L’événement est dans {{days}} jours : selon les conditions, {{percent}} % de l’acompte te sera remboursé ({{refund}} sur {{deposit}}).',
+    cancelOffline:
+      'Le paiement se fait hors de l’app : le remboursement se règle directement avec le prestataire.',
+    cancelReason: 'Motif',
+    cancelConfirm: 'Confirmer l’annulation',
+    cancelKeep: 'Garder ma réservation',
+    cancelled: 'Ta réservation est annulée.',
+    reviewSoon: 'Laisser un avis arrive au lot M12.',
+  },
+  bookingStatus: {
+    confirmed: 'Confirmée',
+    deposit_paid: 'Acompte payé',
+    fully_paid: 'Payée',
+    completed: 'Passée',
+    cancelled: 'Annulée',
+    disputed: 'En litige',
   },
   messages: {
     signIn: 'Connecte-toi pour discuter avec les prestataires.',
@@ -191,7 +262,13 @@ export const fr = {
     lineDetail: '{{quantity}} × {{unitPrice}}',
     total: 'Total',
     deposit: 'Acompte {{rate}} % : {{amount}}',
-    acceptSoon: 'Accepter ou refuser un devis arrive au lot M11.',
+    accept: 'Accepter le devis',
+    decline: 'Refuser',
+    declineTitle: 'Refuser ce devis ?',
+    declineHint:
+      'Le prestataire est prévenu. Ta demande reste ouverte : il peut t’envoyer une nouvelle version.',
+    declineConfirm: 'Oui, refuser',
+    declineKeep: 'Garder le devis',
     status: {
       sent: 'Nouveau',
       accepted: 'Accepté',
@@ -458,6 +535,8 @@ export const fr = {
   errors: {
     ...authMessages,
     ...quoteRequestMessages,
+    ...acceptQuoteMessages,
+    ...cancelBookingMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -478,6 +557,13 @@ export const fr = {
     date_too_far: 'On ne peut pas demander de devis plus de 2 ans à l’avance.',
     provider_unavailable: 'Ce prestataire n’est pas disponible à cette date.',
     provider_not_found: 'Prestataire introuvable.',
+    not_client: 'Seul le client de la demande peut accepter ce devis.',
+    request_closed: 'Cette demande n’attend plus de réponse à un devis.',
+    quote_not_sent: 'Ce devis n’est plus valable : une autre version l’a remplacé.',
+    quote_expired: 'Ce devis a expiré. Demande une nouvelle version au prestataire.',
+    quote_not_found: 'Devis introuvable.',
+    booking_not_found: 'Réservation introuvable.',
+    invalid_status: 'Cette action n’est plus possible.',
   },
   /** Les catégories, par leur slug (les données de démo sont en français). */
   categories: {

@@ -1,4 +1,5 @@
 import { computeDepositAmount, formatPrice, type QuoteRequestDetails } from '@afro/common';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Badge, Text } from '@/components/ui';
@@ -11,9 +12,9 @@ type Quote = QuoteRequestDetails['quotes'][number];
 /**
  * Un devis dans le fil de la conversation (maquette C4) : version, validité, lignes, total
  * et acompte. Le dernier devis envoyé est bordé d'ocre ; les anciens sont estompés.
- * Accepter ou refuser arrive au lot M11.
+ * `children` : ce qui s'affiche sous le devis (les boutons Accepter / Refuser, lot M11).
  */
-export function QuoteCard({ quote }: { quote: Quote }) {
+export function QuoteCard({ quote, children }: { quote: Quote; children?: ReactNode }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const price = (cents: number) => formatPrice(cents, locale);
@@ -66,11 +67,7 @@ export function QuoteCard({ quote }: { quote: Quote }) {
           })}
         </Text>
       ) : null}
-      {current ? (
-        <Text size="xs" tone="muted" className="italic">
-          {t('quoteCard.acceptSoon')}
-        </Text>
-      ) : null}
+      {children}
     </View>
   );
 }

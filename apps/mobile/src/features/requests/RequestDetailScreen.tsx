@@ -17,6 +17,8 @@ import { useErrorText } from '@/i18n/useErrorText';
 import { useLanguage } from '@/i18n/useLanguage';
 import { longDay, shortDate } from '@/lib/dates';
 import { useThemeColors } from '@/theme/useTheme';
+import { BookingPanel } from '../bookings/BookingPanel';
+import { QuoteActions } from '../bookings/QuoteActions';
 import { conversationHref } from '../messaging/conversationHref';
 import { QuoteCard } from '../messaging/QuoteCard';
 import { requestStatus } from '../messaging/requestStatus';
@@ -25,7 +27,7 @@ import { profileHref } from '../providers/profileHref';
 /**
  * Le détail d'une demande (C2 → C3) : le prestataire, l'événement, le message envoyé,
  * le dernier devis, puis « Poser une question » (la conversation) et « Annuler la demande ».
- * Accepter un devis arrive au lot M11.
+ * Sous le devis : Accepter (panneau du bas) ou Refuser ; une fois réservé, « Ma réservation » (M11).
  */
 export function RequestDetailScreen() {
   const { t } = useTranslation();
@@ -60,9 +62,10 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
   const colors = useThemeColors();
   const router = useRouter();
   const { apiError } = useErrorText();
-  const { request, provider, quotes, conversationId } = details;
+  const { request, provider, quotes, conversationId, booking } = details;
   const cancel = useCancelQuoteRequest(request.id);
   const [confirming, setConfirming] = useState(false);
+  const [answered, setAnswered] = useState<'booked' | 'declined' | null>(null);
   const status = requestStatus(request, 'client');
   const latest = [...quotes].sort((a, b) => b.version - a.version)[0];
   const euros = (cents: number) => formatPrice(cents, locale);
@@ -101,15 +104,13 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
       </Card>
 
       {request.status === 'cancelled' && cancel.isSuccess ? (
-        <View
-          accessibilityRole="alert"
-          className="flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
-        >
-          <CheckCircle2 size={18} color={colors.success} />
-          <Text size="sm" tone="success">
-            {t('requests.cancelled')}
-          </Text>
-        </View>
+        <SuccessAlert color={colors.success}>{t('requests.cancelled')}</SuccessAlert>
+      ) : null}
+      {answered === 'booked' && booking ? (
+        <SuccessAlert color={colors.success}>{t('requests.booked')}</SuccessAlert>
+      ) : null}
+      {answered === 'declined' ? (
+        <SuccessAlert color={colors.success}>{t('requests.declined')}</SuccessAlert>
       ) : null}
 
       <View>
@@ -140,13 +141,22 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
       <View className="gap-2">
         <Heading level={3}>{t('requests.latestQuote')}</Heading>
         {latest ? (
-          <QuoteCard quote={latest} />
+          <QuoteCard quote={latest}>
+            <QuoteActions
+              details={details}
+              quote={latest}
+              onAccepted={() => setAnswered('booked')}
+              onDeclined={() => setAnswered('declined')}
+            />
+          </QuoteCard>
         ) : (
           <Text size="sm" tone="muted">
             {t('requests.noQuote', { date: shortDate(request.expiresAt.slice(0, 10), locale) })}
           </Text>
         )}
       </View>
+
+      {booking ? <BookingPanel booking={booking} /> : null}
 
       <Button
         variant="outline"
@@ -196,5 +206,19 @@ function RequestDetail({ details }: { details: QuoteRequestDetails }) {
         )
       ) : null}
     </ScrollView>
+  );
+}
+
+function SuccessAlert({ color, children }: { color: string; children: string }) {
+  return (
+    <View
+      accessibilityRole="alert"
+      className="flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
+    >
+      <CheckCircle2 size={18} color={color} />
+      <Text size="sm" tone="success" className="flex-1">
+        {children}
+      </Text>
+    </View>
   );
 }

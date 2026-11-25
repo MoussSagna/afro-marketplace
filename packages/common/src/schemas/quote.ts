@@ -53,7 +53,12 @@ export const createQuoteInputSchema = z.object({
   conditions: text(0, 2000, '').optional(),
 });
 
+/** Les messages d'erreur d'acceptation (traduits via errorKeyOf, voir i18n/fr.ts). */
+export const acceptQuoteMessages = {
+  eventAddressRequired: 'Indique l’adresse de l’événement',
+} as const;
+
 /** Le client accepte un devis : il donne alors l'adresse précise de l'événement. */
 export const acceptQuoteInputSchema = z.object({
-  eventAddress: text(5, 200, 'Indique l’adresse de l’événement'),
+  eventAddress: text(5, 200, acceptQuoteMessages.eventAddressRequired),
 });

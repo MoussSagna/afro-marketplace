@@ -30,6 +30,7 @@ const EMPTY_TITLES = {
 /**
  * L'onglet Demandes (C2, maquette « Mes demandes ») : trois onglets comme sur le site
  * (en cours, réservées, terminées), et une carte par demande avec son badge.
+ * En haut à droite : « Mes réservations » (C5, lot M11).
  */
 export function RequestsScreen() {
   const { t } = useTranslation();
@@ -46,7 +47,12 @@ export function RequestsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="px-5 pt-2">
-        <Heading>{t('requests.title')}</Heading>
+        <View className="flex-row items-center justify-between gap-3">
+          <Heading>{t('requests.title')}</Heading>
+          <Button variant="secondary" size="sm" onPress={() => router.push('/reservations')}>
+            {t('requests.myBookings')}
+          </Button>
+        </View>
         <View
           accessibilityRole="tablist"
           accessibilityLabel={t('requests.tabs')}
