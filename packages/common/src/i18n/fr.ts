@@ -1,4 +1,5 @@
 import { authMessages } from '../schemas/auth';
+import { quoteRequestMessages } from '../schemas/quoteRequest';
 
 /**
  * Les textes de l'app en français (la langue de référence).
@@ -224,6 +225,59 @@ export const fr = {
     demoLoadError: 'Impossible de charger les comptes de démo.',
     roles: { client: 'Client', provider: 'Prestataire', admin: 'Admin' },
   },
+  /** La demande de devis en 3 étapes (C1, lot M9). */
+  quote: {
+    title: 'Demande de devis',
+    stepOf: '{{step}} / {{total}}',
+    progress: 'Étape {{step}} sur {{total}}',
+    loading: 'Chargement du prestataire',
+    signIn: 'Connecte-toi pour demander un devis.',
+    stepOffering: 'Quelle formule t’intéresse ?',
+    stepOfferingHint:
+      'Tu pourras en parler avec le prestataire. Elle sert de point de départ au devis.',
+    noOffering: 'Je ne sais pas encore',
+    noOfferingHint: 'Le prestataire te proposera ce qui convient.',
+    stepEvent: 'Ton événement',
+    eventType: 'Type d’événement',
+    date: 'Date',
+    dateHint: 'Les jours barrés sont déjà pris.',
+    guests: 'Invités (facultatif)',
+    budgetMin: 'Budget min, en € (facultatif)',
+    budgetMax: 'Budget max, en € (facultatif)',
+    city: 'Ville',
+    cityHint: 'L’adresse précise ne sera donnée qu’à la réservation.',
+    postalCode: 'Code postal',
+    stepMessage: 'Ton message',
+    clientType: 'Tu organises cet événement…',
+    message: 'Ton message',
+    messagePlaceholder: 'Bonjour, nous organisons… Nous aimerions…',
+    messageHint: 'Pour ta sécurité, les numéros et les emails sont masqués jusqu’à la réservation.',
+    ownProfile: 'C’est ton propre profil : tu ne peux pas t’envoyer une demande à toi-même.',
+    back: 'Retour',
+    next: 'Continuer',
+    send: 'Envoyer ma demande',
+    sentTitle: 'Demande envoyée !',
+    sentText:
+      '{{name}} a {{days}} jours pour te répondre. Tu reçois une notification dès qu’il t’écrit ou t’envoie un devis.',
+    summary: 'Récapitulatif',
+    budgetRange: 'budget {{min}} à {{max}}',
+    budgetUpTo: 'budget jusqu’à {{max}}',
+    budgetFrom: 'budget dès {{min}}',
+    openConversation: 'Ouvrir la conversation',
+    backHome: 'Retour à l’accueil',
+  },
+  eventTypes: {
+    wedding: 'Mariage',
+    birthday: 'Anniversaire',
+    baptism: 'Baptême',
+    corporate: 'Événement d’entreprise',
+    funeral: 'Funérailles',
+    other: 'Autre',
+  },
+  clientTypes: {
+    individual: 'À titre personnel',
+    business: 'Pour une entreprise ou une association',
+  },
   /** Les messages des schémas Zod (voir errorKeyOf). */
   calendar: {
     previousMonth: 'Mois précédent',
@@ -292,7 +346,6 @@ export const fr = {
     refundNone: 'Aucun remboursement à moins de {{days}} jours',
     startingAt: 'À partir de',
     requestQuote: 'Demander un devis',
-    requestQuoteSoon: 'La demande de devis arrive au lot M9.',
     report: 'Signaler ce profil',
     reportTitle: 'Signaler ce profil',
     reportHint: 'Dis-nous ce qui ne va pas. L’équipe Wenzee regarde chaque signalement.',
@@ -325,6 +378,7 @@ export const fr = {
   },
   errors: {
     ...authMessages,
+    ...quoteRequestMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
@@ -338,6 +392,13 @@ export const fr = {
     account_inactive: 'Ce compte est suspendu.',
     unknown_account: 'Ce compte de démo n’existe pas.',
     unauthenticated: 'Connecte-toi pour continuer.',
+    client_inactive: 'Ton compte ne permet pas d’envoyer de demande.',
+    own_provider: 'Tu ne peux pas t’envoyer une demande à toi-même.',
+    provider_not_public: 'Ce prestataire ne reçoit pas de demandes pour le moment.',
+    date_in_past: 'Choisis une date à partir de demain.',
+    date_too_far: 'On ne peut pas demander de devis plus de 2 ans à l’avance.',
+    provider_unavailable: 'Ce prestataire n’est pas disponible à cette date.',
+    provider_not_found: 'Prestataire introuvable.',
   },
   /** Les catégories, par leur slug (les données de démo sont en français). */
   categories: {

@@ -120,6 +120,7 @@ apps/mobile/
                        FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse de l'écran)
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
+  src/features/quote-request/ Demande de devis en 3 étapes (M9) : QuoteRequestScreen, QuoteSteps, quoteSummary
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
   src/components/FullScreenModal.tsx Fenêtre plein écran (Modal) qui respecte l'encoche : à utiliser pour tout plein écran

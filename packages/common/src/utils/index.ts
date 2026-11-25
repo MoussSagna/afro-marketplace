@@ -4,3 +4,4 @@ export * from './labels';
 export * from './formatDate';
 export * from './slugify';
 export * from './searchParams';
+export * from './quoteRequestForm';

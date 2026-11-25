@@ -10,7 +10,7 @@ import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
 import { useTabBarStore } from '../navigation/tabBarStore';
 import { SearchScreen } from '../search/SearchScreen';
 import { ProviderProfileScreen } from './ProviderProfileScreen';
-import { QuoteRequestSoonScreen } from './QuoteRequestSoonScreen';
+import { QuoteRequestScreen } from '../quote-request/QuoteRequestScreen';
 
 const Empty = () => null;
 const routes = {
@@ -21,7 +21,7 @@ const routes = {
   '(tabs)/messages': Empty,
   '(tabs)/compte': Empty,
   'prestataires/[slug]/index': ProviderProfileScreen,
-  'prestataires/[slug]/demande': QuoteRequestSoonScreen,
+  'prestataires/[slug]/demande': QuoteRequestScreen,
   '(auth)/bienvenue': Empty,
 };
 
@@ -146,12 +146,12 @@ describe('Profil prestataire (lot M8)', () => {
     expect(useAuthFlowStore.getState().redirectTo).toBe(`/prestataires/${SLUG}`);
   });
 
-  it('« Demander un devis » une fois connecté ouvre la demande (lot M9 à venir)', async () => {
+  it('« Demander un devis » une fois connecté ouvre la demande de devis', async () => {
     await signInAsClient();
     await open();
     await fireEvent.press(await screen.findByRole('button', { name: 'Demander un devis' }));
     expect(screen).toHavePathname(`/prestataires/${SLUG}/demande`);
-    expect(screen.getByText('La demande de devis arrive au lot M9.')).toBeOnTheScreen();
+    expect(await screen.findByRole('progressbar', { name: 'Étape 1 sur 3' })).toBeOnTheScreen();
   });
 
   it('signale le profil : motif, détails, envoi, puis confirmation', async () => {

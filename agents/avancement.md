@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 24/11/2026 (lot M8 : profil prestataire).
+Dernière mise à jour : 25/11/2026 (lot M9 : demande de devis en 3 étapes).
 
 ## Lots
 
@@ -40,7 +40,33 @@ Ordre voulu par Mouss : site mocké (fait) → **app mobile** → back-end Supab
 | M6b | Traduction anglaise                    | ✅ fusionné #26                                                  |
 | M6d | Loader Wenzee (logo du splash)         | ✅ fusionné #27                                                  |
 | M7  | Recherche façon Airbnb                 | ✅ fusionné #28 (+ correctif encoche #29)                        |
-| M8  | Profil prestataire (P5)                | 🔍 PR ouverte                                                    |
+| M8  | Profil prestataire (P5)                | ✅ fusionné #30                                                  |
+| M9  | Demande de devis en 3 étapes (C1)      | 🔍 PR ouverte                                                    |
+
+## Ce que contient le lot M9
+
+- **La demande de devis en 3 étapes** (maquette C1), à l'adresse `/prestataires/[slug]/demande` (comme sur le site),
+  ouverte par « Demander un devis » sur un profil. Écran dans `src/features/quote-request/`.
+  - Il faut être connecté : sinon, le panneau « Connecte-toi » (`SignInRequired`), puis retour ici.
+  - En haut : Retour, « Demande de devis », « 2 / 3 » et la barre de progression ; une carte rappelle le prestataire.
+  - **1 · Formule** : une des formules actives, ou « Je ne sais pas encore ». `?formule=<id>` la présélectionne.
+  - **2 · Événement** : type (pastilles), date (le `Calendar`, à partir de demain, jours pris barrés en rouge),
+    invités, budget min et max en euros, ville et code postal. En passant à l'étape 3, on vérifie les champs et
+    **la date (règle n° 3)** : un jour pris est refusé avec « Ce prestataire n'est pas disponible ce jour-là ».
+  - **3 · Message** : qui organise (à titre personnel / entreprise ou association) et le message (20 caractères
+    minimum). Les erreurs du serveur s'affichent traduites (codes de `canSendQuoteRequest` dans `apiErrors`).
+  - **« Demande envoyée ! »** : 7 jours pour répondre, le récapitulatif (« Mariage · sam. 12 déc. · 120 invités »,
+    « Saint-Denis · budget 2 000 € à 3 000 € »), « Ouvrir la conversation » et « Retour à l'accueil ».
+  - Sur son propre profil (compte « les deux »), un avertissement et l'envoi bloqué (règle n° 4).
+- **Partagé avec le site** : le formulaire (`quoteRequestFormSchema`, `toCreateQuoteRequestInput`) passe de
+  `apps/web/src/features/quote-requests/lib/requestForm.ts` à `packages/common/src/utils/quoteRequestForm.ts`.
+  Ses messages sont dans `quoteRequestMessages` (schemas/quoteRequest.ts), ce qui permet de les traduire dans l'app.
+- Textes : `quote.*`, `eventTypes.*`, `clientTypes.*`, les erreurs du formulaire et les codes d'erreur de la demande.
+- **En attendant M10** : « Ouvrir la conversation » ouvre l'onglet Messages (encore « Bientôt »). La conversation est
+  bien créée par le serveur.
+- Tests : 232 tests mobiles. `quote.test.tsx` couvre la connexion demandée, le parcours complet (avec les erreurs de
+  chaque étape et la demande enregistrée), le jour indisponible refusé, l'erreur du serveur traduite, la formule
+  présélectionnée et le blocage sur son propre profil. `quoteSummary.test.ts` pour le récapitulatif.
 
 ## Ce que contient le lot M8
 
@@ -493,7 +519,7 @@ d'accessibilité : 50 tests Playwright verts. Prochaine étape : **l'application
   `REPORT_REASON_LABELS`.
 - Web :
   - C1 `/prestataires/:slug/demande` (protégée : connexion puis retour). Schéma de saisie à part
-    (`features/quote-requests/lib/requestForm.ts`) : les champs HTML sont du texte et le budget est en euros ;
+    (`packages/common/src/utils/quoteRequestForm.ts`, déplacé du site au lot M9) : les champs HTML sont du texte et le budget est en euros ;
     `toCreateQuoteRequestInput` convertit en nombres et centimes. Après l'envoi : ouverture de la conversation (`?envoyee=1`).
     Date : champ natif (pas de Calendar shadcn) + vérification des jours pris avant l'envoi.
   - C2/C3 et S3 : une seule page par écran avec `side` en paramètre (`RequestsPage`, `RequestDetailPage`), onglets
