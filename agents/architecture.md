@@ -96,9 +96,12 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   zoom lent), `CarouselControls` (points, flèches, pause), `CategoryShortcuts` (8 raccourcis), `HeroDecor` (motifs SVG) ;
   `lib/heroContent.ts` (slides, raccourcis), `lib/useCarousel.ts` (état + défilement automatique).
   La recherche du hero est `features/search/components/SearchBar.tsx`.
+  Section « Explorez nos univers » : `ExploreCategoriesSection`, `CategoryMosaic`, `CategoryImageCard` ;
+  `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
 - `src/components/layout/Navbar.tsx` : la navbar transparente de l'accueil (`PublicLayout` la choisit quand l'adresse
   est `/`, sinon `AppHeader`).
-- `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones).
+- `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones) ; `public/images/categories/` :
+  photos de la mosaïque des catégories.
 - `src/components/ui/` : composants shadcn/ui copiés dans le projet (modifiables).
 - `src/test/` : `setup.ts`, `server.ts` (MSW Node), `renderRoute.tsx`.
 - `e2e/` : Playwright (projets `desktop` et `mobile`).

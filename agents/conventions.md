@@ -72,6 +72,9 @@ recapturer**.
 2. Capturer le rendu réel avec Playwright **à la résolution exacte de la maquette** (et en tablette / mobile).
 3. Lister les écarts par priorité ; chaque correction répond à un écart identifié.
 4. **3 cycles maximum** (première intégration comprise) ; les écarts restants sont documentés, pas cachés.
-5. Documenter dans `docs/<sujet>-validation.md` (mesures, écarts, corrections). **Les captures ne sont pas commitées**
-   (choix de Mouss, 25/11/2026) : elles restent en local, hors du dépôt.
+5. Documenter dans `docs/<sujet>-validation.md` (mesures, écarts, corrections), sans y insérer les images.
    Exemple : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
+6. **Captures d'écran : jamais commitées** (règle de Mouss, 25/11/2026). Elles servent pendant le travail
+   (par ex. dans `docs/screenshots/<sujet>/`) et pour les montrer à Mouss, puis **elles sont supprimées à la fin,
+   avant chaque PR**. Avant de commiter, vérifier : `git status --short` ne doit lister aucun `.png`, `.jpg` ou `.webp`
+   de capture, et `docs/screenshots/` ne doit plus exister.
