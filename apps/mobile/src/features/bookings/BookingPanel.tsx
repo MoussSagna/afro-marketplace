@@ -5,6 +5,7 @@ import {
   toIsoDate,
   useCancelBooking,
   type Booking,
+  type Side,
 } from '@afro/common';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +20,7 @@ import { bookingStatus, canCancelBooking } from './bookingStatus';
  * maintenant), les montants, la politique d'annulation, puis « Annuler la réservation »
  * avec, AVANT de confirmer, ce que prévoit la politique (règle n° 9).
  */
-export function BookingPanel({ booking }: { booking: Booking }) {
+export function BookingPanel({ booking, side = 'client' }: { booking: Booking; side?: Side }) {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const status = bookingStatus(booking);
@@ -41,7 +42,9 @@ export function BookingPanel({ booking }: { booking: Booking }) {
   return (
     <View className="gap-2">
       <View className="flex-row items-center justify-between">
-        <Heading level={3}>{t('bookings.section')}</Heading>
+        <Heading level={3}>
+          {t(side === 'client' ? 'bookings.section' : 'bookings.sectionPro')}
+        </Heading>
         <Badge variant={status.tone}>{status.label}</Badge>
       </View>
       <View>
@@ -68,7 +71,8 @@ export function BookingPanel({ booking }: { booking: Booking }) {
           </Text>
         </View>
       ) : null}
-      {canCancelBooking(booking, toIsoDate(new Date())) ? (
+      {/* Côté prestataire (lot M15a), la réservation se lit seulement : l'annulation reste sur le site. */}
+      {side === 'client' && canCancelBooking(booking, toIsoDate(new Date())) ? (
         cancelling ? (
           <CancelBookingForm
             booking={booking}

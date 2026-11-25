@@ -101,10 +101,9 @@ describe('Mode prestataire (lot M13)', () => {
   it('les onglets pro encore vides annoncent leur lot, et Profil ramène au mode client', async () => {
     await act(() => useModeStore.setState({ mode: 'pro' }));
     await open('/pro', DEMO_PROVIDER_ID);
-    await fireEvent.press(await screen.findByRole('tab', { name: 'Agenda' }));
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Profil' }));
     expect(screen.getByText('Lot M15')).toBeOnTheScreen();
 
-    await fireEvent.press(screen.getByRole('tab', { name: 'Profil' }));
     await press('Revenir en mode client');
     expect(useModeStore.getState().mode).toBe('client');
     expect(screen).toHavePathname('/compte');
