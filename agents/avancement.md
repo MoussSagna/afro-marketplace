@@ -1,7 +1,17 @@
 # Avancement
 
-Dernière mise à jour : 25/11/2026 (données de démo : toutes les catégories en 8 groupes ; avant : pied de page unique et
-carrousel du hero sans contrôles, branche `feat/web-footer`).
+Dernière mise à jour : 26/11/2026 (nouvelle branche `dev` : `main` devient la production).
+
+## Branche `dev` et production (26/11/2026)
+
+Demande de Mouss : « faire les dev sur une branche dev, la main servira de prod ».
+
+- Branche **`dev`** créée depuis la dernière version de `main` (`9ae6ecd`) et poussée.
+- Désormais, toutes les PR partent de `dev` et ciblent `dev` ; `dev` → `main` seulement quand Mouss le demande
+  (règle détaillée : [`conventions.md`](conventions.md#branches-règle-de-mouss-26112026)).
+- CI (`.github/workflows/ci.yml`) : lancée aussi à chaque push dans `dev`.
+- Réglages GitHub et Vercel à faire par Mouss : voir « Ce que Mouss a à faire » dans
+  [`questions-ouvertes.md`](questions-ouvertes.md).
 
 ## Données de démo : toutes les catégories (25/11/2026)
 

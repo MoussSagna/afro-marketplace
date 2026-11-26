@@ -45,6 +45,16 @@
 
 ## Git et PR
 
+### Branches (règle de Mouss, 26/11/2026)
+
+- **`main` = la production** : c'est ce que Vercel met en ligne sur le site public. On n'y pousse jamais directement.
+- **`dev` = la branche de développement** : tout le travail part de `dev`.
+- Chaque lot ou sujet : une branche créée **depuis `dev`** (`git checkout -B <ma-branche> origin/dev`), et une PR
+  **qui cible `dev`** (jamais `main`).
+- **`dev` ne va dans `main` que quand Mouss le demande** (une PR `dev` → `main`, « mise en production »).
+- Après la fusion d'une PR dans `dev`, la branche suivante repart de `origin/dev` à jour.
+- La CI tourne sur chaque PR et sur chaque push dans `main` et `dev`.
+
 - **Une PR par lot** (ou par sujet si le lot est gros), commits en français, au format `feat(common): …`, `fix(web): …`, `docs(agents): …`.
 - La CI doit être verte : format, lint, types, tests, build, Playwright.
 - Chaque PR met à jour `agents/avancement.md` (et les autres fiches si besoin).
