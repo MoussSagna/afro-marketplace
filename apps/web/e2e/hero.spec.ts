@@ -26,7 +26,8 @@ test.describe("hero plein écran de l'accueil", () => {
       'rgba(0, 0, 0, 0)',
     );
 
-    await page.mouse.wheel(0, 800);
+    // 250 px : assez pour passer en fond brun, pas assez pour que la barre se cache (voir header-scroll.spec.ts).
+    await page.mouse.wheel(0, 250);
     await expect(header).toHaveAttribute('data-scrolled', 'true');
     await expect(header).toHaveCSS('position', 'fixed');
     expect((await header.boundingBox())!.y).toBe(0);

@@ -1,7 +1,23 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (section « Pourquoi Wenzee » de l'accueil).
-« Prestataires à la une » de l'accueil revue).
+Dernière mise à jour : 26/11/2026 (navbar animée au défilement).
+
+## Site : navbar animée au défilement (26/11/2026)
+
+Demande de Mouss : « des animations au scroll du header ». Branche `claude/header-scroll`, PR vers `dev`.
+Captures (GIF ordinateur et mobile) : `/mnt/project-files/animations-accueil/header/`.
+
+- **`hooks/useScrollHeader.ts`** (remplace `useScrolled.ts`) : `scrolled` (on a quitté le haut de la page) et
+  `hidden` (on descend au-delà de 320 px ; faux dès qu'on remonte, petits mouvements de moins de 6 px ignorés).
+- **`Navbar`**, sur toutes les pages : se compacte (barre et logo plus bas), **glisse hors de l'écran en descendant**
+  et revient en remontant, **fil de lecture** orange (`bg-cta`) en bas de la barre (largeur = progression dans la
+  page, via `useScroll` de Motion). Reste visible si le clavier est dedans (`focus-within`) ou si le menu
+  « Prestataires » est ouvert.
+- **« Réduire les animations »** : la barre ne se cache jamais et rien ne glisse (`useReducedMotion`,
+  `motion-reduce:transition-none`).
+- Tests : `useScrollHeader.test.ts`, `Navbar.test.tsx` (barre cachée puis revenue, fil de lecture),
+  `e2e/header-scroll.spec.ts` (compactage, masquage, focus clavier, mouvements réduits) ; `e2e/hero.spec.ts` défile
+  de 250 px au lieu de 800 (sinon la barre se cache).
 
 ## Branche `dev` et production (26/11/2026)
 
@@ -187,7 +203,7 @@ Demande de Mouss, d'après sa maquette. ✅ Fusionné (#46). Méthode et cycles 
 Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). ✅ Fusionné (#44). Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
 
 - **Navbar de l'accueil** (`components/layout/Navbar.tsx`) : transparente sur la photo au chargement, puis collée en haut
-  avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrolled.ts`). Accueil, Prestataires (menu des
+  avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrollHeader.ts`). Accueil, Prestataires (menu des
   catégories), Événements, Offres & Deals, Notre mission (→ `/comment-ca-marche`), Se connecter, S'inscrire
   (→ connexion de démo) ; connecté : « Mon espace » + menu du compte. Sur téléphone et tablette : menu latéral.
   Les autres pages publiques gardent `AppHeader`.
