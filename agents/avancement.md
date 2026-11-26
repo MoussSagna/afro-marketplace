@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (règle : supprimer la branche d'une PR une fois fusionnée ; avant : section
+Dernière mise à jour : 26/11/2026 (section « Pourquoi Wenzee » de l'accueil).
 « Prestataires à la une » de l'accueil revue).
 
 ## Branche `dev` et production (26/11/2026)
@@ -125,10 +125,21 @@ Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-vali
 - « Prestataires » est souligné sur la recherche, les catégories et les profils.
 - Tests : `Navbar.test.tsx` (autres pages, espace pro, lien actif), `auth.test.tsx`, `Brand.test.tsx` (logo clair).
 
+## Site : section « Pourquoi Wenzee » (26/11/2026)
+
+Demande de Mouss : « passe à la suite de l'accueil ». Reprise de la maquette `/mnt/project-files/maquette-accueil/`. 🔍 PR ouverte vers `dev`.
+
+- Sous « Comment ça marche » (`features/home/components/WhyWenzeeSection.tsx`) : photo de fête à gauche (cadre ocre
+  décalé), à droite surtitre « Pourquoi Wenzee », titre « Le lien entre **nos talents** et vos moments. », texte de
+  mission, citation, lien « Découvrir notre mission » → `/comment-ca-marche`. Empilé sous 1024 px. Fond ivoire.
+- Photo : `public/images/hero/celebration.webp` (déjà utilisée par le hero et la mosaïque), avec `srcSet`.
+- Tests : `WhyWenzeeSection.test.tsx`, `e2e/why-wenzee.spec.ts` (côte à côte / empilé, photo chargée, pas de débordement).
+- Suite de la maquette : le journal attend la réponse de Mouss (articles fictifs ou pas).
+
 ## Site : section « Prestataires à la une » (26/11/2026)
 
 Demande de Mouss : refaire cette section « en se basant sur les sections du dessus » (hero, univers, deux façons).
-Maquette d'ensemble inspirée de la structure d'afropro.com : `/mnt/project-files/maquette-accueil/`. 🔍 PR ouverte vers `dev`.
+Maquette d'ensemble inspirée de la structure d'afropro.com : `/mnt/project-files/maquette-accueil/`. ✅ Fusionné (#51).
 
 - 4ᵉ section de l'accueil (`features/home/components/FeaturedProvidersSection.tsx`) : même grammaire que les sections
   au-dessus (surtitre entre tirets, titre Playfair « Des talents qui font **la différence.** » souligné ocre,
