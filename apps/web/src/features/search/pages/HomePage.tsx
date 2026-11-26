@@ -2,10 +2,10 @@ import { useLocation } from 'react-router';
 import { FeaturedProvidersSection } from '@/features/home/components/FeaturedProvidersSection';
 import { ExploreCategoriesSection } from '@/features/home/components/ExploreCategoriesSection';
 import { HeroSection } from '@/features/home/components/HeroSection';
+import { HowItWorksSection } from '@/features/home/components/HowItWorksSection';
 import { UserTypesSection } from '@/features/home/components/UserTypesSection';
 import { WhyWenzeeSection } from '@/features/home/components/WhyWenzeeSection';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { HowItWorks } from '../components/HowItWorks';
 
 /**
  * P1 : l'accueil. Hero plein écran (recherche, catégories, carrousel), « Explorez nos univers »,
@@ -40,7 +40,7 @@ export function HomePage() {
 
       <FeaturedProvidersSection />
 
-      <HowItWorks />
+      <HowItWorksSection />
 
       <WhyWenzeeSection />
     </>

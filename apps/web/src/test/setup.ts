@@ -10,6 +10,28 @@ import { server } from './server';
 // des « findBy… ». On laisse 5 secondes avant de déclarer l'élément introuvable.
 configure({ asyncUtilTimeout: 5000 });
 
+// jsdom n'a pas d'IntersectionObserver, utilisé par `whileInView` de Motion (apparitions au défilement).
+// Ce faux annonce tout de suite chaque élément comme visible : l'animation se joue et le contenu s'affiche.
+class IntersectionObserverStub {
+  readonly root = null;
+  readonly rootMargin = '0px';
+  readonly thresholds = [0];
+  constructor(private readonly callback: IntersectionObserverCallback) {}
+  observe(target: Element) {
+    this.callback(
+      [{ target, isIntersecting: true, intersectionRatio: 1 } as IntersectionObserverEntry],
+      this as unknown as IntersectionObserver,
+    );
+  }
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+globalThis.IntersectionObserver ??=
+  IntersectionObserverStub as unknown as typeof IntersectionObserver;
+
 // MSW côté Node : mêmes handlers que dans le navigateur.
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterEach(() => {

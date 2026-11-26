@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
-import { HowItWorks } from '@/features/search/components/HowItWorks';
+import { HowItWorksSection } from '@/features/home/components/HowItWorksSection';
 import { StaticPage, StaticSection } from '../components/StaticPage';
 
 /** P7 : comment ça marche, côté client et côté prestataire. */
@@ -16,7 +16,7 @@ export function HowItWorksPage() {
           d’Île-de-France : traiteurs, danseurs, DJ, coiffeuses, speakers…
         </p>
       </StaticPage>
-      <HowItWorks />
+      <HowItWorksSection />
       <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-12">
         <StaticSection title="Vous organisez un événement">
           <ul className="list-disc space-y-1 pl-5">
