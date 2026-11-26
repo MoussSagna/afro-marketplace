@@ -910,10 +910,13 @@ export const fr = {
   },
   /** Les catégories, par leur slug (les données de démo sont en français). */
   categories: {
-    nourriture: 'Nourriture',
-    spectacle: 'Spectacle',
-    conference: 'Conférence',
-    beaute: 'Beauté',
-    decoration: 'Décoration',
+    'organisation-lieux': 'Organisation & lieux',
+    'traiteur-boissons': 'Traiteur & boissons',
+    'mode-tenues': 'Mode & tenues',
+    'deco-location': 'Déco & location',
+    'musique-animation': 'Musique & animation',
+    'beaute-soins': 'Beauté & soins',
+    'photo-video': 'Photo & vidéo',
+    'services-evenementiels': 'Services événementiels',
   },
 };

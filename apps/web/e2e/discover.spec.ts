@@ -37,3 +37,17 @@ test('une page catégorie a son titre pour Google', async ({ page }) => {
   ).toBeVisible();
   await expect(page).toHaveTitle('DJ afro en Île-de-France · Wenzee');
 });
+
+test('un nouveau groupe de catégories montre ses sous-catégories et ses prestataires', async ({
+  page,
+}) => {
+  await page.goto('/categories/photo-video');
+
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Photo & vidéo afro en Île-de-France' }),
+  ).toBeVisible();
+  const subCategories = page.getByRole('list', { name: 'Sous-catégories' });
+  await expect(subCategories.getByRole('link', { name: 'Photographes' })).toBeVisible();
+  await expect(subCategories.getByRole('link', { name: 'Photobooths' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Studio Sankofa' })).toBeVisible();
+});

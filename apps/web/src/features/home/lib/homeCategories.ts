@@ -9,11 +9,11 @@ export const HOME_CATEGORIES = {
   traiteur: { label: 'Traiteur', categorySlug: 'traiteurs' },
   danse: { label: 'Danse', categorySlug: 'danse' },
   musique: { label: 'Musique & DJ', categorySlug: 'dj' },
-  show: { label: 'Show', categorySlug: 'spectacle' },
+  show: { label: 'Show', categorySlug: 'musique-animation' },
   speaker: { label: 'Speaker', categorySlug: 'speakers' },
-  beaute: { label: 'Beauté', categorySlug: 'beaute' },
-  mode: { label: 'Mode', categorySlug: 'location-de-tenues' },
-  decoration: { label: 'Décoration', categorySlug: 'decoration' },
+  beaute: { label: 'Beauté', categorySlug: 'beaute-soins' },
+  mode: { label: 'Mode', categorySlug: 'mode-tenues' },
+  decoration: { label: 'Décoration', categorySlug: 'deco-location' },
 } as const satisfies Record<string, { label: string; categorySlug: string }>;
 
 export type HomeCategoryId = keyof typeof HOME_CATEGORIES;

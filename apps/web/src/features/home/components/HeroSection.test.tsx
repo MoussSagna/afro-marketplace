@@ -78,7 +78,7 @@ describe('SearchBar du hero', () => {
 
     const form = await screen.findByRole('search', { name: 'Rechercher un prestataire' });
     // On attend que les catégories soient chargées dans la liste.
-    await within(form).findByRole('option', { name: 'Traiteur' });
+    await within(form).findByRole('option', { name: 'Traiteurs' });
     await userEvent.selectOptions(
       within(form).getByLabelText('Que recherchez-vous ?'),
       'traiteurs',
@@ -113,7 +113,7 @@ describe('SearchBar du hero', () => {
     expect(
       within(form).getByRole('option', { name: 'Traiteur, DJ, danseur…' }),
     ).toBeInTheDocument();
-    await within(form).findByRole('option', { name: 'Traiteur' });
+    await within(form).findByRole('option', { name: 'Traiteurs' });
     expect(what).toBeEnabled();
   });
 });

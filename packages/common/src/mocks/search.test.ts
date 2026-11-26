@@ -23,7 +23,7 @@ describe('searchProviders', () => {
   });
 
   it('une catégorie principale inclut ses sous-catégories', () => {
-    const show = slugs({ category: 'spectacle' });
+    const show = slugs({ category: 'musique-animation' });
     expect(show).toContain('dj-makossa-vibes'); // DJ
     expect(show).toContain('compagnie-akwaba'); // Danse
     expect(show).not.toContain('saveurs-de-dakar'); // Traiteur
@@ -54,6 +54,14 @@ describe('searchProviders', () => {
 
   it('filtre par ville', () => {
     expect(slugs({ city: 'creteil' })).toEqual(['dj-makossa-vibes']);
+  });
+
+  it('chacun des 8 groupes de catégories a au moins un prestataire publié', () => {
+    const groups = data.categories.filter((category) => !category.parentId);
+    expect(groups).toHaveLength(8);
+    for (const group of groups) {
+      expect(slugs({ category: group.slug }), group.name).not.toHaveLength(0);
+    }
   });
 
   it('règle n° 3 : exclut les prestataires indisponibles à la date choisie', () => {

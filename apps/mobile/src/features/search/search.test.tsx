@@ -61,12 +61,14 @@ describe('Recherche (lot M7)', () => {
   });
 
   it('filtre sur une catégorie de la rangée, et la garde dans l’adresse', async () => {
-    const { totals } = await open('/recherche', [{}, { category: 'nourriture' }]);
+    const { totals } = await open('/recherche', [{}, { category: 'traiteur-boissons' }]);
     await screen.findByText(plural(totals[0]!));
-    await press('Nourriture');
-    expect(screen).toHaveSearchParams({ categorie: 'nourriture' });
+    await press('Traiteur & boissons');
+    expect(screen).toHaveSearchParams({ categorie: 'traiteur-boissons' });
     expect(await screen.findByText(plural(totals[1]!))).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Nourriture', selected: true })).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', { name: 'Traiteur & boissons', selected: true }),
+    ).toBeOnTheScreen();
 
     await press('Tout');
     expect(await screen.findByText(plural(totals[0]!))).toBeOnTheScreen();
@@ -74,21 +76,23 @@ describe('Recherche (lot M7)', () => {
 
   it('cherche en plein écran : Quoi ? → Où ? → Quand ? → Invités, puis « Rechercher »', async () => {
     const date = nextMonth14();
-    const filters = { category: 'nourriture', city: 'Paris', date, guests: 80 };
+    const filters = { category: 'traiteur-boissons', city: 'Paris', date, guests: 80 };
     const { totals } = await open('/recherche', [filters]);
-    await screen.findByRole('button', { name: 'Nourriture' }); // les catégories sont chargées
+    await screen.findByRole('button', { name: 'Traiteur & boissons' }); // les catégories sont chargées
     await fireEvent.press(screen.getByRole('search', { name: /^Que cherches-tu \?/ }));
 
     // Étape 1 : Quoi ? Les autres étapes attendent, repliées.
     expect(screen.getByText('Ta recherche')).toBeOnTheScreen();
     expect(screen.getByRole('header', { name: 'Que cherches-tu ?' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Où : Partout' })).toBeOnTheScreen();
+    // Les groupes sans photo (Photo & vidéo…) montrent leur icône à la place.
+    expect(screen.getByTestId('category-icon-photo-video')).toBeOnTheScreen();
     // (la rangée de catégories de l'écran est toujours là, derrière : la photo est la dernière trouvée)
-    await fireEvent.press(screen.getAllByRole('button', { name: 'Nourriture' }).at(-1)!);
+    await fireEvent.press(screen.getAllByRole('button', { name: 'Traiteur & boissons' }).at(-1)!);
 
     // Étape 2 : Où ? (le choix précédent est résumé dans l'étape repliée)
     expect(screen.getByRole('header', { name: 'Où ?' })).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Quoi : Nourriture' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Quoi : Traiteur & boissons' })).toBeOnTheScreen();
     expect(
       await screen.findByRole('button', { name: /^Paris, \d+ prestataires?$/ }),
     ).toBeOnTheScreen();
@@ -114,13 +118,15 @@ describe('Recherche (lot M7)', () => {
 
     await press('Rechercher');
     expect(screen).toHaveSearchParams({
-      categorie: 'nourriture',
+      categorie: 'traiteur-boissons',
       ville: 'Paris',
       date,
       invites: '80',
     });
     expect(screen.queryByText('Ta recherche')).toBeNull();
-    expect(await screen.findByRole('search', { name: /^Nourriture · Paris, / })).toBeOnTheScreen();
+    expect(
+      await screen.findByRole('search', { name: /^Traiteur & boissons · Paris, / }),
+    ).toBeOnTheScreen();
     if (totals[0]) {
       expect(await screen.findByText(plural(totals[0]))).toBeOnTheScreen();
       expect(screen.getByText(/libres ce jour-là/)).toBeOnTheScreen();
@@ -130,13 +136,13 @@ describe('Recherche (lot M7)', () => {
   });
 
   it('« Tout effacer » vide la recherche plein écran, la croix la ferme sans rien changer', async () => {
-    await open('/recherche?categorie=beaute&ville=Paris');
-    await fireEvent.press(await screen.findByRole('search', { name: /^Beauté · Paris/ }));
+    await open('/recherche?categorie=beaute-soins&ville=Paris');
+    await fireEvent.press(await screen.findByRole('search', { name: /^Beauté & soins · Paris/ }));
     expect(screen.getByRole('button', { name: 'Où : Paris' })).toBeOnTheScreen();
     await press('Tout effacer');
     expect(screen.getByRole('button', { name: 'Où : Partout' })).toBeOnTheScreen();
     await press('Fermer');
-    expect(screen).toHaveSearchParams({ categorie: 'beaute', ville: 'Paris' });
+    expect(screen).toHaveSearchParams({ categorie: 'beaute-soins', ville: 'Paris' });
   });
 
   it('applique les filtres du panneau, avec le nombre de résultats en direct', async () => {
@@ -179,7 +185,7 @@ describe('Recherche (lot M7)', () => {
   });
 
   it('la flèche de la pilule efface toute la recherche', async () => {
-    await open('/recherche?categorie=beaute&date=2099-01-01&note=4');
+    await open('/recherche?categorie=beaute-soins&date=2099-01-01&note=4');
     await fireEvent.press(await screen.findByRole('button', { name: 'Effacer la recherche' }));
     expect(screen).toHaveSearchParams({});
     expect(await screen.findByRole('search', { name: /^Que cherches-tu \?/ })).toBeOnTheScreen();

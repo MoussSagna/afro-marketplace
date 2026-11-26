@@ -34,11 +34,11 @@ describe('Section « Explorez nos univers »', () => {
       ['Musique & DJ', '/recherche?categorie=dj'],
       ['Traiteur', '/recherche?categorie=traiteurs'],
       ['Danse', '/recherche?categorie=danse'],
-      ['Beauté', '/recherche?categorie=beaute'],
-      ['Mode', '/recherche?categorie=location-de-tenues'],
+      ['Beauté', '/recherche?categorie=beaute-soins'],
+      ['Mode', '/recherche?categorie=mode-tenues'],
       ['Speaker', '/recherche?categorie=speakers'],
-      ['Show', '/recherche?categorie=spectacle'],
-      ['Décoration', '/recherche?categorie=decoration'],
+      ['Show', '/recherche?categorie=musique-animation'],
+      ['Décoration', '/recherche?categorie=deco-location'],
     ]);
   });
 

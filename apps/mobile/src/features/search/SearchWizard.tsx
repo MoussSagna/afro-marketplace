@@ -5,6 +5,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LayoutAnimation, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SvgXml } from 'react-native-svg';
 import { FullScreenModal } from '@/components/FullScreenModal';
 import { Button, Heading, Text } from '@/components/ui';
 import { useCategoryName } from '@/i18n/useCategoryName';
@@ -13,6 +14,7 @@ import { mainCategories } from '@/lib/categories';
 import { cn } from '@/lib/cn';
 import { useThemeColors } from '@/theme/useTheme';
 import { Calendar } from '@/components/Calendar';
+import { CATEGORY_ICONS } from '../home/categoryIcons';
 import { CATEGORY_PHOTOS } from './categoryPhotos';
 import { shortDay } from '@/lib/dates';
 
@@ -134,14 +136,35 @@ function WizardBody({ filters, onClose, onSubmit }: Omit<SearchWizardProps, 'vis
                           }}
                           className="w-[104px] gap-1.5"
                         >
-                          <Image
-                            source={CATEGORY_PHOTOS[c.slug]}
-                            style={{ width: 104, height: 104, borderRadius: 14 }}
-                            className={cn(
-                              'border',
-                              on ? 'border-2 border-foreground' : 'border-border',
-                            )}
-                          />
+                          {CATEGORY_PHOTOS[c.slug] ? (
+                            <Image
+                              source={CATEGORY_PHOTOS[c.slug]}
+                              style={{ width: 104, height: 104, borderRadius: 14 }}
+                              className={cn(
+                                'border',
+                                on ? 'border-2 border-foreground' : 'border-border',
+                              )}
+                            />
+                          ) : (
+                            // Pas encore de photo : l'icône de la catégorie sur un fond doux.
+                            <View
+                              testID={`category-icon-${c.slug}`}
+                              style={{ width: 104, height: 104, borderRadius: 14 }}
+                              className={cn(
+                                'items-center justify-center border bg-muted',
+                                on ? 'border-2 border-foreground' : 'border-border',
+                              )}
+                            >
+                              {CATEGORY_ICONS[c.slug] ? (
+                                <SvgXml
+                                  xml={CATEGORY_ICONS[c.slug]!}
+                                  width={48}
+                                  height={48}
+                                  color={colors.primary}
+                                />
+                              ) : null}
+                            </View>
+                          )}
                           <Text size="xs" weight="semibold">
                             {categoryName(c)}
                           </Text>

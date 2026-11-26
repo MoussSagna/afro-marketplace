@@ -69,9 +69,9 @@ describe("Navbar de l'accueil", () => {
       'href',
       '/recherche',
     );
-    expect(await within(menu).findByRole('menuitem', { name: 'Beauté' })).toHaveAttribute(
+    expect(await within(menu).findByRole('menuitem', { name: 'Beauté & soins' })).toHaveAttribute(
       'href',
-      '/categories/beaute',
+      '/categories/beaute-soins',
     );
   });
 

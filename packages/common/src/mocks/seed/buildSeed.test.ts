@@ -31,6 +31,46 @@ describe('le jeu de données de démo', () => {
     expect(buildSeed(NOW)).toEqual(data);
   });
 
+  describe('les catégories', () => {
+    const groups = data.categories.filter((category) => !category.parentId);
+
+    it('ont 8 groupes, chacun avec ses sous-catégories', () => {
+      expect(groups.map((group) => group.name)).toEqual([
+        'Organisation & lieux',
+        'Traiteur & boissons',
+        'Mode & tenues',
+        'Déco & location',
+        'Musique & animation',
+        'Beauté & soins',
+        'Photo & vidéo',
+        'Services événementiels',
+      ]);
+      for (const group of groups) {
+        const children = data.categories.filter((category) => category.parentId === group.id);
+        expect(children.length, group.name).toBeGreaterThanOrEqual(4);
+      }
+    });
+
+    it('ont des identifiants et des slugs uniques, et un seul niveau de profondeur', () => {
+      const ids = data.categories.map((category) => category.id);
+      const slugs = data.categories.map((category) => category.slug);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(new Set(slugs).size).toBe(slugs.length);
+      const groupIds = new Set(groups.map((group) => group.id));
+      for (const category of data.categories) {
+        if (category.parentId) expect(groupIds).toContain(category.parentId);
+      }
+    });
+
+    it('sont toutes connues des prestataires et de leurs prestations', () => {
+      const known = new Set(data.categories.map((category) => category.id));
+      for (const provider of data.providers) {
+        for (const id of provider.categoryIds) expect(known, provider.slug).toContain(id);
+      }
+      for (const offering of data.offerings) expect(known).toContain(offering.categoryId);
+    });
+  });
+
   it('contient environ 25 prestataires, dont une vingtaine publiés en Île-de-France', () => {
     expect(data.providers.length).toBeGreaterThanOrEqual(25);
     const published = data.providers.filter((p) => p.status === 'published');

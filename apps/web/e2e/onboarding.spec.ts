@@ -20,7 +20,10 @@ test('parcours 5 : une cliente devient prestataire et envoie son profil en valid
   await next.click();
   // 2. Catégories
   await expect(page.getByRole('heading', { name: 'Ce que tu proposes' })).toBeVisible();
-  await page.getByRole('group', { name: 'Catégories' }).getByText('Traiteur').click();
+  await page
+    .getByRole('group', { name: 'Catégories' })
+    .getByText('Traiteurs', { exact: true })
+    .click();
   await next.click();
   // 3. Zone
   await expect(page.getByRole('heading', { name: 'Où interviens-tu ?' })).toBeVisible();

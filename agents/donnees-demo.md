@@ -18,9 +18,22 @@ n'est envoyé. Une inscription crée un vrai compte client dans la base de démo
 
 ## Contenu
 
-- **26 prestataires** en Île-de-France : 22 publiés, 1 `pending_review` (Kompa Vibes Haïti), 1 `changes_requested`
+- **37 prestataires** en Île-de-France : 33 publiés, 1 `pending_review` (Kompa Vibes Haïti), 1 `changes_requested`
   (Togo Traiteur Express), 1 `paused` (Atelier Kente), 1 `draft` incomplet (Saveurs du Bénin).
-- 18 catégories (5 principales), 14 origines culturelles.
+- **58 catégories : 8 groupes et 50 sous-catégories** (`mocks/seed/catalogue.ts`), traduites et adaptées à la France
+  d'après le méga-menu d'un annuaire américain de prestataires afro (capture envoyée par Mouss le 25/11/2026) :
+  Organisation & lieux, Traiteur & boissons, Mode & tenues, Déco & location, Musique & animation, Beauté & soins,
+  Photo & vidéo, Services événementiels. Ajouts « France » : food trucks, location de tenues, humour, speakers,
+  attache de foulard (gélé, moussor). Les anciens identifiants de sous-catégories (`cat-caterer`, `cat-dj`…) sont
+  gardés ; les slugs des groupes ont changé (`nourriture` → `traiteur-boissons`, `spectacle` → `musique-animation`,
+  `beaute` → `beaute-soins`, `decoration` → `deco-location` ; `conference` a disparu, les speakers sont dans
+  Musique & animation).
+- Chaque groupe a au moins un prestataire publié (test `search.test.ts`). 11 prestataires ajoutés le 25/11/2026 pour
+  les nouvelles sous-catégories : Jour J by Mariama (wedding planner), Salle Les Baobabs (salle + matériel),
+  Bissap Bar (cocktails), Couture Wax Kadiatou, Perles de Saba, Fleurs d'Abidjan, Gélé & Glam, Studio Sankofa
+  (photo/vidéo), Selfie Box Ambiance (photobooth), Akwaaba Services (serveurs, sécurité), Prestige Cars Mariage.
+  Beaucoup de sous-catégories restent vides (ex. Agences de voyage, Habillage de sol) : la page affiche alors
+  « aucun résultat ».
 - Photos : `picsum.photos` (images génériques, à remplacer par de vraies photos plus tard).
 - Avis : chaque prestataire a un historique de réservations terminées avec avis ; note moyenne recalculée.
 - Prestataire « Sur devis » (sans prix) : Awa Diallo, conférencière.
@@ -45,8 +58,9 @@ Dates bloquées à la main : dans 15 et 16 jours. `maxBookingsPerDay = 2`.
 
 ## Réinitialiser
 
-- Dans le navigateur, les données sont gardées dans le `localStorage` (clé `afro-marketplace:mock-db:v1`).
+- Dans le navigateur, les données sont gardées dans le `localStorage` (clé `afro-marketplace:mock-db:v2`).
   Pour repartir de zéro : menu du compte → « Réinitialiser les données de démo » (ou vider le localStorage).
-- **Si tu changes la forme des données** (schéma), incrémente `DEFAULT_STORAGE_KEY` dans `mocks/db.ts`
-  (de toute façon, une sauvegarde invalide est ignorée).
+- **Si tu changes la forme des données** (schéma) **ou le contenu du seed** (catégories, prestataires), incrémente
+  `DEFAULT_STORAGE_KEY` dans `mocks/db.ts` : sinon les navigateurs qui ont déjà une sauvegarde valide gardent
+  l'ancien jeu de données (passé en `v2` le 25/11/2026 pour les nouvelles catégories).
 - Dans les tests web, la base est réinitialisée après chaque test.

@@ -41,7 +41,7 @@ export interface MockDb {
   enablePersistence(storage: KeyValueStorage): void;
 }
 
-export const DEFAULT_STORAGE_KEY = 'afro-marketplace:mock-db:v1';
+export const DEFAULT_STORAGE_KEY = 'afro-marketplace:mock-db:v2';
 
 /**
  * La base de données en mémoire utilisée par les handlers MSW.

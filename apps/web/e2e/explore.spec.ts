@@ -23,7 +23,7 @@ test.describe('section « Explorez nos univers »', () => {
       .getByRole('list', { name: 'Univers Wenzee' })
       .getByRole('link', { name: 'Mode' })
       .click();
-    await expect(page).toHaveURL('/recherche?categorie=location-de-tenues');
+    await expect(page).toHaveURL('/recherche?categorie=mode-tenues');
   });
 
   test('les photos se chargent', async ({ page }) => {
