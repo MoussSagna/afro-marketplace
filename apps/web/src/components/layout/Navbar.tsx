@@ -1,5 +1,6 @@
 import { useCategories } from '@afro/common';
 import { ChevronDown, Menu } from 'lucide-react';
+import { motion, useReducedMotion, useScroll } from 'motion/react';
 import { useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { Logo } from '@/components/Logo';
@@ -17,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useScrolled } from '@/hooks/useScrolled';
+import { useScrollHeader } from '@/hooks/useScrollHeader';
 import { cn } from '@/lib/utils';
 import { SPACE_HOME, useSessionStore } from '@/stores/session';
 import { UserMenu } from './UserMenu';
@@ -50,9 +51,19 @@ interface NavbarProps {
  * - sur l'accueil (`overlay`), totalement transparente au chargement, puis fond brun translucide flouté au défilement ;
  * - sur les autres pages, collée en haut avec ce même fond brun dès le départ.
  * Sur téléphone et tablette, les liens passent dans un menu latéral.
+ *
+ * Animations au défilement (toutes les pages) :
+ * - la barre se compacte (moins haute, logo plus petit) dès qu'on quitte le haut de la page ;
+ * - elle glisse hors de l'écran quand on descend, et revient dès qu'on remonte ;
+ * - un fin trait orange, en bas de la barre, montre où l'on en est dans la page.
+ * Elle reste toujours visible si un de ses éléments a le focus clavier ou si le menu « Prestataires »
+ * est ouvert. Avec « réduire les animations », elle ne se cache jamais et ne glisse pas.
  */
 export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
-  const scrolled = useScrolled();
+  const reduceMotion = useReducedMotion() ?? false;
+  const { scrolled, hidden } = useScrollHeader({ canHide: !reduceMotion });
+  // Progression dans la page, de 0 à 1 : la largeur du trait orange.
+  const { scrollYProgress } = useScroll();
   // Fond brun : toujours hors de l'accueil, après le défilement sur l'accueil.
   const solid = !overlay || scrolled;
   const user = useSessionStore((state) => state.user);
@@ -80,8 +91,12 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
   return (
     <header
       data-scrolled={overlay ? scrolled : undefined}
+      data-hidden={hidden}
       className={cn(
-        'inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter] duration-300',
+        'inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter,translate] duration-300 ease-out motion-reduce:transition-none',
+        // Cachée en descendant… sauf si le clavier est dedans ou si le menu « Prestataires » est ouvert.
+        hidden &&
+          '-translate-y-full focus-within:translate-y-0 has-[[data-state=open]]:translate-y-0',
         overlay ? 'fixed' : 'sticky',
         !solid && 'bg-transparent',
         solid && overlay && 'bg-foreground/75 shadow-pop backdrop-blur-md backdrop-saturate-150',
@@ -91,13 +106,19 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
     >
       <div
         className={cn(
-          'mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 sm:px-6 lg:px-8 2xl:px-[4.2vw]',
+          'mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 motion-reduce:transition-none sm:px-6 lg:px-8 2xl:px-[4.2vw]',
           solid ? 'h-16 lg:h-[72px]' : 'h-[72px] lg:h-[84px]',
         )}
       >
         <div className="flex shrink-0 items-center gap-2">
           <Link to="/" aria-label="Wenzee, accueil" className={cn('rounded-md', focusRing)}>
-            <Logo variant="light" className="h-9 sm:h-10 2xl:h-12" />
+            <Logo
+              variant="light"
+              className={cn(
+                'transition-[height] duration-300 motion-reduce:transition-none',
+                solid ? 'h-8 sm:h-9 2xl:h-10' : 'h-9 sm:h-10 2xl:h-12',
+              )}
+            />
           </Link>
           {spaceLabel && (
             <span className="hidden rounded-full bg-white/15 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white sm:inline-flex">
@@ -217,6 +238,16 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
           </Dialog>
         </div>
       </div>
+      {/* Fil de lecture : visible seulement une fois la barre sur son fond brun. */}
+      <motion.div
+        aria-hidden
+        data-testid="scroll-progress"
+        className={cn(
+          'absolute inset-x-0 bottom-0 h-[3px] origin-left bg-cta transition-opacity duration-300',
+          solid ? 'opacity-100' : 'opacity-0',
+        )}
+        style={{ scaleX: scrollYProgress }}
+      />
     </header>
   );
 }

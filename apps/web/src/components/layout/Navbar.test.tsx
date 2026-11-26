@@ -60,6 +60,35 @@ describe("Navbar de l'accueil", () => {
     expect(header).not.toHaveClass('bg-transparent');
   });
 
+  it('se cache en descendant, revient en remontant, avec le fil de lecture', async () => {
+    renderRoute('/');
+
+    await screen.findByRole('heading', { level: 1, name: /Trouvez les talents/ });
+    const header = screen.getByRole('banner');
+    const progress = within(header).getByTestId('scroll-progress');
+    expect(header).toHaveAttribute('data-hidden', 'false');
+    expect(progress).toHaveClass('opacity-0'); // pas de trait tant que la barre est transparente
+
+    await act(async () => {
+      scrollTo(500);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+    await act(async () => {
+      scrollTo(900);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+    expect(header).toHaveAttribute('data-hidden', 'true');
+    expect(header).toHaveClass('-translate-y-full', 'focus-within:translate-y-0');
+    expect(progress).toHaveClass('opacity-100');
+
+    await act(async () => {
+      scrollTo(850);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+    expect(header).toHaveAttribute('data-hidden', 'false');
+    expect(header).not.toHaveClass('-translate-y-full');
+  });
+
   it('le menu « Prestataires » liste les catégories', async () => {
     renderRoute('/');
 
