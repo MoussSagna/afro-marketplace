@@ -2,6 +2,7 @@ import { mockDb } from '@afro/common/mocks';
 import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
+import { useSearchDraft } from '@/features/search/lib/searchDraft';
 import { useSessionStore } from '@/stores/session';
 import { server } from './server';
 
@@ -40,5 +41,6 @@ afterEach(() => {
   mockDb.reset(); // chaque test repart des données de démo
   useSessionStore.getState().signOut(); // et sans personne de connecté
   localStorage.clear();
+  useSearchDraft.getState().reset(); // la recherche guidée repart vide
 });
 afterAll(() => server.close());

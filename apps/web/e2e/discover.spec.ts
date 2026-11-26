@@ -6,9 +6,15 @@ test('un visiteur cherche, filtre et ouvre un profil', async ({ page, isMobile }
     page.getByRole('banner').getByRole('link', { name: 'Wenzee, accueil' }),
   ).toBeVisible();
 
-  // Accueil : recherche « Que recherchez-vous ? »
-  const search = page.getByRole('search', { name: 'Rechercher un prestataire' });
-  await search.getByLabel('Que recherchez-vous ?').selectOption('traiteurs');
+  // Accueil : recherche « Quoi ? » (pilule sur ordinateur, plein écran sur téléphone)
+  if (isMobile) await page.getByRole('button', { name: /Que recherchez-vous/ }).click();
+  const search = isMobile
+    ? page.getByRole('dialog', { name: 'Votre recherche' })
+    : page.getByRole('search', { name: 'Rechercher un prestataire' });
+  await search
+    .getByRole('combobox', { name: isMobile ? 'Prestation recherchée' : 'Quoi ?' })
+    .fill('Traiteurs');
+  await search.getByRole('option', { name: /^Traiteurs/ }).click();
   await search.getByRole('button', { name: 'Rechercher' }).click();
   await expect(page).toHaveURL('/recherche?categorie=traiteurs');
   await expect(page.getByText('5 prestataires')).toBeVisible();

@@ -1,6 +1,38 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 26/11/2026 (recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+
+## Site : recherche guidée façon Airbnb (26/11/2026)
+
+Demande de Mouss : « pour la barre de recherche, j'aimerais que tu t'inspires de la recherche du site Airbnb ».
+On reprend le **parcours** d'Airbnb (pas son look : couleurs, icônes et typographie restent Wenzee).
+Branche `claude/project-thread-em4b8u`, PR vers `dev`. Captures (PNG + GIF ordinateur et mobile) :
+`/mnt/project-files/recherche-airbnb/`.
+
+- **Tablette et ordinateur, `guided-search/SearchPill.tsx`** : pilule à trois segments « Quoi ? / Où ? / Quand ? » +
+  loupe. Un clic sur un segment le met en avant (fond blanc qui **glisse** d'un segment à l'autre, `layoutId` de Motion ;
+  la pilule passe en sable) et ouvre **son panneau** dessous : univers (8 tuiles) puis prestations filtrées à la frappe
+  ; villes populaires ou ville tapée ; calendrier deux mois + raccourcis (« Ce samedi », « Samedi prochain », « Dans un
+  mois »). Choisir passe **tout seul à l'étape suivante**. Clic dehors ou Échap : tout se referme. Croix pour effacer un
+  champ. Clavier : motif « combobox » (flèches, Entrée). Demande de Mouss : à l'ouverture d'une étape, **la page
+  défile en douceur pour centrer la pilule et son panneau** (jamais coupé en bas, jamais sous l'en-tête ; instantané
+  avec « réduire les animations »).
+- **Téléphone, `guided-search/MobileSearch.tsx`** : un grand bouton « Que recherchez-vous ? » ouvre une recherche
+  **plein écran par étapes** (cartes Quoi / Où / Quand, une seule dépliée, les autres résument le choix) ; « Tout
+  effacer » et « Rechercher » toujours en bas.
+- **En-tête (accueil), `guided-search/HeaderSearch.tsx`** : quand la recherche du hero sort de l'écran
+  (`IntersectionObserver`, store `useHeroSearchInView`), les liens de la navbar laissent la place à une **recherche
+  compacte** (« Toutes les prestations | Partout | N'importe quand »). Un clic la **déplie en grand** sous la barre,
+  sur l'étape cliquée, la page s'assombrit ; défiler, Échap ou clic dehors la replient. Sur téléphone et tablette :
+  une loupe qui ouvre le plein écran. La navbar ne se cache pas tant que la recherche est ouverte.
+- **Logique sans écran, `features/search/lib/searchDraft.ts`** : brouillon partagé entre toutes les barres (Zustand,
+  pas gardé au rechargement), suggestions (accents ignorés), dates rapides, adresse des résultats. Un texte tapé sans
+  choisir de catégorie devient une recherche libre `?q=`.
+- Le hero passe de `overflow-hidden` à `overflow-x-clip` (+ `z-10`) pour que les panneaux puissent déborder dessous.
+- **Tests** : `searchDraft.test.ts`, `GuidedSearch.test.tsx` (pilule, clavier, plein écran, en-tête),
+  `e2e/guided-search.spec.ts` (ordinateur et téléphone) ; `discover.spec.ts` suit la nouvelle recherche ; les anciens
+  tests de la `SearchBar` du hero sont remplacés.
+- Villes proposées : liste fixe des villes de démo (question n° 21).
 
 ## Site : navbar animée au défilement (26/11/2026)
 
