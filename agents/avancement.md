@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (navbar animée au défilement).
+Dernière mise à jour : 26/11/2026 (navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
 
 ## Site : navbar animée au défilement (26/11/2026)
 
@@ -18,6 +18,24 @@ Captures (GIF ordinateur et mobile) : `/mnt/project-files/animations-accueil/hea
 - Tests : `useScrollHeader.test.ts`, `Navbar.test.tsx` (barre cachée puis revenue, fil de lecture),
   `e2e/header-scroll.spec.ts` (compactage, masquage, focus clavier, mouvements réduits) ; `e2e/hero.spec.ts` défile
   de 250 px au lieu de 800 (sinon la barre se cache).
+
+## Site : section « Comment ça marche » refaite (26/11/2026)
+
+Demande de Mouss : « refaire la partie comment ça marche », dans le style des sections déjà refaites (maquette
+`maquette-accueil/`). Branche `claude/project-thread-zs1yma`, PR vers `dev`. Captures (PNG + GIF ordinateur et
+mobile) : `/mnt/project-files/animations-accueil/comment-ca-marche/`.
+
+- **`features/home/components/HowItWorksSection.tsx`** (remplace `features/search/components/HowItWorks.tsx`) :
+  surtitre entre tirets, titre « Trois étapes, _zéro prise de tête._ » souligné ocre, 3 cartes ivoire sur fond sable
+  (liseré orange, grand numéro Playfair 01/02/03, icône ronde), fil pointillé qui relie les étapes (horizontal sur
+  ordinateur, vertical sur téléphone), bouton « Commencer ma recherche » → `/recherche`. Textes de la maquette
+  (étape 3 : « Célébrez ») dans `features/home/lib/howItWorks.ts`.
+- **Animation** : les cartes montent en fondu l'une après l'autre à l'arrivée à l'écran (`whileInView`, une seule
+  fois) ; léger soulèvement au survol. « Réduire les animations » : cartes affichées d'emblée (`initial={false}` :
+  `MotionConfig reducedMotion="user"` coupe les déplacements mais pas les fondus).
+- Même section sur la page `/comment-ca-marche`.
+- **Tests** : `HowItWorksSection.test.tsx`, `e2e/how-it-works.spec.ts`. `src/test/setup.ts` ajoute un faux
+  `IntersectionObserver` (absent de jsdom, utilisé par `whileInView`).
 
 ## Branche `dev` et production (26/11/2026)
 
