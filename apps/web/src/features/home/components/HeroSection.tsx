@@ -53,7 +53,7 @@ export function HeroSection({ notice }: { notice?: ReactNode }) {
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-svh touch-pan-y flex-col overflow-hidden bg-foreground text-white"
+      className="relative isolate z-10 flex min-h-svh touch-pan-y flex-col overflow-x-clip bg-foreground text-white"
       onFocus={() => setFocusInside(true)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setFocusInside(false);

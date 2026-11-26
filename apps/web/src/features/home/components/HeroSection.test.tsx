@@ -72,48 +72,4 @@ describe("Hero de l'accueil", () => {
   });
 });
 
-describe('SearchBar du hero', () => {
-  it('mène aux résultats avec la prestation, le lieu et la date choisis', async () => {
-    const { router } = renderRoute('/');
-
-    const form = await screen.findByRole('search', { name: 'Rechercher un prestataire' });
-    // On attend que les catégories soient chargées dans la liste.
-    await within(form).findByRole('option', { name: 'Traiteurs' });
-    await userEvent.selectOptions(
-      within(form).getByLabelText('Que recherchez-vous ?'),
-      'traiteurs',
-    );
-    await userEvent.type(within(form).getByLabelText('Où ?'), 'Paris');
-    fireEvent.change(within(form).getByLabelText('Quand ?'), { target: { value: '2027-06-12' } });
-    await userEvent.click(within(form).getByRole('button', { name: 'Rechercher' }));
-
-    await screen.findByRole('heading', { level: 1, name: 'Rechercher un prestataire' });
-    expect(router.state.location.pathname).toBe('/recherche');
-    expect(router.state.location.search).toBe('?categorie=traiteurs&ville=Paris&date=2027-06-12');
-  });
-
-  it('sans critère, mène à toutes les annonces', async () => {
-    const { router } = renderRoute('/');
-
-    const form = await screen.findByRole('search', { name: 'Rechercher un prestataire' });
-    await userEvent.click(within(form).getByRole('button', { name: 'Rechercher' }));
-
-    await screen.findByRole('heading', { level: 1, name: 'Rechercher un prestataire' });
-    expect(router.state.location.search).toBe('');
-  });
-
-  it('affiche les textes d’aide et désactive la liste tant que les catégories chargent', async () => {
-    renderRoute('/');
-
-    const form = await screen.findByRole('search', { name: 'Rechercher un prestataire' });
-    const what = within(form).getByLabelText('Que recherchez-vous ?');
-    expect(what).toBeDisabled();
-    expect(within(form).getByPlaceholderText('Ville, région…')).toBeInTheDocument();
-    expect(within(form).getByText('Date de votre événement')).toBeInTheDocument();
-    expect(
-      within(form).getByRole('option', { name: 'Traiteur, DJ, danseur…' }),
-    ).toBeInTheDocument();
-    await within(form).findByRole('option', { name: 'Traiteurs' });
-    expect(what).toBeEnabled();
-  });
-});
+// La recherche du hero est testée dans `features/search/components/guided-search/GuidedSearch.test.tsx`.

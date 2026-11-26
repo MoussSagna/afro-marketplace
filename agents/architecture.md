@@ -95,7 +95,10 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/features/home/` : le hero de l'accueil. `HeroSection` (assemble tout), `HeroCarousel` (photos empilées, fondu,
   zoom lent), `CategoryShortcuts` (8 raccourcis), `HeroDecor` (motifs SVG) ;
   `lib/heroContent.ts` (slides, raccourcis), `lib/useCarousel.ts` (état + défilement automatique).
-  La recherche du hero est `features/search/components/SearchBar.tsx`.
+  La recherche du hero est `features/search/components/SearchBar.tsx`, qui assemble la recherche guidée façon Airbnb
+  de `features/search/components/guided-search/` : `SearchPill` (pilule, tablette et ordinateur), `MobileSearch`
+  (plein écran par étapes, téléphone), `HeaderSearch` (version compacte de la navbar sur l'accueil), `useGuidedSearch`
+  (logique commune) ; brouillon partagé et suggestions dans `features/search/lib/searchDraft.ts`.
   Section « Explorez nos univers » : `ExploreCategoriesSection`, `CategoryMosaic`, `CategoryImageCard` ;
   `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
   Section « Deux façons d'utiliser Wenzee » : `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration` ;
