@@ -1,6 +1,6 @@
-import { useCategories } from '@afro/common';
+import { paramsFromFilters, useCategories, type ProviderSearchFilters } from '@afro/common';
 import { useMemo } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { NotFoundPage } from '@/app/NotFoundPage';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -21,6 +21,20 @@ export function CategoryPage() {
 
   const fixed = useMemo(() => ({ category: slug }), [slug]);
   const { filters, update, reset } = useSearchFilters(fixed);
+  const navigate = useNavigate();
+
+  /**
+   * « Rechercher » depuis une page catégorie : même prestation → on reste ici (ville, date mises à jour) ;
+   * autre prestation ou mot-clé → recherche générale, avec le choix fait et les autres filtres.
+   */
+  function searchFromCategory(changes: Partial<ProviderSearchFilters>) {
+    if (changes.category === slug) {
+      update({ city: changes.city, date: changes.date });
+      return;
+    }
+    const params = paramsFromFilters({ ...filters, ...changes, page: undefined });
+    void navigate(`/recherche?${params.toString()}`);
+  }
 
   const title = category ? `${category.name} afro en Île-de-France` : undefined;
   usePageMeta(
@@ -39,7 +53,7 @@ export function CategoryPage() {
   if (!category) return <NotFoundPage />;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto max-w-[96rem] px-4 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-8 xl:px-12">
       <nav aria-label="Fil d’Ariane" className="mb-2 text-sm text-muted-foreground">
         <Link to="/" className="hover:underline">
           Accueil
@@ -78,7 +92,7 @@ export function CategoryPage() {
         filters={filters}
         onChange={update}
         onReset={reset}
-        showCategoryFilter={false}
+        onSearch={searchFromCategory}
       />
     </div>
   );

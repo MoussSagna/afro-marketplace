@@ -96,6 +96,8 @@ export const providerCardSchema = z.object({
   slug: z.string().min(1),
   displayName: z.string().min(1),
   coverUrl: z.url().optional(),
+  /** Une phrase tirée de la bio (voir `summarize`), affichée sous le nom dans les résultats. */
+  summary: z.string().max(200).optional(),
   city: z.string().min(1),
   categoryIds: z.array(idSchema).min(1),
   culturalOriginIds: z.array(idSchema),

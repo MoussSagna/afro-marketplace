@@ -1,4 +1,9 @@
-import { paramsFromFilters, toIsoDate, type Category } from '@afro/common';
+import {
+  paramsFromFilters,
+  toIsoDate,
+  type Category,
+  type ProviderSearchFilters,
+} from '@afro/common';
 import {
   Camera,
   ClipboardList,
@@ -59,20 +64,33 @@ export const useHeroSearchInView = create<{ inView: boolean; setInView(inView: b
   (set) => ({ inView: true, setInView: (inView) => set({ inView }) }),
 );
 
-/** L'adresse des résultats pour un brouillon (`/recherche?categorie=…&ville=…&date=…`). */
-export function searchUrl(draft: {
-  category: string;
-  whatText: string;
-  city: string;
-  date: string;
-}) {
-  const params = paramsFromFilters({
+/** Les valeurs d'un brouillon de recherche (sans les fonctions du store). */
+export type SearchDraftValues = Pick<SearchDraftState, 'category' | 'whatText' | 'city' | 'date'>;
+
+/** Les filtres de recherche que donne un brouillon (« Quoi / Où / Quand »). */
+export function filtersFromDraft(draft: SearchDraftValues): ProviderSearchFilters {
+  return {
     category: draft.category || undefined,
     // Texte tapé sans choisir de catégorie : on cherche ce texte partout (nom, bio…).
     q: (!draft.category && draft.whatText.trim()) || undefined,
     city: draft.city.trim() || undefined,
     date: draft.date || undefined,
-  });
+  };
+}
+
+/** L'inverse : le brouillon qui correspond à des filtres (page de résultats ouverte par un lien). */
+export function draftFromFilters(filters: ProviderSearchFilters): SearchDraftValues {
+  return {
+    category: filters.category ?? '',
+    whatText: filters.category ? '' : (filters.q ?? ''),
+    city: filters.city ?? '',
+    date: filters.date ?? '',
+  };
+}
+
+/** L'adresse des résultats pour un brouillon (`/recherche?categorie=…&ville=…&date=…`). */
+export function searchUrl(draft: SearchDraftValues) {
+  const params = paramsFromFilters(filtersFromDraft(draft));
   const query = params.toString();
   return query ? `/recherche?${query}` : '/recherche';
 }

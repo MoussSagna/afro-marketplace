@@ -2,7 +2,9 @@ import { mockDb } from '@afro/common/mocks';
 import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
+import { useResultsView } from '@/features/search/lib/resultsView';
 import { useSearchDraft } from '@/features/search/lib/searchDraft';
+import { useFavoritesStore } from '@/stores/favorites';
 import { useSessionStore } from '@/stores/session';
 import { server } from './server';
 
@@ -42,5 +44,7 @@ afterEach(() => {
   useSessionStore.getState().signOut(); // et sans personne de connecté
   localStorage.clear();
   useSearchDraft.getState().reset(); // la recherche guidée repart vide
+  useFavoritesStore.getState().clear(); // aucun favori
+  useResultsView.getState().setView('grid'); // résultats en grille (vue par défaut)
 });
 afterAll(() => server.close());

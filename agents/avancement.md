@@ -1,6 +1,36 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+
+## Site : refonte de la page de résultats (26/11/2026)
+
+Demande de Mouss : refonte visuelle de la recherche des prestataires d'après une maquette (DJ, 1536 × 1024), **sans
+nouvelle logique de recherche**. Branche `claude/vendor-search-redesign`, PR vers `dev` (relue par Mouss avant
+l'ouverture). Validation visuelle en 3 cycles : [`docs/vendor-search-redesign-validation.md`](../docs/vendor-search-redesign-validation.md).
+
+- **Barre du haut, `search/components/ResultsSearchBar.tsx`** : **la même recherche que l'accueil** (demande de
+  Mouss) : pilule « Quoi ? / Où ? / Quand ? » (`SearchPill`) sur tablette et ordinateur, plein écran par étapes
+  (`MobileSearch`) sur téléphone. Elle part des filtres de l'adresse (`draftFromFilters`) et « Rechercher » met la page
+  à jour en **gardant les autres filtres** (origines, note, tri) grâce à `GuidedSearchActionContext` (l'accueil garde
+  son comportement). Page catégorie : même prestation → on reste sur la page ; autre prestation → `/recherche`.
+- **Colonne de filtres, `SearchFilters.tsx`** (ordinateur ≥ 1024 px), **fixe au défilement** (`sticky`, 96 px sous le
+  haut pour la navbar ; elle défile en interne si l'écran est trop bas) : « Filtres » + « Réinitialiser », budget max et
+  invités, origines culturelles (6 puis « Voir plus »), note minimale (Toutes / 4+ / 4,5+), pros vérifiés. Tablette et
+  téléphone : même composant dans un **panneau latéral** (bouton « Filtres (n) », « Voir N résultats »).
+- **Cartes, `ProviderCard.tsx`** : grande photo (338 × 372 px sur ordinateur, comme la maquette), catégorie et
+  **cœur** (`FavoriteButton.tsx`) sur la photo, nom + badge vérifié, ville, note compacte (`Rating variant="compact"`),
+  une phrase (`summary`), pastilles des origines. **Plus de prix ni de bouton** : toute la carte mène au profil.
+  `layout="list"` : carte horizontale, photo à gauche.
+- **Liste / Grille, `ViewToggle.tsx`** + store `lib/resultsView.ts` (gardé dans le navigateur, pas dans l'adresse) ;
+  grille 3 colonnes (≥ 1280 px), 2 (tablette), 1 (téléphone).
+- **Pagination numérotée, `Pagination.tsx`** + `lib/pageRange.ts` (« … » au-delà de 7 pages) ; même `?page=`.
+- **Favoris, `stores/favorites.ts`** : dans le `localStorage` (pas d'API au MVP, question n° 23).
+- **Données** : `providerCardSchema` gagne `summary` (facultatif), rempli par `summarize(bio)` (`common/utils/summarize.ts`)
+  dans `toProviderCard`. Rien d'autre ne change dans l'API.
+- Filtres de la maquette **non ajoutés** faute de données (distance, budget min, styles musicaux) : question n° 22.
+- **Tests** : `summarize.test.ts`, `favorites.test.ts`, `pageRange.test.ts`, `Rating.test.tsx`, 9 nouveaux tests dans
+  `SearchPage.test.tsx` ; `e2e/search-results.spec.ts` (grille / liste, carte, clavier, pagination, panneau mobile) ;
+  `discover.spec.ts` ferme le panneau de filtres sur téléphone.
 
 ## Site : recherche guidée façon Airbnb (26/11/2026)
 
