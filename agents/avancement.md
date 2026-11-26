@@ -14,7 +14,9 @@ Branche `claude/project-thread-em4b8u`, PR vers `dev`. Captures (PNG + GIF ordin
   la pilule passe en sable) et ouvre **son panneau** dessous : univers (8 tuiles) puis prestations filtrées à la frappe
   ; villes populaires ou ville tapée ; calendrier deux mois + raccourcis (« Ce samedi », « Samedi prochain », « Dans un
   mois »). Choisir passe **tout seul à l'étape suivante**. Clic dehors ou Échap : tout se referme. Croix pour effacer un
-  champ. Clavier : motif « combobox » (flèches, Entrée).
+  champ. Clavier : motif « combobox » (flèches, Entrée). Demande de Mouss : à l'ouverture d'une étape, **la page
+  défile en douceur pour centrer la pilule et son panneau** (jamais coupé en bas, jamais sous l'en-tête ; instantané
+  avec « réduire les animations »).
 - **Téléphone, `guided-search/MobileSearch.tsx`** : un grand bouton « Que recherchez-vous ? » ouvre une recherche
   **plein écran par étapes** (cartes Quoi / Où / Quand, une seule dépliée, les autres résument le choix) ; « Tout
   effacer » et « Rechercher » toujours en bas.

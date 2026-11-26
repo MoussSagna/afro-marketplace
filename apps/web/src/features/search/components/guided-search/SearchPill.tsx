@@ -35,6 +35,7 @@ export function SearchPill({ variant = 'hero', initialStep, onClose, className }
   const whatRef = useRef<HTMLInputElement>(null);
   const whereRef = useRef<HTMLInputElement>(null);
   const whenRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const hero = variant === 'hero';
 
   const what = useActiveOption(search.whatOptions, () => search.advance('what'));
@@ -54,6 +55,28 @@ export function SearchPill({ variant = 'hero', initialStep, onClose, className }
     where.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- on ne réagit qu'au changement d'étape
   }, [step]);
+
+  // Hero : à l'ouverture d'une étape, la page défile en douceur pour centrer la pilule et son panneau
+  // à l'écran (le panneau n'est jamais coupé en bas). Instantané avec « réduire les animations ».
+  useEffect(() => {
+    if (!hero || !step) return;
+    const frame = requestAnimationFrame(() => {
+      const pill = rootRef.current?.getBoundingClientRect();
+      const panel = panelRef.current?.getBoundingClientRect();
+      if (!pill) return;
+      const top = pill.top;
+      const bottom = panel ? Math.max(pill.bottom, panel.bottom) : pill.bottom;
+      // Centre du bloc « pilule + panneau » au centre de l'écran, sans passer sous l'en-tête (88 px).
+      const centered = top - (window.innerHeight - (bottom - top)) / 2;
+      const delta = Math.min(centered, top - HEADER_SPACE);
+      if (Math.abs(delta) < 24) return;
+      window.scrollTo?.({
+        top: window.scrollY + delta,
+        behavior: reduceMotion ? 'auto' : 'smooth',
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hero, step, reduceMotion]);
 
   // Clic en dehors de la pilule et de ses panneaux : on referme.
   useEffect(() => {
@@ -236,6 +259,7 @@ export function SearchPill({ variant = 'hero', initialStep, onClose, className }
         <AnimatePresence>
           {step && (
             <motion.div
+              ref={panelRef}
               key={step}
               role={step === 'when' ? 'dialog' : undefined}
               aria-label={step === 'when' ? 'Choisir la date de l’événement' : undefined}
@@ -292,6 +316,9 @@ export function SearchPill({ variant = 'hero', initialStep, onClose, className }
     </form>
   );
 }
+
+/** Place gardée en haut de l'écran pour l'en-tête quand la page défile vers la recherche. */
+const HEADER_SPACE = 88;
 
 const inputClass =
   'w-full min-w-0 truncate bg-transparent p-0 text-[15px] text-foreground outline-none placeholder:text-muted-foreground';

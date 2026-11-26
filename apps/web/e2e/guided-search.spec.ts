@@ -38,6 +38,28 @@ test.describe('recherche guidée (inspirée d’Airbnb)', () => {
     await expect(page).toHaveURL(/\/recherche\?categorie=dj&ville=Paris&date=\d{4}-\d{2}-\d{2}$/);
   });
 
+  test('ordinateur : la page défile pour centrer la pilule et son panneau', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, 'pilule réservée aux grands écrans');
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto('/');
+    const pill = page.getByRole('search', { name: 'Rechercher un prestataire' });
+    await expect(pill).toBeVisible();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
+    await pill.getByLabel('Quoi ?').click();
+    const panel = pill.getByRole('listbox', { name: 'Prestations proposées' });
+    await expect(panel).toBeVisible();
+    // La page a défilé : le panneau entier tient dans l'écran, la pilule reste sous l'en-tête.
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+    await expect
+      .poll(async () => (await panel.boundingBox())!.y + (await panel.boundingBox())!.height)
+      .toBeLessThanOrEqual(720);
+    expect((await pill.boundingBox())!.y).toBeGreaterThanOrEqual(80);
+  });
+
   test('ordinateur : clic dehors referme le panneau', async ({ page, isMobile }) => {
     test.skip(isMobile, 'pilule réservée aux grands écrans');
     await page.goto('/');
