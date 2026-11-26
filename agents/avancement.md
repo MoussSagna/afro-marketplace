@@ -1,6 +1,7 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (section « Prestataires à la une » de l'accueil revue).
+Dernière mise à jour : 26/11/2026 (règle : supprimer la branche d'une PR une fois fusionnée ; avant : section
+« Prestataires à la une » de l'accueil revue).
 
 ## Branche `dev` et production (26/11/2026)
 
@@ -10,6 +11,8 @@ Demande de Mouss : « faire les dev sur une branche dev, la main servira de prod
 - Désormais, toutes les PR partent de `dev` et ciblent `dev` ; `dev` → `main` seulement quand Mouss le demande
   (règle détaillée : [`conventions.md`](conventions.md#branches-règle-de-mouss-26112026)).
 - CI (`.github/workflows/ci.yml`) : lancée aussi à chaque push dans `dev`.
+- Ménage du 26/11/2026 : les 13 branches déjà fusionnées sont à supprimer (par Mouss) ; ensuite, chaque branche
+  est supprimée après la fusion de sa PR ([`conventions.md`](conventions.md)).
 - Réglages GitHub et Vercel à faire par Mouss : voir « Ce que Mouss a à faire » dans
   [`questions-ouvertes.md`](questions-ouvertes.md).
 

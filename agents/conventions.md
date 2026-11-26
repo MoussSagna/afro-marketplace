@@ -54,6 +54,11 @@
 - **`dev` ne va dans `main` que quand Mouss le demande** (une PR `dev` → `main`, « mise en production »).
 - Après la fusion d'une PR dans `dev`, la branche suivante repart de `origin/dev` à jour.
 - La CI tourne sur chaque PR et sur chaque push dans `main` et `dev`.
+- **Une branche fusionnée est supprimée** (règle de Mouss, 26/11/2026) : dès qu'une PR est fusionnée, sa branche
+  disparaît du dépôt distant. Il ne reste en permanence que `main` et `dev`. Claude n'a pas le droit de supprimer
+  une branche distante (GitHub refuse, erreur 403) : la suppression passe par l'option GitHub « Automatically delete
+  head branches » (Settings → General) ou par Mouss (onglet Branches, corbeille). Côté agent, la PR suivante repart
+  de `origin/dev` à jour, même si elle réutilise le même nom de branche.
 
 - **Une PR par lot** (ou par sujet si le lot est gros), commits en français, au format `feat(common): …`, `fix(web): …`, `docs(agents): …`.
 - La CI doit être verte : format, lint, types, tests, build, Playwright.
