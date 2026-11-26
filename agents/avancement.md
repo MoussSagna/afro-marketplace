@@ -1,6 +1,6 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (nouvelle branche `dev` : `main` devient la production).
+Dernière mise à jour : 26/11/2026 (section « Prestataires à la une » de l'accueil revue).
 
 ## Branche `dev` et production (26/11/2026)
 
@@ -121,6 +121,22 @@ Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-vali
   (prénom à partir de 1280 px). « Se connecter » ramène à la page en cours.
 - « Prestataires » est souligné sur la recherche, les catégories et les profils.
 - Tests : `Navbar.test.tsx` (autres pages, espace pro, lien actif), `auth.test.tsx`, `Brand.test.tsx` (logo clair).
+
+## Site : section « Prestataires à la une » (26/11/2026)
+
+Demande de Mouss : refaire cette section « en se basant sur les sections du dessus » (hero, univers, deux façons).
+Maquette d'ensemble inspirée de la structure d'afropro.com : `/mnt/project-files/maquette-accueil/`. 🔍 PR ouverte vers `dev`.
+
+- 4ᵉ section de l'accueil (`features/home/components/FeaturedProvidersSection.tsx`) : même grammaire que les sections
+  au-dessus (surtitre entre tirets, titre Playfair « Des talents qui font **la différence.** » souligné ocre,
+  bouton « Voir tous les prestataires » → `/recherche`). Fond ivoire (alterne avec le sable de la section précédente).
+- Grille 1 / 2 / 4 colonnes (8 prestataires). Nouvelle carte `FeaturedProviderCard` : photo 4:3 avec zoom au survol,
+  catégorie en pastille soleil, « Pro vérifié », nom en Playfair, ville, note, prix. Si la photo ne charge pas :
+  dégradé + initiale. `ProviderCard` (résultats de recherche) reste inchangée.
+- Tests : `FeaturedProvidersSection.test.tsx` (déplacés depuis `HomePage.test.tsx`), `e2e/featured.spec.ts`
+  (4 par ligne sur ordinateur, empilées sur téléphone, pas de débordement, clic vers le profil).
+- Correctif au passage : `UserTypesSection.test.tsx` attend la navigation (`waitFor`), il échouait déjà sur `dev`.
+- À trancher plus tard : les photos de couverture de démo viennent de picsum.photos (photos aléatoires, pas « afro »).
 
 ## Site : section « Deux façons d'utiliser Wenzee » (25/11/2026)
 
