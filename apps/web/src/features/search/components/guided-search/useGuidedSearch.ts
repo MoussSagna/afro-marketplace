@@ -1,5 +1,5 @@
 import { useCategories } from '@afro/common';
-import { useState, type KeyboardEvent } from 'react';
+import { createContext, useContext, useState, type KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router';
 import {
   formatShortDate,
@@ -8,8 +8,18 @@ import {
   suggestCategories,
   suggestCities,
   useSearchDraft,
+  type SearchDraftValues,
   type SearchStep,
 } from '../../lib/searchDraft';
+
+/**
+ * Ce que fait « Rechercher ». Par défaut (accueil, en-tête) : aller sur `/recherche` avec la prestation,
+ * la ville et la date. La page de résultats fournit sa propre action pour garder les autres filtres
+ * (origines, note, tri…) : mêmes barres, seule l'action change.
+ */
+export const GuidedSearchActionContext = createContext<((draft: SearchDraftValues) => void) | null>(
+  null,
+);
 
 /** Une ligne des listes « Quoi ? » et « Où ? ». */
 export interface GuidedOption {
@@ -30,6 +40,7 @@ export function useGuidedSearch({ onSubmit }: { onSubmit?: () => void } = {}) {
   const draft = useSearchDraft();
   const categories = useCategories();
   const navigate = useNavigate();
+  const customAction = useContext(GuidedSearchActionContext);
   const [step, setStep] = useState<SearchStep | null>(null);
 
   const categoryName = categories.data?.find((c) => c.slug === draft.category)?.name ?? '';
@@ -78,7 +89,9 @@ export function useGuidedSearch({ onSubmit }: { onSubmit?: () => void } = {}) {
   function submit() {
     setStep(null);
     onSubmit?.();
-    void navigate(searchUrl(useSearchDraft.getState()));
+    const values = useSearchDraft.getState();
+    if (customAction) customAction(values);
+    else void navigate(searchUrl(values));
   }
 
   return {

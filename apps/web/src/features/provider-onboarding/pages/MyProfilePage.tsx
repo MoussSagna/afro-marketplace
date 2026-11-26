@@ -1,6 +1,7 @@
 import {
   ApiError,
   PROVIDER_STATUS_LABELS,
+  summarize,
   useMyProviderProfile,
   useSetMyProviderProfilePaused,
   useUpdateMyProviderProfile,
@@ -175,7 +176,13 @@ function ProfileEditor({ details }: { details: MyProviderDetails }) {
           </h2>
           {/* « inert » : l’aperçu ne se clique pas et sort du parcours clavier. */}
           <div inert>
-            <ProviderCard provider={{ ...profile, city: profile.city || 'Ta ville' }} />
+            <ProviderCard
+              provider={{
+                ...profile,
+                city: profile.city || 'Ta ville',
+                summary: summarize(profile.bio),
+              }}
+            />
           </div>
           <p className="text-sm text-muted-foreground">
             C’est ainsi que les clients voient ton profil dans la recherche.

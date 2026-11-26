@@ -11,8 +11,10 @@ export function SearchPage() {
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-6 font-display text-3xl font-semibold">Rechercher un prestataire</h1>
+    <div className="mx-auto max-w-[96rem] px-4 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-8 xl:px-12">
+      {/* Titre pour les lecteurs d'écran et Google : à l'écran, la barre de recherche et
+          « N prestataires trouvés » suffisent (maquette). */}
+      <h1 className="sr-only">Rechercher un prestataire</h1>
       <SearchResults filters={filters} onChange={update} onReset={reset} />
     </div>
   );

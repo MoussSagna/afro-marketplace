@@ -25,6 +25,8 @@ test('un visiteur cherche, filtre et ouvre un profil', async ({ page, isMobile }
   await senegal.click();
   await expect(senegal).toBeChecked();
   await expect(page).toHaveURL('/recherche?categorie=traiteurs&origines=senegal');
+  // Sur téléphone, le panneau de filtres se ferme avec son bouton « Voir 1 résultat ».
+  if (isMobile) await page.getByRole('button', { name: 'Voir 1 résultat' }).click();
   await expect(page.getByText('1 prestataire', { exact: true })).toBeVisible();
 
   // Profil

@@ -2,8 +2,12 @@ import { mockDb } from '@afro/common/mocks';
 import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
+import { useResultsView } from '@/features/search/lib/resultsView';
 import { useSearchDraft } from '@/features/search/lib/searchDraft';
+import { useFavoritesStore } from '@/stores/favorites';
 import { useSessionStore } from '@/stores/session';
+import { routes } from '@/app/routes';
+import { preloadLazyRoutes } from './preloadRoutes';
 import { server } from './server';
 
 // Les machines de CI (GitHub Actions) sont plus lentes que nos postes : le premier
@@ -35,6 +39,9 @@ globalThis.IntersectionObserver ??=
 
 // MSW côté Node : mêmes handlers que dans le navigateur.
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+// Les pages chargées à la demande (lazy) sont chargées une fois ici, avant les tests du fichier :
+// une navigation ne dépend plus de la vitesse de la machine (voir preloadRoutes.ts).
+beforeAll(() => preloadLazyRoutes(routes));
 afterEach(() => {
   cleanup();
   server.resetHandlers(); // annule les surcharges faites dans un test (server.use)
@@ -42,5 +49,7 @@ afterEach(() => {
   useSessionStore.getState().signOut(); // et sans personne de connecté
   localStorage.clear();
   useSearchDraft.getState().reset(); // la recherche guidée repart vide
+  useFavoritesStore.getState().clear(); // aucun favori
+  useResultsView.getState().setView('grid'); // résultats en grille (vue par défaut)
 });
 afterAll(() => server.close());
