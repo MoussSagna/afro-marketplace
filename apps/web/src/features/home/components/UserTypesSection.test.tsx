@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { renderRoute } from '@/test/renderRoute';
@@ -73,6 +73,6 @@ describe('Section « Deux façons d’utiliser Wenzee »', () => {
       name: 'Développez votre activité.',
     });
     await userEvent.click(within(card).getByRole('link', { name: 'Référencer mon activité' }));
-    expect(router.state.location.pathname).toBe('/devenir-prestataire');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/devenir-prestataire'));
   });
 });
