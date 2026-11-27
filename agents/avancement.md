@@ -1,6 +1,34 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 27/11/2026 (refonte de la fiche prestataire ; 26/11 : refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+
+## Site : refonte de la fiche prestataire (27/11/2026)
+
+Demande de Mouss : faire de la page existante `/prestataires/:slug` (P5) une vitrine, d'après une maquette
+(« Maison Naya », 1200 × 1312), **sans changer la route, les données ni la logique**. Deux maquettes dans la journée :
+la 2ᵉ (retenue) met la couverture en plein écran et demande de vrais onglets. Branche
+`claude/vendor-profile-redesign`, PR vers `dev` (validée visuellement par Mouss). Détail, mesures et écarts :
+[`docs/vendor-profile-redesign-validation.md`](../docs/vendor-profile-redesign-validation.md).
+
+- **Couverture** (`ProfileCover`) : photo sur toute la largeur, tout en haut, sous la **navbar transparente**
+  (comme l'accueil). La page la demande par `useOverlayNavbar()` (`stores/navbarOverlay.ts`) tant que la couverture
+  est affichée : une 404 garde la navbar brune. `Navbar` : la recherche compacte de l'en-tête passe dans une prop
+  `withSearch` (accueil seulement). Identité (`ProviderIdentity`) posée en bas : monogramme, nom, badge, famille,
+  catégories, ville, note, cœur des favoris, « Contacter le prestataire » ; « Voir toute la galerie » ouvre la
+  visionneuse (`PhotoLightbox`).
+- **Onglets** (`ProfileTabs`, Tabs Radix de shadcn/ui) : Présentation, Prestations, Galerie, Avis. État React dans
+  la page, contenu remplacé sur place, **aucun défilement** ni ancre ; flèches du clavier. Après « Publier mon avis »
+  (C6), la fiche s'ouvre sur l'onglet Avis. Présentation : texte, spécialités, encadré Capacité / Localisation /
+  Réponse / Annulation, calendrier et annulation. Galerie : mosaïque + nombre de photos.
+- **Contact** (`ContactPanel`) : à droite, collant sur ordinateur, présent quel que soit l'onglet ; sous le contenu
+  sur téléphone. « Afficher le numéro » explique que le numéro est donné après réservation (règle n° 7, question n° 24).
+- **Rien d'inventé** : monogramme (pas de logo), pas de types d'événements ; prix gardés. Retiré : la barre
+  « Demander un devis » collée en bas sur téléphone. Libellés : « Formules et prix » → « Nos prestations »,
+  « Demander un devis » → « Contacter le prestataire » / « Envoyer une demande » (e2e `discover`, `request`, `review`
+  mis à jour). `Rating` gagne l'option `showValue`.
+- Tests : `profileDisplay.test.ts` ; `ProviderProfilePage.test.tsx` (couverture, onglets, clavier, pas de
+  défilement, contact persistant, galerie, avis, favoris, navbar) ; `e2e/provider-profile.spec.ts` (bords de la
+  couverture, onglets sans défilement, clavier, galerie, favoris, panneau collant, téléphone).
 
 ## Test e2e « parcours 7 » fiabilisé (27/11/2026)
 

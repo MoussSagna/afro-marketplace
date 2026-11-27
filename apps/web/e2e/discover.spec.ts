@@ -33,8 +33,10 @@ test('un visiteur cherche, filtre et ouvre un profil', async ({ page, isMobile }
   await page.getByRole('link', { name: 'Saveurs de Dakar' }).click();
   await expect(page).toHaveURL('/prestataires/saveurs-de-dakar');
   await expect(page.getByRole('heading', { level: 1, name: 'Saveurs de Dakar' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Formules et prix' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Demander un devis' }).first()).toBeVisible();
+  await page.getByRole('tab', { name: 'Prestations' }).click();
+  await expect(page.getByRole('heading', { name: 'Nos prestations' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Contacter le prestataire' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Envoyer une demande' })).toBeVisible();
 });
 
 test('une page catégorie a son titre pour Google', async ({ page }) => {
