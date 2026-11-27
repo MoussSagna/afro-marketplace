@@ -14,6 +14,8 @@ interface RatingProps {
   size?: 'sm' | 'md';
   /** `stars` : 5 étoiles (par défaut) ; `compact` : une étoile, « ★ 4,9 (127 avis) » (cartes de résultats). */
   variant?: 'stars' | 'compact';
+  /** `false` : étoiles seules, sans le chiffre (variante `stars`). Le lecteur d'écran lit toujours la note. */
+  showValue?: boolean;
   className?: string;
 }
 
@@ -22,7 +24,14 @@ interface RatingProps {
  * Les étoiles sont décoratives ; le texte lu par les lecteurs d'écran est
  * « Note : 4,5 sur 5, 12 avis ».
  */
-export function Rating({ value, count, size = 'sm', variant = 'stars', className }: RatingProps) {
+export function Rating({
+  value,
+  count,
+  size = 'sm',
+  variant = 'stars',
+  showValue = true,
+  className,
+}: RatingProps) {
   const label =
     count === 0
       ? 'Pas encore d’avis'
@@ -85,9 +94,11 @@ export function Rating({ value, count, size = 'sm', variant = 'stars', className
           );
         })}
       </span>
-      <span aria-hidden className="font-medium">
-        {ratingFormatter.format(value)}
-      </span>
+      {showValue && (
+        <span aria-hidden className="font-medium">
+          {ratingFormatter.format(value)}
+        </span>
+      )}
       {count !== undefined && (
         <span aria-hidden className="text-muted-foreground">
           ({count})

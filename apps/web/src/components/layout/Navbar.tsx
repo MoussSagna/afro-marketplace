@@ -46,6 +46,11 @@ interface NavbarProps {
    * Ailleurs (faux) : collée en haut de la page, toujours sur son fond brun.
    */
   overlay?: boolean;
+  /**
+   * Accueil seulement : la recherche compacte de l'en-tête, quand celle du hero n'est plus visible.
+   * (Une page à photo plein écran, comme la fiche prestataire, a `overlay` sans la recherche.)
+   */
+  withSearch?: boolean;
   /** Petit badge à côté du logo (« Espace pro », « Admin »). */
   spaceLabel?: string;
   /** Actions propres à un espace (bascule client ↔ prestataire…). */
@@ -54,7 +59,7 @@ interface NavbarProps {
 
 /**
  * La navbar de toute l'application (même design partout) :
- * - sur l'accueil (`overlay`), totalement transparente au chargement, puis fond brun translucide flouté au défilement ;
+ * - sur l'accueil et la fiche prestataire (`overlay`), totalement transparente au chargement, puis fond brun translucide flouté au défilement ;
  * - sur les autres pages, collée en haut avec ce même fond brun dès le départ.
  * Sur téléphone et tablette, les liens passent dans un menu latéral.
  *
@@ -69,7 +74,7 @@ interface NavbarProps {
  * laissent la place à une recherche compacte ; un clic la déplie en grand sous la barre.
  * Sur téléphone et tablette, c'est une loupe qui ouvre la recherche plein écran.
  */
-export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
+export function Navbar({ overlay = false, withSearch = false, spaceLabel, children }: NavbarProps) {
   const reduceMotion = useReducedMotion() ?? false;
   const { scrolled, hidden } = useScrollHeader({ canHide: !reduceMotion });
   // Progression dans la page, de 0 à 1 : la largeur du trait orange.
@@ -83,7 +88,7 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const heroSearchInView = useHeroSearchInView((state) => state.inView);
   // La recherche de l'en-tête : seulement sur l'accueil, quand celle du hero n'est plus visible.
-  const showSearch = overlay && !heroSearchInView;
+  const showSearch = withSearch && !heroSearchInView;
   const [searchStep, setSearchStep] = useState<SearchStep | null>(null);
   const closeSearch = useCallback(() => setSearchStep(null), []);
   const searchOpen = showSearch && searchStep !== null;
