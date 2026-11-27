@@ -1,13 +1,7 @@
 import { BlurView } from 'expo-blur';
 import type { BottomTabBarProps } from 'expo-router/tabs';
-import {
-  House,
-  Inbox,
-  MessageCircle,
-  Search,
-  UserRound,
-  type LucideIcon,
-} from 'lucide-react-native';
+import { House, Inbox, MessageCircle, Search, UserRound } from 'lucide-react-native';
+import type { ComponentType } from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -19,6 +13,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { WenzeeSymbolIcon } from '@/components/brand/WenzeeSymbolIcon';
 import { useReduceMotion } from '@/lib/useReduceMotion';
 import { useColorSchemeName } from '@/theme/useTheme';
 import { useTabBarStore } from './tabBarStore';
@@ -67,9 +62,22 @@ const SIDE_MARGIN = 16;
 /** Place à laisser en bas des écrans pour que la barre ne cache pas la fin du contenu. */
 export const TAB_BAR_SPACE = BAR_HEIGHT + 40;
 
-/** L'icône de chaque onglet client (nom du fichier dans app/(tabs)/). */
-const CLIENT_TAB_ICONS: Record<string, LucideIcon> = {
+/** Une icône d'onglet : une icône Lucide, ou une des nôtres qui prend les mêmes props. */
+export type TabIcon = ComponentType<{
+  size?: number;
+  color?: string;
+  strokeWidth?: number;
+  testID?: string;
+}>;
+
+/**
+ * L'icône de chaque onglet client (nom du fichier dans app/(tabs)/).
+ * `evenements` (symbole Wenzee) est prête pour l'onglet Événements, qui n'existe pas encore
+ * (voir agents/questions-ouvertes.md) : elle s'affichera dès que app/(tabs)/evenements.tsx existera.
+ */
+const CLIENT_TAB_ICONS: Record<string, TabIcon> = {
   index: Search,
+  evenements: WenzeeSymbolIcon,
   demandes: Inbox,
   messages: MessageCircle,
   compte: UserRound,
@@ -100,7 +108,7 @@ type GlassTabBarProps = BottomTabBarProps & {
   /** « pro » : la barre brune du mode prestataire. */
   variant?: 'client' | 'pro';
   /** L'icône de chaque onglet, par nom de fichier. */
-  icons?: Record<string, LucideIcon>;
+  icons?: Record<string, TabIcon>;
 };
 
 export function GlassTabBar({
@@ -151,6 +159,15 @@ export function GlassTabBar({
   const tabsStyle = {
     opacity: progress.interpolate({
       inputRange: [0, 0.4],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    }),
+  };
+  // Les libellés sous les icônes : un simple fondu, piloté par la MÊME valeur que la rétractation
+  // (ils s'effacent un peu avant les icônes, puis reviennent avec elles).
+  const labelStyle = {
+    opacity: progress.interpolate({
+      inputRange: [0, 0.25],
       outputRange: [1, 0],
       extrapolate: 'clamp',
     }),
@@ -219,7 +236,22 @@ export function GlassTabBar({
                 focused && [styles.tabActive, { backgroundColor: glass.activeBackground }],
               ]}
             >
-              <Icon size={24} color={color} strokeWidth={focused ? 2.4 : 2} />
+              <Icon
+                size={24}
+                color={color}
+                strokeWidth={focused ? 2.4 : 2}
+                testID={`tab-icon-${route.name}`}
+              />
+              {/* Le nom, sous l'icône. Caché aux lecteurs d'écran : l'onglet l'annonce déjà (accessibilityLabel). */}
+              <Animated.Text
+                numberOfLines={1}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+                testID={`tab-label-${route.name}`}
+                style={[styles.label, { color }, focused && styles.labelActive, labelStyle]}
+              >
+                {label}
+              </Animated.Text>
               {badge > 0 ? <Badge count={badge} edge={glass.badgeEdge} /> : null}
             </Pressable>
           );
@@ -289,6 +321,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   badgeInBall: { top: 6, right: 4 },
+  label: {
+    // Un peu plus large que l'onglet (56) : « Événements » tient sur une ligne, sans changer la barre.
+    width: 64,
+    marginTop: 2,
+    fontFamily: 'Inter_500Medium',
+    fontSize: 10,
+    lineHeight: 12,
+    textAlign: 'center',
+  },
+  labelActive: { fontFamily: 'Inter_700Bold' },
   badgeText: { fontFamily: 'Inter_700Bold', fontSize: 10, color: INK },
   ball: { position: 'absolute', left: 0, top: 0, width: BALL_SIZE, height: BALL_SIZE },
   ballButton: { flex: 1, alignItems: 'center', justifyContent: 'center' },

@@ -5,7 +5,7 @@ import { useUnreadMessages } from './useUnreadMessages';
 import { useThemeColors } from '@/theme/useTheme';
 
 /**
- * Les 4 onglets du mode client : Recherche, Demandes, Messages, Compte (plus d'onglet Accueil depuis
+ * Les 4 onglets du mode client : Recherche, Demandes, Messages, Profil (l'écran « Compte ») (plus d'onglet Accueil depuis
  * le 27/11/2026 : la Recherche est l'écran d'ouverture). Chaque onglet est un fichier de app/(tabs)/.
  * Les parenthèses de « (tabs) » ne changent pas l'adresse : la Recherche est « / » (fichier index).
  * La barre est la nôtre (GlassTabBar) : en verre, flottante, rétractable au défilement.
@@ -30,7 +30,7 @@ export function ClientTabsLayout() {
             unread > 0 ? t('tabs.unread', { count: unread }) : t('tabs.messages'),
         }}
       />
-      <Tabs.Screen name="compte" options={{ title: t('tabs.account') }} />
+      <Tabs.Screen name="compte" options={{ title: t('tabs.profile') }} />
     </Tabs>
   );
 }

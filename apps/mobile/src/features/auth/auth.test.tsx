@@ -83,7 +83,7 @@ describe('Garde des onglets (lot M5)', () => {
     const db = await open('/');
     const user = db.data.users.find((u) => u.id === client.userId)!;
     await act(() => useSessionStore.getState().signIn({ user, token: `demo:${user.id}` }));
-    await fireEvent.press(screen.getByRole('tab', { name: 'Compte' }));
+    await fireEvent.press(screen.getByRole('tab', { name: 'Profil' }));
     expect(await screen.findByText(user.email)).toBeOnTheScreen();
 
     await press('Se déconnecter');

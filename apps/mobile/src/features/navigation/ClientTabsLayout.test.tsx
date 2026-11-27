@@ -43,7 +43,7 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
     expect(screen.getByRole('tab', { name: 'Recherche' })).toBeSelected();
     expect(screen.queryByRole('tab', { name: 'Accueil' })).toBeNull();
 
-    await fireEvent.press(screen.getByRole('tab', { name: 'Compte' }));
+    await fireEvent.press(screen.getByRole('tab', { name: 'Profil' }));
     expect(await screen.findByText('Lot M12')).toBeOnTheScreen();
     expect(screen).toHavePathname('/compte');
 
@@ -77,10 +77,10 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
     expect(screen.getByRole('tab', { name: 'Recherche' })).toBeOnTheScreen();
   });
 
-  it('n’affiche que des icônes : les noms restent pour les lecteurs d’écran', async () => {
+  it('les noms des onglets ne sont pas lus en double : seul l’onglet les annonce', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    for (const name of ['Recherche', 'Demandes', 'Messages', 'Compte']) {
+    for (const name of ['Recherche', 'Demandes', 'Messages', 'Profil']) {
       expect(screen.getByRole('tab', { name })).toBeOnTheScreen();
       expect(screen.queryByText(name)).toBeNull();
     }

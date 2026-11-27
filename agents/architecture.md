@@ -167,7 +167,8 @@ apps/mobile/
   app/(auth)/          Les écrans de connexion (/bienvenue, /inscription, /verification, /connexion…)
   src/features/        Le code des écrans, par fonctionnalité (comme le web) ; app/ ne fait que les réexporter
   src/components/ui/   Composants de base (Button, Input, Card…), équivalents des composants shadcn du site
-  src/components/brand/ Logo Wenzee (SVG), WenzeeLoader (le logo du splash en boucle), logoPaths (tracés partagés)
+  src/components/brand/ Logo Wenzee (SVG), WenzeeLoader (le logo du splash en boucle), logoPaths (tracés partagés),
+                       WenzeeSymbolIcon (le symbole en icône au trait, props d'une icône Lucide : onglet Événements)
   src/lib/cn.ts        cn(), formatRating(), initials()
   src/lib/api/         Le client API de l'app (celui de common) + mockFetch (handlers MSW sans réseau)
   src/lib/demoData.ts  Au démarrage : recharge la base de démo et la session depuis AsyncStorage
@@ -205,7 +206,8 @@ apps/mobile/
   src/lib/dates.ts     Dates des calendriers (isoDay, longDay, monthGrid, monthRange…)
   src/components/QueryState.tsx Chargement → erreur (« Réessayer ») → contenu
   src/features/auth/   Connexion simulée : écrans, SignInRequired (garde), authFlowStore (où revenir), useFinishAuth
-  src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus
+  src/features/navigation/ Barre d'onglets en verre rétractable (GlassTabBar, tabBarStore, useCollapseOnScroll), non-lus ;
+                       libellés sous les icônes, en fondu sur la valeur `progress` de la rétractation
   src/test/            Outils de test : demoApi (client branché sur une base de démo), faux Reanimated
                        (branché par moduleNameMapper dans jest.config.js, voir reanimatedJest*.js)
   src/stores/          Session et mode client / pro (Zustand + AsyncStorage)

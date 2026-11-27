@@ -1,6 +1,24 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : libellés et icônes de la barre d'onglets (27/11/2026)
+
+Demande de Mouss : onglets Recherche, Favoris, Événements, Messages, Profil, avec leur nom sous l'icône et le
+symbole Wenzee pour Événements, **sans toucher au fonctionnement de la barre**. Branche `feat/onglets-labels`
+(depuis `dev`), PR vers `dev`.
+
+- **Libellés** sous chaque icône (`GlassTabBar`) : `Animated.Text` dont l'opacité suit la valeur `progress` existante
+  de la rétractation (fondu sur le premier quart du mouvement). Aucun nouvel état, aucune nouvelle animation ;
+  hauteur, gestes et navigation inchangés. Cachés aux lecteurs d'écran : l'onglet garde son `accessibilityLabel`.
+  Valable aussi pour la barre brune du mode pro.
+- **Icône Événements** : `components/brand/WenzeeSymbolIcon` (les 3 tracés de `logoPaths`, au trait, sans le point
+  final ; couleur et épaisseur données par la barre). Rangée sous `evenements` dans les icônes client.
+- **Onglet « Compte » affiché « Profil »** (`tabs.profile`) ; l'écran et son adresse ne changent pas.
+- **Pas fait (navigation inchangée, comme demandé)** : les écrans Favoris et Événements n'existent pas dans l'app,
+  et l'onglet Demandes n'est pas dans la liste voulue (voir `questions-ouvertes.md` n° 30).
+- Tests : `navigation/tabLabels.test.tsx` (ordre, libellés visibles / masqués, nom gardé, symbole Wenzee) ; tests
+  existants de la barre inchangés dans leur logique (seul le nom « Compte » → « Profil »). GIF clair / sombre à faire.
 
 ## App mobile : la Recherche devient l'écran principal (27/11/2026)
 
