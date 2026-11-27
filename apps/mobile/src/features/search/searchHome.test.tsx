@@ -1,5 +1,5 @@
 import { ApiError, type ApiClient } from '@afro/common';
-import { fireEvent } from '@testing-library/react-native';
+import { fireEvent, within } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { mainCategories } from '@/lib/categories';
 import { demoApi, testProviders } from '@/test/demoApi';
@@ -50,10 +50,10 @@ describe('Recherche, état initial (ancien Accueil, lot M6)', () => {
     expect(screen.queryByRole('button', { name: 'Traiteurs' })).toBeNull();
 
     // Le carrousel : une page par prestataire à la une, et un point par page.
-    expect(await screen.findByTestId('featured-list')).toBeOnTheScreen();
+    const carousel = within(await screen.findByTestId('featured-list'));
     for (const provider of featured) {
       expect(
-        screen.getByRole('link', { name: new RegExp(`^${provider.displayName}, `) }),
+        carousel.getByRole('link', { name: new RegExp(`^${provider.displayName}, `) }),
       ).toBeOnTheScreen();
     }
     expect(screen.getAllByText('Prestataire à la une')).toHaveLength(featured.length);
@@ -63,13 +63,14 @@ describe('Recherche, état initial (ancien Accueil, lot M6)', () => {
     const { api } = demoApi();
     const featured = await api.listFeaturedProviders();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
+    const carousel = within(await screen.findByTestId('featured-list'));
     const withPrice = featured.find((p) => p.priceFrom !== undefined)!;
     expect(
-      await screen.findByLabelText(new RegExp(`^${withPrice.displayName}, .*, dès `)),
+      await carousel.findByLabelText(new RegExp(`^${withPrice.displayName}, .*, dès `)),
     ).toBeOnTheScreen();
     const rated = featured.find((p) => p.ratingCount > 0)!;
     expect(
-      screen.getByLabelText(new RegExp(`^${rated.displayName}, .*${rated.ratingCount} avis`)),
+      carousel.getByLabelText(new RegExp(`^${rated.displayName}, .*${rated.ratingCount} avis`)),
     ).toBeOnTheScreen();
   });
 
@@ -81,11 +82,13 @@ describe('Recherche, état initial (ancien Accueil, lot M6)', () => {
       .mockImplementation(() => api.listCategories());
     await renderRouter(routes, {
       initialUrl: '/',
-      // « À la une » reste en chargement : ses pages relisent les catégories et relanceraient la requête.
+      // « À la une » et les rangées restent en chargement : leurs cartes relisent les catégories
+      // et relanceraient la requête.
       wrapper: testProviders({
         ...api,
         listCategories,
         listFeaturedProviders: () => new Promise(() => {}),
+        searchProviders: () => new Promise(() => {}),
       }),
     });
 

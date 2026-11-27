@@ -98,6 +98,31 @@ export const fr = {
     loadingFeatured: 'Chargement des prestataires à la une',
     featuredList: 'Prestataires à la une',
     devComponents: 'Voir les composants',
+    crowdFavorite: 'Coup de cœur',
+    /** Les rangées horizontales de l'état initial de la Recherche (façon Airbnb). */
+    sections: {
+      topRated: 'Les mieux notés',
+      topRatedHint: 'Des clients ravis, avis à l’appui',
+      saturday: 'Libres samedi',
+      saturdayHint: 'Disponibles le {{date}}',
+      paris: 'Talents à Paris',
+      parisHint: 'Près de chez toi, dans la capitale',
+      smallBudget: 'Petits budgets',
+      smallBudgetHint: 'Dès moins de {{price}}',
+    },
+    howItWorks: {
+      title: 'Comment ça marche',
+      searchTitle: 'Trouve ton talent',
+      searchText: 'Traiteur, DJ, danse, beauté… par ville et par date.',
+      quoteTitle: 'Demande un devis gratuit',
+      quoteText: 'Décris ton événement, sans engagement.',
+      chooseTitle: 'Échange et choisis',
+      chooseText: 'Compare les devis et discute avec le prestataire.',
+    },
+  },
+  favorites: {
+    add: 'Ajouter {{name}} aux favoris',
+    remove: 'Retirer {{name}} des favoris',
   },
   search: {
     title: 'Recherche',

@@ -1,4 +1,4 @@
-import { useCategories, useCulturalOrigins, type Category, type ProviderCard } from '@afro/common';
+import { useCategories, useCulturalOrigins, type ProviderCard } from '@afro/common';
 import { useRouter } from 'expo-router';
 import { Award, BadgeCheck, Globe, MapPin, Star, Tag, type LucideIcon } from 'lucide-react-native';
 import { useState } from 'react';
@@ -18,6 +18,7 @@ import { useCategoryName } from '@/i18n/useCategoryName';
 import { formatRating } from '@/lib/cn';
 import { priceLabel } from '../providers/priceLabel';
 import { profileHref } from '../providers/profileHref';
+import { mainCategoryOf } from './providerLabels';
 
 /** Hauteur du carrousel sous la barre d'état (la pilule de recherche est posée dessus). */
 export const CAROUSEL_HEIGHT = 440;
@@ -25,13 +26,6 @@ const SUN = '#F3B618';
 const CREAM = '#FDF7F0';
 const INK = '#2B1A12';
 const TERRE = '#7A1F0E';
-
-/** La catégorie principale d'un prestataire : celle de sa première catégorie (ou son parent). */
-function mainCategoryOf(ids: string[], categories: Category[] | undefined) {
-  const category = categories?.find((c) => ids.includes(c.id));
-  if (!category?.parentId) return category;
-  return categories?.find((c) => c.id === category.parentId) ?? category;
-}
 
 /** Une info de la ligne du bas : icône + texte, en blanc. */
 function Info({ icon: Icon, label }: { icon: LucideIcon; label: string }) {

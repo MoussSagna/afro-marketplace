@@ -1,5 +1,5 @@
 import { seedDemoAccounts } from '@afro/common/mocks';
-import { fireEvent } from '@testing-library/react-native';
+import { fireEvent, within } from '@testing-library/react-native';
 import { Stack } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { SignInRequired } from '@/features/auth/SignInRequired';
@@ -66,8 +66,17 @@ describe('L’app en anglais (lot M6b)', () => {
 
     const withPrice = featured.find((p) => p.priceFrom !== undefined)!;
     expect(
-      await screen.findByLabelText(new RegExp(`^${withPrice.displayName}, .*, from €`)),
+      await within(screen.getByTestId('featured-list')).findByLabelText(
+        new RegExp(`^${withPrice.displayName}, .*, from €`),
+      ),
     ).toBeOnTheScreen();
+    // Les rangées façon Airbnb et « Comment ça marche ».
+    expect(await screen.findByRole('link', { name: 'See all: Top rated' })).toBeOnTheScreen();
+    expect(await screen.findByText('Talents in Paris')).toBeOnTheScreen();
+    expect(
+      screen.getAllByRole('button', { name: /^Add .* to favourites$/ }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByText('How it works')).toBeOnTheScreen();
   });
 
   it('demande de se connecter en anglais, puis ouvre l’accueil de connexion', async () => {
