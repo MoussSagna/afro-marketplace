@@ -1,5 +1,12 @@
 import type {
   AcceptQuoteInput,
+  EventDetails,
+  EventInput,
+  EventProvider,
+  EventSummary,
+  PlannedEvent,
+  RequestEventQuotesInput,
+  RequestEventQuotesResult,
   AdminActivityItem,
   AdminOverview,
   AdminProviderDetails,
@@ -153,6 +160,27 @@ export interface ApiClient {
 
   // --- Signalements (lots 4 et 6)
   createReport(input: CreateReportInput): Promise<Report>;
+
+  // --- Planificateur d'événements (page « Événements », 27/11/2026)
+  listEvents(): Promise<EventSummary[]>;
+  getEvent(eventId: string): Promise<EventDetails>;
+  createEvent(input: EventInput): Promise<PlannedEvent>;
+  updateEvent(eventId: string, input: EventInput): Promise<PlannedEvent>;
+  /** Suppression « douce » : `restoreEvent` l'annule (toast « Annuler »). */
+  deleteEvent(eventId: string): Promise<void>;
+  restoreEvent(eventId: string): Promise<PlannedEvent>;
+  addEventProvider(eventId: string, providerId: string): Promise<EventProvider>;
+  removeEventProvider(eventId: string, providerId: string): Promise<void>;
+  /** Une vraie demande de devis par prestataire ; renvoie ce qui est parti et ce qui a été refusé. */
+  requestEventQuotes(
+    eventId: string,
+    input: RequestEventQuotesInput,
+  ): Promise<RequestEventQuotesResult>;
+  setEventProviderRetained(
+    eventId: string,
+    providerId: string,
+    retained: boolean,
+  ): Promise<EventProvider>;
 
   // --- Administration (lot 8)
   getAdminOverview(): Promise<AdminOverview>;

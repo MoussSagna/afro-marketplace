@@ -50,6 +50,13 @@ n'est envoyé. Une inscription crée un vrai compte client dans la base de démo
 | Fatou Gâteaux    | `expired`   |                                                                                                  |
 | Glow by Aminata  | `cancelled` | Annulée par la cliente                                                                           |
 
+## Événements d'Aïssatou (planificateur)
+
+| Événement                                       | Date           | Lieu                          | Prestataires (statut calculé)                                                                                                                               |
+| ----------------------------------------------- | -------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mariage de Aïssatou (`evt-mariage-aissatou`)    | dans 75 jours  | Paris 75011, 150 invités      | Saveurs de Dakar (Devis demandé : sa vraie demande en attente), Compagnie Akwaba (Devis reçu : son devis v2), Wax & Wedding Déco et Studio Sankofa (Ajouté) |
+| Anniversaire 30 ans (`evt-anniversaire-30-ans`) | dans 178 jours | Saint-Denis 93200, 80 invités | DJ Makossa Vibes, Douceurs Créoles, Selfie Box Ambiance (Ajouté)                                                                                            |
+
 ## Côté Saveurs de Dakar
 
 Demandes reçues d'Aïssatou (`pending`), Kévin (`pending`), Ibrahim (`quoted`, client pro), Grace (réservation

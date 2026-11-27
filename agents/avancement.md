@@ -1,6 +1,35 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## Site : planificateur d'événements, page « Événements » (27/11/2026)
+
+Demande de Mouss : faire de « Événements » (avant : page publique « Bientôt disponible ») un **planificateur**,
+d'après une planche, d'abord en maquette HTML (`maquette/evenements/`), puis **dans le site** à la même adresse.
+Branche `feat/maquette-evenements`, PR vers `dev` à valider. Détail, mesures et écarts :
+[`docs/events-planner-validation.md`](../docs/events-planner-validation.md).
+
+- **Règle métier** : pas de réservation ni de paiement ici. On ajoute des prestataires, on leur demande un devis,
+  on compare, on « retient » (≠ réserver ; la réservation reste l'acceptation d'un devis, règle n° 6).
+- **`@afro/common`** : `schemas/event.ts` (événement, lien `EventProvider`, formulaire, envoi groupé),
+  `rules/event.ts` (statut d'un prestataire **calculé depuis sa demande de devis**, compteurs, statut d'un
+  événement, retenir, conversions vers la demande de devis), 10 opérations `ApiClient` (`listEvents`, `getEvent`,
+  `createEvent`, `updateEvent`, `deleteEvent` / `restoreEvent` (suppression douce), `addEventProvider`,
+  `removeEventProvider`, `requestEventQuotes`, `setEventProviderRetained`), handler `mocks/handlers/events.ts`,
+  hooks `queries/useEvents.ts`, libellés (`PLANNED_EVENT_TYPE_LABELS`, `EVENT_BUDGET_LABELS`…).
+- **« Demander les devis » crée de vraies demandes** (une par prestataire) via `sendQuoteRequest`, extrait de
+  `handlers/quoteRequests.ts` (même code que le formulaire C1 : `canSendQuoteRequest`, conversation, masquage).
+  Les refus (prestataire indisponible…) sont renvoyés un par un et affichés.
+- **Seed** : 2 événements d'Aïssatou (mariage dans 75 jours, relié à ses vraies demandes à Saveurs de Dakar et
+  Compagnie Akwaba ; anniversaire 30 ans). Tables `events`, `eventProviders` ; clé de sauvegarde mock passée en
+  `v3` (la démo du navigateur repart du seed).
+- **Site** (`features/events/`) : routes `/evenements`, `/nouveau`, `/:id`, `/:id/modifier`, `/:id/ajouter`,
+  `/:id/devis` (connexion exigée, gabarit `EventsLayout` : navbar du site **sans** la section « Espace client », demande de Mouss). Formulaire **unique** création / modification en
+  3 étapes (`?etape=`, brouillon en `sessionStorage`). Fiche prestataire : « Ajouter à un événement »
+  (`AddToEventButton`, dans `ContactPanel`). Nouveaux composants partagés : `Toaster` + `stores/toasts.ts`
+  (toasts, action « Annuler »), `ConfirmDialog`.
+- Tests : `rules/event.test.ts`, `handlers/events.test.ts` ; `EventsPages.test.tsx` (21), `eventLib.test.ts`,
+  `toasts.test.ts` ; `e2e/events.spec.ts` (desktop + mobile).
 
 ## Site : refonte du back-office admin (27/11/2026)
 

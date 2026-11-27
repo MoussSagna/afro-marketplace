@@ -26,6 +26,11 @@ export const queryKeys = {
     unavailableDates: (providerId: string, range: { from: string; to: string }) =>
       [...queryKeys.providers.all, 'unavailable-dates', providerId, range] as const,
   },
+  events: {
+    all: ['events'] as const,
+    list: () => [...queryKeys.events.all, 'list'] as const,
+    detail: (id: string) => [...queryKeys.events.all, 'detail', id] as const,
+  },
   quoteRequests: {
     all: ['quote-requests'] as const,
     list: (side: Side) => [...queryKeys.quoteRequests.all, 'list', side] as const,

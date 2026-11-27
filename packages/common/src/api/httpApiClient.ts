@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import {
+  eventDetailsSchema,
+  eventProviderSchema,
+  eventSchema,
+  eventSummarySchema,
+  requestEventQuotesResultSchema,
   adminActivityItemSchema,
   adminOverviewSchema,
   adminProviderDetailsSchema,
@@ -203,6 +208,34 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
 
     // Signalements
     createReport: (input) => request('POST', '/reports', reportSchema, input),
+
+    // Planificateur d'événements
+    listEvents: () => get('/events', z.array(eventSummarySchema)),
+    getEvent: (eventId) => get(`/events/${id(eventId)}`, eventDetailsSchema),
+    createEvent: (input) => request('POST', '/events', eventSchema, input),
+    updateEvent: (eventId, input) => request('PUT', `/events/${id(eventId)}`, eventSchema, input),
+    deleteEvent: (eventId) => request('DELETE', `/events/${id(eventId)}`, noContent),
+    restoreEvent: (eventId) => request('POST', `/events/${id(eventId)}/restore`, eventSchema),
+    addEventProvider: (eventId, providerId) =>
+      request('POST', `/events/${id(eventId)}/providers`, eventProviderSchema, { providerId }),
+    removeEventProvider: (eventId, providerId) =>
+      request('DELETE', `/events/${id(eventId)}/providers/${id(providerId)}`, noContent),
+    requestEventQuotes: (eventId, input) =>
+      request(
+        'POST',
+        `/events/${id(eventId)}/quote-requests`,
+        requestEventQuotesResultSchema,
+        input,
+      ),
+    setEventProviderRetained: (eventId, providerId, retained) =>
+      request(
+        'PUT',
+        `/events/${id(eventId)}/providers/${id(providerId)}/retained`,
+        eventProviderSchema,
+        {
+          retained,
+        },
+      ),
 
     // Administration
     getAdminOverview: () => get('/admin/overview', adminOverviewSchema),

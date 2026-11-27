@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Outlet, useLocation, useNavigationType } from 'react-router';
+import { Toaster } from '@/components/Toaster';
 
 /**
  * La route racine : affiche la page, et remet le défilement en haut quand on change de page.
@@ -21,5 +22,11 @@ export function RootRoute() {
     if (navigationType !== 'POP') window.scrollTo(0, 0);
   }, [pathname, navigationType]);
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      {/* Les toasts (« Événement supprimé… Annuler ») : une seule zone pour toute l'application. */}
+      <Toaster />
+    </>
+  );
 }

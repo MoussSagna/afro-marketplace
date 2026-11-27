@@ -8,3 +8,4 @@ export * from './review';
 export * from './contactMasking';
 export * from './cancellation';
 export * from './acceptQuote';
+export * from './event';

@@ -20,15 +20,6 @@ function ComingSoon({ title, description }: ComingSoonProps) {
   );
 }
 
-export function EventsPage() {
-  return (
-    <ComingSoon
-      title="Événements"
-      description="Les événements de la communauté afro et caribéenne en Île-de-France."
-    />
-  );
-}
-
 export function DealsPage() {
   return (
     <ComingSoon

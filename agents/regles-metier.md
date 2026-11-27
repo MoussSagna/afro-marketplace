@@ -103,3 +103,21 @@ le bouton « Signaler » complète le dispositif.
   sa présentation, son SIRET et ses photos sont effacés.
 - L'email ne se modifie pas depuis « Mon compte » au MVP (il servira d'identifiant avec Supabase, lot 10).
 - Choix à valider avec le juriste : voir `questions-ouvertes.md` n° 7.
+
+## Planificateur d'événements (27/11/2026)
+
+Fonctions dans `rules/event.ts` (testées dans `event.test.ts`) :
+
+- `computeEventProviderStatus` : le statut d'un prestataire dans un événement n'est **pas stocké**, il vient de
+  sa demande de devis : aucune → « Ajouté » ; `pending` → « Devis demandé » ; `quoted` → « Devis reçu » (ou
+  « Retenu » si le client l'a retenu) ; `accepted` → « Réservé » ; `declined` / `expired` / `cancelled` → « Sans suite ».
+- `computeEventStatus` : « Passé » après la date ; « Devis en cours » si des devis sont demandés et qu'aucun
+  prestataire n'est seulement « Ajouté » ; sinon « En préparation ». `countEventProviders` : les 4 indicateurs.
+- `canRequestEventQuote` : on demande un devis à un prestataire « Ajouté », ou de nouveau après « Sans suite ».
+  L'envoi passe par `canSendQuoteRequest` (règles n° 3 et 4) : chaque refus est rendu au client.
+- `canRetainEventProvider` : retenir seulement après un devis reçu (pas déjà accepté). **Retenir n'est pas
+  réserver** : aucune réservation, aucune indisponibilité n'est créée.
+- `isValidEventDate` : aujourd'hui ou plus tard (une date déjà passée peut rester en modification).
+- `toQuoteEventType`, `budgetRangeOf`, `buildEventQuoteMessage` : la demande envoyée (type, fourchette en centimes,
+  message de 20 caractères minimum, sinon présentation automatique de l'événement).
+- Supprimer un événement est « doux » (`deletedAt`, restaurable) et ne touche pas aux demandes déjà envoyées.
