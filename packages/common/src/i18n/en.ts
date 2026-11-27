@@ -866,6 +866,7 @@ export const en: Translations = {
     guestsOrder: 'The maximum must be at least the minimum',
     maxLength: '{{max}} characters maximum',
     passwordMismatch: 'The two passwords don’t match',
+    samePassword: 'Choose a password different from your current one',
     generic: 'Something went wrong. Try again in a moment.',
   },
   apiErrors: {
@@ -896,6 +897,8 @@ export const en: Translations = {
     booked_date: 'This date is booked: cancel the booking to free it.',
     not_found: 'Not found.',
     invalid_input: 'Some information is invalid.',
+    no_password: 'This account signs in without a password (Google or Apple).',
+    wrong_password: 'Current password is incorrect.',
     invalid_valid_until: 'The validity date has already passed.',
     booking_not_found: 'Booking not found.',
     invalid_status: 'This action is no longer possible.',

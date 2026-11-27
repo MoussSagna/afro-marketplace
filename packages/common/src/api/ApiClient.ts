@@ -23,6 +23,7 @@ import type {
   CulturalOrigin,
   DeclineQuoteRequestInput,
   DemoAccount,
+  ChangePasswordInput,
   ForgotPasswordInput,
   Media,
   MediaInput,
@@ -86,6 +87,8 @@ export interface ApiClient {
   updateMe(input: UpdateMeInput): Promise<User>;
   /** Anonymise le compte (RGPD). */
   deleteMe(): Promise<void>;
+  /** « Mon compte › Sécurité » : vérifie le mot de passe actuel puis le remplace. */
+  changePassword(input: ChangePasswordInput): Promise<void>;
 
   // --- Connexion et inscription par email (lot M5, simulées jusqu'au back-end)
   /** Crée une inscription en attente et « envoie » un code à 6 chiffres. */

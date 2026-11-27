@@ -29,6 +29,7 @@ export type ResendOtpInput = z.input<typeof s.resendOtpInputSchema>;
 export type SignInInput = z.input<typeof s.signInInputSchema>;
 export type ForgotPasswordInput = z.input<typeof s.forgotPasswordInputSchema>;
 export type ResetPasswordInput = z.input<typeof s.resetPasswordInputSchema>;
+export type ChangePasswordInput = z.input<typeof s.changePasswordInputSchema>;
 
 export type ProviderStatus = z.infer<typeof s.providerStatusSchema>;
 export type LegalType = z.infer<typeof s.legalTypeSchema>;

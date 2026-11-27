@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   ForgotPasswordInput,
   ResendOtpInput,
+  ChangePasswordInput,
   ResetPasswordInput,
   SignInInput,
   SignUpInput,
@@ -34,6 +35,12 @@ export function useSignInAsDemo() {
 export function useUpdateMe() {
   const api = useApiClient();
   return useMutation({ mutationFn: (input: UpdateMeInput) => api.updateMe(input) });
+}
+
+/** C8 : changer son mot de passe (le mot de passe actuel est vérifié par le serveur). */
+export function useChangePassword() {
+  const api = useApiClient();
+  return useMutation({ mutationFn: (input: ChangePasswordInput) => api.changePassword(input) });
 }
 
 /** C8 : supprimer son compte (anonymisation RGPD). Le web ferme ensuite la session. */

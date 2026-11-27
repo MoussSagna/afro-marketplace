@@ -14,6 +14,8 @@ describe('formulaire « Mon compte »', () => {
       firstName: ' Awa ',
       lastName: 'Diop',
       phone: '',
+      city: '',
+      avatarUrl: '',
       notificationPrefs: prefs,
     });
     expect(toUpdateMeInput(values)).toEqual({
@@ -28,9 +30,41 @@ describe('formulaire « Mon compte »', () => {
       firstName: '',
       lastName: 'Diop',
       phone: '123',
+      city: '',
+      avatarUrl: '',
       notificationPrefs: prefs,
     });
     expect(result.success).toBe(false);
     expect(result.error!.issues.map((i) => i.path[0])).toEqual(['firstName', 'phone']);
+  });
+
+  it('garde la ville (nettoyée) et la photo', () => {
+    const values = accountFormSchema.parse({
+      firstName: 'Awa',
+      lastName: 'Diop',
+      phone: '',
+      city: '  Paris ',
+      avatarUrl: 'data:image/jpeg;base64,AAAA',
+      notificationPrefs: prefs,
+    });
+    expect(toUpdateMeInput(values)).toMatchObject({
+      city: 'Paris',
+      avatarUrl: 'data:image/jpeg;base64,AAAA',
+    });
+  });
+
+  it('refuse une ville trop longue', () => {
+    const result = accountFormSchema.safeParse({
+      firstName: 'Awa',
+      lastName: 'Diop',
+      phone: '',
+      city: 'x'.repeat(81),
+      avatarUrl: '',
+      notificationPrefs: prefs,
+    });
+    expect(result.error?.issues[0]).toMatchObject({
+      path: ['city'],
+      message: '80 caractères maximum',
+    });
   });
 });

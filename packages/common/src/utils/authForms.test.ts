@@ -3,6 +3,7 @@ import { fr } from '../i18n/fr';
 import { authMessages } from '../schemas/auth';
 import {
   authFormMessages,
+  changePasswordFormSchema,
   forgotPasswordFormSchema,
   otpFormSchema,
   resetPasswordFormSchema,
@@ -80,5 +81,48 @@ describe('forgotPasswordFormSchema', () => {
     expect(forgotPasswordFormSchema.safeParse({ email: 'awa' }).error?.issues[0]?.message).toBe(
       authMessages.emailInvalid,
     );
+  });
+});
+
+describe('changePasswordFormSchema', () => {
+  const valid = {
+    currentPassword: 'Wenzee2026',
+    newPassword: 'Nouveau2027',
+    confirmPassword: 'Nouveau2027',
+  };
+
+  it('accepte un nouveau mot de passe valide et confirmé', () => {
+    expect(changePasswordFormSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it('exige le mot de passe actuel', () => {
+    const result = changePasswordFormSchema.safeParse({ ...valid, currentPassword: '' });
+    expect(result.error?.issues[0]?.path).toEqual(['currentPassword']);
+  });
+
+  it('signale une confirmation différente', () => {
+    const result = changePasswordFormSchema.safeParse({ ...valid, confirmPassword: 'Autre2027' });
+    expect(result.error?.issues[0]).toMatchObject({
+      path: ['confirmPassword'],
+      message: authFormMessages.passwordMismatch,
+    });
+  });
+
+  it('refuse un nouveau mot de passe identique à l’actuel ou trop faible', () => {
+    const same = changePasswordFormSchema.safeParse({
+      currentPassword: 'Wenzee2026',
+      newPassword: 'Wenzee2026',
+      confirmPassword: 'Wenzee2026',
+    });
+    expect(same.error?.issues[0]).toMatchObject({
+      path: ['newPassword'],
+      message: authFormMessages.samePassword,
+    });
+    const weak = changePasswordFormSchema.safeParse({
+      ...valid,
+      newPassword: 'court',
+      confirmPassword: 'court',
+    });
+    expect(weak.error?.issues.some((i) => i.path[0] === 'newPassword')).toBe(true);
   });
 });

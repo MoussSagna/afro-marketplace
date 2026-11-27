@@ -88,6 +88,12 @@ export const signInInputSchema = z.object({
 
 export const forgotPasswordInputSchema = z.object({ email: emailSchema });
 
+/** « Mon compte › Sécurité » : changer son mot de passe en donnant l'actuel. */
+export const changePasswordInputSchema = z.object({
+  currentPassword: z.string().min(1, authMessages.passwordRequired),
+  newPassword: passwordSchema,
+});
+
 export const resetPasswordInputSchema = z.object({
   email: emailSchema,
   code: otpCodeSchema,

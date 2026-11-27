@@ -867,6 +867,7 @@ export const fr = {
     ...profileFormMessages,
     maxLength: '{{max}} caractères maximum',
     passwordMismatch: 'Les deux mots de passe ne sont pas identiques',
+    samePassword: 'Choisis un mot de passe différent de l’actuel',
     generic: 'Un problème est survenu. Réessaie dans un instant.',
   },
   /** Les erreurs renvoyées par le serveur, par leur code stable. */
@@ -898,6 +899,8 @@ export const fr = {
     booked_date: 'Cette date est réservée : annule la réservation pour la libérer.',
     not_found: 'Introuvable.',
     invalid_input: 'Une information est invalide.',
+    no_password: 'Ce compte se connecte sans mot de passe (Google ou Apple).',
+    wrong_password: 'Mot de passe actuel incorrect.',
     invalid_valid_until: 'La date de validité est déjà passée.',
     booking_not_found: 'Réservation introuvable.',
     invalid_status: 'Cette action n’est plus possible.',

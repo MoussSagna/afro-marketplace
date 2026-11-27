@@ -1,6 +1,30 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (refonte de « Mon compte » ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## Site : refonte de « Mon compte » (27/11/2026)
+
+Demande de Mouss : refondre la page existante `/espace/compte` (C8) d'après une maquette (1536 × 1024), sans
+fonction fictive. Branche à créer depuis `dev` au moment de la PR (travail fait sur `feat/maquette-evenements`, non
+commité, en attente de la validation de Mouss). Détail, mesures et écarts :
+[`docs/account-redesign-validation.md`](../docs/account-redesign-validation.md).
+
+- **Décisions de Mouss (27/11)** : ajouter la **ville** (pas de fuseau horaire) ; **photo de profil** avec le
+  mécanisme de la galerie ; **nouvelle opération `changePassword`**.
+- **`@afro/common`** : `user.city`, `updateMeInputSchema` (+ `city`, `avatarUrl` ; absent = retiré),
+  `accountFormSchema` (+ `city`, `avatarUrl`), `changePasswordInputSchema` / `changePasswordFormSchema`,
+  `ApiClient.changePassword` (`POST /api/me/password`, erreurs `wrong_password`, `no_password`), `useChangePassword`,
+  textes fr / en. **À implémenter côté Supabase au lot 10** (`auth.updateUser`, Storage pour l'avatar).
+- **Site** (`features/account/`) : bannière (`SpaceBanner`, partagée avec le tableau de bord), menu des rubriques
+  (`?rubrique=` : informations, notifications, securite, preferences ; pastilles défilantes sous 1024 px),
+  Informations (photo avec aperçu, formulaire 2 colonnes, Annuler), Notifications (interrupteurs, nouveau
+  `components/ui/switch.tsx`), Sécurité (mot de passe + suppression du compte), Préférences (vue des résultats,
+  favoris), Déconnexion confirmée. Garde « Quitter sans enregistrer ? » (`useBlocker`).
+- **App mobile : rien de changé** (demande de Mouss) ; elle garde la ville et la photo en enregistrant. Les reports
+  sont listés dans [`reports-mobile.md`](reports-mobile.md).
+- Tests : `me.test.ts` (ville, photo, mot de passe), `accountForm.test.ts`, `authForms.test.ts` ;
+  `AccountPage.test.tsx` (18), `accountLib.test.ts` ; `e2e/account.spec.ts` (parcours C8 + mot de passe, desktop
+  et mobile).
 
 ## Site : planificateur d'événements, page « Événements » (27/11/2026)
 
@@ -1255,6 +1279,7 @@ La liste complète (choix actuel, impact, échéance) est dans [`questions-ouver
 - `Quote.lines` : les lignes sont renvoyées dans le devis (pas de route séparée pour `QuoteLine`).
 - `Booking` a en plus `quoteRequestId` et `cancelledAt` (pratique pour les écrans et la règle n° 9).
 - `ProviderProfile.postalCode` peut être vide pour un brouillon d'onboarding.
+- `User.city` (facultatif) ajouté le 27/11/2026 pour « Mon compte » (absent du modèle de conception).
 - Lot 7 : modifier un profil déjà publié ne le renvoie pas en validation (choix de Mouss pour l'instant, voir [`questions-ouvertes.md`](questions-ouvertes.md) n° 1).
 - Lot 8 : pas de notification au prestataire après une décision (le modèle `Notification` arrive avec les emails, lot 11) ;
   il voit son nouveau statut et le motif dans son espace.

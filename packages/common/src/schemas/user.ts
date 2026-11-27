@@ -42,6 +42,8 @@ export const userSchema = z.object({
   /** Jamais montré aux autres utilisateurs avant une réservation. */
   phone: frenchPhoneSchema.optional(),
   avatarUrl: z.url().optional(),
+  /** Ville de l'utilisateur (facultative, renseignée dans « Mon compte »). */
+  city: z.string().min(1).max(80).optional(),
   /** Un compte peut cumuler les rôles. Tout le monde est « client » par défaut. */
   roles: z.array(userRoleSchema).min(1),
   authProvider: authProviderSchema,
@@ -62,11 +64,17 @@ export const publicUserSchema = z.object({
   avatarUrl: z.url().optional(),
 });
 
-/** Formulaire « Mon compte » (C8). */
+/**
+ * Formulaire « Mon compte » (C8). Le compte entier est renvoyé : un champ facultatif
+ * absent (téléphone, ville, photo) est RETIRÉ du compte.
+ */
 export const updateMeInputSchema = z.object({
   firstName: text(1, 50, 'Indique ton prénom'),
   lastName: text(1, 50, userMessages.lastNameRequired),
   phone: frenchPhoneSchema.optional(),
+  city: text(1, 80, '').optional(),
+  /** Photo de profil. Au MVP mocké : une « data URL » réduite (Supabase Storage au lot 10). */
+  avatarUrl: z.url().optional(),
   notificationPrefs: notificationPrefsSchema,
 });
 

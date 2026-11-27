@@ -136,6 +136,11 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   modification, 3 étapes, `lib/eventDraft.ts`, `lib/eventSteps.ts`), `EventDetailsPage`, `AddEventProviderPage`
   (recherche `useProviderSearch`), `RequestQuotesPage` ; `components/AddToEventButton` (fiche prestataire).
   Affichage : `lib/eventDisplay.ts` (icônes et photos par type, tons des statuts, familles conseillées).
+- `src/features/account/` (« Mon compte », C8) : `AccountPage` (rubrique dans `?rubrique=`, `lib/accountSections.ts`),
+  `AccountNavigation`, `PersonalInformation` + `ProfilePhotoEditor`, `NotificationSettings`, `SecuritySettings`
+  (mot de passe, suppression du compte), `AccountPreferences` ; `lib/useSaveAccount.ts` (enregistrement partiel à
+  partir du compte de la session), `lib/useUnsavedChangesGuard.tsx`. Bannière partagée avec le tableau de bord :
+  `components/layout/SpaceBanner.tsx`. Interrupteur : `components/ui/switch.tsx`.
 - `src/components/Toaster.tsx` + `src/stores/toasts.ts` : les toasts de toute l'application (`toast({ title,
 description, action })`), montés une fois dans `RootRoute`. `src/components/ConfirmDialog.tsx` : confirmer une
   action sensible (focus sur « Annuler »).

@@ -2,6 +2,7 @@ import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { ApiError, createHttpApiClient } from '../../api';
 import { handlers, mockDb } from '..';
+import { DEMO_PASSWORD } from '../seed/people';
 
 const server = setupServer(...handlers);
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -49,6 +50,55 @@ describe('Mon compte (C8)', () => {
       api.updateMe({ ...updated, phone: '123', notificationPrefs: updated.notificationPrefs }),
     );
     expect(invalid.status).toBe(400);
+  });
+
+  it('enregistre la ville et la photo, et les retire quand elles sont absentes', async () => {
+    const api = as('user-aissatou');
+    const me = await api.getMe();
+    const base = {
+      firstName: me.firstName,
+      lastName: me.lastName,
+      notificationPrefs: me.notificationPrefs,
+    };
+    const photo = 'data:image/jpeg;base64,/9j/4AAQSkZJRg==';
+    const updated = await api.updateMe({ ...base, city: ' Lyon ', avatarUrl: photo });
+    expect(updated).toMatchObject({ city: 'Lyon', avatarUrl: photo });
+
+    const cleared = await api.updateMe(base);
+    expect(cleared.city).toBeUndefined();
+    expect(cleared.avatarUrl).toBeUndefined();
+    expect(mockDb.data.users.find((u) => u.id === 'user-aissatou')!.city).toBeUndefined();
+  });
+
+  it('change le mot de passe après avoir vérifié l’actuel', async () => {
+    const api = as('user-aissatou');
+    const { email } = await api.getMe();
+    const wrong = await errorOf(
+      api.changePassword({ currentPassword: 'Mauvais1', newPassword: 'Nouveau2027' }),
+    );
+    expect(wrong).toMatchObject({ status: 400, code: 'wrong_password' });
+    const weak = await errorOf(
+      api.changePassword({ currentPassword: DEMO_PASSWORD, newPassword: 'court' }),
+    );
+    expect(weak.status).toBe(400);
+
+    await api.changePassword({ currentPassword: DEMO_PASSWORD, newPassword: 'Nouveau2027' });
+    const anonymous = createHttpApiClient();
+    await expect(anonymous.signIn({ email, password: 'Nouveau2027' })).resolves.toMatchObject({
+      user: { id: 'user-aissatou' },
+    });
+    const old = await errorOf(anonymous.signIn({ email, password: DEMO_PASSWORD }));
+    expect(old.code).toBe('invalid_credentials');
+  });
+
+  it('refuse de changer le mot de passe sans session', async () => {
+    const error = await errorOf(
+      createHttpApiClient().changePassword({
+        currentPassword: DEMO_PASSWORD,
+        newPassword: 'Nouveau2027',
+      }),
+    );
+    expect(error.status).toBe(401);
   });
 
   it('refuse la suppression s’il reste une réservation à venir', async () => {

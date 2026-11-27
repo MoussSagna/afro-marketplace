@@ -1,5 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
 import {
+  changePasswordInputSchema,
   DEMO_OTP_CODE,
   forgotPasswordInputSchema,
   resendOtpInputSchema,
@@ -165,7 +166,7 @@ export function authHandlers(db: MockDb) {
       return HttpResponse.json(user);
     }),
 
-    // C8 : modifier son compte (nom, téléphone, préférences de notification).
+    // C8 : modifier son compte (nom, téléphone, ville, photo, préférences de notification).
     http.patch('*/api/me', async ({ request }) => {
       await delay();
       const user = currentUser(db, request);
@@ -173,12 +174,42 @@ export function authHandlers(db: MockDb) {
       const parsed = updateMeInputSchema.safeParse(await request.json().catch(() => null));
       if (!parsed.success) return invalidInput(parsed.error);
       db.update(() => {
-        const { phone, ...rest } = parsed.data;
+        const { phone, city, avatarUrl, ...rest } = parsed.data;
         Object.assign(user, rest, { updatedAt: db.now().toISOString() });
+        // Un champ facultatif absent est retiré du compte.
         if (phone) user.phone = phone;
         else delete user.phone;
+        if (city) user.city = city;
+        else delete user.city;
+        if (avatarUrl) user.avatarUrl = avatarUrl;
+        else delete user.avatarUrl;
       });
       return HttpResponse.json(user);
+    }),
+
+    // C8 : changer son mot de passe. Simulé : Supabase Auth (updateUser) prendra le relais au lot 10.
+    http.post('*/api/me/password', async ({ request }) => {
+      await delay();
+      const user = currentUser(db, request);
+      if (!user) return apiError(401, 'unauthenticated', 'Connecte-toi pour continuer.');
+      const parsed = changePasswordInputSchema.safeParse(await request.json().catch(() => null));
+      if (!parsed.success) return invalidInput(parsed.error);
+      const credential = db.data.credentials.find((c) => c.userId === user.id);
+      if (user.authProvider !== 'email' || !credential) {
+        return apiError(
+          422,
+          'no_password',
+          'Ce compte se connecte sans mot de passe (Google ou Apple).',
+        );
+      }
+      if (credential.password !== parsed.data.currentPassword) {
+        return apiError(400, 'wrong_password', 'Mot de passe actuel incorrect.');
+      }
+      db.update((data) => {
+        const target = data.credentials.find((c) => c.userId === user.id);
+        if (target) target.password = parsed.data.newPassword;
+      });
+      return new HttpResponse(null, { status: 204 });
     }),
 
     /*

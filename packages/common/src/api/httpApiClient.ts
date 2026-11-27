@@ -119,6 +119,7 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
     getMe: () => get('/me', userSchema),
     updateMe: (input) => request('PATCH', '/me', userSchema, input),
     deleteMe: () => request('DELETE', '/me', noContent),
+    changePassword: (input) => request('POST', '/me/password', noContent, input),
 
     // Connexion et inscription par email
     signUp: (input) => request('POST', '/auth/sign-up', signUpResultSchema, input),
