@@ -1,6 +1,26 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : Recherche enrichie façon Airbnb (27/11/2026)
+
+Demande de Mouss : « plus de contenu sur la page Recherche de l'app, inspire-toi d'Airbnb ». On ajoute du contenu à
+l'**état initial** (sans recherche) ; la barre d'onglets, la pilule et les résultats ne changent pas.
+Branche `claude/project-thread-fdrn0k` (depuis `dev`), PR vers `dev`.
+
+- **5 rangées horizontales** sous les catégories (`search/homeSections.ts`, `ProviderRow`) : Libres samedi (prochain
+  samedi, règle n° 3), Pour régaler tes invités (traiteur-boissons), Talents à Paris, Pour faire danser la fête
+  (musique-animation), Petits budgets (< 300 €). Chacune est un `useProviderSearch` (8 cartes, données MSW, aucune
+  nouvelle API) ; son titre (« Tout voir ») ouvre les résultats avec les mêmes filtres (`replace`). Place réservée
+  pendant le chargement ; une rangée vide ou en erreur disparaît.
+- **Petite carte** `ProviderMiniCard` : photo carrée, étiquette « Coup de cœur » (note ≥ 4,8, ≥ 5 avis) ou « Vérifié »,
+  cœur, nom, note, catégorie · ville, prix « dès … ». `providerLabels.ts` (catégorie principale, coup de cœur).
+- **Favoris sur le téléphone** : `stores/favorites.ts` (zustand + AsyncStorage, rechargé dans `prepareDemoData`),
+  `features/favorites/FavoriteButton`. L'onglet Favoris reste vide (questions-ouvertes n° 31).
+- **« Comment ça marche »** (`HowItWorks`) : 3 étapes qui rappellent le devis gratuit.
+- Tests : `homeSections.test.ts`, `stores/favorites.test.ts`, `searchRows.test.tsx` (rangées, « Tout voir », cœur,
+  carte → profil, rangée vide / en erreur), anglais ; `searchHome.test.tsx` adapté. 333 tests mobiles.
+- Aperçu clair / sombre (HTML fidèle, pas de simulateur) : `/mnt/project-files/recherche-mobile-airbnb/`.
 
 ## App mobile : libellés et icônes de la barre d'onglets (27/11/2026)
 

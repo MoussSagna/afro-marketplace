@@ -177,9 +177,11 @@ apps/mobile/
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
   src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
-                       « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil) ;
+                       « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil,
+                       puis les rangées façon Airbnb : homeSections + ProviderRow + ProviderMiniCard, et HowItWorks) ;
                        « results » = CategoryBar + SearchResultCard. Commun : SearchPill, SearchWizard (Quoi/Où/Quand/
                        Invités), FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse, `vue=resultats`)
+  src/features/favorites/ FavoriteButton (le cœur des cartes) ; favoris dans src/stores/favorites.ts (téléphone)
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
   src/features/messaging/ Messagerie (M10) : ConversationsScreen, ConversationScreen (fil + devis), MessageBubble,

@@ -1,6 +1,7 @@
 import { DEFAULT_STORAGE_KEY, mockDb } from '@afro/common/mocks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLanguageStore } from '@/i18n/languageStore';
+import { useFavoritesStore } from '@/stores/favorites';
 import { useModeStore } from '@/stores/mode';
 import { useSessionStore } from '@/stores/session';
 import { useThemeStore } from '@/theme/themeStore';
@@ -10,7 +11,7 @@ import { createPreloadedStorage } from './storage/preloadedStorage';
  * Prépare les données de démo au démarrage de l'app (pendant le chargement des polices) :
  * - recharge la base de démo sauvegardée sur le téléphone (demandes, messages… créés
  *   pendant les essais), ou part du jeu de démo s'il n'y a rien ;
- * - recharge la session (qui était connecté), le thème et la langue choisis dans Compte, et le mode (client ou pro).
+ * - recharge la session (qui était connecté), le thème et la langue choisis dans Compte, le mode (client ou pro) et les favoris.
  * Ensuite, chaque modification de la base est sauvegardée dans AsyncStorage.
  */
 export async function prepareDemoData(): Promise<void> {
@@ -21,6 +22,7 @@ export async function prepareDemoData(): Promise<void> {
     useThemeStore.persist.rehydrate(),
     useLanguageStore.persist.rehydrate(),
     useModeStore.persist.rehydrate(),
+    useFavoritesStore.persist.rehydrate(),
   ]);
 }
 

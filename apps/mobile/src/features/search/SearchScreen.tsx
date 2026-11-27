@@ -88,6 +88,7 @@ export function SearchScreen() {
           <SearchHome
             onSelectCategory={(category) => update({ category: category.slug })}
             onSeeAll={showAll}
+            onSeeSection={(sectionFilters) => replace(sectionFilters)}
           />
         ) : (
           <View className="flex-1" style={{ paddingTop: insets.top + pillHeight }}>
