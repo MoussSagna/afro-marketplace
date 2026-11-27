@@ -1,6 +1,28 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (refonte de la fiche prestataire ; 26/11 : refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 27/11/2026 (refonte de la page de connexion + inscription et mot de passe oublié sur le site ; refonte de la fiche prestataire, #64 ; 26/11 : refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+
+## Site : refonte de la page de connexion (27/11/2026)
+
+Demande de Mouss : refonte de `/connexion` d'après une maquette (écran partagé, 1536 × 1024), **en gardant
+l’authentification simulée**. Branche `claude/login-redesign`, PR vers `dev` (validée visuellement par Mouss). Détail, mesures et écarts :
+[`docs/login-page-validation.md`](../docs/login-page-validation.md).
+
+- **Gabarit `AuthLayout`** (`features/auth/components/`) : photo à gauche sur toute la hauteur (`hero/soiree.webp`,
+  titre « Trouvez le prestataire idéal pour vos événements » + 3 pastilles), formulaire à droite, sans navbar ni
+  pied de page (le logo officiel ramène à l'accueil). Écran partagé dès 1024 px ; en dessous, photo en bandeau.
+- **`/connexion`** : email + mot de passe via `useSignIn` (déjà simulé par MSW depuis le lot M5 ; comptes de démo :
+  `Wenzee2026`), œil afficher / masquer, erreurs du serveur, état de chargement. Google / Apple : message « bientôt
+  disponible » (pas d'OAuth). Les 3 comptes de démo en un clic restent sous le formulaire (mêmes libellés).
+- **Nouvelles pages du site** (même faux serveur que l'app mobile) : `/inscription` (prénom, email, mot de passe,
+  conditions → code `123456` → session) et `/mot-de-passe-oublie` (email → code + nouveau mot de passe → session).
+  `useCompleteSignIn` : même fin pour toutes (cache vidé, session, `?retour=` ou espace du compte) ;
+  `safeRedirect` refuse les 3 pages d'authentification comme destination. « S'inscrire » (navbar) → `/inscription`.
+- `@afro/common` : `utils/authForms.ts` (schémas des formulaires : case « conditions » décochée au départ, code,
+  confirmation du mot de passe). L'app mobile garde pour l'instant sa copie locale du schéma d'inscription.
+- Tests : `authForms.test.ts`, `safeRedirect.test.ts` ; `AuthPages.test.tsx` (20 tests : validation, connexion,
+  retour, erreurs, chargement, œil, Google / Apple, inscription, email pris, mot de passe oublié, navbar) ;
+  `e2e/auth.spec.ts` (écran partagé, connexion par email, inscription complète) ; `a11y.spec.ts` sur les 3 pages.
 
 ## Site : refonte de la fiche prestataire (27/11/2026)
 

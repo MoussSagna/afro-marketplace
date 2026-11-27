@@ -1,119 +1,142 @@
-import { ApiError, useDemoAccounts, useSignInAsDemo, type DemoAccount } from '@afro/common';
-import { useQueryClient } from '@tanstack/react-query';
-import { Briefcase, Shield, UserRound } from 'lucide-react';
-import { motion } from 'motion/react';
-import { useNavigate, useSearchParams } from 'react-router';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { safeRedirect } from '@/lib/safeRedirect';
-import { defaultSpaceFor, SPACE_HOME, useSessionStore } from '@/stores/session';
-
-const ROLE_LABELS = { client: 'Client', provider: 'Prestataire', admin: 'Admin' } as const;
-
-function iconFor(account: DemoAccount) {
-  if (account.roles.includes('admin')) return Shield;
-  if (account.roles.includes('provider')) return Briefcase;
-  return UserRound;
-}
+import { ApiError, signInInputSchema, useSignIn, type SignInInput } from '@afro/common';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2, LockKeyhole, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { AuthHeading, FormAlert, OrDivider } from '../components/AuthHeading';
+import { AuthInput, PasswordInput } from '../components/AuthInput';
+import { DemoAccounts } from '../components/DemoAccounts';
+import { SocialButtons } from '../components/SocialButtons';
+import { useAuthLink, useCompleteSignIn } from '../lib/useCompleteSignIn';
 
 /**
- * Connexion de démo (P8) : on choisit un compte en un clic.
- * Après la connexion, on revient à la page demandée (`?retour=`) ou, à défaut,
- * à l'accueil de l'espace du compte. La vraie connexion arrivera au lot 10.
+ * Connexion (P8), dans le gabarit `AuthLayout` (photo à gauche, formulaire à droite).
+ *
+ * Tout reste **simulé** (faux serveur MSW, pas de fournisseur externe) :
+ * - email + mot de passe → `useSignIn` (les comptes de démo ont le mot de passe `Wenzee2026`) ;
+ * - Google / Apple → message « bientôt disponible » ;
+ * - les comptes de démo en un clic, sous le formulaire.
+ * Après la connexion : la page demandée (`?retour=`) ou l'accueil de l'espace du compte.
  */
 export function LoginPage() {
-  const accounts = useDemoAccounts();
-  const signInMutation = useSignInAsDemo();
-  const signIn = useSessionStore((state) => state.signIn);
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  usePageMeta('Connexion');
+  const signInMutation = useSignIn();
+  const completeSignIn = useCompleteSignIn();
+  const authLink = useAuthLink();
+  const form = useForm<SignInInput>({
+    resolver: zodResolver(signInInputSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
-  function handleChoose(account: DemoAccount) {
-    signInMutation.mutate(account.userId, {
-      onSuccess: (session) => {
-        // Les données en cache appartenaient peut-être à un autre compte.
-        queryClient.clear();
-        signIn(session);
-        const fallback = SPACE_HOME[defaultSpaceFor(session.user.roles)];
-        navigate(safeRedirect(searchParams.get('retour'), fallback), { replace: true });
-      },
-    });
-  }
+  const onSubmit = form.handleSubmit((values) =>
+    signInMutation.mutate(values, { onSuccess: completeSignIn }),
+  );
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-12 md:py-20">
-      <h1 className="font-display text-3xl font-semibold md:text-4xl">Connexion</h1>
-      <p className="mt-2 text-muted-foreground">
-        Version de démonstration : choisis un compte pour découvrir chaque espace. Aucun mot de
-        passe n’est nécessaire.
-      </p>
+    <>
+      <AuthHeading title="Bon retour sur Wenzee">
+        Connectez-vous à votre compte pour continuer.
+      </AuthHeading>
 
       {signInMutation.isError && (
-        <p role="alert" className="mt-6 rounded-lg bg-red-50 p-4 text-destructive">
+        <FormAlert>
           {signInMutation.error instanceof ApiError
             ? signInMutation.error.message
             : 'La connexion a échoué. Réessaie dans un instant.'}
-        </p>
+        </FormAlert>
       )}
 
-      {accounts.isPending && (
-        <div className="mt-8 grid gap-4 md:grid-cols-3" role="status" aria-label="Chargement">
-          {Array.from({ length: 3 }, (_, index) => (
-            <Skeleton key={index} className="h-44 rounded-xl" />
-          ))}
-        </div>
-      )}
+      <Form {...form}>
+        <form
+          onSubmit={onSubmit}
+          noValidate
+          aria-label="Se connecter avec un e-mail"
+          className="flex w-full flex-col gap-6"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="gap-2.5">
+                <FormLabel className="text-base font-semibold">Adresse e-mail</FormLabel>
+                <FormControl>
+                  <AuthInput
+                    icon={Mail}
+                    type="email"
+                    autoComplete="email"
+                    placeholder="votre@email.com"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="gap-2.5">
+                <FormLabel className="text-base font-semibold">Mot de passe</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    icon={LockKeyhole}
+                    autoComplete="current-password"
+                    placeholder="Votre mot de passe"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Link
+            to={authLink('/mot-de-passe-oublie')}
+            className="-mt-2 self-end rounded-sm font-semibold text-primary outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring"
+          >
+            Mot de passe oublié ?
+          </Link>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={signInMutation.isPending}
+            className="mt-2 h-14 w-full rounded-full text-lg font-semibold"
+          >
+            {signInMutation.isPending ? (
+              <>
+                <Loader2 className="animate-spin" aria-hidden /> Connexion…
+              </>
+            ) : (
+              'Se connecter'
+            )}
+          </Button>
+        </form>
+      </Form>
 
-      {accounts.isError && (
-        <p role="alert" className="mt-6 rounded-lg bg-red-50 p-4 text-destructive">
-          Impossible de charger les comptes de démo.
-        </p>
-      )}
+      <OrDivider />
+      <SocialButtons />
 
-      {accounts.isSuccess && (
-        <ul className="mt-8 grid gap-4 md:grid-cols-3">
-          {accounts.data.map((account, index) => {
-            const Icon = iconFor(account);
-            return (
-              <motion.li
-                key={account.userId}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.08 }}
-              >
-                <button
-                  type="button"
-                  onClick={() => handleChoose(account)}
-                  disabled={signInMutation.isPending}
-                  className="h-full w-full rounded-xl text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
-                  aria-label={`Se connecter : ${account.label}`}
-                >
-                  <Card className="h-full py-5 transition-shadow hover:shadow-md">
-                    <CardHeader className="gap-3">
-                      <span className="flex size-10 items-center justify-center rounded-full bg-muted text-primary">
-                        <Icon className="size-5" aria-hidden />
-                      </span>
-                      <CardTitle>{account.label}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-3">
-                      <p className="text-sm text-muted-foreground">{account.description}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {account.roles.map((role) => (
-                          <Badge key={role} variant="outline">
-                            {ROLE_LABELS[role]}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </button>
-              </motion.li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+      <p className="text-center text-[17px]">
+        Pas encore de compte ?{' '}
+        <Link
+          to={authLink('/inscription')}
+          className="rounded-sm font-semibold text-primary underline underline-offset-4 outline-none hover:text-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring"
+        >
+          Créer un compte
+        </Link>
+      </p>
+
+      <DemoAccounts />
+    </>
   );
 }

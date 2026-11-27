@@ -25,5 +25,14 @@ describe('safeRedirect', () => {
 
   it('ne renvoie pas vers la page de connexion', () => {
     expect(safeRedirect('/connexion?retour=/pro', '/')).toBe('/');
+    expect(safeRedirect('/connexion', '/')).toBe('/');
+  });
+
+  it('ne renvoie pas vers l’inscription ni le mot de passe oublié', () => {
+    expect(safeRedirect('/inscription', '/')).toBe('/');
+    expect(safeRedirect('/inscription?retour=/pro', '/')).toBe('/');
+    expect(safeRedirect('/mot-de-passe-oublie', '/')).toBe('/');
+    // Une autre page qui commence pareil reste permise.
+    expect(safeRedirect('/inscriptions-ouvertes', '/')).toBe('/inscriptions-ouvertes');
   });
 });

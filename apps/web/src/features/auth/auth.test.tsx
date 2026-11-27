@@ -64,7 +64,7 @@ describe('Gardes de routes', () => {
   it('renvoie vers la connexion, puis vers la page demandée', async () => {
     const { router } = renderRoute('/espace/messages');
 
-    await screen.findByRole('heading', { name: 'Connexion' });
+    await screen.findByRole('heading', { level: 1, name: 'Bon retour sur Wenzee' });
     expect(router.state.location.pathname).toBe('/connexion');
     expect(router.state.location.search).toBe('?retour=%2Fespace%2Fmessages');
 

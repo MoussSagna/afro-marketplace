@@ -28,7 +28,9 @@ const PUBLIC_PAGES: [string, string][] = [
   ['/', 'Trouvez les talents qui subliment'],
   ['/recherche', 'Rechercher un prestataire'],
   ['/prestataires/saveurs-de-dakar', 'Saveurs de Dakar'],
-  ['/connexion', 'Connexion'],
+  ['/connexion', 'Bon retour sur Wenzee'],
+  ['/inscription', 'Créer un compte'],
+  ['/mot-de-passe-oublie', 'Mot de passe oublié'],
   ['/faq', 'Questions fréquentes'],
   ['/devenir-prestataire', 'ton talent'],
 ];

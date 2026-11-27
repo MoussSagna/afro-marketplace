@@ -96,6 +96,7 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
   // Se connecter depuis une page : on y revient ensuite (pas depuis l'accueil : on arrive dans son espace).
   const here = location.pathname + location.search;
   const loginUrl = here === '/' ? '/connexion' : `/connexion?retour=${encodeURIComponent(here)}`;
+  const signUpUrl = loginUrl.replace('/connexion', '/inscription');
   // « Prestataires » est souligné sur la recherche, les catégories et les profils.
   const onProviders = /^\/(recherche|categories|prestataires)(\/|$)/.test(location.pathname);
   // « Mon espace » : seulement sur les pages publiques (dans un espace, le menu de l'espace suffit).
@@ -249,7 +250,7 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
                 Se connecter
               </Link>
               <Link
-                to={loginUrl}
+                to={signUpUrl}
                 className={cn(
                   'flex h-10 items-center rounded-full bg-cta px-4 text-sm font-semibold whitespace-nowrap text-cta-foreground transition-colors hover:bg-cta-hover xl:h-11 xl:px-6 xl:text-[15px]',
                   focusRing,
@@ -279,6 +280,7 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
                 signedIn={!!user}
                 spaceHome={SPACE_HOME[lastSpace]}
                 loginUrl={loginUrl}
+                signUpUrl={signUpUrl}
                 onNavigate={() => setMenuOpen(false)}
               />
             </DialogContent>
@@ -305,11 +307,19 @@ interface MobileMenuProps {
   signedIn: boolean;
   spaceHome: string;
   loginUrl: string;
+  signUpUrl: string;
   onNavigate: () => void;
 }
 
 /** Le contenu du menu latéral (téléphone, tablette) : mêmes liens que la navbar. */
-function MobileMenu({ categories, signedIn, spaceHome, loginUrl, onNavigate }: MobileMenuProps) {
+function MobileMenu({
+  categories,
+  signedIn,
+  spaceHome,
+  loginUrl,
+  signUpUrl,
+  onNavigate,
+}: MobileMenuProps) {
   const itemClass = ({ isActive }: { isActive: boolean }) =>
     cn(
       'flex min-h-12 items-center rounded-md px-3 text-lg font-medium hover:bg-muted',
@@ -375,7 +385,7 @@ function MobileMenu({ categories, signedIn, spaceHome, loginUrl, onNavigate }: M
               Se connecter
             </Link>
             <Link
-              to={loginUrl}
+              to={signUpUrl}
               onClick={onNavigate}
               className="flex h-12 items-center justify-center rounded-full bg-cta font-semibold text-cta-foreground hover:bg-cta-hover"
             >

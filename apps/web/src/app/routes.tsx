@@ -49,18 +49,40 @@ export const routes: RouteObject[] = [
     HydrateFallback: () => null,
     children: [
       {
+        // Connexion, inscription, mot de passe oublié : écran partagé photo | formulaire,
+        // sans navbar ni pied de page (le logo ramène à l'accueil).
+        lazy: async () => ({
+          Component: (await import('@/features/auth/components/AuthLayout')).AuthLayout,
+        }),
+        children: [
+          {
+            path: 'connexion',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/LoginPage')).LoginPage,
+            }),
+          },
+          {
+            path: 'inscription',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/SignUpPage')).SignUpPage,
+            }),
+          },
+          {
+            path: 'mot-de-passe-oublie',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/ForgotPasswordPage'))
+                .ForgotPasswordPage,
+            }),
+          },
+        ],
+      },
+      {
         element: <PublicLayout />,
         children: [
           {
             index: true,
             lazy: async () => ({
               Component: (await import('@/features/search/pages/HomePage')).HomePage,
-            }),
-          },
-          {
-            path: 'connexion',
-            lazy: async () => ({
-              Component: (await import('@/features/auth/pages/LoginPage')).LoginPage,
             }),
           },
           {
