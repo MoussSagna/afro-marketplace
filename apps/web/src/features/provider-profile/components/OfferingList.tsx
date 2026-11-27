@@ -1,6 +1,5 @@
 import { formatOfferingPrice, type Offering } from '@afro/common';
-import { Clock, Users } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Clock, Users, type LucideIcon } from 'lucide-react';
 
 function formatDuration(minutes: number): string {
   if (minutes < 60) return `${minutes} min`;
@@ -16,32 +15,51 @@ function guestsLabel({ minGuests, maxGuests }: Offering): string | undefined {
   return undefined;
 }
 
-/** Les formules et leurs prix indicatifs (P5). */
-export function OfferingList({ offerings }: { offerings: Offering[] }) {
+interface OfferingListProps {
+  offerings: Offering[];
+  /** L'icône de la famille de prestations du profil (les formules n'ont pas de catégorie propre). */
+  icon: LucideIcon;
+}
+
+/**
+ * Onglet « Prestations » : les formules enregistrées par le prestataire, en cartes compactes.
+ * Le prix indicatif est gardé (il fait partie des données) ; « Sur devis » quand il n'y en a pas.
+ * La grille dépend de la largeur de la colonne (requête de conteneur `@container`), pas de l'écran :
+ * 3 cartes par ligne dès que la colonne fait 672 px.
+ */
+export function OfferingList({ offerings, icon: Icon }: OfferingListProps) {
   return (
-    <section aria-labelledby="offerings-title">
-      <h2 id="offerings-title" className="mb-4 font-display text-2xl font-semibold">
-        Formules et prix
+    <section aria-labelledby="offerings-title" className="@container">
+      <h2
+        id="offerings-title"
+        className="mb-5 font-display text-[26px] font-semibold md:text-[32px]"
+      >
+        Nos prestations
       </h2>
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <ul className="grid gap-4 @md:grid-cols-2 @2xl:grid-cols-3">
         {offerings.map((offering) => {
           const guests = guestsLabel(offering);
           return (
-            <li key={offering.id}>
-              <Card className="h-full gap-2 py-5">
-                <CardHeader>
-                  <CardTitle>
-                    <h3>{offering.title}</h3>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2 text-sm">
-                  <p className="text-base font-semibold text-primary">
-                    {formatOfferingPrice(offering)}
-                  </p>
-                  {offering.description && (
-                    <p className="text-muted-foreground">{offering.description}</p>
-                  )}
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
+            <li
+              key={offering.id}
+              className="flex flex-col gap-2 rounded-xl border bg-card p-5 shadow-card"
+            >
+              <span
+                aria-hidden
+                className="mb-1 flex size-11 items-center justify-center rounded-full bg-secondary text-primary"
+              >
+                <Icon className="size-[22px]" strokeWidth={1.8} />
+              </span>
+              <h3 className="text-lg leading-snug font-semibold">{offering.title}</h3>
+              {offering.description && (
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {offering.description}
+                </p>
+              )}
+              {/* Détails puis prix en bas de carte : le prix est aligné d'une carte à l'autre. */}
+              <div className="mt-auto flex flex-col gap-1 pt-1">
+                {(offering.durationMinutes || guests) && (
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     {offering.durationMinutes && (
                       <span className="flex items-center gap-1">
                         <Clock className="size-4" aria-hidden />
@@ -55,8 +73,11 @@ export function OfferingList({ offerings }: { offerings: Offering[] }) {
                       </span>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                )}
+                <p className="text-[15px] font-semibold text-primary">
+                  {formatOfferingPrice(offering)}
+                </p>
+              </div>
             </li>
           );
         })}

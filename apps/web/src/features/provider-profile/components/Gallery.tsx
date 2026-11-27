@@ -1,89 +1,63 @@
 import type { Media } from '@afro/common';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { ImageOff } from 'lucide-react';
+import { EmptyState } from '@/components/EmptyState';
+import { cn } from '@/lib/utils';
 
 interface GalleryProps {
-  media: Media[];
+  images: Media[];
   providerName: string;
+  /** Ouvre la visionneuse (`PhotoLightbox`, gérée par la page) sur cette photo. */
+  onOpen(index: number): void;
 }
 
 /**
- * La galerie photo du profil, avec une visionneuse (« lightbox ») plein écran.
- * La visionneuse est un Dialog shadcn/ui : il gère le focus, la touche Échap
- * et le fond assombri. On ajoute la navigation au clavier avec ← et →.
+ * Onglet « Galerie » : une mosaïque (la 1re photo en grand, les autres en vignettes),
+ * chaque photo ouvre la visionneuse plein écran.
  */
-export function Gallery({ media, providerName }: GalleryProps) {
-  const images = media.filter((m) => m.type === 'image');
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  if (images.length === 0) return null;
-
-  const current = openIndex === null ? undefined : images[openIndex];
-  const go = (step: number) =>
-    setOpenIndex((index) =>
-      index === null ? null : (index + step + images.length) % images.length,
-    );
-
+export function Gallery({ images, providerName, onOpen }: GalleryProps) {
   return (
-    <section aria-labelledby="gallery-title">
-      <h2 id="gallery-title" className="mb-4 font-display text-2xl font-semibold">
-        Galerie
-      </h2>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {images.map((image, index) => (
-          <li key={image.id}>
-            <button
-              type="button"
-              onClick={() => setOpenIndex(index)}
-              className="block aspect-[4/3] w-full overflow-hidden rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              aria-label={`Agrandir la photo ${index + 1} sur ${images.length}`}
-            >
-              <img
-                src={image.thumbnailUrl ?? image.url}
-                alt={image.caption ?? `Photo ${index + 1} de ${providerName}`}
-                loading="lazy"
-                className="size-full object-cover transition-transform hover:scale-105"
-              />
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <Dialog open={current !== undefined} onOpenChange={(open) => !open && setOpenIndex(null)}>
-        <DialogContent
-          className="max-w-4xl gap-3 p-3 sm:max-w-4xl"
-          onKeyDown={(event) => {
-            if (event.key === 'ArrowRight') go(1);
-            if (event.key === 'ArrowLeft') go(-1);
-          }}
-        >
-          <DialogTitle className="sr-only">
-            Photo {(openIndex ?? 0) + 1} sur {images.length}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            Utilise les flèches gauche et droite pour passer d’une photo à l’autre.
-          </DialogDescription>
-          {current && (
-            <img
-              src={current.url}
-              alt={current.caption ?? `Photo ${(openIndex ?? 0) + 1} de ${providerName}`}
-              className="max-h-[75vh] w-full rounded-md object-contain"
-            />
-          )}
-          <div className="flex items-center justify-between">
-            <Button variant="outline" size="sm" onClick={() => go(-1)}>
-              <ChevronLeft aria-hidden /> Précédente
-            </Button>
-            <span className="text-sm text-muted-foreground" aria-hidden>
-              {(openIndex ?? 0) + 1} / {images.length}
-            </span>
-            <Button variant="outline" size="sm" onClick={() => go(1)}>
-              Suivante <ChevronRight aria-hidden />
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+    <section aria-labelledby="gallery-title" className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="gallery-title" className="font-display text-[26px] font-semibold md:text-[32px]">
+          Galerie
+        </h2>
+        <p className="text-muted-foreground">
+          {images.length} photo{images.length > 1 ? 's' : ''}
+        </p>
+      </div>
+      {images.length === 0 ? (
+        <EmptyState
+          icon={ImageOff}
+          title="Pas encore de photo"
+          description="Ce prestataire n’a pas encore ajouté de photo à sa galerie."
+        />
+      ) : (
+        <ul className="grid auto-rows-[130px] grid-cols-2 gap-3 sm:auto-rows-[170px] sm:grid-cols-3">
+          {images.map((image, index) => {
+            const large = index === 0 && images.length > 2;
+            return (
+              <li key={image.id} className={cn(large && 'col-span-2 row-span-2')}>
+                <button
+                  type="button"
+                  onClick={() => onOpen(index)}
+                  className="block size-full overflow-hidden rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
+                  aria-label={`Agrandir la photo ${index + 1} sur ${images.length}`}
+                >
+                  <img
+                    src={large ? image.url : (image.thumbnailUrl ?? image.url)}
+                    alt={image.caption ?? `Photo ${index + 1} de ${providerName}`}
+                    loading="lazy"
+                    decoding="async"
+                    width={large ? 1200 : 400}
+                    height={large ? 800 : 300}
+                    className="size-full object-cover transition-transform duration-300 hover:scale-105 motion-reduce:transition-none"
+                  />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }

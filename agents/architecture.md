@@ -108,8 +108,14 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
   Section « Deux façons d'utiliser Wenzee » : `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration` ;
   `lib/userTypes.ts` (textes et liens des deux parcours).
-- `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil (fixe,
-  transparente sur le hero) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
+- `src/features/provider-profile/` (fiche prestataire, P5) : `ProviderProfilePage` assemble `ProfileCover` (photo plein
+  écran, navbar transparente via `stores/navbarOverlay.ts`) avec `ProviderIdentity` posée dessus, puis `ProfileTabs`
+  (Tabs Radix, état React `tab` ; liste dans `lib/profileTabs.ts`) : `AboutSection` (+ `AvailabilityCalendar`),
+  `OfferingList`, `Gallery`, `ReviewList` ; à droite `ContactPanel` (collant sur ordinateur). `PhotoLightbox` : la
+  visionneuse partagée. Fonctions d'affichage pures dans `lib/profileDisplay.ts`, icône par famille dans
+  `lib/categoryIcon.ts`.
+- `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
+  transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
   client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.
 - `src/components/layout/SiteFooter.tsx` : **le pied de page de toutes les pages** (4 gabarits). Contenu dans
   `footerContent.ts` (liens, réseaux sociaux), `NewsletterForm.tsx`, `SocialIcon.tsx`.

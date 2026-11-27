@@ -7,10 +7,10 @@ async function signInAs(page: Page, account: string, retour: string) {
   await expect(page).toHaveURL(retour);
 }
 
-/** « Note : 4,7 sur 5, 12 avis » → { average: 4.7, count: 12 } */
+/** « Note : 4,7 sur 5, 12 avis » (en-tête de la fiche) → { average: 4.7, count: 12 } */
 async function readRating(page: Page) {
   const label = await page
-    .locator('section[aria-labelledby="reviews-title"]')
+    .locator('article header')
     .getByRole('img', { name: /^Note : / })
     .first()
     .getAttribute('aria-label');
