@@ -19,9 +19,10 @@ interface SpaceNavProps {
   label: string;
   /**
    * « side » : menu latéral sur grand écran ; « top » : onglets horizontaux compacts ;
-   * « tabs » : grands onglets de l'espace client (fond terre cuite léger sur l'onglet actif).
+   * « tabs » : grands onglets de l'espace client (fond terre cuite léger sur l'onglet actif) ;
+   * « sidebar » : le grand menu latéral du back-office admin (et son tiroir sur téléphone).
    */
-  variant: 'side' | 'top' | 'tabs';
+  variant: 'side' | 'top' | 'tabs' | 'sidebar';
   /** « dark » : le menu brun de l'espace pro (maquette). */
   tone?: 'light' | 'dark';
   className?: string;
@@ -56,6 +57,7 @@ export function SpaceNav({ items, label, variant, tone = 'light', className }: S
         data-icons-only={iconsOnly || undefined}
         className={cn(
           variant === 'side' && 'flex flex-col gap-1',
+          variant === 'sidebar' && 'flex flex-col gap-1.5',
           variant === 'top' && 'flex gap-1 overflow-x-auto pb-1',
           // Téléphone : 4 colonnes égales (icône au-dessus du libellé), rien ne dépasse de l'écran.
           // Dès 640 px : une rangée, plus serrée en tablette.
@@ -68,29 +70,41 @@ export function SpaceNav({ items, label, variant, tone = 'light', className }: S
               to={to}
               end={end}
               className={({ isActive }) =>
-                variant === 'tabs'
+                variant === 'sidebar'
                   ? cn(
-                      'relative flex h-full min-h-14 flex-col items-center justify-start gap-1 rounded-xl px-1 py-2 sm:justify-center text-center text-[13px] leading-tight font-medium transition-colors duration-200 outline-none focus-visible:ring-[3px] focus-visible:ring-ring sm:h-12 sm:min-h-0 sm:flex-row sm:gap-2.5 sm:px-4 sm:py-0 sm:text-base sm:whitespace-nowrap lg:gap-3 lg:px-6 lg:text-[17px]',
-                      // Icônes seules (libellés trop longs) : onglet plus bas, icône centrée.
-                      iconsOnly && 'min-h-12 justify-center',
+                      'flex min-h-14 items-center gap-4 rounded-xl px-5 text-[17px] font-medium transition-colors duration-200 outline-none focus-visible:ring-[3px] focus-visible:ring-ring lg:text-[19px]',
+                      // Actif : fond terre cuite très léger, texte terre (maquette du back-office).
                       isActive
-                        ? 'bg-secondary font-semibold text-primary shadow-card'
+                        ? 'bg-title-accent/12 font-semibold text-primary'
                         : 'text-foreground hover:bg-muted',
                     )
-                  : cn(
-                      'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                      dark
-                        ? isActive
-                          ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                          : 'text-sidebar-foreground hover:bg-white/10'
-                        : isActive
-                          ? 'bg-muted text-primary'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                    )
+                  : variant === 'tabs'
+                    ? cn(
+                        'relative flex h-full min-h-14 flex-col items-center justify-start gap-1 rounded-xl px-1 py-2 sm:justify-center text-center text-[13px] leading-tight font-medium transition-colors duration-200 outline-none focus-visible:ring-[3px] focus-visible:ring-ring sm:h-12 sm:min-h-0 sm:flex-row sm:gap-2.5 sm:px-4 sm:py-0 sm:text-base sm:whitespace-nowrap lg:gap-3 lg:px-6 lg:text-[17px]',
+                        // Icônes seules (libellés trop longs) : onglet plus bas, icône centrée.
+                        iconsOnly && 'min-h-12 justify-center',
+                        isActive
+                          ? 'bg-secondary font-semibold text-primary shadow-card'
+                          : 'text-foreground hover:bg-muted',
+                      )
+                    : cn(
+                        'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                        dark
+                          ? isActive
+                            ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                            : 'text-sidebar-foreground hover:bg-white/10'
+                          : isActive
+                            ? 'bg-muted text-primary'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                      )
               }
             >
               <Icon
-                className={variant === 'tabs' ? (iconsOnly ? 'size-6' : 'size-5') : 'size-4'}
+                className={cn(
+                  variant === 'tabs' ? (iconsOnly ? 'size-6' : 'size-5') : 'size-4',
+                  variant === 'sidebar' && 'size-7 shrink-0 text-primary',
+                )}
+                strokeWidth={variant === 'sidebar' ? 1.7 : undefined}
                 aria-hidden
               />
               <span data-label className={cn(iconsOnly && 'sr-only')}>

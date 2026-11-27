@@ -77,7 +77,7 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 | Authentification | `/connexion`, `/inscription`, `/mot-de-passe-oublie`                                                   | aucune                                                           | `AuthLayout` (écran partagé, sans navbar) |
 | Client           | `/espace/…` (demandes, reservations, messages, avis, compte)                                           | `<RequireAuth />`                                                | `ClientLayout` (onglets)                  |
 | Prestataire      | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral)                |
-| Admin            | `/admin/…` (prestataires, signalements, utilisateurs)                                                  | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`                             |
+| Admin            | `/admin/…` (prestataires, signalements, utilisateurs)                                                  | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout` (menu latéral, sans pied)   |
 
 Toutes les adresses sont dans `src/app/routes.tsx`. Chaque page est une route `lazy` vers `src/features/<fonctionnalité>/pages/…`
 (le helper `soon()` des pages « Bientôt disponible » a été retiré au lot 9 : toutes les pages du MVP existent).
@@ -125,9 +125,16 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   Les onglets de l'espace client : `SpaceNav` variante `tabs` (icônes seules sur téléphone si un libellé ne
   tient pas sur une ligne : `useLabelsFit`). Défilement entre les pages : `app/RootRoute.tsx`
   (en haut à chaque nouveau chemin ; pas au chargement, pas sur « retour »).
+- `src/features/admin/` (back-office, A1 à A4) : `AdminLayout` (dans `app/layouts/`) = `Navbar appShell` +
+  `SpaceNav` variante `sidebar` (tiroir sous 1024 px) + `AdminNotifications`. Vue d'ensemble : `AdminPageHeader`,
+  `AdminStatsGrid`, `AdminPriorityTasks`, `AdminRecentActivity` (`useAdminActivity`), `AdminQuickActions`,
+  `AdminPanel` ; fonctions pures dans `lib/` (`priorityTasks`, `activityDisplay`, `initials`). Tableaux :
+  `AdminTable` / `AdminRow` / `AdminCell` (cartes sous 768 px), `StatusPill`, `AdminFeedback` ; `ReasonDialog`
+  pour les décisions à motif.
 - `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
   transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
-  client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.
+  client ↔ prestataire) dans les espaces. `appShell` (back-office) : sans liens du site ni animation au défilement,
+  avec `leading` (bouton du tiroir) et `accountLabel` (« Admin »). `AppHeader` n'existe plus.
 - `src/components/layout/SiteFooter.tsx` : **le pied de page de toutes les pages** (4 gabarits). Contenu dans
   `footerContent.ts` (liens, réseaux sociaux), `NewsletterForm.tsx`, `SocialIcon.tsx`.
 - `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones) ; `public/images/categories/` :

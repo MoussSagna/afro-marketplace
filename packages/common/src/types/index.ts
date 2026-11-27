@@ -100,6 +100,7 @@ export type ProviderSearchResult = z.infer<typeof s.providerSearchResultSchema>;
 export type ProviderDetails = z.infer<typeof s.providerDetailsSchema>;
 export type MyProviderDetails = z.infer<typeof s.myProviderDetailsSchema>;
 export type AdminOverview = z.infer<typeof s.adminOverviewSchema>;
+export type AdminActivityItem = z.infer<typeof s.adminActivityItemSchema>;
 export type AdminProviderDetails = z.infer<typeof s.adminProviderDetailsSchema>;
 export type AdminReport = z.infer<typeof s.adminReportSchema>;
 export type ReviewWithAuthor = z.infer<typeof s.reviewWithAuthorSchema>;

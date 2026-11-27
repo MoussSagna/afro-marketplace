@@ -52,6 +52,7 @@ export const queryKeys = {
   admin: {
     all: ['admin'] as const,
     overview: () => [...queryKeys.admin.all, 'overview'] as const,
+    activity: (limit: number) => [...queryKeys.admin.all, 'activity', limit] as const,
     providersToReview: () => [...queryKeys.admin.all, 'providers-to-review'] as const,
     provider: (id: string) => [...queryKeys.admin.all, 'provider', id] as const,
     reports: (status?: ReportStatus) =>

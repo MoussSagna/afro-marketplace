@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Briefcase, LogOut, RotateCcw, Settings, Shield, User } from 'lucide-react';
+import { Briefcase, ChevronDown, LogOut, RotateCcw, Settings, Shield, User } from 'lucide-react';
 import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,11 @@ import {
 import { resetDemoData, USES_MOCKS } from '@/lib/resetDemoData';
 import { useSessionStore } from '@/stores/session';
 
-/** Le menu du compte connecté : changer d'espace, réinitialiser la démo, se déconnecter. */
-export function UserMenu() {
+/**
+ * Le menu du compte connecté : changer d'espace, réinitialiser la démo, se déconnecter.
+ * `label` (back-office : « Admin ») remplace le prénom, affiché dès 640 px avec une flèche.
+ */
+export function UserMenu({ label }: { label?: string } = {}) {
   const user = useSessionStore((state) => state.user);
   const queryClient = useQueryClient();
 
@@ -29,12 +32,23 @@ export function UserMenu() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="gap-2 px-2" aria-label={`Menu de ${user.firstName}`}>
-          <Avatar>
+          <Avatar className={label ? 'size-10 sm:size-11' : undefined}>
             {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-            <AvatarFallback>{initials}</AvatarFallback>
+            <AvatarFallback
+              className={label ? 'bg-background font-semibold text-foreground' : undefined}
+            >
+              {initials}
+            </AvatarFallback>
           </Avatar>
-          {/* Le prénom à partir de 1280 px : la navbar tient sur une ligne même dans les espaces. */}
-          <span className="hidden xl:inline">{user.firstName}</span>
+          {label ? (
+            <>
+              <span className="hidden text-lg font-semibold sm:inline">{label}</span>
+              <ChevronDown className="hidden size-5 opacity-90 sm:block" aria-hidden />
+            </>
+          ) : (
+            // Le prénom à partir de 1280 px : la navbar tient sur une ligne même dans les espaces.
+            <span className="hidden xl:inline">{user.firstName}</span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

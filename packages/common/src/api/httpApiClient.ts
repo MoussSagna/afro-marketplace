@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  adminActivityItemSchema,
   adminOverviewSchema,
   adminProviderDetailsSchema,
   adminReportSchema,
@@ -205,6 +206,8 @@ export function createHttpApiClient(options: HttpApiClientOptions = {}): ApiClie
 
     // Administration
     getAdminOverview: () => get('/admin/overview', adminOverviewSchema),
+    getAdminActivity: (query = {}) =>
+      get(`/admin/activity${toQueryString(query)}`, z.array(adminActivityItemSchema)),
     listProvidersToReview: () => get('/admin/providers/to-review', z.array(providerProfileSchema)),
     getAdminProvider: (providerId) =>
       get(`/admin/providers/${id(providerId)}`, adminProviderDetailsSchema),
