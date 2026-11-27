@@ -71,12 +71,13 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 
 ### Routes et espaces (lot 2)
 
-| Espace      | Préfixe                                                                                                              | Garde                                                            | Gabarit                    |
-| ----------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------- |
-| Public      | `/`, `/connexion`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`             |
-| Client      | `/espace/…` (demandes, reservations, messages, avis, compte)                                                         | `<RequireAuth />`                                                | `ClientLayout` (onglets)   |
-| Prestataire | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                              | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral) |
-| Admin       | `/admin/…` (prestataires, signalements, utilisateurs)                                                                | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`              |
+| Espace           | Préfixe                                                                                                | Garde                                                            | Gabarit                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------- |
+| Public           | `/`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`                            |
+| Authentification | `/connexion`, `/inscription`, `/mot-de-passe-oublie`                                                   | aucune                                                           | `AuthLayout` (écran partagé, sans navbar) |
+| Client           | `/espace/…` (demandes, reservations, messages, avis, compte)                                           | `<RequireAuth />`                                                | `ClientLayout` (onglets)                  |
+| Prestataire      | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral)                |
+| Admin            | `/admin/…` (prestataires, signalements, utilisateurs)                                                  | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`                             |
 
 Toutes les adresses sont dans `src/app/routes.tsx`. Chaque page est une route `lazy` vers `src/features/<fonctionnalité>/pages/…`
 (le helper `soon()` des pages « Bientôt disponible » a été retiré au lot 9 : toutes les pages du MVP existent).
@@ -114,6 +115,11 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   `OfferingList`, `Gallery`, `ReviewList` ; à droite `ContactPanel` (collant sur ordinateur). `PhotoLightbox` : la
   visionneuse partagée. Fonctions d'affichage pures dans `lib/profileDisplay.ts`, icône par famille dans
   `lib/categoryIcon.ts`.
+- `src/features/auth/` (connexion simulée, P8) : `AuthLayout` (écran partagé photo | formulaire, route parente des
+  3 pages) ; `LoginPage` (email + mot de passe via `useSignIn`, `SocialButtons` simulés, `DemoAccounts`),
+  `SignUpPage` (`useSignUp` puis `useVerifyOtp`), `ForgotPasswordPage` (`useForgotPassword` puis `useResetPassword`) ;
+  `AuthInput` / `PasswordInput` (champ à icône, œil), `PasswordRules` ; `lib/useCompleteSignIn.ts` (fin commune de
+  toute connexion, `useAuthLink` garde `?retour=`). Schémas des formulaires : `@afro/common` `utils/authForms.ts`.
 - `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
   transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
   client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.

@@ -11,3 +11,4 @@ export * from './money';
 export * from './quoteForm';
 export * from './profileForms';
 export * from './summarize';
+export * from './authForms';
