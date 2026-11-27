@@ -2,6 +2,12 @@
 
 Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
 
+## Branches resynchronisées (27/11/2026)
+
+La PR #61 (dev → main) a été fusionnée en « squash » : `main` avait donc un commit que `dev` n'avait pas,
+même si le code était identique. Une PR ramène `main` dans `dev` (aucun changement de code) et
+[`conventions.md`](conventions.md) précise de toujours fusionner `dev` → `main` avec « Create a merge commit ».
+
 ## Test e2e « parcours 7 » fiabilisé (27/11/2026)
 
 Le test Playwright du masquage des coordonnées échouait de temps en temps sur mobile
