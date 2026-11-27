@@ -86,7 +86,7 @@ function CategoryTile({ category, onPress }: { category: Category; onPress: () =
  * L'accueil de la recherche (état initial de l'onglet Recherche ; ancien Accueil, maquette P1, lot M6) :
  * « À la une » en grand carrousel (sous la pilule de recherche de SearchScreen), puis les catégories principales.
  * Toucher une catégorie ou « Tout voir » passe aux résultats (filtrés sur la catégorie).
- * Ensuite, des rangées horizontales façon Airbnb (les mieux notés, libres samedi, à Paris, petits budgets) :
+ * Ensuite, des rangées horizontales façon Airbnb (libres samedi, traiteurs, à Paris, musique, petits budgets) :
  * chacune est une recherche, et son titre ouvre les résultats avec ses filtres (`onSeeSection`).
  * En bas, « Comment ça marche » rappelle le principe des devis.
  */
@@ -109,11 +109,12 @@ export function SearchHome({
   // Calculées une fois par ouverture de l'écran : le samedi ne change pas pendant qu'on fait défiler.
   const sections = useMemo(() => homeSections(todayIso()), []);
   const subtitles: Record<(typeof sections)[number]['id'], string> = {
-    topRated: t('home.sections.topRatedHint'),
     saturday: t('home.sections.saturdayHint', {
-      date: shortDay(sections[1]!.filters.date!, locale),
+      date: shortDay(sections[0]!.filters.date!, locale),
     }),
+    food: t('home.sections.foodHint'),
     paris: t('home.sections.parisHint'),
+    music: t('home.sections.musicHint'),
     smallBudget: t('home.sections.smallBudgetHint', {
       price: formatPrice(SMALL_BUDGET, locale),
     }),

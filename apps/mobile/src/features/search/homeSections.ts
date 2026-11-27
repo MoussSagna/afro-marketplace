@@ -2,7 +2,7 @@ import { addDays, parseIsoDate, type ProviderSearchFilters } from '@afro/common'
 
 /** Une rangée de l'état initial de la Recherche : son nom (clé des textes) et sa recherche. */
 export type HomeSection = {
-  id: 'topRated' | 'saturday' | 'paris' | 'smallBudget';
+  id: 'saturday' | 'food' | 'paris' | 'music' | 'smallBudget';
   filters: ProviderSearchFilters;
 };
 
@@ -20,14 +20,16 @@ export function nextSaturday(today: string): string {
 
 /**
  * Les rangées horizontales de l'état initial (façon Airbnb : « Logements populaires à Paris », etc.).
+ * Pas de rangée « les mieux notés » : c'est déjà le carrousel « À la une » juste au-dessus.
  * Chacune est une recherche ordinaire : « Tout voir » ouvre les résultats avec les mêmes filtres.
  * Pas de nouvelle API : on réutilise la recherche (données de démo MSW).
  */
 export function homeSections(today: string): HomeSection[] {
   return [
-    { id: 'topRated', filters: { minRating: 4.5, sort: 'rating' } },
-    { id: 'saturday', filters: { date: nextSaturday(today), sort: 'rating' } },
+    { id: 'saturday', filters: { date: nextSaturday(today) } },
+    { id: 'food', filters: { category: 'traiteur-boissons', sort: 'rating' } },
     { id: 'paris', filters: { city: 'Paris', sort: 'rating' } },
+    { id: 'music', filters: { category: 'musique-animation', sort: 'rating' } },
     { id: 'smallBudget', filters: { budgetMax: SMALL_BUDGET, sort: 'price_asc' } },
   ];
 }

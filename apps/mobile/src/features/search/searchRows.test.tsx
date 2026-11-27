@@ -20,9 +20,10 @@ const routes = {
 };
 
 const TITLES = {
-  topRated: 'Les mieux notés',
   saturday: 'Libres samedi',
+  food: 'Pour régaler tes invités',
   paris: 'Talents à Paris',
+  music: 'Pour faire danser la fête',
   smallBudget: 'Petits budgets',
 } as const;
 
@@ -62,14 +63,18 @@ describe('Recherche, état initial : rangées façon Airbnb', () => {
     expect(screen.getByText('2. Demande un devis gratuit')).toBeOnTheScreen();
   });
 
-  it('les mieux notés : triés par note, et « Coup de cœur » sur les plus appréciés', async () => {
+  it('traiteurs : triés par note, et « Coup de cœur » sur les plus appréciés', async () => {
     const { api } = demoApi();
-    const { items } = await api.searchProviders({ minRating: 4.5, sort: 'rating', pageSize: 8 });
+    const { items } = await api.searchProviders({
+      category: 'traiteur-boissons',
+      sort: 'rating',
+      pageSize: 8,
+    });
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    const row = within(await screen.findByTestId('home-row-topRated'));
+    const row = within(await screen.findByTestId('home-row-food'));
     const ratings = items.map((p) => p.ratingAverage);
     expect([...ratings].sort((a, b) => b - a)).toEqual(ratings);
-    expect(row.getAllByText('Coup de cœur').length).toBeGreaterThan(0);
+    expect(row.getAllByText('Coup de cœur').length).toBeGreaterThan(0); // Saveurs de Dakar : 4,8 (8 avis)
   });
 
   it('le titre d’une rangée ouvre les résultats avec ses filtres', async () => {
@@ -93,10 +98,11 @@ describe('Recherche, état initial : rangées façon Airbnb', () => {
 
   it('le cœur ajoute aux favoris puis retire, sans ouvrir le profil', async () => {
     const { api } = demoApi();
-    const [first] = (await api.searchProviders({ minRating: 4.5, sort: 'rating', pageSize: 8 }))
-      .items;
+    const [first] = (
+      await api.searchProviders({ category: 'traiteur-boissons', sort: 'rating', pageSize: 8 })
+    ).items;
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    const row = within(await screen.findByTestId('home-row-topRated'));
+    const row = within(await screen.findByTestId('home-row-food'));
 
     await fireEvent.press(
       row.getByRole('button', { name: `Ajouter ${first!.displayName} aux favoris` }),
@@ -136,8 +142,9 @@ describe('Recherche, état initial : rangées façon Airbnb', () => {
       initialUrl: '/',
       wrapper: testProviders({ ...api, searchProviders }),
     });
-    expect(await screen.findByTestId('home-row-topRated')).toBeOnTheScreen();
     expect(await screen.findByTestId('home-row-saturday')).toBeOnTheScreen();
+    expect(await screen.findByTestId('home-row-food')).toBeOnTheScreen();
+    expect(await screen.findByTestId('home-row-music')).toBeOnTheScreen();
     expect(screen.queryByTestId('home-row-paris')).toBeNull();
     expect(screen.queryByTestId('home-row-smallBudget')).toBeNull();
     expect(screen.queryByText('Talents à Paris')).toBeNull();

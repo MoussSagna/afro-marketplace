@@ -101,12 +101,14 @@ export const fr = {
     crowdFavorite: 'Coup de cœur',
     /** Les rangées horizontales de l'état initial de la Recherche (façon Airbnb). */
     sections: {
-      topRated: 'Les mieux notés',
-      topRatedHint: 'Des clients ravis, avis à l’appui',
       saturday: 'Libres samedi',
       saturdayHint: 'Disponibles le {{date}}',
+      food: 'Pour régaler tes invités',
+      foodHint: 'Traiteurs, pâtisseries, boissons',
       paris: 'Talents à Paris',
-      parisHint: 'Près de chez toi, dans la capitale',
+      parisHint: 'Les mieux notés de la capitale',
+      music: 'Pour faire danser la fête',
+      musicHint: 'DJ, groupes, danseurs, animateurs',
       smallBudget: 'Petits budgets',
       smallBudgetHint: 'Dès moins de {{price}}',
     },

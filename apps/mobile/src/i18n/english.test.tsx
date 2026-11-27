@@ -71,7 +71,9 @@ describe('L’app en anglais (lot M6b)', () => {
       ),
     ).toBeOnTheScreen();
     // Les rangées façon Airbnb et « Comment ça marche ».
-    expect(await screen.findByRole('link', { name: 'See all: Top rated' })).toBeOnTheScreen();
+    expect(
+      await screen.findByRole('link', { name: 'See all: Treat your guests' }),
+    ).toBeOnTheScreen();
     expect(await screen.findByText('Talents in Paris')).toBeOnTheScreen();
     expect(
       screen.getAllByRole('button', { name: /^Add .* to favourites$/ }).length,

@@ -15,12 +15,20 @@ describe('nextSaturday', () => {
 });
 
 describe('homeSections', () => {
-  it('quatre rangées, chacune avec sa recherche', () => {
+  it('cinq rangées, chacune avec sa recherche', () => {
     const sections = homeSections('2026-11-27');
-    expect(sections.map((s) => s.id)).toEqual(['topRated', 'saturday', 'paris', 'smallBudget']);
-    expect(sections[1]!.filters.date).toBe('2026-11-28');
+    expect(sections.map((s) => s.id)).toEqual([
+      'saturday',
+      'food',
+      'paris',
+      'music',
+      'smallBudget',
+    ]);
+    expect(sections[0]!.filters.date).toBe('2026-11-28');
+    expect(sections[1]!.filters.category).toBe('traiteur-boissons');
     expect(sections[2]!.filters.city).toBe('Paris');
-    expect(sections[3]!.filters).toEqual({ budgetMax: SMALL_BUDGET, sort: 'price_asc' });
+    expect(sections[3]!.filters.category).toBe('musique-animation');
+    expect(sections[4]!.filters).toEqual({ budgetMax: SMALL_BUDGET, sort: 'price_asc' });
     expect(SMALL_BUDGET).toBe(30_000); // 300 €, en centimes
   });
 });
