@@ -2,7 +2,7 @@ import { DEMO_CLIENT_ID, type MockDb } from '@afro/common/mocks';
 import { act, fireEvent } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import RequestRoute from '../../../app/demande/[id]';
-import RequestsTab from '../../../app/(tabs)/demandes';
+import RequestsTab from '../../../app/demandes';
 import { useSessionStore } from '@/stores/session';
 import { demoApi, testProviders } from '@/test/demoApi';
 import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
@@ -13,7 +13,7 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/demandes': RequestsTab,
+  demandes: RequestsTab,
   '(tabs)/messages': Empty,
   '(tabs)/compte': Empty,
   'demande/[id]': RequestRoute,

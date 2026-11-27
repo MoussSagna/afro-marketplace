@@ -26,7 +26,7 @@ const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': SearchScreen,
-  '(tabs)/demandes': () => (
+  demandes: () => (
     <SignInRequired title="Demandes" reason="Connecte-toi pour suivre tes demandes de devis.">
       <ComingSoonScreen title="Demandes" lot="M10" description="Tes demandes" />
     </SignInRequired>
@@ -83,7 +83,7 @@ describe('Garde des onglets (lot M5)', () => {
     const db = await open('/');
     const user = db.data.users.find((u) => u.id === client.userId)!;
     await act(() => useSessionStore.getState().signIn({ user, token: `demo:${user.id}` }));
-    await fireEvent.press(screen.getByRole('tab', { name: 'Compte' }));
+    await fireEvent.press(screen.getByRole('tab', { name: 'Profil' }));
     expect(await screen.findByText(user.email)).toBeOnTheScreen();
 
     await press('Se déconnecter');
