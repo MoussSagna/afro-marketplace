@@ -10,7 +10,7 @@ interface AdminPanelProps {
   className?: string;
 }
 
-/** Une grande carte blanche du back-office : icône, titre Playfair, sous-titre, puis le contenu. */
+/** Une grande carte blanche du back-office : icône, titre `font-display`, sous-titre, puis le contenu. */
 export function AdminPanel({
   icon: Icon,
   title,

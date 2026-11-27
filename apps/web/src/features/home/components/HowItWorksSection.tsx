@@ -6,8 +6,8 @@ import { HOW_IT_WORKS_STEPS } from '../lib/howItWorks';
 
 /**
  * 5ᵉ section de l'accueil : « Comment ça marche », en 3 étapes numérotées.
- * Même grammaire que les sections au-dessus : surtitre entre tirets, titre Playfair, mot accent souligné.
- * Cartes ivoire sur fond sable, liseré orange en haut, grand numéro Playfair ; un fil pointillé
+ * Même grammaire que les sections au-dessus : surtitre entre tirets, titre `font-display`, mot accent souligné.
+ * Cartes ivoire sur fond sable, liseré orange en haut, grand numéro `font-display` ; un fil pointillé
  * relie les étapes (horizontal sur ordinateur, vertical sur téléphone et tablette).
  * Les cartes montent l'une après l'autre quand la section arrive à l'écran.
  * Avec « réduire les animations », elles sont là d'emblée : `MotionConfig` ne coupe que les

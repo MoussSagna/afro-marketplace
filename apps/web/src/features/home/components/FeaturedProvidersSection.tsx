@@ -8,7 +8,7 @@ import { FeaturedProviderCard } from './FeaturedProviderCard';
 
 /**
  * 4ᵉ section de l'accueil : « Prestataires à la une ».
- * Même grammaire que les sections au-dessus : surtitre entre tirets, grand titre Playfair avec
+ * Même grammaire que les sections au-dessus : surtitre entre tirets, grand titre `font-display` avec
  * mot accent souligné, bouton d'action. Grille de cartes : 1 colonne (téléphone), 2 (tablette),
  * 4 (ordinateur). Fond ivoire : il alterne avec le sable de « Deux façons d'utiliser Wenzee ».
  */

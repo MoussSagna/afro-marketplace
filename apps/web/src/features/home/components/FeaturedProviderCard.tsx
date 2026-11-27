@@ -11,7 +11,7 @@ interface FeaturedProviderCardProps {
 
 /**
  * Carte « à la une » de l'accueil : grande photo (zoom au survol), catégorie en pastille sur la photo,
- * badge « Pro vérifié », nom en Playfair, ville, note et prix.
+ * badge « Pro vérifié », nom en `font-display`, ville, note et prix.
  * Même astuce que `ProviderCard` : le lien est sur le nom et s'étend à toute la carte (after:inset-0).
  */
 export function FeaturedProviderCard({ provider, categoryName }: FeaturedProviderCardProps) {
