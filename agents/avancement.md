@@ -30,6 +30,12 @@ la 2ᵉ (retenue) met la couverture en plein écran et demande de vrais onglets.
   défilement, contact persistant, galerie, avis, favoris, navbar) ; `e2e/provider-profile.spec.ts` (bords de la
   couverture, onglets sans défilement, clavier, galerie, favoris, panneau collant, téléphone).
 
+## Branches resynchronisées (27/11/2026)
+
+La PR #61 (dev → main) a été fusionnée en « squash » : `main` avait donc un commit que `dev` n'avait pas,
+même si le code était identique. Une PR ramène `main` dans `dev` (aucun changement de code) et
+[`conventions.md`](conventions.md) précise de toujours fusionner `dev` → `main` avec « Create a merge commit ».
+
 ## Test e2e « parcours 7 » fiabilisé (27/11/2026)
 
 Le test Playwright du masquage des coordonnées échouait de temps en temps sur mobile

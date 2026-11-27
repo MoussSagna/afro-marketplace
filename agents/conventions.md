@@ -55,6 +55,9 @@
 - Chaque lot ou sujet : une branche créée **depuis `dev`** (`git checkout -B <ma-branche> origin/dev`), et une PR
   **qui cible `dev`** (jamais `main`).
 - **`dev` ne va dans `main` que quand Mouss le demande** (une PR `dev` → `main`, « mise en production »).
+  Cette PR se fusionne avec **« Create a merge commit »**, jamais « Squash and merge » : un squash recrée
+  les commits sous un autre identifiant, `main` et `dev` divergent et la PR suivante repart avec tout l'historique.
+  Si ça arrive, on ramène `main` dans `dev` (PR `main` → `dev`, sans changement de contenu).
 - Après la fusion d'une PR dans `dev`, la branche suivante repart de `origin/dev` à jour.
 - La CI tourne sur chaque PR et sur chaque push dans `main` et `dev`.
 - **Une branche fusionnée est supprimée** (règle de Mouss, 26/11/2026) : dès qu'une PR est fusionnée, sa branche
