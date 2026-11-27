@@ -107,6 +107,8 @@ export function AccountScreen() {
         </View>
 
         <Card className="px-3.5 py-0">
+          {/* « Mes demandes » n'est plus un onglet (27/11/2026) : on y va d'ici. */}
+          <Row label={t('account.myRequests')} onPress={() => router.push('/demandes')} />
           <Row label={t('account.info')} onPress={() => router.push('/mon-compte/informations')} />
           <Row
             label={t('account.notifications')}

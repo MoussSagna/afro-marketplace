@@ -1,5 +1,6 @@
 import { formatPrice, useQuoteRequests, type QuoteRequestSummary, type Side } from '@afro/common';
 import { useRouter } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, RefreshControl, View } from 'react-native';
@@ -17,6 +18,7 @@ import { requestUrgency } from '../pro/requestUrgency';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
 import { requestHref } from './requestHref';
 import { REQUEST_TABS, requestTab, type RequestTab } from './requestTab';
+import { useThemeColors } from '@/theme/useTheme';
 
 /** Les textes de chaque côté : « Mes demandes » (client) ou « Demandes reçues » (prestataire). */
 const TEXTS = {
@@ -54,7 +56,15 @@ const TEXTS = {
  *   d'urgence du tableau de bord (rouge avant expiration).
  * Trois onglets : en cours, réservées, terminées (« archivées » côté prestataire).
  */
-export function RequestsScreen({ side = 'client' }: { side?: Side }) {
+export function RequestsScreen({
+  side = 'client',
+  withBack = false,
+}: {
+  side?: Side;
+  /** Ouvert par-dessus les onglets (client, depuis Profil) : un bouton « Retour » avant le titre. */
+  withBack?: boolean;
+}) {
+  const colors = useThemeColors();
   const { t } = useTranslation();
   const router = useRouter();
   const requests = useQuoteRequests(side);
@@ -71,7 +81,19 @@ export function RequestsScreen({ side = 'client' }: { side?: Side }) {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="px-5 pt-2">
         <View className="flex-row items-center justify-between gap-3">
-          <Heading>{t(texts.title)}</Heading>
+          <View className="flex-1 flex-row items-center gap-3">
+            {withBack ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.back')}
+                onPress={() => (router.canGoBack() ? router.back() : router.replace('/compte'))}
+                className="min-h-touch min-w-touch items-center justify-center rounded-full border border-border bg-card"
+              >
+                <ChevronLeft size={22} color={colors.foreground} />
+              </Pressable>
+            ) : null}
+            <Heading className="shrink">{t(texts.title)}</Heading>
+          </View>
           {side === 'client' ? (
             <Button variant="secondary" size="sm" onPress={() => router.push('/reservations')}>
               {t('requests.myBookings')}

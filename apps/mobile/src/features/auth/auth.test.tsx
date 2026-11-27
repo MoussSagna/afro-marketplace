@@ -26,7 +26,7 @@ const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': SearchScreen,
-  '(tabs)/demandes': () => (
+  demandes: () => (
     <SignInRequired title="Demandes" reason="Connecte-toi pour suivre tes demandes de devis.">
       <ComingSoonScreen title="Demandes" lot="M10" description="Tes demandes" />
     </SignInRequired>

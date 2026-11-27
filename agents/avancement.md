@@ -15,10 +15,15 @@ symbole Wenzee pour Événements, **sans toucher au fonctionnement de la barre**
 - **Icône Événements** : `components/brand/WenzeeSymbolIcon` (les 3 tracés de `logoPaths`, au trait, sans le point
   final ; couleur et épaisseur données par la barre). Rangée sous `evenements` dans les icônes client.
 - **Onglet « Compte » affiché « Profil »** (`tabs.profile`) ; l'écran et son adresse ne changent pas.
-- **Pas fait (navigation inchangée, comme demandé)** : les écrans Favoris et Événements n'existent pas dans l'app,
-  et l'onglet Demandes n'est pas dans la liste voulue (voir `questions-ouvertes.md` n° 30).
-- Tests : `navigation/tabLabels.test.tsx` (ordre, libellés visibles / masqués, nom gardé, symbole Wenzee) ; tests
-  existants de la barre inchangés dans leur logique (seul le nom « Compte » → « Profil »). GIF clair / sombre à faire.
+- **5 onglets dans l'ordre voulu** (demande de Mouss, même jour) : Recherche, Favoris, Événements, Messages, Profil.
+  Favoris et Événements sont des **écrans vides** pour l'instant (`ComingSoonScreen`, lot facultatif).
+- **« Mes demandes » n'est plus un onglet** (choix de Mouss) : `app/demandes.tsx` (même adresse `/demandes`), ouvert
+  depuis une ligne « Mes demandes » de Profil (ou « Réservations »), par-dessus les onglets, avec un bouton Retour.
+- **Onglet actif** : plus de pastille ronde derrière ; son nom est en gras et en couleur. Onglets inactifs plus grisés
+  (clair `#7D6A5E`, sombre `#9C8574`, pro `#AE9886`).
+- Tests : `navigation/tabLabels.test.tsx` (ordre, libellés visibles / masqués, nom gardé, symbole Wenzee, onglet actif
+  sans pastille, écrans vides) ; `account.test.tsx` (« Mes demandes » depuis Profil, Retour) ; tests existants de la
+  barre adaptés aux nouveaux onglets (noms seulement). 320 tests mobiles. GIF clair / sombre à faire.
 
 ## App mobile : la Recherche devient l'écran principal (27/11/2026)
 

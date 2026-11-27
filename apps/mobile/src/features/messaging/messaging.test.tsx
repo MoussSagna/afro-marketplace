@@ -13,7 +13,7 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/demandes': Empty,
+  demandes: Empty,
   '(tabs)/messages': MessagesTab,
   '(tabs)/compte': Empty,
   'conversations/[id]': ConversationRoute,

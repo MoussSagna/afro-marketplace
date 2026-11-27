@@ -14,7 +14,7 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/demandes': Empty,
+  demandes: Empty,
   '(tabs)/messages': Empty,
   '(tabs)/compte': Empty,
   'demande/[id]': RequestRoute,

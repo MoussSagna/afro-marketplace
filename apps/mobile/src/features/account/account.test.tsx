@@ -1,8 +1,10 @@
 import { DEMO_CLIENT_ID, type MockDb } from '@afro/common/mocks';
 import { act, fireEvent, waitFor } from '@testing-library/react-native';
+import { Stack } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { Linking } from 'react-native';
 import AccountTab from '../../../app/(tabs)/compte';
+import RequestsRoute from '../../../app/demandes';
 import InfoRoute from '../../../app/mon-compte/informations';
 import NotificationsRoute from '../../../app/mon-compte/notifications';
 import { i18n } from '@/i18n';
@@ -18,22 +20,34 @@ import { useTabBarStore } from '../navigation/tabBarStore';
 jest.mock('@/lib/demoData', () => ({ resetDemoData: jest.fn(() => true) }));
 
 const Empty = () => null;
+/** La pile racine, comme app/_layout.tsx : « Mes demandes » s'ouvre par-dessus les onglets. */
+function RootStack() {
+  return <Stack screenOptions={{ headerShown: false }} />;
+}
+
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/demandes': Empty,
+  demandes: RequestsRoute,
   '(tabs)/messages': Empty,
   '(tabs)/compte': AccountTab,
   'mon-compte/informations': InfoRoute,
   'mon-compte/notifications': NotificationsRoute,
 };
 
-async function open(initialUrl: string, prepare?: (db: MockDb) => void) {
+async function open(
+  initialUrl: string,
+  prepare?: (db: MockDb) => void,
+  { withStack = false }: { withStack?: boolean } = {},
+) {
   const ctx = demoApi();
   prepare?.(ctx.db);
   const user = ctx.db.data.users.find((u) => u.id === DEMO_CLIENT_ID)!;
   await act(() => useSessionStore.getState().signIn({ user, token: `demo:${user.id}` }));
-  await renderRouter(routes, { initialUrl, wrapper: testProviders(ctx.api) });
+  await renderRouter(withStack ? { _layout: RootStack, ...routes } : routes, {
+    initialUrl,
+    wrapper: testProviders(ctx.api),
+  });
   return { ...ctx, user };
 }
 
@@ -59,6 +73,17 @@ describe('Compte (lot M12b)', () => {
     expect(openURL).toHaveBeenCalledWith(siteUrl('/devenir-prestataire'));
     await press('Aide et FAQ');
     expect(openURL).toHaveBeenLastCalledWith(siteUrl('/faq'));
+  });
+
+  it('« Mes demandes » s’ouvre depuis Profil (plus un onglet), et « Retour » y revient', async () => {
+    await open('/', undefined, { withStack: true });
+    await fireEvent.press(screen.getByRole('tab', { name: 'Profil' }));
+    expect(screen.queryByRole('tab', { name: 'Demandes' })).toBeNull();
+    await press('Mes demandes');
+    expect(screen).toHavePathname('/demandes');
+    expect(await screen.findByRole('header', { name: 'Mes demandes' })).toBeOnTheScreen();
+    await press('Retour');
+    expect(screen).toHavePathname('/compte');
   });
 
   it('change l’apparence et la langue', async () => {

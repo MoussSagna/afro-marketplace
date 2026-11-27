@@ -16,7 +16,8 @@ const soon = (title: string, lot: string) =>
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': SearchScreen,
-  '(tabs)/demandes': soon('Demandes', 'M10'),
+  '(tabs)/favoris': soon('Favoris', '—'),
+  '(tabs)/evenements': soon('Événements', '—'),
   '(tabs)/messages': soon('Messages', 'M10'),
   '(tabs)/compte': soon('Compte', 'M12'),
 };
@@ -33,12 +34,20 @@ afterEach(() => {
 });
 
 describe('Onglets du mode client (lots M4 et M4 bis)', () => {
-  it('ouvre la Recherche (4 onglets, plus d’Accueil) puis passe d’un onglet à l’autre', async () => {
+  it('ouvre la Recherche (5 onglets, plus d’Accueil ni de Demandes) puis passe d’un onglet à l’autre', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
     expect(screen.getByTestId('search-state-home')).toBeOnTheScreen();
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(4);
+    expect(tabs).toHaveLength(5);
+    expect(tabs.map((tab) => tab.props.accessibilityLabel)).toEqual([
+      'Recherche',
+      'Favoris',
+      'Événements',
+      'Messages',
+      'Profil',
+    ]);
+    expect(screen.queryByRole('tab', { name: 'Demandes' })).toBeNull();
     expect(tabs[0]).toHaveProp('accessibilityLabel', 'Recherche');
     expect(screen.getByRole('tab', { name: 'Recherche' })).toBeSelected();
     expect(screen.queryByRole('tab', { name: 'Accueil' })).toBeNull();
@@ -61,10 +70,10 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
     expect(
       screen.getByRole('button', { name: 'Afficher les onglets, Recherche actif' }),
     ).toBeOnTheScreen();
-    expect(screen.queryByRole('tab', { name: 'Demandes' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'Favoris' })).toBeNull();
 
     await scrollTo(200); // on remonte un peu
-    expect(screen.getByRole('tab', { name: 'Demandes' })).toBeOnTheScreen();
+    expect(screen.getByRole('tab', { name: 'Favoris' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: /Afficher les onglets/ })).toBeNull();
   });
 
@@ -80,7 +89,7 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
   it('les noms des onglets ne sont pas lus en double : seul l’onglet les annonce', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    for (const name of ['Recherche', 'Demandes', 'Messages', 'Profil']) {
+    for (const name of ['Recherche', 'Favoris', 'Événements', 'Messages', 'Profil']) {
       expect(screen.getByRole('tab', { name })).toBeOnTheScreen();
       expect(screen.queryByText(name)).toBeNull();
     }

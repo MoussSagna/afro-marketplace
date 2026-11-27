@@ -22,7 +22,7 @@ const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': SearchScreen,
-  '(tabs)/demandes': () => (
+  demandes: () => (
     <SignInRequired title={i18n.t('tabs.requests')} reason={i18n.t('requests.signIn')}>
       <Empty />
     </SignInRequired>

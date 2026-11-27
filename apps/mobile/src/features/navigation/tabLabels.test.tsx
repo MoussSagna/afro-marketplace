@@ -1,4 +1,6 @@
-import { act } from '@testing-library/react-native';
+import { act, fireEvent } from '@testing-library/react-native';
+import EventsTab from '../../../app/(tabs)/evenements';
+import FavoritesTab from '../../../app/(tabs)/favoris';
 import { Tabs } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { WenzeeSymbolIcon } from '@/components/brand/WenzeeSymbolIcon';
@@ -16,7 +18,8 @@ const soon = (title: string) =>
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': soon('Recherche'),
-  '(tabs)/demandes': soon('Demandes'),
+  '(tabs)/favoris': soon('Favoris'),
+  '(tabs)/evenements': soon('Événements'),
   '(tabs)/messages': soon('Messages'),
   '(tabs)/compte': soon('Compte'),
 };
@@ -47,17 +50,44 @@ describe('Libellés et icônes de la barre d’onglets', () => {
   it('garde l’ordre des onglets, chacun avec son nom sous l’icône', async () => {
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(demoApi().api) });
     const names = screen.getAllByRole('tab').map((tab) => tab.props.accessibilityLabel);
-    expect(names).toEqual(['Recherche', 'Demandes', 'Messages', 'Profil']);
+    expect(names).toEqual(['Recherche', 'Favoris', 'Événements', 'Messages', 'Profil']);
 
     for (const [route, text] of [
       ['index', 'Recherche'],
-      ['demandes', 'Demandes'],
+      ['favoris', 'Favoris'],
+      ['evenements', 'Événements'],
       ['messages', 'Messages'],
       ['compte', 'Profil'],
     ] as const) {
       expect(label(route)).toHaveTextContent(text);
       expect(label(route)).toHaveStyle({ opacity: 1 });
     }
+  });
+
+  it('onglet actif : pas de cercle, nom en gras et en couleur ; les autres plus grisés', async () => {
+    await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(demoApi().api) });
+    // Plus de pastille derrière l'onglet actif.
+    expect(screen.getByRole('tab', { name: 'Recherche' })).not.toHaveStyle({
+      backgroundColor: expect.anything(),
+    });
+    expect(label('index')).toHaveStyle({ fontFamily: 'Inter_700Bold', color: '#7A1F0E' });
+    for (const route of ['favoris', 'evenements', 'messages', 'compte']) {
+      expect(label(route)).toHaveStyle({ fontFamily: 'Inter_500Medium', color: '#7D6A5E' });
+    }
+  });
+
+  it('Favoris et Événements : des écrans vides pour l’instant', async () => {
+    await renderRouter(
+      { ...routes, '(tabs)/favoris': FavoritesTab, '(tabs)/evenements': EventsTab },
+      { initialUrl: '/favoris', wrapper: testProviders(demoApi().api) },
+    );
+    expect(screen.getByRole('header', { name: 'Favoris' })).toBeOnTheScreen();
+    expect(screen.getByText('Bientôt disponible')).toBeOnTheScreen();
+    expect(screen.getByRole('tab', { name: 'Favoris' })).toBeSelected();
+
+    await fireEvent.press(screen.getByRole('tab', { name: 'Événements' }));
+    expect(await screen.findByRole('header', { name: 'Événements' })).toBeOnTheScreen();
+    expect(screen).toHavePathname('/evenements');
   });
 
   it('masque les libellés quand la barre se rétracte, et les remontre quand elle revient', async () => {

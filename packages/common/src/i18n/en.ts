@@ -20,12 +20,18 @@ export const en: Translations = {
     priceFrom: 'from {{price}}',
     onQuote: 'On quote',
   },
+  comingSoon: {
+    favorites: 'Find the providers you saved as favourites here.',
+    events: 'Plan your events and the providers for each one.',
+  },
   splash: {
     label: 'Wenzee, loading',
     tagline: 'The talents that bring our cultures to life',
   },
   tabs: {
     search: 'Search',
+    favorites: 'Favourites',
+    events: 'Events',
     requests: 'Requests',
     messages: 'Messages',
     account: 'Account',
@@ -492,6 +498,7 @@ export const en: Translations = {
     cancelled: 'Cancelled',
   },
   account: {
+    myRequests: 'My requests',
     signIn: 'Sign in to find your account and details.',
     signOut: 'Sign out',
     proTitle: 'Are you a provider?',

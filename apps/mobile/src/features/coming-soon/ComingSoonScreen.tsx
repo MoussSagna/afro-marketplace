@@ -6,8 +6,8 @@ import { Badge, EmptyState, Heading } from '@/components/ui';
 type ComingSoonScreenProps = {
   /** Le titre de l'onglet (« Recherche »). */
   title: string;
-  /** Le lot qui remplira cet écran (« M7 »), voir agents/sprint-mobile.md. */
-  lot: string;
+  /** Le lot qui remplira cet écran (« M7 »), voir agents/sprint-mobile.md. Absent : pas encore planifié. */
+  lot?: string;
   /** Ce que l'écran contiendra. */
   description: string;
 };
@@ -24,7 +24,7 @@ export function ComingSoonScreen({ title, lot, description }: ComingSoonScreenPr
         className="flex-1"
         title={t('common.comingSoon')}
         description={description}
-        action={<Badge variant="sun">{t('common.lot', { lot })}</Badge>}
+        action={lot ? <Badge variant="sun">{t('common.lot', { lot })}</Badge> : undefined}
       />
     </SafeAreaView>
   );

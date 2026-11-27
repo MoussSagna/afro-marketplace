@@ -32,12 +32,18 @@ export const fr = {
     priceFrom: 'dès {{price}}',
     onQuote: 'Sur devis',
   },
+  comingSoon: {
+    favorites: 'Retrouve ici les prestataires que tu as gardés en favori.',
+    events: 'Organise tes événements et les prestataires de chacun.',
+  },
   splash: {
     label: 'Wenzee, chargement',
     tagline: 'Les talents qui font vivre nos cultures',
   },
   tabs: {
     search: 'Recherche',
+    favorites: 'Favoris',
+    events: 'Événements',
     requests: 'Demandes',
     messages: 'Messages',
     account: 'Compte',
@@ -521,6 +527,7 @@ export const fr = {
     cancelled: 'Annulée',
   },
   account: {
+    myRequests: 'Mes demandes',
     signIn: 'Connecte-toi pour retrouver ton compte et tes infos.',
     signOut: 'Se déconnecter',
     proTitle: 'Tu es prestataire ?',

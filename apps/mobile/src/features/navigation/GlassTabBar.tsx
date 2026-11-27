@@ -1,6 +1,6 @@
 import { BlurView } from 'expo-blur';
 import type { BottomTabBarProps } from 'expo-router/tabs';
-import { House, Inbox, MessageCircle, Search, UserRound } from 'lucide-react-native';
+import { Heart, House, MessageCircle, Search, UserRound } from 'lucide-react-native';
 import type { ComponentType } from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,20 +23,18 @@ const GLASS = {
   light: {
     tint: 'light',
     active: '#7A1F0E',
-    inactive: '#4D3426',
+    inactive: '#7D6A5E', // gris chaud, plus effacé que l'onglet actif (contraste 4,6:1 sur le verre clair)
     veil: 'rgba(255, 255, 255, 0.45)',
     edge: 'rgba(255, 255, 255, 0.6)',
-    activeBackground: 'rgba(255, 255, 255, 0.7)',
     shadow: '0 10px 30px rgba(43, 26, 18, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
     badgeEdge: '#FFFFFF',
   },
   dark: {
     tint: 'dark',
     active: '#F3B618',
-    inactive: '#C4A68E',
+    inactive: '#9C8574',
     veil: 'rgba(38, 25, 18, 0.62)',
     edge: 'rgba(235, 217, 198, 0.14)',
-    activeBackground: 'rgba(255, 255, 255, 0.1)',
     shadow: '0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14)',
     badgeEdge: '#261912',
   },
@@ -44,10 +42,9 @@ const GLASS = {
   pro: {
     tint: 'dark',
     active: '#F3B618',
-    inactive: '#D9C2AA',
+    inactive: '#AE9886',
     veil: 'rgba(60, 40, 30, 0.62)',
     edge: 'rgba(235, 217, 198, 0.18)',
-    activeBackground: 'rgba(255, 255, 255, 0.12)',
     shadow: '0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22)',
     badgeEdge: '#2B1A12',
   },
@@ -70,15 +67,11 @@ export type TabIcon = ComponentType<{
   testID?: string;
 }>;
 
-/**
- * L'icône de chaque onglet client (nom du fichier dans app/(tabs)/).
- * `evenements` (symbole Wenzee) est prête pour l'onglet Événements, qui n'existe pas encore
- * (voir agents/questions-ouvertes.md) : elle s'affichera dès que app/(tabs)/evenements.tsx existera.
- */
+/** L'icône de chaque onglet client (nom du fichier dans app/(tabs)/) ; Événements : le symbole Wenzee. */
 const CLIENT_TAB_ICONS: Record<string, TabIcon> = {
   index: Search,
+  favoris: Heart,
   evenements: WenzeeSymbolIcon,
-  demandes: Inbox,
   messages: MessageCircle,
   compte: UserRound,
 };
@@ -231,10 +224,7 @@ export function GlassTabBar({
               accessibilityState={{ selected: focused }}
               accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
               onPress={onPress}
-              style={[
-                styles.tab,
-                focused && [styles.tabActive, { backgroundColor: glass.activeBackground }],
-              ]}
+              style={styles.tab}
             >
               <Icon
                 size={24}
@@ -303,9 +293,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 999,
-  },
-  tabActive: {
-    boxShadow: '0 2px 8px rgba(43, 26, 18, 0.08), inset 0 1px 0 #FFFFFF',
   },
   badge: {
     position: 'absolute',

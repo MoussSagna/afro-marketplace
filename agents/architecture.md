@@ -161,7 +161,8 @@ Plan complet : [`sprint-mobile.md`](sprint-mobile.md).
 ```
 apps/mobile/
   app/                 Les écrans pour Expo Router : un fichier = une adresse
-  app/(tabs)/          Les 4 onglets du mode client ; « (tabs) » ne compte pas dans l'adresse (Recherche = « / », index)
+  app/(tabs)/          Les 5 onglets du mode client (Recherche « / », Favoris, Événements, Messages, Profil = compte) ;
+                       « (tabs) » ne compte pas dans l'adresse. app/demandes.tsx : « Mes demandes », hors onglets
   app/pro/             Le mode prestataire : une pile ; dessous app/pro/(tabs)/ (les 5 onglets bruns, /pro…),
                        par-dessus /pro/demande/[id], /pro/devis/[id] et /pro/conversations/[id] (sans barre d'onglets)
   app/(auth)/          Les écrans de connexion (/bienvenue, /inscription, /verification, /connexion…)
