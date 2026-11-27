@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { BookingCard } from '../components/BookingCard';
+import { upcomingBookings } from '../lib/upcomingBookings';
 
 /** C5 : les réservations du client, à venir puis passées. */
 export function BookingsPage() {
@@ -23,16 +24,17 @@ export function BookingsPage() {
     );
   }
 
-  const upcoming = bookings.data.filter(
-    (b) => b.booking.status === 'confirmed' && b.booking.eventDate >= today,
-  );
+  const upcoming = upcomingBookings(bookings.data, today);
   const past = bookings.data
     .filter((b) => !upcoming.includes(b))
     .sort((a, b) => b.booking.eventDate.localeCompare(a.booking.eventDate));
 
   return (
     <section aria-labelledby="bookings-title" className="flex flex-col gap-8">
-      <h1 id="bookings-title" className="text-3xl font-semibold">
+      <h1
+        id="bookings-title"
+        className="font-display text-[28px] font-semibold sm:text-4xl lg:text-[40px]"
+      >
         Mes réservations
       </h1>
       {bookings.data.length === 0 ? (
@@ -49,7 +51,7 @@ export function BookingsPage() {
       ) : (
         <>
           <div aria-labelledby="upcoming-title" role="region">
-            <h2 id="upcoming-title" className="mb-3 text-xl font-semibold">
+            <h2 id="upcoming-title" className="mb-4 text-xl font-semibold sm:text-2xl">
               À venir ({upcoming.length})
             </h2>
             {upcoming.length === 0 ? (

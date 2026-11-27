@@ -75,6 +75,8 @@ describe('Profil prestataire (P5)', () => {
     renderRoute(URL);
 
     await screen.findByRole('heading', { name: 'À propos de Saveurs de Dakar' });
+    // Seul le changement d'onglet compte (pas un éventuel retour en haut à l'arrivée sur la page).
+    scrollTo.mockClear();
     const prestations = await openTab('Prestations');
     expect(within(prestations).getByRole('heading', { name: 'Nos prestations' })).toBeVisible();
     expect(screen.queryByRole('heading', { name: 'À propos de Saveurs de Dakar' })).toBeNull();

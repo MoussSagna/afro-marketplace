@@ -24,7 +24,9 @@ export function UserMenu() {
   const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
 
   return (
-    <DropdownMenu>
+    // Non modal, comme le menu « Prestataires » : un menu modal bloque le défilement de la page et retire la
+    // barre de défilement, ce qui décalait la page (et la navbar) à l'ouverture.
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="gap-2 px-2" aria-label={`Menu de ${user.firstName}`}>
           <Avatar>
@@ -35,7 +37,12 @@ export function UserMenu() {
           <span className="hidden xl:inline">{user.firstName}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-60">
+      <DropdownMenuContent
+        align="end"
+        sideOffset={12}
+        collisionPadding={12}
+        className="w-60 rounded-xl p-2"
+      >
         <DropdownMenuLabel>
           {user.firstName} {user.lastName}
           <span className="block text-xs font-normal text-muted-foreground">{user.email}</span>

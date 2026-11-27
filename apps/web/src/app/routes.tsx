@@ -5,6 +5,7 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { ClientLayout } from './layouts/ClientLayout';
 import { ProLayout } from './layouts/ProLayout';
 import { PublicLayout } from './layouts/PublicLayout';
+import { RootRoute } from './RootRoute';
 
 /**
  * Les pages « demandes » et « messages », communes aux espaces client et pro :
@@ -47,6 +48,8 @@ export const routes: RouteObject[] = [
   {
     // Affiché pendant le tout premier chargement d'une page « lazy ».
     HydrateFallback: () => null,
+    // Défilement entre les pages : en haut pour une nouvelle page, gardé pour un filtre.
+    Component: RootRoute,
     children: [
       {
         // Connexion, inscription, mot de passe oublié : écran partagé photo | formulaire,

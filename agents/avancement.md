@@ -1,6 +1,54 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (refonte de la page de connexion + inscription et mot de passe oublié sur le site ; refonte de la fiche prestataire, #64 ; 26/11 : refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 27/11/2026 (refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## Site : messagerie responsive sur téléphone (27/11/2026)
+
+Demande de Mouss (capture du bug + maquette) : textes qui sortaient des bulles, onglets coupés, en-tête tassé.
+Correction de l'existant, sans toucher à la logique. Même branche que le tableau de bord. Détail, causes et mesures :
+[`docs/chat-mobile-validation.md`](../docs/chat-mobile-validation.md).
+
+- **Bulles** (`MessageBubble`) : `min-w-0 max-w-[85%]`, `whitespace-pre-wrap [overflow-wrap:anywhere]` (un mot ou une
+  URL sans espace revient à la ligne) ; bulle reçue sur fond sable.
+- **Onglets de l'espace client** (`SpaceNav` « tabs ») : 4 colonnes sur téléphone ; si un libellé passerait sur
+  2 lignes, **icônes seules** pour les 4 (choix de Mouss ; mesure dans `components/layout/useLabelsFit.ts`, libellés
+  gardés pour les lecteurs d'écran) ; rangée icône + libellé dès 640 px.
+- **En-tête du fil** (`ConversationThread`) : avatar, nom + badge vérifié, date courte ; statut + « Voir la demande »
+  sur une 2ᵉ ligne sur téléphone. Défilement vers le dernier message : la liste seule (`scrollTop`), plus la page.
+- **Zone d'écriture** (`MessageComposer`) : champ d'une ligne qui grandit, bouton rond, marge `safe-area-inset-bottom`.
+- **Hauteur** (`MessagesPage`) en `100dvh` recalculée ; `index.html` : `interactive-widget=resizes-content` (clavier Android).
+- **Menu du compte** (`UserMenu`) : `modal={false}` comme le menu « Prestataires » (le mode modal bloquait le défilement
+  et retirait la barre de défilement : la page se décalait à l'ouverture, retour de Mouss) ; panneau sous la navbar
+  (`sideOffset={12}`). Test e2e dans `auth.spec.ts`.
+- **`StarRatingInput`** : la case radio invisible recouvre l'étoile (avant : `sr-only`, 1 px à côté) ; rendait le
+  parcours e2e d'avis instable selon les arrondis de mise en page.
+- Tests : 3 tests Vitest (long message, changement de conversation, Entrée / Maj + Entrée) ;
+  `e2e/chat-mobile.spec.ts` (5 formats, clavier simulé, changement de conversation).
+
+## Site : refonte du tableau de bord client (27/11/2026)
+
+Demande de Mouss : refonte de l'espace client (`/espace/…`) d'après une maquette (1536 × 1024), **sans nouvelle
+logique ni données en dur** ; Réservations, Messages et Mon compte gardés cohérents (harmonisation légère).
+Branche `claude/client-dashboard-redesign`, PR vers `dev` (validée par Mouss), avec la correction de la messagerie
+mobile ci-dessus. Détail, mesures et écarts :
+[`docs/client-dashboard-redesign-validation.md`](../docs/client-dashboard-redesign-validation.md).
+
+- **`ClientLayout`** : conteneur 1426 px, onglets `SpaceNav` variante `tabs` (actif sur fond sable, pastille orange
+  des messages), fondu CSS au changement d'onglet. Les variantes `top` / `side` (pro, admin) ne changent pas.
+- **`/espace/demandes`** (`RequestsPage`, côté client) : `ClientDashboardSummary` (`features/client-dashboard/`) =
+  bannière « Bonjour {prénom} 👋 » + 3 cartes-liens (demandes en cours, réservations à venir, messages non lus),
+  puis « Mes demandes » + « Nouvelle demande » (→ `/recherche`), filtres en pilule (`?onglet=` inchangé), états
+  vides. `RequestCard` : grande photo, badge vérifié, statut à icône (`RequestStatusBadge size="lg"`), chevron.
+  Le côté prestataire (« Demandes reçues ») garde sa page, avec le même style de cartes.
+- **`bookings/lib/upcomingBookings.ts`** : la règle « réservation à venir », partagée par la page Réservations et
+  le tableau de bord.
+- **`app/RootRoute.tsx`** : retour en haut à chaque nouveau chemin (pas au premier chargement, pas sur « retour »,
+  pas pour un filtre `?…`). Avant, une nouvelle page gardait le défilement de la précédente (ex. arrivée dans
+  l'espace client défilée de 145 px après la connexion). `ScrollRestoration` de React Router écarté : il remontait
+  aussi la page ~400 ms après le chargement. Tests : `window.scrollTo` remplacé par un faux dans `test/setup.ts`.
+- Tests : `ClientDashboard.test.tsx` (11 tests : prénom, chiffres recalculés depuis la base, mise à jour après
+  annulation, liens, filtres, carte, nouvelle demande, vide, erreur, navigation, côté pro), `upcomingBookings.test.ts` ;
+  `e2e/client-dashboard.spec.ts` (mise en page, défilement en haut, navigation, filtres, détail).
 
 ## Site : refonte de la page de connexion (27/11/2026)
 
