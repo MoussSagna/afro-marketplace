@@ -4,3 +4,6 @@ coverage
 playwright-report
 test-results
 apps/web/public/mockServiceWorker.js
+# Généré et réécrit par Expo à chaque démarrage
+apps/mobile/expo-env.d.ts
+apps/mobile/.expo
