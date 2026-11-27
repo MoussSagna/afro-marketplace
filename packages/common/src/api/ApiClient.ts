@@ -1,5 +1,6 @@
 import type {
   AcceptQuoteInput,
+  AdminActivityItem,
   AdminOverview,
   AdminProviderDetails,
   AdminReport,
@@ -155,6 +156,8 @@ export interface ApiClient {
 
   // --- Administration (lot 8)
   getAdminOverview(): Promise<AdminOverview>;
+  /** A1 : les derniers événements de la plateforme, du plus récent au plus ancien. */
+  getAdminActivity(query?: { limit?: number }): Promise<AdminActivityItem[]>;
   /** A2 : les profils en attente de validation, les plus anciens d'abord. */
   listProvidersToReview(): Promise<ProviderProfile[]>;
   getAdminProvider(providerId: string): Promise<AdminProviderDetails>;

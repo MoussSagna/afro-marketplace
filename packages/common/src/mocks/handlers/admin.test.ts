@@ -160,3 +160,65 @@ describe('A4 : utilisateurs', () => {
     expect(error.status).toBe(422);
   });
 });
+
+describe('A1 : activité récente', () => {
+  it('réservée aux admins', async () => {
+    expect((await errorOf(as('user-aissatou').getAdminActivity())).status).toBe(403);
+    expect((await errorOf(visitor.getAdminActivity())).status).toBe(401);
+  });
+
+  it('lit les vraies tables, du plus récent au plus ancien, et respecte la limite', async () => {
+    const activity = await admin.getAdminActivity({ limit: 50 });
+    expect(activity).toHaveLength(50);
+    const dates = activity.map((item) => item.at);
+    expect(dates).toEqual([...dates].sort().reverse());
+    // Le signalement le plus récent du seed (il y a 1 jour) arrive en tête.
+    expect(activity[0]).toMatchObject({
+      type: 'report_created',
+      reason: 'other',
+      subject: 'Profil Le Mafé Truck',
+    });
+    expect(activity[0]!.href).toMatch(/^\/admin\/signalements#rep-/);
+    // Chaque événement correspond à une ligne réelle de la base.
+    for (const item of activity) {
+      if (item.type === 'moderation') {
+        expect(mockDb.data.moderationActions.some((a) => a.id === item.id)).toBe(true);
+      }
+    }
+    expect((await admin.getAdminActivity()).length).toBe(10);
+    expect((await admin.getAdminActivity({ limit: 3 })).length).toBe(3);
+  });
+
+  it('une inscription ou une décision apparaît aussitôt en tête', async () => {
+    const [pending] = await admin.listProvidersToReview();
+    await admin.moderateProvider(pending!.id, { decision: 'validate', isProVerified: false });
+    const [latest] = await admin.getAdminActivity({ limit: 1 });
+    expect(latest).toMatchObject({
+      type: 'moderation',
+      action: 'validate_profile',
+      subject: 'Kompa Vibes Haïti',
+      href: `/admin/prestataires/${pending!.id}`,
+    });
+
+    await visitor.signUp({
+      firstName: 'Léa',
+      email: 'lea@example.com',
+      password: 'Wenzee2026',
+      acceptTerms: true,
+    });
+    await visitor.verifyOtp({ email: 'lea@example.com', code: '123456', purpose: 'sign-up' });
+    const [signUp] = await admin.getAdminActivity({ limit: 1 });
+    expect(signUp).toMatchObject({
+      type: 'account_created',
+      subject: 'Léa',
+      href: '/admin/utilisateurs',
+    });
+  });
+
+  it('une inscription prestataire du seed ne compte qu’une fois', async () => {
+    const activity = await admin.getAdminActivity({ limit: 50 });
+    const ids = activity.map((item) => item.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).not.toContain('user-saveurs-de-dakar:created');
+  });
+});

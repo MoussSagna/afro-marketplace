@@ -55,6 +55,15 @@ interface NavbarProps {
   spaceLabel?: string;
   /** Actions propres à un espace (bascule client ↔ prestataire…). */
   children?: ReactNode;
+  /**
+   * Back-office (admin) : barre d'application compacte et toujours visible, sans les liens du site
+   * ni leur menu de téléphone (l'espace a son propre menu latéral), sans animation au défilement.
+   */
+  appShell?: boolean;
+  /** Avant le logo (back-office : le bouton qui ouvre le menu latéral sur téléphone et tablette). */
+  leading?: ReactNode;
+  /** Le nom affiché à côté de l'avatar du menu du compte (par défaut : le prénom, dès 1280 px). */
+  accountLabel?: string;
 }
 
 /**
@@ -74,9 +83,20 @@ interface NavbarProps {
  * laissent la place à une recherche compacte ; un clic la déplie en grand sous la barre.
  * Sur téléphone et tablette, c'est une loupe qui ouvre la recherche plein écran.
  */
-export function Navbar({ overlay = false, withSearch = false, spaceLabel, children }: NavbarProps) {
+export function Navbar({
+  overlay = false,
+  withSearch = false,
+  spaceLabel,
+  children,
+  appShell = false,
+  leading,
+  accountLabel,
+}: NavbarProps) {
   const reduceMotion = useReducedMotion() ?? false;
-  const { scrolled, hidden } = useScrollHeader({ canHide: !reduceMotion });
+  const scrollState = useScrollHeader({ canHide: !reduceMotion && !appShell });
+  // Back-office : ni compactage ni disparition au défilement (le menu latéral se cale dessous).
+  const scrolled = scrollState.scrolled && !appShell;
+  const hidden = scrollState.hidden && !appShell;
   // Progression dans la page, de 0 à 1 : la largeur du trait orange.
   const { scrollYProgress } = useScroll();
   // Fond brun : toujours hors de l'accueil, après le défilement sur l'accueil.
@@ -131,20 +151,28 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
         className={cn(
           'relative mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 motion-reduce:transition-none sm:px-6 lg:px-8 2xl:px-[4.2vw]',
           solid ? 'h-16 lg:h-[72px]' : 'h-[72px] lg:h-[84px]',
+          appShell && 'max-w-none sm:px-5 lg:pr-8 lg:pl-9 2xl:px-10',
         )}
       >
         <div className="flex shrink-0 items-center gap-2">
+          {leading}
           <Link to="/" aria-label="Wenzee, accueil" className={cn('rounded-md', focusRing)}>
             <Logo
               variant="light"
               className={cn(
                 'transition-[height] duration-300 motion-reduce:transition-none',
                 solid ? 'h-8 sm:h-9 2xl:h-10' : 'h-9 sm:h-10 2xl:h-12',
+                appShell && 'h-8 sm:h-10 2xl:h-10',
               )}
             />
           </Link>
           {spaceLabel && (
-            <span className="hidden rounded-full bg-white/15 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white sm:inline-flex">
+            <span
+              className={cn(
+                'hidden rounded-full bg-white/15 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white sm:inline-flex',
+                appShell && 'ml-5 px-3.5 py-1.5 text-[15px] font-medium',
+              )}
+            >
               {spaceLabel}
             </span>
           )}
@@ -166,58 +194,64 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
           )}
         </AnimatePresence>
 
-        <nav
-          aria-label="Navigation principale"
-          aria-hidden={showSearch || undefined}
-          inert={showSearch || undefined}
-          className={cn(
-            'hidden transition-[opacity,translate] duration-200 lg:block',
-            showSearch && 'pointer-events-none -translate-y-2 opacity-0',
-          )}
-        >
-          <ul className="flex items-center gap-4 xl:gap-7 2xl:gap-9">
-            {LINKS_BEFORE.map((link) => (
-              <li key={link.to}>
-                <NavLink to={link.to} end={link.end} className={linkClass}>
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
-            <li>
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger
-                  className={cn(
-                    linkClass({ isActive: onProviders }),
-                    'flex items-center gap-1 data-[state=open]:text-white data-[state=open]:after:scale-x-100',
-                  )}
-                >
-                  Prestataires
-                  <ChevronDown className="size-4" aria-hidden />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" sideOffset={12} className="w-60 rounded-xl p-2">
-                  <DropdownMenuItem asChild>
-                    <Link to="/recherche" className="font-semibold">
-                      Tous les prestataires
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  {mainCategories.map((category) => (
-                    <DropdownMenuItem key={category.id} asChild>
-                      <Link to={`/categories/${category.slug}`}>{category.name}</Link>
+        {!appShell && (
+          <nav
+            aria-label="Navigation principale"
+            aria-hidden={showSearch || undefined}
+            inert={showSearch || undefined}
+            className={cn(
+              'hidden transition-[opacity,translate] duration-200 lg:block',
+              showSearch && 'pointer-events-none -translate-y-2 opacity-0',
+            )}
+          >
+            <ul className="flex items-center gap-4 xl:gap-7 2xl:gap-9">
+              {LINKS_BEFORE.map((link) => (
+                <li key={link.to}>
+                  <NavLink to={link.to} end={link.end} className={linkClass}>
+                    {link.label}
+                  </NavLink>
+                </li>
+              ))}
+              <li>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      linkClass({ isActive: onProviders }),
+                      'flex items-center gap-1 data-[state=open]:text-white data-[state=open]:after:scale-x-100',
+                    )}
+                  >
+                    Prestataires
+                    <ChevronDown className="size-4" aria-hidden />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={12}
+                    className="w-60 rounded-xl p-2"
+                  >
+                    <DropdownMenuItem asChild>
+                      <Link to="/recherche" className="font-semibold">
+                        Tous les prestataires
+                      </Link>
                     </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </li>
-            {LINKS_AFTER.map((link) => (
-              <li key={link.to}>
-                <NavLink to={link.to} end={link.end} className={linkClass}>
-                  {link.label}
-                </NavLink>
+                    <DropdownMenuSeparator />
+                    {mainCategories.map((category) => (
+                      <DropdownMenuItem key={category.id} asChild>
+                        <Link to={`/categories/${category.slug}`}>{category.name}</Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </li>
-            ))}
-          </ul>
-        </nav>
+              {LINKS_AFTER.map((link) => (
+                <li key={link.to}>
+                  <NavLink to={link.to} end={link.end} className={linkClass}>
+                    {link.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
         <div className="flex items-center gap-1 sm:gap-3 lg:gap-2 xl:gap-3">
           {showSearch && <MobileSearch trigger="icon" className="lg:hidden" />}
@@ -236,7 +270,7 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
                 </Link>
               )}
               {/* Le menu du compte reste visible sur téléphone (pour se déconnecter, changer d'espace). */}
-              <UserMenu />
+              <UserMenu label={accountLabel} />
             </div>
           ) : (
             <div className="hidden items-center gap-2 lg:flex xl:gap-3">
@@ -261,30 +295,32 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
             </div>
           )}
 
-          <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
-            <DialogTrigger
-              aria-label="Ouvrir le menu"
-              className={cn(
-                'flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 lg:hidden',
-                focusRing,
-              )}
-            >
-              <Menu className="size-7" aria-hidden />
-            </DialogTrigger>
-            <DialogContent className="top-0 right-0 left-auto flex h-dvh w-[min(22rem,calc(100%-3rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-6 overflow-y-auto rounded-none border-0 bg-background p-6 sm:max-w-none">
-              <Logo className="h-9 self-start" />
-              <DialogTitle className="sr-only">Menu</DialogTitle>
-              <DialogDescription className="sr-only">Les pages du site Wenzee</DialogDescription>
-              <MobileMenu
-                categories={mainCategories}
-                signedIn={!!user}
-                spaceHome={SPACE_HOME[lastSpace]}
-                loginUrl={loginUrl}
-                signUpUrl={signUpUrl}
-                onNavigate={() => setMenuOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          {!appShell && (
+            <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
+              <DialogTrigger
+                aria-label="Ouvrir le menu"
+                className={cn(
+                  'flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 lg:hidden',
+                  focusRing,
+                )}
+              >
+                <Menu className="size-7" aria-hidden />
+              </DialogTrigger>
+              <DialogContent className="top-0 right-0 left-auto flex h-dvh w-[min(22rem,calc(100%-3rem))] max-w-none translate-x-0 translate-y-0 flex-col gap-6 overflow-y-auto rounded-none border-0 bg-background p-6 sm:max-w-none">
+                <Logo className="h-9 self-start" />
+                <DialogTitle className="sr-only">Menu</DialogTitle>
+                <DialogDescription className="sr-only">Les pages du site Wenzee</DialogDescription>
+                <MobileMenu
+                  categories={mainCategories}
+                  signedIn={!!user}
+                  spaceHome={SPACE_HOME[lastSpace]}
+                  loginUrl={loginUrl}
+                  signUpUrl={signUpUrl}
+                  onNavigate={() => setMenuOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
       {showSearch && <ExpandedSearch step={searchStep} onClose={closeSearch} />}
@@ -295,6 +331,7 @@ export function Navbar({ overlay = false, withSearch = false, spaceLabel, childr
         className={cn(
           'absolute inset-x-0 bottom-0 h-[3px] origin-left bg-cta transition-opacity duration-300',
           solid ? 'opacity-100' : 'opacity-0',
+          appShell && 'hidden',
         )}
         style={{ scaleX: scrollYProgress }}
       />

@@ -1,6 +1,33 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## Site : refonte du back-office admin (27/11/2026)
+
+Demande de Mouss : refonte du back-office existant (`/admin/…`) d'après une maquette (1568 × 1003), **sans
+changer les routes, les gardes ni les actions** ; pages secondaires harmonisées. Branche
+`feat/admin-dashboard-redesign` (depuis `dev`), PR vers `dev` à valider par Mouss. Détail, mesures et écarts :
+[`docs/admin-dashboard-redesign-validation.md`](../docs/admin-dashboard-redesign-validation.md).
+
+- **`AdminLayout`** : `Navbar` en mode `appShell` (nouvelles props `appShell`, `leading`, `accountLabel` : sans
+  liens du site ni animation de défilement), badge « Back office admin », cloche `AdminNotifications` (ce qui
+  reste à traiter, depuis `useAdminOverview`), menu du compte « Admin ». Menu latéral fixe dès 1024 px
+  (`SpaceNav` variante `sidebar`), tiroir en dessous. **Plus de pied de page** dans le back-office.
+- **Vue d'ensemble** : `AdminPageHeader`, `AdminStatsGrid` (4 chiffres cliquables), `AdminPriorityTasks`
+  (`lib/priorityTasks.ts` : profils à valider + signalements ouverts, plus anciens d'abord, « Examiner » →
+  fiche ou `/admin/signalements#rep-…`), `AdminRecentActivity` (`lib/activityDisplay.ts`), `AdminQuickActions`.
+- **Nouvelle opération `getAdminActivity`** (`GET /api/admin/activity?limit=`, schéma `adminActivityItemSchema`,
+  hook `useAdminActivity`) : activité reconstruite depuis les tables (comptes, profils, envois en validation,
+  signalements, journal de modération), rien d'inventé. **À implémenter aussi côté Supabase au lot 10.**
+  `@afro/common` : `formatTimeAgo` (« il y a 12 min », « hier », « il y a 2 mois »).
+- **Pages secondaires** : `AdminTable` (+ `AdminRow`, `AdminCell`) passe en cartes sous 768 px ; Profils à valider
+  (vignette `ProviderThumbnail`, localisation, statut, « Examiner ») ; fiche en 2 colonnes (décision collante,
+  `PhotoLightbox`) ; Signalements (filtres en segments, carte ciblée par l'ancre et mise au focus) ; Utilisateurs
+  (avatar, type de compte, état vide). Messages de réussite (`AdminFeedback`) après chaque action.
+- Tests : `formatDate.test.ts`, `admin.test.ts` (activité : accès, ordre, limite, mise à jour, pas de doublon),
+  `priorityTasks.test.ts`, `activityDisplay.test.ts`, `AdminPages.test.tsx` (+ 21 tests : chiffres de la base,
+  chargement, erreurs, états vides, tâches, ancre, activité, accès rapides, menu, en-tête, notifications,
+  tiroir, retours après action) ; `e2e/admin-dashboard.spec.ts` (desktop + mobile).
 
 ## Menu du compte sous la navbar (27/11/2026)
 

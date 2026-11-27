@@ -7,6 +7,7 @@ import {
   setUserStatusInputSchema,
 } from '../../schemas';
 import type {
+  AdminActivityItem,
   AdminReport,
   ModerationAction,
   ModerationActionType,
@@ -19,6 +20,7 @@ import { toPublicUser } from '../mappers';
 import { apiError, currentUser, invalidInput } from './http';
 
 const PAGE_SIZE = 20;
+const ACTIVITY_LIMIT = { default: 10, max: 50 };
 const HIDDEN_MESSAGE = 'Message masqué par la modération.';
 
 /**
@@ -77,13 +79,17 @@ export function adminHandlers(db: MockDb) {
     }
   }
 
-  /** Un aperçu lisible de ce qui est signalé, pour l'écran A3. */
-  function describeTarget(report: Report): AdminReport['target'] {
+  /** Un nom court et discret : « Aïssatou N. » (le prénom seul si le nom n'est pas encore connu, « - »). */
+  function name(userId: string) {
+    const user = db.data.users.find((u) => u.id === userId);
+    if (!user) return 'Compte supprimé';
+    const initial = /^\p{L}/u.test(user.lastName) ? ` ${user.lastName.charAt(0)}.` : '';
+    return `${user.firstName}${initial}`;
+  }
+
+  /** Un aperçu lisible de ce qui est signalé (ou masqué), pour les écrans A1 et A3. */
+  function describeTarget(report: Pick<Report, 'targetType' | 'targetId'>): AdminReport['target'] {
     const { data } = db;
-    const name = (userId: string) => {
-      const user = data.users.find((u) => u.id === userId);
-      return user ? `${user.firstName} ${user.lastName.charAt(0)}.` : 'Compte supprimé';
-    };
     switch (report.targetType) {
       case 'review': {
         const review = data.reviews.find((r) => r.id === report.targetId);
@@ -176,7 +182,102 @@ export function adminHandlers(db: MockDb) {
     log(admin, 'hide_content', report.targetType, report.targetId, report.details);
   }
 
+  /**
+   * A1 : l'activité récente, reconstruite à partir des tables existantes (aucune donnée inventée) :
+   * comptes et profils créés, profils envoyés en validation, signalements, décisions d'admin.
+   */
+  function buildActivity(): AdminActivityItem[] {
+    const { users, providers, reports, moderationActions } = db.data;
+    const items: AdminActivityItem[] = [];
+    const providerHref = (id: string) => `/admin/prestataires/${id}`;
+
+    for (const user of users) {
+      if (user.status === 'deleted') continue;
+      const provider = providers.find((p) => p.userId === user.id);
+      // Compte et profil créés au même moment = une seule inscription (prestataire).
+      if (provider?.createdAt !== user.createdAt) {
+        items.push({
+          id: `${user.id}:created`,
+          type: 'account_created',
+          at: user.createdAt,
+          subject: name(user.id),
+          href: '/admin/utilisateurs',
+        });
+      }
+    }
+    for (const provider of providers) {
+      const subject = provider.displayName || name(provider.userId);
+      items.push({
+        id: `${provider.id}:created`,
+        type: 'provider_created',
+        at: provider.createdAt,
+        subject,
+        href: providerHref(provider.id),
+      });
+      if (provider.status === 'pending_review') {
+        // La date d'envoi en validation est la dernière mise à jour (comme sur l'écran A2).
+        items.push({
+          id: `${provider.id}:submitted`,
+          type: 'provider_submitted',
+          at: provider.updatedAt,
+          subject,
+          href: providerHref(provider.id),
+        });
+      }
+    }
+    for (const report of reports) {
+      items.push({
+        id: `${report.id}:created`,
+        type: 'report_created',
+        at: report.createdAt,
+        subject: describeTarget(report).label,
+        reason: report.reason,
+        href: report.status === 'open' ? `/admin/signalements#${report.id}` : '/admin/signalements',
+      });
+    }
+    for (const action of moderationActions) {
+      const { targetType, targetId } = action;
+      let subject: string;
+      let href: string | undefined;
+      if (targetType === 'provider') {
+        subject = providers.find((p) => p.id === targetId)?.displayName ?? 'Profil supprimé';
+        href = providerHref(targetId);
+      } else if (targetType === 'user') {
+        subject = name(targetId);
+        href = '/admin/utilisateurs';
+      } else if (targetType === 'report') {
+        const report = reports.find((r) => r.id === targetId);
+        subject = report ? describeTarget(report).label : 'Signalement supprimé';
+        href = '/admin/signalements';
+      } else {
+        subject = describeTarget({ targetType, targetId }).label;
+        href = '/admin/signalements';
+      }
+      items.push({
+        id: action.id,
+        type: 'moderation',
+        at: action.createdAt,
+        subject,
+        action: action.action,
+        href,
+      });
+    }
+    return items.sort((a, b) => b.at.localeCompare(a.at));
+  }
+
   return [
+    http.get('*/api/admin/activity', async ({ request }) => {
+      await delay();
+      const admin = requireAdmin(request);
+      if (admin instanceof Response) return admin;
+      const asked = Number(new URL(request.url).searchParams.get('limit'));
+      const limit =
+        Number.isInteger(asked) && asked > 0
+          ? Math.min(asked, ACTIVITY_LIMIT.max)
+          : ACTIVITY_LIMIT.default;
+      return HttpResponse.json(buildActivity().slice(0, limit));
+    }),
+
     http.get('*/api/admin/overview', async ({ request }) => {
       await delay();
       const admin = requireAdmin(request);
