@@ -2,6 +2,14 @@
 
 Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
 
+## Test e2e « parcours 7 » fiabilisé (27/11/2026)
+
+Le test Playwright du masquage des coordonnées échouait de temps en temps sur mobile
+(par exemple sur la PR #61 dev → main) : il prenait le premier texte trouvé dans la page, qui était
+parfois l'aperçu de la liste des conversations, masquée sur mobile quand un fil est ouvert.
+Il cherche maintenant le message dans le fil ouvert (`region` « Conversation avec Aïssatou… »).
+Aucun changement dans l'application.
+
 ## Site : refonte de la page de résultats (26/11/2026)
 
 Demande de Mouss : refonte visuelle de la recherche des prestataires d'après une maquette (DJ, 1536 × 1024), **sans

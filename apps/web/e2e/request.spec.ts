@@ -71,5 +71,7 @@ test('parcours 7 : un numéro de téléphone est masqué avant la réservation',
     .getByRole('link', { name: /Aïssatou/ })
     .first()
     .click();
-  await expect(page.getByText(/Appelez-moi au \[coordonnées masquées\]/).first()).toBeVisible();
+  // On cible le fil ouvert : sur mobile, l'aperçu de la liste (masquée) contient le même texte.
+  const proThread = page.getByRole('region', { name: /Conversation avec Aïssatou/ });
+  await expect(proThread.getByText(/Appelez-moi au \[coordonnées masquées\]/)).toBeVisible();
 });
