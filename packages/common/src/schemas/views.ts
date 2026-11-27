@@ -8,6 +8,13 @@ import { quoteSchema } from './quote';
 import { quoteRequestSchema } from './quoteRequest';
 import { reviewSchema } from './review';
 import {
+  eventCountsSchema,
+  eventProviderSchema,
+  eventProviderStatusSchema,
+  eventSchema,
+  eventStatusSchema,
+} from './event';
+import {
   moderationActionSchema,
   moderationActionTypeSchema,
   reportReasonSchema,
@@ -153,4 +160,26 @@ export const adminReportSchema = reportSchema.extend({
     /** Le contenu a déjà été masqué ou supprimé. */
     hidden: z.boolean(),
   }),
+});
+
+// ------------------------------------------------------------ Événements (planificateur)
+
+/** « Mes événements » : un événement, son statut et ses compteurs, calculés. */
+export const eventSummarySchema = z.object({
+  event: eventSchema,
+  status: eventStatusSchema,
+  counts: eventCountsSchema,
+  /** Les prestataires de l'événement (« Ajouter à un événement » sait s'il y est déjà). */
+  providerIds: z.array(idSchema),
+});
+
+/** Le détail d'un événement : ses prestataires, chacun avec son statut calculé. */
+export const eventDetailsSchema = eventSummarySchema.extend({
+  providers: z.array(
+    z.object({
+      link: eventProviderSchema,
+      status: eventProviderStatusSchema,
+      provider: providerCardSchema,
+    }),
+  ),
 });

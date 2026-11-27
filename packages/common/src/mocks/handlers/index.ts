@@ -3,6 +3,7 @@ import { adminHandlers } from './admin';
 import { authHandlers } from './auth';
 import { bookingHandlers } from './bookings';
 import { catalogueHandlers } from './catalogue';
+import { eventHandlers } from './events';
 import { messagingHandlers } from './messaging';
 import { myProviderHandlers } from './myProvider';
 import { providerHandlers } from './providers';
@@ -33,5 +34,6 @@ export function createHandlers(db: MockDb) {
     ...reviewHandlers(db),
     ...myProviderHandlers(db),
     ...adminHandlers(db),
+    ...eventHandlers(db),
   ];
 }

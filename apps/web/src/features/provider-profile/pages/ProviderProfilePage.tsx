@@ -18,6 +18,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import { buildProviderJsonLd } from '@/lib/seo';
 import { AboutSection, type AboutFact, type AboutTag } from '../components/AboutSection';
 import { AvailabilityCalendar } from '../components/AvailabilityCalendar';
+import { AddToEventButton } from '@/features/events/components/AddToEventButton';
 import { ContactPanel } from '../components/ContactPanel';
 import { Gallery } from '../components/Gallery';
 import { OfferingList } from '../components/OfferingList';
@@ -189,6 +190,7 @@ export function ProviderProfilePage() {
             <aside aria-label="Contacter le prestataire" data-testid="profile-contact">
               <ContactPanel
                 requestUrl={requestUrl}
+                addToEvent={<AddToEventButton providerId={p.id} providerName={p.displayName} />}
                 responseTime={responseTime}
                 highlights={[
                   'Devis gratuit et sans engagement',

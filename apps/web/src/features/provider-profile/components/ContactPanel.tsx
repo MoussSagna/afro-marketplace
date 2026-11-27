@@ -1,5 +1,5 @@
 import { CalendarDays, Check, Info, Mail, Phone, Zap } from 'lucide-react';
-import { useId, useState } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 
@@ -9,6 +9,8 @@ interface ContactPanelProps {
   responseTime?: string;
   /** Les points rassurants, tous tirés du profil (déplacement, annulation…). */
   highlights: string[];
+  /** « Ajouter à un événement » (planificateur), sous les deux boutons de contact. */
+  addToEvent?: ReactNode;
 }
 
 /**
@@ -20,7 +22,12 @@ interface ContactPanelProps {
  * de réservation confirmée (règle n° 7) et l'API ne renvoie pas le téléphone du prestataire
  * (question ouverte n° 13). Le bouton explique donc comment le joindre.
  */
-export function ContactPanel({ requestUrl, responseTime, highlights }: ContactPanelProps) {
+export function ContactPanel({
+  requestUrl,
+  responseTime,
+  highlights,
+  addToEvent,
+}: ContactPanelProps) {
   const [showPhoneInfo, setShowPhoneInfo] = useState(false);
   const phoneInfoId = useId();
 
@@ -82,6 +89,7 @@ export function ContactPanel({ requestUrl, responseTime, highlights }: ContactPa
                 demande : le prestataire vous répond dans votre messagerie Wenzee.
               </p>
             )}
+            {addToEvent}
           </div>
 
           {responseTime && (

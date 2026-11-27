@@ -10,3 +10,4 @@ export * from './useMyProvider';
 export * from './useQuoteRequests';
 export * from './useReviews';
 export * from './useAdmin';
+export * from './useEvents';

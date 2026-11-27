@@ -76,6 +76,7 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 | Public           | `/`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`                            |
 | Authentification | `/connexion`, `/inscription`, `/mot-de-passe-oublie`                                                   | aucune                                                           | `AuthLayout` (écran partagé, sans navbar) |
 | Client           | `/espace/…` (demandes, reservations, messages, avis, compte)                                           | `<RequireAuth />`                                                | `ClientLayout` (onglets)                  |
+| Événements       | `/evenements/…` (planificateur : liste, nouveau, détail, modifier, ajouter, devis)                     | `<RequireAuth />`                                                | `EventsLayout` (navbar seule)             |
 | Prestataire      | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral)                |
 | Admin            | `/admin/…` (prestataires, signalements, utilisateurs)                                                  | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout` (menu latéral, sans pied)   |
 
@@ -131,6 +132,13 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   `AdminPanel` ; fonctions pures dans `lib/` (`priorityTasks`, `activityDisplay`, `initials`). Tableaux :
   `AdminTable` / `AdminRow` / `AdminCell` (cartes sous 768 px), `StatusPill`, `AdminFeedback` ; `ReasonDialog`
   pour les décisions à motif.
+- `src/features/events/` (planificateur, page « Événements ») : `EventsPage`, `EventFormPage` (création ET
+  modification, 3 étapes, `lib/eventDraft.ts`, `lib/eventSteps.ts`), `EventDetailsPage`, `AddEventProviderPage`
+  (recherche `useProviderSearch`), `RequestQuotesPage` ; `components/AddToEventButton` (fiche prestataire).
+  Affichage : `lib/eventDisplay.ts` (icônes et photos par type, tons des statuts, familles conseillées).
+- `src/components/Toaster.tsx` + `src/stores/toasts.ts` : les toasts de toute l'application (`toast({ title,
+description, action })`), montés une fois dans `RootRoute`. `src/components/ConfirmDialog.tsx` : confirmer une
+  action sensible (focus sur « Annuler »).
 - `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
   transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
   client ↔ prestataire) dans les espaces. `appShell` (back-office) : sans liens du site ni animation au défilement,

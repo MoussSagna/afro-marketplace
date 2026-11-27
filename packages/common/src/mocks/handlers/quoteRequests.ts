@@ -5,7 +5,13 @@ import {
   computeQuoteRequestExpiresAt,
 } from '../../rules';
 import { createQuoteRequestInputSchema, declineQuoteRequestInputSchema } from '../../schemas';
-import type { Conversation, QuoteRequest, QuoteRequestStatus } from '../../types';
+import type {
+  Conversation,
+  CreateQuoteRequestInput,
+  QuoteRequest,
+  QuoteRequestStatus,
+  User,
+} from '../../types';
 import { completePastBookings } from '../bookings';
 import { expireStaleQuoteRequests, postMessage } from '../conversations';
 import type { MockDb } from '../db';
@@ -21,6 +27,81 @@ const DENIAL_STATUS = {
   date_too_far: 422,
   provider_unavailable: 409,
 } as const;
+
+/** Ce que renvoie `sendQuoteRequest` : la demande créée, ou le refus (code HTTP, code, message). */
+export type SendQuoteRequestResult =
+  | { ok: true; request: QuoteRequest }
+  | { ok: false; status: number; code: string; message: string };
+
+/**
+ * Créer une demande de devis (et sa conversation), en appliquant la règle canSendQuoteRequest.
+ * Partagé par le formulaire de demande (C1) et l'envoi groupé d'un événement (planificateur).
+ * `input` doit déjà être validé par createQuoteRequestInputSchema.
+ */
+export function sendQuoteRequest(
+  db: MockDb,
+  user: User,
+  input: Omit<CreateQuoteRequestInput, 'guestCount'> & { guestCount?: number },
+): SendQuoteRequestResult {
+  const provider = db.data.providers.find((p) => p.id === input.providerId);
+  if (!provider) {
+    return {
+      ok: false,
+      status: 404,
+      code: 'provider_not_found',
+      message: 'Prestataire introuvable.',
+    };
+  }
+
+  const now = db.now();
+  const verdict = canSendQuoteRequest({
+    client: user,
+    provider: {
+      ...provider,
+      unavailabilities: db.data.unavailabilities.filter((u) => u.providerId === provider.id),
+    },
+    eventDate: input.eventDate,
+    today: now.toISOString().slice(0, 10),
+  });
+  if (!verdict.allowed) {
+    return {
+      ok: false,
+      status: DENIAL_STATUS[verdict.reason],
+      code: verdict.reason,
+      message: verdict.message,
+    };
+  }
+
+  const request = db.update(() => {
+    const at = now.toISOString();
+    const quoteRequest: QuoteRequest = {
+      id: db.newId('qr'),
+      clientId: user.id,
+      ...input,
+      status: 'pending',
+      expiresAt: computeQuoteRequestExpiresAt(now),
+      createdAt: at,
+      updatedAt: at,
+    };
+    const conversation: Conversation = {
+      id: db.newId('conv'),
+      quoteRequestId: quoteRequest.id,
+      clientId: user.id,
+      providerUserId: provider.userId,
+      lastMessageAt: at,
+      unreadCountClient: 0,
+      unreadCountProvider: 0,
+      createdAt: at,
+      updatedAt: at,
+    };
+    db.data.quoteRequests.push(quoteRequest);
+    db.data.conversations.push(conversation);
+    // Le message de la demande ouvre la conversation (et passe par le masquage).
+    postMessage(db, conversation, user.id, input.message);
+    return quoteRequest;
+  });
+  return { ok: true, request };
+}
 
 /** Demandes de devis, côté client (C1, C2, C3) et côté prestataire (S3). Lot 4. */
 export function quoteRequestHandlers(db: MockDb) {
@@ -61,51 +142,9 @@ export function quoteRequestHandlers(db: MockDb) {
       if (!parsed.success) return invalidInput(parsed.error);
       const input = parsed.data;
 
-      const provider = db.data.providers.find((p) => p.id === input.providerId);
-      if (!provider) return apiError(404, 'provider_not_found', 'Prestataire introuvable.');
-
-      const now = db.now();
-      const verdict = canSendQuoteRequest({
-        client: user,
-        provider: {
-          ...provider,
-          unavailabilities: db.data.unavailabilities.filter((u) => u.providerId === provider.id),
-        },
-        eventDate: input.eventDate,
-        today: now.toISOString().slice(0, 10),
-      });
-      if (!verdict.allowed) {
-        return apiError(DENIAL_STATUS[verdict.reason], verdict.reason, verdict.message);
-      }
-
-      const created = db.update(() => {
-        const at = now.toISOString();
-        const quoteRequest: QuoteRequest = {
-          id: db.newId('qr'),
-          clientId: user.id,
-          ...input,
-          status: 'pending',
-          expiresAt: computeQuoteRequestExpiresAt(now),
-          createdAt: at,
-          updatedAt: at,
-        };
-        const conversation: Conversation = {
-          id: db.newId('conv'),
-          quoteRequestId: quoteRequest.id,
-          clientId: user.id,
-          providerUserId: provider.userId,
-          lastMessageAt: at,
-          unreadCountClient: 0,
-          unreadCountProvider: 0,
-          createdAt: at,
-          updatedAt: at,
-        };
-        db.data.quoteRequests.push(quoteRequest);
-        db.data.conversations.push(conversation);
-        // Le message de la demande ouvre la conversation (et passe par le masquage).
-        postMessage(db, conversation, user.id, input.message);
-        return quoteRequest;
-      });
+      const result = sendQuoteRequest(db, user, input);
+      if (!result.ok) return apiError(result.status, result.code, result.message);
+      const created = result.request;
       return HttpResponse.json(created, { status: 201 });
     }),
 

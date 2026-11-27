@@ -100,6 +100,8 @@ export type ProviderSearchResult = z.infer<typeof s.providerSearchResultSchema>;
 export type ProviderDetails = z.infer<typeof s.providerDetailsSchema>;
 export type MyProviderDetails = z.infer<typeof s.myProviderDetailsSchema>;
 export type AdminOverview = z.infer<typeof s.adminOverviewSchema>;
+export type EventSummary = z.infer<typeof s.eventSummarySchema>;
+export type EventDetails = z.infer<typeof s.eventDetailsSchema>;
 export type AdminActivityItem = z.infer<typeof s.adminActivityItemSchema>;
 export type AdminProviderDetails = z.infer<typeof s.adminProviderDetailsSchema>;
 export type AdminReport = z.infer<typeof s.adminReportSchema>;
@@ -109,3 +111,15 @@ export type QuoteRequestDetails = z.infer<typeof s.quoteRequestDetailsSchema>;
 export type ConversationSummary = z.infer<typeof s.conversationSummarySchema>;
 export type BookingSummary = z.infer<typeof s.bookingSummarySchema>;
 export type ProviderDashboard = z.infer<typeof s.providerDashboardSchema>;
+
+// Événements (planificateur)
+export type PlannedEventType = z.infer<typeof s.plannedEventTypeSchema>;
+export type EventBudget = z.infer<typeof s.eventBudgetSchema>;
+export type PlannedEvent = z.infer<typeof s.eventSchema>;
+export type EventProvider = z.infer<typeof s.eventProviderSchema>;
+export type EventProviderStatus = z.infer<typeof s.eventProviderStatusSchema>;
+export type EventStatus = z.infer<typeof s.eventStatusSchema>;
+export type EventCounts = z.infer<typeof s.eventCountsSchema>;
+export type EventInput = z.input<typeof s.eventInputSchema>;
+export type RequestEventQuotesInput = z.input<typeof s.requestEventQuotesInputSchema>;
+export type RequestEventQuotesResult = z.infer<typeof s.requestEventQuotesResultSchema>;
