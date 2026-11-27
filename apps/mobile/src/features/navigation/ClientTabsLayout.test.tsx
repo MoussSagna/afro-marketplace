@@ -4,7 +4,7 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { useSessionStore } from '@/stores/session';
 import { demoApi, testProviders } from '@/test/demoApi';
 import { ComingSoonScreen } from '../coming-soon/ComingSoonScreen';
-import { HomeScreen } from '../home/HomeScreen';
+import { SearchScreen } from '../search/SearchScreen';
 import { ClientTabsLayout } from './ClientTabsLayout';
 import { useTabBarStore } from './tabBarStore';
 
@@ -15,16 +15,15 @@ const soon = (title: string, lot: string) =>
 
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': HomeScreen,
-  '(tabs)/recherche': soon('Recherche', 'M7'),
+  '(tabs)/index': SearchScreen,
   '(tabs)/demandes': soon('Demandes', 'M10'),
   '(tabs)/messages': soon('Messages', 'M10'),
   '(tabs)/compte': soon('Compte', 'M12'),
 };
 
-/** Un défilement de l'Accueil jusqu'à la position y. */
+/** Un défilement de la Recherche (état initial) jusqu'à la position y. */
 const scrollTo = (y: number) =>
-  fireEvent.scroll(screen.getByTestId('home-scroll'), { nativeEvent: { contentOffset: { y } } });
+  fireEvent.scroll(screen.getByTestId('search-home'), { nativeEvent: { contentOffset: { y } } });
 
 afterEach(() => {
   useSessionStore.setState({ user: null, token: null });
@@ -34,24 +33,23 @@ afterEach(() => {
 });
 
 describe('Onglets du mode client (lots M4 et M4 bis)', () => {
-  it('ouvre l’Accueil puis passe d’un onglet à l’autre', async () => {
+  it('ouvre la Recherche (4 onglets, plus d’Accueil) puis passe d’un onglet à l’autre', async () => {
     const { api } = demoApi();
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(api) });
-    expect(screen.getByText(/Des talents qui font vivre/)).toBeOnTheScreen();
-    expect(screen.getByRole('tab', { name: 'Accueil' })).toBeSelected();
-
-    await fireEvent.press(screen.getByRole('tab', { name: 'Recherche' }));
-    expect(await screen.findByRole('header', { name: 'Recherche' })).toBeOnTheScreen();
-    expect(screen.getByText('Lot M7')).toBeOnTheScreen();
-    expect(screen).toHavePathname('/recherche');
+    expect(screen.getByTestId('search-state-home')).toBeOnTheScreen();
+    const tabs = screen.getAllByRole('tab');
+    expect(tabs).toHaveLength(4);
+    expect(tabs[0]).toHaveProp('accessibilityLabel', 'Recherche');
     expect(screen.getByRole('tab', { name: 'Recherche' })).toBeSelected();
+    expect(screen.queryByRole('tab', { name: 'Accueil' })).toBeNull();
 
     await fireEvent.press(screen.getByRole('tab', { name: 'Compte' }));
     expect(await screen.findByText('Lot M12')).toBeOnTheScreen();
     expect(screen).toHavePathname('/compte');
 
-    await fireEvent.press(screen.getByRole('tab', { name: 'Accueil' }));
+    await fireEvent.press(screen.getByRole('tab', { name: 'Recherche' }));
     expect(screen).toHavePathname('/');
+    expect(screen.getByRole('tab', { name: 'Recherche' })).toBeSelected();
   });
 
   it('se rétracte en rond quand on descend, et revient quand on remonte', async () => {
@@ -61,12 +59,12 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
 
     await scrollTo(300);
     expect(
-      screen.getByRole('button', { name: 'Afficher les onglets, Accueil actif' }),
+      screen.getByRole('button', { name: 'Afficher les onglets, Recherche actif' }),
     ).toBeOnTheScreen();
-    expect(screen.queryByRole('tab', { name: 'Recherche' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'Demandes' })).toBeNull();
 
     await scrollTo(200); // on remonte un peu
-    expect(screen.getByRole('tab', { name: 'Recherche' })).toBeOnTheScreen();
+    expect(screen.getByRole('tab', { name: 'Demandes' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: /Afficher les onglets/ })).toBeNull();
   });
 
@@ -76,7 +74,7 @@ describe('Onglets du mode client (lots M4 et M4 bis)', () => {
     await act(() => useTabBarStore.getState().collapse());
 
     await fireEvent.press(screen.getByRole('button', { name: /Afficher les onglets/ }));
-    expect(screen.getByRole('tab', { name: 'Accueil' })).toBeOnTheScreen();
+    expect(screen.getByRole('tab', { name: 'Recherche' })).toBeOnTheScreen();
   });
 
   it('n’affiche que des icônes : les noms restent pour les lecteurs d’écran', async () => {

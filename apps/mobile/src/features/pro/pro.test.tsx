@@ -20,7 +20,6 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': HomeTab,
-  '(tabs)/recherche': Empty,
   '(tabs)/demandes': Empty,
   '(tabs)/messages': Empty,
   '(tabs)/compte': AccountTab,

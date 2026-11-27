@@ -5,9 +5,9 @@ import { useUnreadMessages } from './useUnreadMessages';
 import { useThemeColors } from '@/theme/useTheme';
 
 /**
- * Les 5 onglets du mode client (maquette) : Accueil, Recherche, Demandes, Messages, Compte.
- * Chaque onglet est un fichier de app/(tabs)/. Les parenthèses de « (tabs) » ne
- * changent pas l'adresse : l'Accueil reste « / ».
+ * Les 4 onglets du mode client : Recherche, Demandes, Messages, Compte (plus d'onglet Accueil depuis
+ * le 27/11/2026 : la Recherche est l'écran d'ouverture). Chaque onglet est un fichier de app/(tabs)/.
+ * Les parenthèses de « (tabs) » ne changent pas l'adresse : la Recherche est « / » (fichier index).
  * La barre est la nôtre (GlassTabBar) : en verre, flottante, rétractable au défilement.
  */
 export function ClientTabsLayout() {
@@ -19,8 +19,7 @@ export function ClientTabsLayout() {
       tabBar={(props) => <GlassTabBar {...props} />}
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.background } }}
     >
-      <Tabs.Screen name="index" options={{ title: t('tabs.home') }} />
-      <Tabs.Screen name="recherche" options={{ title: t('tabs.search') }} />
+      <Tabs.Screen name="index" options={{ title: t('tabs.search') }} />
       <Tabs.Screen name="demandes" options={{ title: t('tabs.requests') }} />
       <Tabs.Screen
         name="messages"

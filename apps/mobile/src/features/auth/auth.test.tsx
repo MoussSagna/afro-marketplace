@@ -8,7 +8,7 @@ import { demoApi, testProviders } from '@/test/demoApi';
 import { ComingSoonScreen } from '../coming-soon/ComingSoonScreen';
 import { ClientTabsLayout } from '../navigation/ClientTabsLayout';
 import { useTabBarStore } from '../navigation/tabBarStore';
-import { HomeScreen } from '../home/HomeScreen';
+import { SearchScreen } from '../search/SearchScreen';
 import { useAuthFlowStore } from './authFlowStore';
 import { AccountScreen } from '../account/AccountScreen';
 import { AuthWelcomeScreen } from './screens/AuthWelcomeScreen';
@@ -25,8 +25,7 @@ import { SignInRequired } from './SignInRequired';
 const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': HomeScreen,
-  '(tabs)/recherche': () => <ComingSoonScreen title="Recherche" lot="M7" description="…" />,
+  '(tabs)/index': SearchScreen,
   '(tabs)/demandes': () => (
     <SignInRequired title="Demandes" reason="Connecte-toi pour suivre tes demandes de devis.">
       <ComingSoonScreen title="Demandes" lot="M10" description="Tes demandes" />
@@ -175,7 +174,7 @@ describe('Inscription par email', () => {
 });
 
 describe('Connexion', () => {
-  it('refuse un mauvais mot de passe, puis connecte et revient à l’Accueil', async () => {
+  it('refuse un mauvais mot de passe, puis connecte et ouvre la Recherche', async () => {
     const db = await open('/bienvenue');
     const user = db.data.users.find((u) => u.id === client.userId)!;
     await tapLink('Se connecter');
@@ -190,7 +189,7 @@ describe('Connexion', () => {
     expect(screen.getByLabelText('Mot de passe')).toHaveProp('secureTextEntry', false);
     await type('Mot de passe', DEMO_PASSWORD);
     await press('Se connecter');
-    expect(await screen.findByText(/Des talents qui font vivre/)).toBeOnTheScreen();
+    expect(await screen.findByTestId('search-state-home')).toBeOnTheScreen();
     expect(screen).toHavePathname('/');
     expect(useSessionStore.getState().user?.id).toBe(user.id);
   });
@@ -207,7 +206,7 @@ describe('Connexion', () => {
     await fireEvent.press(
       await screen.findByRole('button', { name: `Se connecter : ${client.label}` }),
     );
-    expect(await screen.findByText(/Des talents qui font vivre/)).toBeOnTheScreen();
+    expect(await screen.findByTestId('search-state-home')).toBeOnTheScreen();
     expect(useSessionStore.getState().user?.id).toBe(client.userId);
   });
 });

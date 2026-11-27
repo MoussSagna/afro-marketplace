@@ -1,15 +1,15 @@
 import { fireEvent } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { demoApi, testProviders } from '@/test/demoApi';
-import { HomeScreen } from '../home/HomeScreen';
+import { SearchScreen } from '../search/SearchScreen';
 import { CatalogueScreen } from './CatalogueScreen';
 
-const routes = { index: HomeScreen, catalogue: CatalogueScreen };
+const routes = { index: SearchScreen, catalogue: CatalogueScreen };
 
 afterEach(() => jest.useRealTimers()); // renderRouter laisse les faux minuteurs actifs
 
 describe('Catalogue des composants (lot M2)', () => {
-  it("s'ouvre depuis l'Accueil et revient en arrière", async () => {
+  it("s'ouvre depuis la Recherche et revient en arrière", async () => {
     await renderRouter(routes, { initialUrl: '/', wrapper: testProviders(demoApi().api) });
 
     await fireEvent.press(screen.getByRole('link', { name: 'Voir les composants' }));
@@ -17,7 +17,7 @@ describe('Catalogue des composants (lot M2)', () => {
     expect(screen).toHavePathname('/catalogue');
 
     await fireEvent.press(screen.getByRole('button', { name: 'Retour' }));
-    expect(await screen.findByText(/Des talents qui font vivre/)).toBeOnTheScreen();
+    expect(await screen.findByTestId('search-state-home')).toBeOnTheScreen();
     expect(screen).toHavePathname('/');
   });
 

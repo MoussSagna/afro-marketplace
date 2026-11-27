@@ -74,7 +74,7 @@ function QuoteRequestFlow() {
           title={t('profile.notFoundTitle')}
           description={t('profile.notFoundHint')}
           action={
-            <Button variant="outline" size="md" onPress={() => router.replace('/recherche')}>
+            <Button variant="outline" size="md" onPress={() => router.replace('/')}>
               {t('profile.backToSearch')}
             </Button>
           }
@@ -294,7 +294,7 @@ function QuoteSent({
           {t('quote.openConversation')}
         </Button>
         <Button fullWidth variant="ghost" onPress={() => router.replace('/')}>
-          {t('quote.backHome')}
+          {t('quote.backToSearch')}
         </Button>
       </View>
     </View>

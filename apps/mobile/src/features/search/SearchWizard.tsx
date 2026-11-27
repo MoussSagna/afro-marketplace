@@ -14,7 +14,7 @@ import { mainCategories } from '@/lib/categories';
 import { cn } from '@/lib/cn';
 import { useThemeColors } from '@/theme/useTheme';
 import { Calendar } from '@/components/Calendar';
-import { CATEGORY_ICONS } from '../home/categoryIcons';
+import { CATEGORY_ICONS } from './categoryIcons';
 import { CATEGORY_PHOTOS } from './categoryPhotos';
 import { shortDay } from '@/lib/dates';
 

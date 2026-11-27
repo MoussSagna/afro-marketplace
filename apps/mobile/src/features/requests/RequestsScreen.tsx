@@ -132,7 +132,7 @@ export function RequestsScreen({ side = 'client' }: { side?: Side }) {
               description={t(texts.emptyHint)}
               action={
                 side === 'client' ? (
-                  <Button size="md" onPress={() => router.navigate('/recherche')}>
+                  <Button size="md" onPress={() => router.navigate('/')}>
                     {t('requests.findProvider')}
                   </Button>
                 ) : undefined

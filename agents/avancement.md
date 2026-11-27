@@ -1,6 +1,29 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : la Recherche devient l'écran principal (27/11/2026)
+
+Demande de Mouss : supprimer l'onglet Accueil ; la Recherche devient le premier onglet et l'écran d'ouverture
+(après le splash). Branche `feat/recherche-accueil` (depuis `dev`), PR vers `dev`.
+
+- **Onglets** : 4 au lieu de 5 (Recherche, Demandes, Messages, Compte). La Recherche est `app/(tabs)/index.tsx`
+  (adresse `/`, avec la redirection vers `/pro` d'un prestataire resté en mode pro). Supprimés : l'onglet Accueil,
+  la route `/recherche` (`wenzee://recherche`), `HomeScreen`, la bannière (`banniere-accueil.webp`), `tabs.home`.
+- **Deux états** (`features/search/searchState.ts`) : « home » sans recherche (la pilule posée sur le carrousel
+  « À la une », puis « Explore nos catégories ») ; « results » dès qu'un texte, une catégorie ou un filtre est choisi
+  (rangée de catégories, résultats, tri, filtres). `?vue=resultats` garde les résultats sans filtre (« Tout voir »,
+  « Tout »). Fondu + léger glissement entre les deux (Animated, coupé par « Réduire les animations »).
+- **Retour à l'état initial** : flèche « Effacer la recherche » de la pilule, recherche vide validée, ou toucher
+  l'onglet Recherche quand on y est déjà (`tabPress`).
+- **« À la une »** : nouveau `FeaturedCarousel` (maquette de Mouss) : une `FlatList` horizontale page par page, photo
+  plein écran, « Vérifié », note, prix, catégorie · origine · ville, points de pagination. La pilule n'a pas changé
+  (seule option ajoutée : `canClear`).
+- Sections déplacées sans réécriture : `features/home/HomeScreen.tsx` → `features/search/SearchHome.tsx`,
+  `categoryIcons.ts` → `features/search/`. Liens `/recherche` (Demandes, Messages, profil, demande de devis) → `/`.
+- Tests : `searchHome.test.tsx` (état initial, passage aux résultats, retours), `searchState.test.ts`, onglets (4,
+  Recherche en premier), `search.test.tsx` et les autres écrans adaptés à `/` ; 313 tests mobiles.
+- **Captures à faire** : Expo Go du simulateur est trop ancien pour le SDK (voir `questions-ouvertes.md` n° 29).
 
 ## Site : planificateur d'événements, page « Événements » (27/11/2026)
 

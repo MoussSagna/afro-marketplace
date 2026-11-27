@@ -10,6 +10,8 @@ type SearchPillProps = {
   filters: ProviderSearchFilters;
   /** Le nombre de filtres actifs du panneau Filtres (pastille sur le bouton). */
   activeFilters: number;
+  /** Montrer le bouton qui efface la recherche (par défaut : dès qu'un critère est choisi). */
+  canClear?: boolean;
   onOpen(): void;
   onClear(): void;
   onOpenFilters(): void;
@@ -18,11 +20,12 @@ type SearchPillProps = {
 /**
  * La pilule en haut de l'onglet Recherche (maquette section 8) : elle résume la recherche,
  * s'ouvre en plein écran au toucher, et porte le bouton des filtres (avec le nombre de filtres actifs).
- * Une fois une recherche faite, la flèche à gauche efface tout.
+ * Une fois une recherche faite, la flèche à gauche efface tout et revient à l'état initial de l'onglet.
  */
 export function SearchPill({
   filters,
   activeFilters,
+  canClear,
   onOpen,
   onClear,
   onOpenFilters,
@@ -35,7 +38,7 @@ export function SearchPill({
       className="mx-4 mt-1.5 min-h-[62px] flex-row items-center gap-3 rounded-full border border-border bg-card py-2 pl-4 pr-2"
       style={{ boxShadow: '0 6px 20px rgba(43, 26, 18, 0.14)' }}
     >
-      {summary.hasSearch ? (
+      {(canClear ?? summary.hasSearch) ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('search.clearSearch')}

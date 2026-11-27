@@ -59,7 +59,7 @@ export function ConversationsScreen({ side = 'client' }: { side?: Side }) {
               description={t(side === 'client' ? 'messages.emptyHint' : 'messages.emptyHintPro')}
               action={
                 side === 'client' ? (
-                  <Button size="md" onPress={() => router.navigate('/recherche')}>
+                  <Button size="md" onPress={() => router.navigate('/')}>
                     {t('messages.findProvider')}
                   </Button>
                 ) : undefined

@@ -13,7 +13,6 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/recherche': Empty,
   '(tabs)/demandes': Empty,
   '(tabs)/messages': MessagesTab,
   '(tabs)/compte': Empty,
@@ -156,7 +155,7 @@ describe('Messagerie (lot M10)', () => {
     });
     expect(await screen.findByText('Aucune conversation')).toBeOnTheScreen();
     await press('Trouver un prestataire');
-    expect(screen).toHavePathname('/recherche');
+    expect(screen).toHavePathname('/');
   });
 });
 

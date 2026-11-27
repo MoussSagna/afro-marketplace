@@ -69,8 +69,7 @@ export const TAB_BAR_SPACE = BAR_HEIGHT + 40;
 
 /** L'icône de chaque onglet client (nom du fichier dans app/(tabs)/). */
 const CLIENT_TAB_ICONS: Record<string, LucideIcon> = {
-  index: House,
-  recherche: Search,
+  index: Search,
   demandes: Inbox,
   messages: MessageCircle,
   compte: UserRound,
