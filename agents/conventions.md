@@ -31,6 +31,10 @@
   Reanimated est remplacé par notre faux (`src/test/reanimatedMock.tsx`) via `moduleNameMapper` : ne pas le
   re-mocker dans un test (`expo-router/testing-library` le casserait).
   Même règle que le web : unitaires et fonctionnels pour chaque écran. `render` est asynchrone : `await render(...)`.
+- **Hermes** (le moteur JavaScript de l'app) n'a pas tout `Intl` : pas de `Intl.RelativeTimeFormat` (ni `ListFormat`,
+  `Segmenter`…). Jest tourne sous Node, qui les a : les tests ne voient pas le problème, l'app plante au lancement.
+  Dans `@afro/common`, n'utiliser que `Intl.DateTimeFormat` et `Intl.NumberFormat` ; jamais d'autre `Intl` créé en
+  haut d'un fichier (il casse tout ce qui importe `@afro/common`). Exemple : `formatTimeAgo` (27/11/2026).
 - Les tests sont à côté du fichier testé (`foo.ts` → `foo.test.ts`).
 - La CI est plus lente que nos postes : `findBy…` attend jusqu'à 5 s (`configure` dans `apps/web/src/test/setup.ts`)
   et un test web peut durer 20 s (`testTimeout`). N'ajoute pas de `timeout` au cas par cas.

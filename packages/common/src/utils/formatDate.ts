@@ -45,26 +45,32 @@ export function formatDateTime(isoDateTime: string): string {
   return `${shortDateFormatter.format(date)} à ${timeFormatter.format(date)}`;
 }
 
-// Court pour les minutes et les heures (« il y a 12 min »), en toutes lettres au-delà (« il y a 2 mois »).
-const shortRelative = new Intl.RelativeTimeFormat('fr-FR', { numeric: 'auto', style: 'short' });
-const longRelative = new Intl.RelativeTimeFormat('fr-FR', { numeric: 'auto' });
-const longRelativeNumbers = new Intl.RelativeTimeFormat('fr-FR', { numeric: 'always' });
+/*
+ * Le temps écoulé est écrit à la main, SANS `Intl.RelativeTimeFormat` : Hermes, le moteur
+ * JavaScript de l'app mobile, ne le fournit pas. Créé en haut du fichier, il faisait planter l'app
+ * au lancement (« undefined cannot be used as a constructor »), car ce fichier est importé partout.
+ * Espace insécable entre le nombre et l'unité : « 12 min » ne se coupe pas en fin de ligne.
+ */
+const NBSP = '\u00a0';
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
 /**
  * Le temps écoulé, court : « à l’instant », « il y a 12 min », « il y a 3 h », « hier »,
- * « il y a 5 jours », « il y a 2 mois », « il y a 1 an ». Une date future (horloges décalées)
+ * « avant-hier », « il y a 5 jours », « il y a 2 mois », « il y a 1 an ». Une date future (horloges décalées)
  * compte comme « à l’instant ».
  */
 export function formatTimeAgo(isoDateTime: string, now: Date = new Date()): string {
   const elapsed = now.getTime() - new Date(isoDateTime).getTime();
   if (elapsed < MINUTE) return 'à l’instant';
-  if (elapsed < HOUR) return shortRelative.format(-Math.floor(elapsed / MINUTE), 'minute');
-  if (elapsed < DAY) return shortRelative.format(-Math.floor(elapsed / HOUR), 'hour');
+  if (elapsed < HOUR) return `il y a ${Math.floor(elapsed / MINUTE)}${NBSP}min`;
+  if (elapsed < DAY) return `il y a ${Math.floor(elapsed / HOUR)}${NBSP}h`;
   const days = Math.floor(elapsed / DAY);
-  if (days < 30) return longRelative.format(-days, 'day');
-  if (days < 365) return longRelativeNumbers.format(-Math.floor(days / 30), 'month');
-  return longRelativeNumbers.format(-Math.floor(days / 365), 'year');
+  if (days === 1) return 'hier';
+  if (days === 2) return 'avant-hier';
+  if (days < 30) return `il y a ${days}${NBSP}jours`;
+  if (days < 365) return `il y a ${Math.floor(days / 30)}${NBSP}mois`;
+  const years = Math.floor(days / 365);
+  return `il y a ${years}${NBSP}an${years > 1 ? 's' : ''}`;
 }
