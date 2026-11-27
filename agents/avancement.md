@@ -5,7 +5,7 @@ Dernière mise à jour : 27/11/2026 (planificateur d'événements ; refonte du b
 ## Site : planificateur d'événements, page « Événements » (27/11/2026)
 
 Demande de Mouss : faire de « Événements » (avant : page publique « Bientôt disponible ») un **planificateur**,
-d'après une planche, d'abord en maquette HTML (`maquette/evenements/`), puis **dans le site** à la même adresse.
+d'après une planche, **dans le site** à la même adresse (la maquette HTML intermédiaire n'est pas gardée, choix de Mouss).
 Branche `feat/maquette-evenements`, PR vers `dev` à valider. Détail, mesures et écarts :
 [`docs/events-planner-validation.md`](../docs/events-planner-validation.md).
 

@@ -3,15 +3,15 @@
 > Les captures de chaque cycle ont servi à la comparaison mais **ne sont pas versionnées** (règle de Mouss).
 > Ce document garde les mesures, les écarts relevés et les corrections.
 
-Intégration dans le site de la page « Événements » maquettée dans `maquette/evenements/` (planche de Mouss du
-27/11/2026). Méthode : **coder → capturer → comparer → corriger → recapturer**, 3 cycles maximum
+Intégration dans le site de la page « Événements » d'après la planche de Mouss du 27/11/2026 (une maquette HTML
+intermédiaire a servi à la validation ; elle n'est pas gardée dans le dépôt, à la demande de Mouss). Méthode : **coder → capturer → comparer → corriger → recapturer**, 3 cycles maximum
 ([`agents/conventions.md`](../agents/conventions.md)).
 
 ## 1. Référence
 
 | Élément                | Valeur                                                                                                                                                    |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Planche                | Jointe par Mouss le 27/11/2026 (non versionnée) ; maquette HTML : `maquette/evenements/`                                                                  |
+| Planche                | Jointe par Mouss le 27/11/2026 (non versionnée)                                                                                                           |
 | Formats de comparaison | Ordinateur 1440 × 900, téléphone 390 × 844 (densité 2), Chromium (Playwright 1.63)                                                                        |
 | Compte de test         | Aïssatou (`user-aissatou`), données de démo (seed neuf)                                                                                                   |
 | Écrans                 | 01 liste, 02 création (+ erreurs), 03 détail, 04 ajout, 05 retrait, 06 devis, 07 modification, 08 suppression (+ toast), fiche « Ajouter à un événement » |
