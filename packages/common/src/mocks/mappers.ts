@@ -8,6 +8,7 @@ import type {
   QuoteRequestSummary,
   User,
 } from '../types';
+import { summarize } from '../utils/summarize';
 import type { MockData } from './data';
 
 /*
@@ -22,6 +23,7 @@ export function toProviderCard(profile: ProviderProfile): ProviderCard {
     slug: profile.slug,
     displayName: profile.displayName,
     coverUrl: profile.coverUrl,
+    summary: summarize(profile.bio),
     city: profile.city,
     categoryIds: profile.categoryIds,
     culturalOriginIds: profile.culturalOriginIds,

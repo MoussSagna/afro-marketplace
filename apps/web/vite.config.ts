@@ -51,5 +51,7 @@ export default defineConfig({
     css: false,
     // Un test peut enchaîner plusieurs attentes de 5 s (voir src/test/setup.ts).
     testTimeout: 20000,
+    // Le beforeAll de src/test/setup.ts charge toutes les pages (preloadRoutes.ts) : plus long sur la CI.
+    hookTimeout: 60000,
   },
 });

@@ -1,6 +1,7 @@
 import { useCategories } from '@afro/common';
 import { ChevronDown, Menu } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { AnimatePresence, motion, useReducedMotion, useScroll } from 'motion/react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { Logo } from '@/components/Logo';
 import {
@@ -17,7 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useScrolled } from '@/hooks/useScrolled';
+import {
+  CompactSearch,
+  ExpandedSearch,
+} from '@/features/search/components/guided-search/HeaderSearch';
+import { MobileSearch } from '@/features/search/components/guided-search/MobileSearch';
+import { useHeroSearchInView, type SearchStep } from '@/features/search/lib/searchDraft';
+import { useScrollHeader } from '@/hooks/useScrollHeader';
 import { cn } from '@/lib/utils';
 import { SPACE_HOME, useSessionStore } from '@/stores/session';
 import { UserMenu } from './UserMenu';
@@ -50,9 +57,23 @@ interface NavbarProps {
  * - sur l'accueil (`overlay`), totalement transparente au chargement, puis fond brun translucide flouté au défilement ;
  * - sur les autres pages, collée en haut avec ce même fond brun dès le départ.
  * Sur téléphone et tablette, les liens passent dans un menu latéral.
+ *
+ * Animations au défilement (toutes les pages) :
+ * - la barre se compacte (moins haute, logo plus petit) dès qu'on quitte le haut de la page ;
+ * - elle glisse hors de l'écran quand on descend, et revient dès qu'on remonte ;
+ * - un fin trait orange, en bas de la barre, montre où l'on en est dans la page.
+ * Elle reste toujours visible si un de ses éléments a le focus clavier ou si le menu « Prestataires »
+ * est ouvert. Avec « réduire les animations », elle ne se cache jamais et ne glisse pas.
+ *
+ * Recherche (accueil, comme chez Airbnb) : une fois la recherche du hero sortie de l'écran, les liens
+ * laissent la place à une recherche compacte ; un clic la déplie en grand sous la barre.
+ * Sur téléphone et tablette, c'est une loupe qui ouvre la recherche plein écran.
  */
 export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
-  const scrolled = useScrolled();
+  const reduceMotion = useReducedMotion() ?? false;
+  const { scrolled, hidden } = useScrollHeader({ canHide: !reduceMotion });
+  // Progression dans la page, de 0 à 1 : la largeur du trait orange.
+  const { scrollYProgress } = useScroll();
   // Fond brun : toujours hors de l'accueil, après le défilement sur l'accueil.
   const solid = !overlay || scrolled;
   const user = useSessionStore((state) => state.user);
@@ -60,6 +81,12 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
   const categories = useCategories();
   const mainCategories = categories.data?.filter((category) => !category.parentId) ?? [];
   const [menuOpen, setMenuOpen] = useState(false);
+  const heroSearchInView = useHeroSearchInView((state) => state.inView);
+  // La recherche de l'en-tête : seulement sur l'accueil, quand celle du hero n'est plus visible.
+  const showSearch = overlay && !heroSearchInView;
+  const [searchStep, setSearchStep] = useState<SearchStep | null>(null);
+  const closeSearch = useCallback(() => setSearchStep(null), []);
+  const searchOpen = showSearch && searchStep !== null;
   const location = useLocation();
   // Se connecter depuis une page : on y revient ensuite (pas depuis l'accueil : on arrive dans son espace).
   const here = location.pathname + location.search;
@@ -80,8 +107,13 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
   return (
     <header
       data-scrolled={overlay ? scrolled : undefined}
+      data-hidden={hidden}
+      data-search-open={searchOpen || undefined}
       className={cn(
-        'inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter] duration-300',
+        'inset-x-0 top-0 z-40 text-white transition-[background-color,box-shadow,backdrop-filter,translate] duration-300 ease-out motion-reduce:transition-none',
+        // Cachée en descendant… sauf si le clavier est dedans ou si le menu « Prestataires » est ouvert.
+        hidden &&
+          '-translate-y-full focus-within:translate-y-0 has-[[data-state=open]]:translate-y-0',
         overlay ? 'fixed' : 'sticky',
         !solid && 'bg-transparent',
         solid && overlay && 'bg-foreground/75 shadow-pop backdrop-blur-md backdrop-saturate-150',
@@ -91,13 +123,19 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
     >
       <div
         className={cn(
-          'mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 sm:px-6 lg:px-8 2xl:px-[4.2vw]',
+          'relative mx-auto flex max-w-[1800px] items-center justify-between gap-4 px-4 transition-[height] duration-300 motion-reduce:transition-none sm:px-6 lg:px-8 2xl:px-[4.2vw]',
           solid ? 'h-16 lg:h-[72px]' : 'h-[72px] lg:h-[84px]',
         )}
       >
         <div className="flex shrink-0 items-center gap-2">
           <Link to="/" aria-label="Wenzee, accueil" className={cn('rounded-md', focusRing)}>
-            <Logo variant="light" className="h-9 sm:h-10 2xl:h-12" />
+            <Logo
+              variant="light"
+              className={cn(
+                'transition-[height] duration-300 motion-reduce:transition-none',
+                solid ? 'h-8 sm:h-9 2xl:h-10' : 'h-9 sm:h-10 2xl:h-12',
+              )}
+            />
           </Link>
           {spaceLabel && (
             <span className="hidden rounded-full bg-white/15 px-3 py-1 text-xs font-semibold whitespace-nowrap text-white sm:inline-flex">
@@ -106,7 +144,31 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
           )}
         </div>
 
-        <nav aria-label="Navigation principale" className="hidden lg:block">
+        {/* Recherche compacte : posée au centre, à la place des liens (grand écran). */}
+        <AnimatePresence>
+          {showSearch && !searchOpen && (
+            <motion.div
+              key="compact-search"
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.9, y: 6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 6 }}
+              transition={{ duration: reduceMotion ? 0 : 0.22 }}
+              className="absolute left-1/2 hidden -translate-x-1/2 lg:block"
+            >
+              <CompactSearch onOpen={setSearchStep} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <nav
+          aria-label="Navigation principale"
+          aria-hidden={showSearch || undefined}
+          inert={showSearch || undefined}
+          className={cn(
+            'hidden transition-[opacity,translate] duration-200 lg:block',
+            showSearch && 'pointer-events-none -translate-y-2 opacity-0',
+          )}
+        >
           <ul className="flex items-center gap-4 xl:gap-7 2xl:gap-9">
             {LINKS_BEFORE.map((link) => (
               <li key={link.to}>
@@ -152,6 +214,7 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-3 lg:gap-2 xl:gap-3">
+          {showSearch && <MobileSearch trigger="icon" className="lg:hidden" />}
           {children}
           {user ? (
             <div className="flex items-center gap-2">
@@ -217,6 +280,17 @@ export function Navbar({ overlay = false, spaceLabel, children }: NavbarProps) {
           </Dialog>
         </div>
       </div>
+      {showSearch && <ExpandedSearch step={searchStep} onClose={closeSearch} />}
+      {/* Fil de lecture : visible seulement une fois la barre sur son fond brun. */}
+      <motion.div
+        aria-hidden
+        data-testid="scroll-progress"
+        className={cn(
+          'absolute inset-x-0 bottom-0 h-[3px] origin-left bg-cta transition-opacity duration-300',
+          solid ? 'opacity-100' : 'opacity-0',
+        )}
+        style={{ scaleX: scrollYProgress }}
+      />
     </header>
   );
 }

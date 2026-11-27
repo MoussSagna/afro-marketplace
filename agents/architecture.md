@@ -95,7 +95,15 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
 - `src/features/home/` : le hero de l'accueil. `HeroSection` (assemble tout), `HeroCarousel` (photos empilées, fondu,
   zoom lent), `CategoryShortcuts` (8 raccourcis), `HeroDecor` (motifs SVG) ;
   `lib/heroContent.ts` (slides, raccourcis), `lib/useCarousel.ts` (état + défilement automatique).
-  La recherche du hero est `features/search/components/SearchBar.tsx`.
+  La recherche du hero est `features/search/components/SearchBar.tsx`, qui assemble la recherche guidée façon Airbnb
+  de `features/search/components/guided-search/` : `SearchPill` (pilule, tablette et ordinateur), `MobileSearch`
+  (plein écran par étapes, téléphone), `HeaderSearch` (version compacte de la navbar sur l'accueil), `useGuidedSearch`
+  (logique commune) ; brouillon partagé et suggestions dans `features/search/lib/searchDraft.ts`.
+- `src/features/search/` (résultats, P2 et P4) : `SearchResults` assemble `ResultsSearchBar` (la recherche guidée de l'accueil, avec l'action
+  « Rechercher » fournie par `GuidedSearchActionContext`),
+  `SearchFilters` (colonne ou panneau mobile), `ViewToggle` (Liste / Grille, store `lib/resultsView.ts`),
+  `ProviderCard` (`layout` grid | list, `FavoriteButton`) et `Pagination` (`lib/pageRange.ts`). Les filtres vivent dans
+  l'adresse (`lib/useSearchFilters.ts`). Favoris : `src/stores/favorites.ts` (localStorage).
   Section « Explorez nos univers » : `ExploreCategoriesSection`, `CategoryMosaic`, `CategoryImageCard` ;
   `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
   Section « Deux façons d'utiliser Wenzee » : `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration` ;

@@ -1,7 +1,111 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (règle : supprimer la branche d'une PR une fois fusionnée ; avant : section
-« Prestataires à la une » de l'accueil revue).
+Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+
+## Test e2e « parcours 7 » fiabilisé (27/11/2026)
+
+Le test Playwright du masquage des coordonnées échouait de temps en temps sur mobile
+(par exemple sur la PR #61 dev → main) : il prenait le premier texte trouvé dans la page, qui était
+parfois l'aperçu de la liste des conversations, masquée sur mobile quand un fil est ouvert.
+Il cherche maintenant le message dans le fil ouvert (`region` « Conversation avec Aïssatou… »).
+Aucun changement dans l'application.
+
+## Site : refonte de la page de résultats (26/11/2026)
+
+Demande de Mouss : refonte visuelle de la recherche des prestataires d'après une maquette (DJ, 1536 × 1024), **sans
+nouvelle logique de recherche**. Branche `claude/vendor-search-redesign`, PR vers `dev` (relue par Mouss avant
+l'ouverture). Validation visuelle en 3 cycles : [`docs/vendor-search-redesign-validation.md`](../docs/vendor-search-redesign-validation.md).
+
+- **Barre du haut, `search/components/ResultsSearchBar.tsx`** : **la même recherche que l'accueil** (demande de
+  Mouss) : pilule « Quoi ? / Où ? / Quand ? » (`SearchPill`) sur tablette et ordinateur, plein écran par étapes
+  (`MobileSearch`) sur téléphone. Elle part des filtres de l'adresse (`draftFromFilters`) et « Rechercher » met la page
+  à jour en **gardant les autres filtres** (origines, note, tri) grâce à `GuidedSearchActionContext` (l'accueil garde
+  son comportement). Page catégorie : même prestation → on reste sur la page ; autre prestation → `/recherche`.
+- **Colonne de filtres, `SearchFilters.tsx`** (ordinateur ≥ 1024 px), **fixe au défilement** (`sticky`, 96 px sous le
+  haut pour la navbar ; elle défile en interne si l'écran est trop bas) : « Filtres » + « Réinitialiser », budget max et
+  invités, origines culturelles (6 puis « Voir plus »), note minimale (Toutes / 4+ / 4,5+), pros vérifiés. Tablette et
+  téléphone : même composant dans un **panneau latéral** (bouton « Filtres (n) », « Voir N résultats »).
+- **Cartes, `ProviderCard.tsx`** : grande photo (338 × 372 px sur ordinateur, comme la maquette), catégorie et
+  **cœur** (`FavoriteButton.tsx`) sur la photo, nom + badge vérifié, ville, note compacte (`Rating variant="compact"`),
+  une phrase (`summary`), pastilles des origines. **Plus de prix ni de bouton** : toute la carte mène au profil.
+  `layout="list"` : carte horizontale, photo à gauche.
+- **Liste / Grille, `ViewToggle.tsx`** + store `lib/resultsView.ts` (gardé dans le navigateur, pas dans l'adresse) ;
+  grille 3 colonnes (≥ 1280 px), 2 (tablette), 1 (téléphone).
+- **Pagination numérotée, `Pagination.tsx`** + `lib/pageRange.ts` (« … » au-delà de 7 pages) ; même `?page=`.
+- **Favoris, `stores/favorites.ts`** : dans le `localStorage` (pas d'API au MVP, question n° 23).
+- **Données** : `providerCardSchema` gagne `summary` (facultatif), rempli par `summarize(bio)` (`common/utils/summarize.ts`)
+  dans `toProviderCard`. Rien d'autre ne change dans l'API.
+- Filtres de la maquette **non ajoutés** faute de données (distance, budget min, styles musicaux) : question n° 22.
+- **Tests** : `summarize.test.ts`, `favorites.test.ts`, `pageRange.test.ts`, `Rating.test.tsx`, 9 nouveaux tests dans
+  `SearchPage.test.tsx` ; `e2e/search-results.spec.ts` (grille / liste, carte, clavier, pagination, panneau mobile) ;
+  `discover.spec.ts` ferme le panneau de filtres sur téléphone.
+
+## Site : recherche guidée façon Airbnb (26/11/2026)
+
+Demande de Mouss : « pour la barre de recherche, j'aimerais que tu t'inspires de la recherche du site Airbnb ».
+On reprend le **parcours** d'Airbnb (pas son look : couleurs, icônes et typographie restent Wenzee).
+Branche `claude/project-thread-em4b8u`, PR vers `dev`. Captures (PNG + GIF ordinateur et mobile) :
+`/mnt/project-files/recherche-airbnb/`.
+
+- **Tablette et ordinateur, `guided-search/SearchPill.tsx`** : pilule à trois segments « Quoi ? / Où ? / Quand ? » +
+  loupe. Un clic sur un segment le met en avant (fond blanc qui **glisse** d'un segment à l'autre, `layoutId` de Motion ;
+  la pilule passe en sable) et ouvre **son panneau** dessous : univers (8 tuiles) puis prestations filtrées à la frappe
+  ; villes populaires ou ville tapée ; calendrier deux mois + raccourcis (« Ce samedi », « Samedi prochain », « Dans un
+  mois »). Choisir passe **tout seul à l'étape suivante**. Clic dehors ou Échap : tout se referme. Croix pour effacer un
+  champ. Clavier : motif « combobox » (flèches, Entrée). Demande de Mouss : à l'ouverture d'une étape, **la page
+  défile en douceur pour centrer la pilule et son panneau** (jamais coupé en bas, jamais sous l'en-tête ; instantané
+  avec « réduire les animations »).
+- **Téléphone, `guided-search/MobileSearch.tsx`** : un grand bouton « Que recherchez-vous ? » ouvre une recherche
+  **plein écran par étapes** (cartes Quoi / Où / Quand, une seule dépliée, les autres résument le choix) ; « Tout
+  effacer » et « Rechercher » toujours en bas.
+- **En-tête (accueil), `guided-search/HeaderSearch.tsx`** : quand la recherche du hero sort de l'écran
+  (`IntersectionObserver`, store `useHeroSearchInView`), les liens de la navbar laissent la place à une **recherche
+  compacte** (« Toutes les prestations | Partout | N'importe quand »). Un clic la **déplie en grand** sous la barre,
+  sur l'étape cliquée, la page s'assombrit ; défiler, Échap ou clic dehors la replient. Sur téléphone et tablette :
+  une loupe qui ouvre le plein écran. La navbar ne se cache pas tant que la recherche est ouverte.
+- **Logique sans écran, `features/search/lib/searchDraft.ts`** : brouillon partagé entre toutes les barres (Zustand,
+  pas gardé au rechargement), suggestions (accents ignorés), dates rapides, adresse des résultats. Un texte tapé sans
+  choisir de catégorie devient une recherche libre `?q=`.
+- Le hero passe de `overflow-hidden` à `overflow-x-clip` (+ `z-10`) pour que les panneaux puissent déborder dessous.
+- **Tests** : `searchDraft.test.ts`, `GuidedSearch.test.tsx` (pilule, clavier, plein écran, en-tête),
+  `e2e/guided-search.spec.ts` (ordinateur et téléphone) ; `discover.spec.ts` suit la nouvelle recherche ; les anciens
+  tests de la `SearchBar` du hero sont remplacés.
+- Villes proposées : liste fixe des villes de démo (question n° 21).
+
+## Site : navbar animée au défilement (26/11/2026)
+
+Demande de Mouss : « des animations au scroll du header ». Branche `claude/header-scroll`, PR vers `dev`.
+Captures (GIF ordinateur et mobile) : `/mnt/project-files/animations-accueil/header/`.
+
+- **`hooks/useScrollHeader.ts`** (remplace `useScrolled.ts`) : `scrolled` (on a quitté le haut de la page) et
+  `hidden` (on descend au-delà de 320 px ; faux dès qu'on remonte, petits mouvements de moins de 6 px ignorés).
+- **`Navbar`**, sur toutes les pages : se compacte (barre et logo plus bas), **glisse hors de l'écran en descendant**
+  et revient en remontant, **fil de lecture** orange (`bg-cta`) en bas de la barre (largeur = progression dans la
+  page, via `useScroll` de Motion). Reste visible si le clavier est dedans (`focus-within`) ou si le menu
+  « Prestataires » est ouvert.
+- **« Réduire les animations »** : la barre ne se cache jamais et rien ne glisse (`useReducedMotion`,
+  `motion-reduce:transition-none`).
+- Tests : `useScrollHeader.test.ts`, `Navbar.test.tsx` (barre cachée puis revenue, fil de lecture),
+  `e2e/header-scroll.spec.ts` (compactage, masquage, focus clavier, mouvements réduits) ; `e2e/hero.spec.ts` défile
+  de 250 px au lieu de 800 (sinon la barre se cache).
+
+## Site : section « Comment ça marche » refaite (26/11/2026)
+
+Demande de Mouss : « refaire la partie comment ça marche », dans le style des sections déjà refaites (maquette
+`maquette-accueil/`). Branche `claude/project-thread-zs1yma`, PR vers `dev`. Captures (PNG + GIF ordinateur et
+mobile) : `/mnt/project-files/animations-accueil/comment-ca-marche/`.
+
+- **`features/home/components/HowItWorksSection.tsx`** (remplace `features/search/components/HowItWorks.tsx`) :
+  surtitre entre tirets, titre « Trois étapes, _zéro prise de tête._ » souligné ocre, 3 cartes ivoire sur fond sable
+  (liseré orange, grand numéro Playfair 01/02/03, icône ronde), fil pointillé qui relie les étapes (horizontal sur
+  ordinateur, vertical sur téléphone), bouton « Commencer ma recherche » → `/recherche`. Textes de la maquette
+  (étape 3 : « Célébrez ») dans `features/home/lib/howItWorks.ts`.
+- **Animation** : les cartes montent en fondu l'une après l'autre à l'arrivée à l'écran (`whileInView`, une seule
+  fois) ; léger soulèvement au survol. « Réduire les animations » : cartes affichées d'emblée (`initial={false}` :
+  `MotionConfig reducedMotion="user"` coupe les déplacements mais pas les fondus).
+- Même section sur la page `/comment-ca-marche`.
+- **Tests** : `HowItWorksSection.test.tsx`, `e2e/how-it-works.spec.ts`. `src/test/setup.ts` ajoute un faux
+  `IntersectionObserver` (absent de jsdom, utilisé par `whileInView`).
 
 ## Branche `dev` et production (26/11/2026)
 
@@ -125,10 +229,21 @@ Demande de Mouss. Validation : [`docs/navbar-validation.md`](../docs/navbar-vali
 - « Prestataires » est souligné sur la recherche, les catégories et les profils.
 - Tests : `Navbar.test.tsx` (autres pages, espace pro, lien actif), `auth.test.tsx`, `Brand.test.tsx` (logo clair).
 
+## Site : section « Pourquoi Wenzee » (26/11/2026)
+
+Demande de Mouss : « passe à la suite de l'accueil ». Reprise de la maquette `/mnt/project-files/maquette-accueil/`. 🔍 PR ouverte vers `dev`.
+
+- Sous « Comment ça marche » (`features/home/components/WhyWenzeeSection.tsx`) : photo de fête à gauche (cadre ocre
+  décalé), à droite surtitre « Pourquoi Wenzee », titre « Le lien entre **nos talents** et vos moments. », texte de
+  mission, citation, lien « Découvrir notre mission » → `/comment-ca-marche`. Empilé sous 1024 px. Fond ivoire.
+- Photo : `public/images/hero/celebration.webp` (déjà utilisée par le hero et la mosaïque), avec `srcSet`.
+- Tests : `WhyWenzeeSection.test.tsx`, `e2e/why-wenzee.spec.ts` (côte à côte / empilé, photo chargée, pas de débordement).
+- Suite de la maquette : le journal attend la réponse de Mouss (articles fictifs ou pas).
+
 ## Site : section « Prestataires à la une » (26/11/2026)
 
 Demande de Mouss : refaire cette section « en se basant sur les sections du dessus » (hero, univers, deux façons).
-Maquette d'ensemble inspirée de la structure d'afropro.com : `/mnt/project-files/maquette-accueil/`. 🔍 PR ouverte vers `dev`.
+Maquette d'ensemble inspirée de la structure d'afropro.com : `/mnt/project-files/maquette-accueil/`. ✅ Fusionné (#51).
 
 - 4ᵉ section de l'accueil (`features/home/components/FeaturedProvidersSection.tsx`) : même grammaire que les sections
   au-dessus (surtitre entre tirets, titre Playfair « Des talents qui font **la différence.** » souligné ocre,
@@ -176,7 +291,7 @@ Demande de Mouss, d'après sa maquette. ✅ Fusionné (#46). Méthode et cycles 
 Demande de Mouss, d'après sa maquette (image jointe à sa demande, non versionnée). ✅ Fusionné (#44). Méthode et bilan de chaque cycle : [`docs/hero-integration-validation.md`](../docs/hero-integration-validation.md).
 
 - **Navbar de l'accueil** (`components/layout/Navbar.tsx`) : transparente sur la photo au chargement, puis collée en haut
-  avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrolled.ts`). Accueil, Prestataires (menu des
+  avec un fond brun translucide flouté dès qu'on défile (`hooks/useScrollHeader.ts`). Accueil, Prestataires (menu des
   catégories), Événements, Offres & Deals, Notre mission (→ `/comment-ca-marche`), Se connecter, S'inscrire
   (→ connexion de démo) ; connecté : « Mon espace » + menu du compte. Sur téléphone et tablette : menu latéral.
   Les autres pages publiques gardent `AppHeader`.

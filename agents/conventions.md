@@ -34,6 +34,9 @@
 - Les tests sont à côté du fichier testé (`foo.ts` → `foo.test.ts`).
 - La CI est plus lente que nos postes : `findBy…` attend jusqu'à 5 s (`configure` dans `apps/web/src/test/setup.ts`)
   et un test web peut durer 20 s (`testTimeout`). N'ajoute pas de `timeout` au cas par cas.
+- Les pages `lazy` du routeur sont **préchargées avant les tests** de chaque fichier (`apps/web/src/test/preloadRoutes.ts`,
+  appelé dans `setup.ts`) : sur la CI, compiler une page à la volée au moment d'une navigation dépassait parfois les
+  5 s d'attente (le test voyait encore la page d'avant). Le vrai chargement à la demande est couvert par Playwright.
 - Le seed a ses propres tests de cohérence (`mocks/seed/buildSeed.test.ts`) : si tu modifies le seed, ils doivent rester verts.
 
 ## Style

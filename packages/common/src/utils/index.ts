@@ -10,3 +10,4 @@ export * from './accountForm';
 export * from './money';
 export * from './quoteForm';
 export * from './profileForms';
+export * from './summarize';

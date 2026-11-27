@@ -18,4 +18,11 @@ describe('Rating', () => {
     expect(screen.getByText('Nouveau')).toBeInTheDocument();
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
+
+  it('version compacte : une étoile, la note et « (n avis) »', () => {
+    render(<Rating value={4.9} count={127} variant="compact" />);
+    const rating = screen.getByRole('img', { name: 'Note : 4,9 sur 5, 127 avis' });
+    expect(rating).toHaveTextContent('4,9(127 avis)');
+    expect(rating.querySelectorAll('svg')).toHaveLength(1);
+  });
 });
