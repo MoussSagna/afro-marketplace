@@ -18,6 +18,64 @@ describe('Messagerie (C4 / S5)', () => {
     expect(await within(thread).findByText(/thiéboudienne/)).toBeInTheDocument();
   });
 
+  it('garde un long message sans espace dans sa bulle (retour à la ligne forcé)', async () => {
+    renderRoute('/espace/messages', { as: 'user-aissatou' });
+    const list = await screen.findByRole('list', { name: 'Conversations' });
+    await userEvent.click(within(list).getByRole('link', { name: /Saveurs de Dakar/ }));
+
+    const long = 'kdjfmsdlkfjsmqldkfjsdqmofkjsdlmfjsdmfl'.repeat(4);
+    const input = await screen.findByRole('textbox', { name: 'Ton message' });
+    await userEvent.type(input, `${long}{Enter}`);
+
+    const messages = screen.getByRole('list', { name: 'Messages' });
+    const bubble = await within(messages).findByText(long);
+    // jsdom ne calcule pas la mise en page : on vérifie les règles qui font revenir le texte à la ligne
+    // (la vraie mesure est faite par Playwright, e2e/chat-mobile.spec.ts).
+    expect(bubble).toHaveClass('whitespace-pre-wrap', '[overflow-wrap:anywhere]', 'max-w-full');
+    expect(bubble.closest('li')).toHaveClass('min-w-0', 'max-w-[85%]');
+  });
+
+  it('passe d’une conversation à l’autre et montre l’en-tête de la demande', async () => {
+    const { router } = renderRoute('/espace/messages', { as: 'user-aissatou' });
+    const list = await screen.findByRole('list', { name: 'Conversations' });
+
+    await userEvent.click(within(list).getByRole('link', { name: /Saveurs de Dakar/ }));
+    const first = await screen.findByRole('region', { name: 'Conversation avec Saveurs de Dakar' });
+    expect(await within(first).findByText('Pro vérifié')).toBeInTheDocument();
+    expect(await within(first).findByText(/^Mariage · /)).toBeInTheDocument();
+    expect(within(first).getByRole('link', { name: 'Voir la demande' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^\/espace\/demandes\/qr-/),
+    );
+    const firstPath = router.state.location.pathname;
+
+    await userEvent.click(within(list).getByRole('link', { name: /Compagnie Akwaba/ }));
+    expect(
+      await screen.findByRole('region', { name: 'Conversation avec Compagnie Akwaba' }),
+    ).toBeInTheDocument();
+    expect(router.state.location.pathname).not.toBe(firstPath);
+    expect(
+      screen.queryByRole('region', { name: 'Conversation avec Saveurs de Dakar' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('envoie avec Entrée ; Maj + Entrée passe à la ligne', async () => {
+    renderRoute('/espace/messages', { as: 'user-aissatou' });
+    const list = await screen.findByRole('list', { name: 'Conversations' });
+    await userEvent.click(within(list).getByRole('link', { name: /Saveurs de Dakar/ }));
+
+    const input = await screen.findByRole('textbox', { name: 'Ton message' });
+    expect(screen.getByRole('button', { name: 'Envoyer' })).toBeDisabled();
+    await userEvent.type(input, 'Ligne 1{Shift>}{Enter}{/Shift}Ligne 2');
+    expect(input).toHaveValue('Ligne 1\nLigne 2');
+    await userEvent.click(screen.getByRole('button', { name: 'Envoyer' }));
+
+    expect(
+      await screen.findByText((_, element) => element?.textContent === 'Ligne 1\nLigne 2'),
+    ).toBeInTheDocument();
+    await waitFor(() => expect(input).toHaveValue(''));
+  });
+
   it('règle n° 7 : masque un numéro envoyé avant la réservation', async () => {
     renderRoute('/espace/messages', { as: 'user-aissatou' });
     const list = await screen.findByRole('list', { name: 'Conversations' });

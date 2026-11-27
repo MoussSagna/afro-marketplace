@@ -120,6 +120,11 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   `SignUpPage` (`useSignUp` puis `useVerifyOtp`), `ForgotPasswordPage` (`useForgotPassword` puis `useResetPassword`) ;
   `AuthInput` / `PasswordInput` (champ à icône, œil), `PasswordRules` ; `lib/useCompleteSignIn.ts` (fin commune de
   toute connexion, `useAuthLink` garde `?retour=`). Schémas des formulaires : `@afro/common` `utils/authForms.ts`.
+- `src/features/client-dashboard/` (tableau de bord client, en haut de `/espace/demandes`) : `ClientDashboardSummary`
+  (calcule les chiffres avec `useQuoteRequests`, `useBookings`, `useUnreadCount`), `WelcomeBanner`, `DashboardStats`.
+  Les onglets de l'espace client : `SpaceNav` variante `tabs` (icônes seules sur téléphone si un libellé ne
+  tient pas sur une ligne : `useLabelsFit`). Défilement entre les pages : `app/RootRoute.tsx`
+  (en haut à chaque nouveau chemin ; pas au chargement, pas sur « retour »).
 - `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
   transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
   client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.

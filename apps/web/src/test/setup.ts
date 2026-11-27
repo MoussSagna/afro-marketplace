@@ -15,6 +15,10 @@ import { server } from './server';
 // des « findBy… ». On laisse 5 secondes avant de déclarer l'élément introuvable.
 configure({ asyncUtilTimeout: 5000 });
 
+// jsdom n'a pas de défilement : `window.scrollTo` (appelé par `RootRoute` à chaque changement de page)
+// affiche « Not implemented ». Un faux silencieux suffit ; un test peut l'espionner avec `vi.spyOn`.
+window.scrollTo = (() => {}) as typeof window.scrollTo;
+
 // jsdom n'a pas d'IntersectionObserver, utilisé par `whileInView` de Motion (apparitions au défilement).
 // Ce faux annonce tout de suite chaque élément comme visible : l'animation se joue et le contenu s'affiche.
 class IntersectionObserverStub {

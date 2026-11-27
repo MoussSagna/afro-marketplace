@@ -48,7 +48,10 @@ export function AccountPage() {
 
   return (
     <section aria-labelledby="account-title" className="flex max-w-2xl flex-col gap-8">
-      <h1 id="account-title" className="text-3xl font-semibold">
+      <h1
+        id="account-title"
+        className="font-display text-[28px] font-semibold sm:text-4xl lg:text-[40px]"
+      >
         Mon compte
       </h1>
       <ProfileForm user={user} />
@@ -85,7 +88,7 @@ function ProfileForm({ user }: { user: User }) {
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
         <section
           aria-labelledby="account-info"
-          className="flex flex-col gap-4 rounded-xl border bg-card p-5"
+          className="flex flex-col gap-4 rounded-2xl border bg-card p-5 shadow-card sm:p-7"
         >
           <h2 id="account-info" className="text-xl font-semibold">
             Mes informations
@@ -145,7 +148,7 @@ function ProfileForm({ user }: { user: User }) {
 
         <section
           aria-labelledby="account-notifications"
-          className="flex flex-col gap-4 rounded-xl border bg-card p-5"
+          className="flex flex-col gap-4 rounded-2xl border bg-card p-5 shadow-card sm:p-7"
         >
           <h2 id="account-notifications" className="text-xl font-semibold">
             Notifications
@@ -241,7 +244,7 @@ function DeleteAccountSection() {
   return (
     <section
       aria-labelledby="account-delete"
-      className="flex flex-col gap-3 rounded-xl border border-destructive/40 p-5"
+      className="flex flex-col gap-3 rounded-2xl border border-destructive/40 p-5 sm:p-7"
     >
       <h2 id="account-delete" className="text-xl font-semibold">
         Supprimer mon compte

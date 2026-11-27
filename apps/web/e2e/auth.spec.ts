@@ -115,3 +115,24 @@ test.describe('page de connexion (refonte du 27/11/2026)', () => {
     await expect(page).toHaveURL('/espace/demandes');
   });
 });
+
+test('le menu du compte s’ouvre sans bloquer le défilement ni décaler la page', async ({
+  page,
+}) => {
+  await page.goto('/connexion');
+  await page.getByRole('button', { name: 'Se connecter : Aïssatou, cliente' }).click();
+  await expect(page).toHaveURL('/espace/demandes');
+  const avatar = page.getByRole('button', { name: 'Menu de Aïssatou' });
+  const before = (await avatar.boundingBox())!;
+
+  await avatar.click();
+  await expect(page.getByRole('menuitem', { name: 'Se déconnecter' })).toBeVisible();
+  // Un menu modal poserait `data-scroll-locked` (et retirerait la barre de défilement : la page bougeait).
+  await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
+  expect((await avatar.boundingBox())!.x).toBe(before.x);
+  // Le panneau s'ouvre sous la navbar, sans la chevaucher.
+  const navbarBottom = await page
+    .getByRole('banner')
+    .evaluate((el) => el.getBoundingClientRect().bottom);
+  expect((await page.getByRole('menu').boundingBox())!.y).toBeGreaterThanOrEqual(navbarBottom - 1);
+});
