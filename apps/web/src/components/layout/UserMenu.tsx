@@ -37,9 +37,11 @@ export function UserMenu() {
           <span className="hidden xl:inline">{user.firstName}</span>
         </Button>
       </DropdownMenuTrigger>
+      {/* 18 px : l'avatar est à 18 px du bas de la navbar (72 px) sur ordinateur, 14 px sur mobile (64 px) ;
+          le panneau s'ouvre donc toujours sous la navbar, sans la chevaucher. */}
       <DropdownMenuContent
         align="end"
-        sideOffset={12}
+        sideOffset={18}
         collisionPadding={12}
         className="w-60 rounded-xl p-2"
       >

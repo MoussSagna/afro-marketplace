@@ -2,6 +2,12 @@
 
 Dernière mise à jour : 27/11/2026 (refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
 
+## Menu du compte sous la navbar (27/11/2026)
+
+Après la fusion des PR #67 et #68, le test e2e « le menu du compte s'ouvre… » échouait (ordinateur et mobile) :
+le panneau s'ouvrait 6 px au-dessus du bas de la navbar (`sideOffset` 12 alors que l'avatar est à 18 px
+du bas sur ordinateur, 14 px sur mobile). `sideOffset` passe à 18 dans `UserMenu.tsx`.
+
 ## Site : messagerie responsive sur téléphone (27/11/2026)
 
 Demande de Mouss (capture du bug + maquette) : textes qui sortaient des bulles, onglets coupés, en-tête tassé.
