@@ -32,6 +32,11 @@ la 2ᵉ (retenue) met la couverture en plein écran et demande de vrais onglets.
 
 ## Branches resynchronisées (27/11/2026)
 
+Mise à jour : la PR #63 a elle aussi été fusionnée en squash, donc la divergence est restée (et la PR #65
+dev → main avait des conflits). Une nouvelle PR enregistre `main` comme ancêtre de `dev` avec
+`git merge -s ours` (aucun changement de code). Elle **doit** être fusionnée avec « Create a merge commit » ;
+si ce bouton n'existe pas, l'activer dans Settings → General → Pull Requests → « Allow merge commits ».
+
 La PR #61 (dev → main) a été fusionnée en « squash » : `main` avait donc un commit que `dev` n'avait pas,
 même si le code était identique. Une PR ramène `main` dans `dev` (aucun changement de code) et
 [`conventions.md`](conventions.md) précise de toujours fusionner `dev` → `main` avec « Create a merge commit ».
