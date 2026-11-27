@@ -75,7 +75,7 @@ pour le site **et** l'app en même temps.
 ### M2 · Le thème et les composants de base
 
 - NativeWind branché sur les tokens de `packages/config/tailwind/tokens.json` (mêmes couleurs, rayons, ombres que le site).
-- Polices Playfair Display (titres) et Inter (texte) chargées avec `expo-font`.
+- Polices Playfair Display (titres) et Inter (texte) chargées avec `expo-font` (remplacées par Nunito partout le 27/11/2026).
 - Composants maison, équivalents des composants shadcn du site : `Button` (cta, primary, outline, ghost), `Text` /
   `Heading`, `Input`, `Card`, `Badge`, `Chip`, `Avatar`, `Rating`, `EmptyState`, `Logo` (SVG Wenzee).
 - Un écran caché « Catalogue » qui montre tous les composants (pratique pour relire le design).

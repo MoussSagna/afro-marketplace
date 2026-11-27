@@ -80,7 +80,7 @@ export function CatalogueScreen() {
           </Heading>
           <Heading level={2}>Titre de niveau 2</Heading>
           <Heading level={3}>Titre de niveau 3</Heading>
-          <Text>Texte courant en Inter, 16 px.</Text>
+          <Text>Texte courant en Nunito, 16 px.</Text>
           <Text size="sm" tone="muted">
             Texte secondaire (argile foncée).
           </Text>

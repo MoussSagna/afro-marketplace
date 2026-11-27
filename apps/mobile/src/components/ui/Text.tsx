@@ -31,7 +31,7 @@ export const textVariants = cva('text-foreground', {
 
 type TextProps = ComponentProps<typeof RNText> & VariantProps<typeof textVariants>;
 
-/** Le texte courant (Inter). Ex. : <Text size="sm" tone="muted">Paris 18e</Text> */
+/** Le texte courant (Nunito). Ex. : <Text size="sm" tone="muted">Paris 18e</Text> */
 export function Text({ className, size, weight, tone, ...props }: TextProps) {
   return <RNText className={cn(textVariants({ size, weight, tone }), className)} {...props} />;
 }
@@ -49,7 +49,7 @@ type HeadingProps = ComponentProps<typeof RNText> & {
 };
 
 /**
- * Un titre en Playfair Display. Annoncé comme titre par les lecteurs d'écran.
+ * Un titre (Nunito gras, comme le logo). Annoncé comme titre par les lecteurs d'écran.
  * Mot accent comme sur le site : <Heading>Explore nos <Accent>catégories</Accent></Heading>
  */
 export function Heading({ className, level = 1, ...props }: HeadingProps) {

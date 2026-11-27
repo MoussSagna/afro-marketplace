@@ -70,9 +70,9 @@ describe('Libellés et icônes de la barre d’onglets', () => {
     expect(screen.getByRole('tab', { name: 'Recherche' })).not.toHaveStyle({
       backgroundColor: expect.anything(),
     });
-    expect(label('index')).toHaveStyle({ fontFamily: 'Inter_700Bold', color: '#7A1F0E' });
+    expect(label('index')).toHaveStyle({ fontFamily: 'Nunito_700Bold', color: '#7A1F0E' });
     for (const route of ['favoris', 'evenements', 'messages', 'compte']) {
-      expect(label(route)).toHaveStyle({ fontFamily: 'Inter_500Medium', color: '#7D6A5E' });
+      expect(label(route)).toHaveStyle({ fontFamily: 'Nunito_500Medium', color: '#7D6A5E' });
     }
   });
 

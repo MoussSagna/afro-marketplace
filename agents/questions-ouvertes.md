@@ -79,6 +79,9 @@ mobile ajoute sa ligne ici.
       catégories. Glisser une rangée de côté (« Libres samedi », « Pour régaler tes invités »…), toucher un cœur (il se
       remplit, et reste rempli après avoir fermé l'app), toucher le titre d'une rangée (les résultats s'ouvrent filtrés).
       Vérifier en clair et en sombre.
+- [ ] **Typo Nunito (#75)** : ouvrir l'app, vérifier que tout le texte est en Nunito (lettres arrondies comme le
+      logo) : titres de la Recherche, cartes, barre d'onglets, formulaire de devis. Aucun écran ne doit retomber sur la
+      police du système. Vérifier en clair et en sombre.
 
 ## Ouvertes
 

@@ -91,7 +91,7 @@
 - Piège des marges responsives : un raccourci `lg:p-8` réécrit les 4 marges et efface un `md:pl-…` plus spécifique ;
   préférer des côtés explicites, ou une plage (`lg:max-[1399px]:pl-8`). Les points de rupture arbitraires
   (`min-[1400px]:`) ne passent pas toujours après `sm:`/`lg:` dans la feuille générée.
-- **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices :
+- **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices (toutes en Nunito) :
   `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`. Composants de base dans
   `apps/mobile/src/components/ui/` ; on n'ajoute pas de couleur en dur (sauf les icônes lucide, qui prennent un code hexa).
 - Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.

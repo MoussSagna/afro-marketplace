@@ -1,18 +1,22 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (typo arrondie Nunito sur le site ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 27/11/2026 (typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
 
-## Site : typo arrondie Nunito (27/11/2026)
+## Site et app : typo arrondie Nunito (27/11/2026)
 
 Demande de Mouss : « une typo plus arrondie comme le logo ». Quatre pistes montrées avant tout code
 (`/mnt/project-files/typo-arrondie/`, planche `index.html`) : actuel, **Nunito partout (choisie)**, Nunito + Baloo 2,
-Quicksand. Branche `claude/project-thread-pybku6` (depuis `dev`), PR vers `dev`. L'app mobile suit dans une PR à part.
+Quicksand. Branche `claude/project-thread-pybku6` (depuis `dev`), PR #75 vers `dev` (site et app dans la même PR).
 
 - **Nunito** (Google Fonts, licence OFL, la police du mot « Wenzee » du logo) pour le texte **et** les titres :
   `--font-sans` et `--font-display` dans `packages/config/tailwind/theme.css`, lien Google Fonts de
   `apps/web/index.html` (graisses 400 à 900), `tokens.json`.
 - `font-display` reste la classe des titres (h1–h3 par défaut) : la hiérarchie se fait par la taille et la graisse.
 - Aucun composant modifié (seulement des commentaires qui citaient Playfair). Tests : 328 unitaires, 184 Playwright, inchangés.
+- **App mobile** : `@expo-google-fonts/nunito` remplace `inter` et `playfair-display`. `useAppReady` charge
+  `Nunito_400Regular`, `_500Medium`, `_600SemiBold`, `_700Bold` ; dans le preset, `font-sans*` → ces graisses,
+  `font-display` → `Nunito_700Bold`, `font-display-semibold` → `Nunito_600SemiBold`. Barre d'onglets et tests adaptés
+  (333 tests mobiles). La maquette mobile (`/mnt/project-files/maquette-mobile/index.html`) est passée en Nunito aussi.
 - Captures : avant = `typo-arrondie/captures/a-actuel/`, après = `typo-arrondie/apres-site/`.
 
 ## App mobile : Recherche enrichie façon Airbnb (27/11/2026)

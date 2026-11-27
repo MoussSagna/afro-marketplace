@@ -27,10 +27,7 @@ importers:
       '@afro/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@expo-google-fonts/inter':
-        specifier: ^0.4.2
-        version: 0.4.2
-      '@expo-google-fonts/playfair-display':
+      '@expo-google-fonts/nunito':
         specifier: ^0.4.2
         version: 0.4.2
       '@expo/metro-runtime':
@@ -933,11 +930,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@expo-google-fonts/inter@0.4.2':
-    resolution: {integrity: sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ==}
-
-  '@expo-google-fonts/playfair-display@0.4.2':
-    resolution: {integrity: sha512-mWhBV59RUjSS3aYpytUb7UyHHTnXcHh7epAn7gq+M4XAEh5PuMKUrP8eiUfkJLb6UwHZCi7EhQpUzxHu5OL96w==}
+  '@expo-google-fonts/nunito@0.4.2':
+    resolution: {integrity: sha512-1KCWphw/I2ugqfs9iRHUCkPTnomNgGPtF4AvqVquoEKxr0EL+mcLNLgeixsslbaSFevRR6/KJAE3sc8g0VaY0Q==}
 
   '@expo/cli@58.1.22':
     resolution: {integrity: sha512-4hZuA2DkV7dQyXkOk0Ek1NzePRGRTxy6bFQqK12k8xYSsv1R5nGLiAu8kDWyNuA9BP4ORN7vOfkuTUnMGRhS6Q==}
@@ -6722,9 +6716,7 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@expo-google-fonts/inter@0.4.2': {}
-
-  '@expo-google-fonts/playfair-display@0.4.2': {}
+  '@expo-google-fonts/nunito@0.4.2': {}
 
   '@expo/cli@58.1.22(@expo/dom-webview@58.0.2)(@expo/metro-runtime@58.0.17)(expo-constants@58.0.16)(expo-font@58.0.12(expo@58.1.0)(react-native@0.88.1(@babel/core@7.29.13)(@react-native/metro-config@0.88.1(@babel/core@7.29.13))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0))(expo-router@58.0.33)(expo@58.1.0)(react-dom@19.3.1(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.13)(@react-native/metro-config@0.88.1(@babel/core@7.29.13))(@types/react@19.3.0)(react@19.3.0))(react@19.3.0)(typescript@6.0.3)':
     dependencies:

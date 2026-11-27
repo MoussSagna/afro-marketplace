@@ -57,12 +57,12 @@ module.exports = {
       },
       // Sur téléphone, chaque graisse d'une police est une police à part (chargée par expo-font).
       fontFamily: {
-        sans: ['Inter_400Regular'],
-        'sans-medium': ['Inter_500Medium'],
-        'sans-semibold': ['Inter_600SemiBold'],
-        'sans-bold': ['Inter_700Bold'],
-        display: ['PlayfairDisplay_700Bold'],
-        'display-semibold': ['PlayfairDisplay_600SemiBold'],
+        sans: ['Nunito_400Regular'],
+        'sans-medium': ['Nunito_500Medium'],
+        'sans-semibold': ['Nunito_600SemiBold'],
+        'sans-bold': ['Nunito_700Bold'],
+        display: ['Nunito_700Bold'],
+        'display-semibold': ['Nunito_600SemiBold'],
       },
       fontSize: {
         h1: ['28px', { lineHeight: '34px' }],
