@@ -161,7 +161,7 @@ Plan complet : [`sprint-mobile.md`](sprint-mobile.md).
 ```
 apps/mobile/
   app/                 Les écrans pour Expo Router : un fichier = une adresse
-  app/(tabs)/          Les 5 onglets du mode client ; « (tabs) » ne compte pas dans l'adresse (Accueil = « / »)
+  app/(tabs)/          Les 4 onglets du mode client ; « (tabs) » ne compte pas dans l'adresse (Recherche = « / », index)
   app/pro/             Le mode prestataire : une pile ; dessous app/pro/(tabs)/ (les 5 onglets bruns, /pro…),
                        par-dessus /pro/demande/[id], /pro/devis/[id] et /pro/conversations/[id] (sans barre d'onglets)
   app/(auth)/          Les écrans de connexion (/bienvenue, /inscription, /verification, /connexion…)
@@ -174,9 +174,10 @@ apps/mobile/
   src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
-  src/features/home/   Accueil (bannière, catégories, « À la une »)
-  src/features/search/ Recherche (M7) : SearchPill, CategoryBar, SearchResultCard, SearchWizard (Quoi/Où/Quand/Invités),
-                       FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse de l'écran)
+  src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
+                       « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil) ;
+                       « results » = CategoryBar + SearchResultCard. Commun : SearchPill, SearchWizard (Quoi/Où/Quand/
+                       Invités), FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse, `vue=resultats`)
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
   src/features/messaging/ Messagerie (M10) : ConversationsScreen, ConversationScreen (fil + devis), MessageBubble,

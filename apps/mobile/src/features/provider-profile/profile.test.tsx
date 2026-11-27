@@ -15,8 +15,7 @@ import { QuoteRequestScreen } from '../quote-request/QuoteRequestScreen';
 const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': Empty,
-  '(tabs)/recherche': SearchScreen,
+  '(tabs)/index': SearchScreen,
   '(tabs)/demandes': Empty,
   '(tabs)/messages': Empty,
   '(tabs)/compte': Empty,
@@ -191,13 +190,13 @@ describe('Profil prestataire (lot M8)', () => {
     await open('nexiste-pas');
     expect(await screen.findByText('Profil introuvable')).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('button', { name: 'Retour à la recherche' }));
-    expect(screen).toHavePathname('/recherche');
+    expect(screen).toHavePathname('/');
   });
 
   it('toucher une carte de la Recherche ouvre le profil', async () => {
     const { api } = demoApi();
     const { items } = await api.searchProviders({});
-    await renderRouter(routes, { initialUrl: '/recherche', wrapper: testProviders(api) });
+    await renderRouter(routes, { initialUrl: '/?vue=resultats', wrapper: testProviders(api) });
     const first = items[0]!;
     await fireEvent.press(
       await screen.findByRole('link', { name: new RegExp(`^${first.displayName}, `) }),

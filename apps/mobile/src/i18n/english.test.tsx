@@ -5,7 +5,7 @@ import { renderRouter, screen } from 'expo-router/testing-library';
 import { SignInRequired } from '@/features/auth/SignInRequired';
 import { AuthWelcomeScreen } from '@/features/auth/screens/AuthWelcomeScreen';
 import { SignUpScreen } from '@/features/auth/screens/SignUpScreen';
-import { HomeScreen } from '@/features/home/HomeScreen';
+
 import { ClientTabsLayout } from '@/features/navigation/ClientTabsLayout';
 import { useTabBarStore } from '@/features/navigation/tabBarStore';
 import { SearchScreen } from '@/features/search/SearchScreen';
@@ -21,8 +21,7 @@ const Empty = () => null;
 const routes = {
   _layout: () => <Stack screenOptions={{ headerShown: false }} />,
   '(tabs)/_layout': ClientTabsLayout,
-  '(tabs)/index': HomeScreen,
-  '(tabs)/recherche': SearchScreen,
+  '(tabs)/index': SearchScreen,
   '(tabs)/demandes': () => (
     <SignInRequired title={i18n.t('tabs.requests')} reason={i18n.t('requests.signIn')}>
       <Empty />
@@ -56,13 +55,10 @@ afterEach(() => {
 });
 
 describe('L’app en anglais (lot M6b)', () => {
-  it('affiche l’Accueil en anglais : titre, recherche, catégories et prix', async () => {
+  it('affiche l’accueil de la Recherche en anglais : pilule, à la une, catégories et prix', async () => {
     const { featured } = await open('/');
 
-    expect(
-      screen.getByRole('header', { name: 'Talents that bring our cultures to life' }),
-    ).toBeOnTheScreen();
-    expect(screen.getByRole('search', { name: 'Search for a provider' })).toBeOnTheScreen();
+    expect(screen.getByRole('search', { name: /^What are you looking for\?/ })).toBeOnTheScreen();
     // Les catégories viennent des données (en français) : on les traduit par leur slug.
     expect(await screen.findByRole('button', { name: 'Food & drink' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Beauty & grooming' })).toBeOnTheScreen();
@@ -116,7 +112,7 @@ describe('L’app en anglais (lot M6b)', () => {
   it('affiche la Recherche en anglais : pilule, catégories, nombre de résultats, filtres', async () => {
     const { api } = demoApi();
     const { total } = await api.searchProviders({}); // avant renderRouter (faux minuteurs)
-    await renderRouter(routes, { initialUrl: '/recherche', wrapper: testProviders(api) });
+    await renderRouter(routes, { initialUrl: '/?vue=resultats', wrapper: testProviders(api) });
     expect(screen.getByRole('search', { name: /^What are you looking for\?/ })).toBeOnTheScreen();
     expect(await screen.findByText(`${total} providers`)).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Food & drink' })).toBeOnTheScreen();

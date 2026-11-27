@@ -8,7 +8,7 @@ import { useCategoryName } from '@/i18n/useCategoryName';
 import { mainCategories } from '@/lib/categories';
 import { cn } from '@/lib/cn';
 import { useThemeColors } from '@/theme/useTheme';
-import { CATEGORY_ICONS } from '../home/categoryIcons';
+import { CATEGORY_ICONS } from './categoryIcons';
 
 type CategoryBarProps = {
   /** Le slug de la catégorie choisie, ou rien pour « Tout ». */

@@ -1,3 +1,3 @@
 /// <reference types="expo/types" />
 
-// Ce fichier est géré par Expo (types des images, des variables d'environnement…).
+// NOTE: This file should not be edited and should be in your git ignore

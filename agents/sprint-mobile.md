@@ -121,6 +121,9 @@ pour le site **et** l'app en même temps.
 
 ### M6 · Accueil (P1)
 
+> **27/11/2026 : l'onglet Accueil n'existe plus.** Ses sections sont l'état initial de l'onglet Recherche
+> (premier onglet, écran d'ouverture) ; « À la une » devient un carrousel plein écran. Voir `avancement.md`.
+
 - Bannière photo, grand titre, recherche en pilule, grille des catégories, « À la une » en défilement horizontal.
 - **Tests** : affichage, chargement, toucher une catégorie ouvre la recherche filtrée.
 

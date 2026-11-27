@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { formatDateTime, formatEventDate, formatMessageTime, formatTimeAgo } from './formatDate';
 
 describe('formatage des dates', () => {
@@ -36,10 +36,25 @@ describe('formatage des dates', () => {
     expect(ago(60 * minute)).toBe('il y a 1 h');
     expect(ago(23 * 60 * minute)).toBe('il y a 23 h');
     expect(ago(day)).toBe('hier');
+    expect(ago(2 * day)).toBe('avant-hier');
     expect(ago(5 * day)).toBe('il y a 5 jours');
     expect(ago(30 * day)).toBe('il y a 1 mois');
     expect(ago(220 * day)).toBe('il y a 7 mois');
     expect(ago(365 * day)).toBe('il y a 1 an');
     expect(ago(800 * day)).toBe('il y a 2 ans');
+  });
+
+  it('n’utilise pas Intl.RelativeTimeFormat, absent de Hermes (moteur de l’app mobile)', async () => {
+    const original = Object.getOwnPropertyDescriptor(Intl, 'RelativeTimeFormat')!;
+    // On simule Hermes, qui ne fournit pas ce constructeur.
+    Object.defineProperty(Intl, 'RelativeTimeFormat', { value: undefined, configurable: true });
+    try {
+      vi.resetModules();
+      const fresh = await import('./formatDate');
+      const now = new Date('2026-12-03T18:00:00Z');
+      expect(fresh.formatTimeAgo('2026-12-03T17:48:00Z', now)).toBe('il y a 12\u00a0min');
+    } finally {
+      Object.defineProperty(Intl, 'RelativeTimeFormat', original);
+    }
   });
 });

@@ -70,7 +70,7 @@ export function ProfileGallery({ photos, name }: ProfileGalleryProps) {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('common.back')}
-        onPress={() => (router.canGoBack() ? router.back() : router.replace('/recherche'))}
+        onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
         className="absolute left-4 h-11 w-11 items-center justify-center rounded-full active:opacity-70"
         style={{ top: insets.top + 8, backgroundColor: 'rgba(253, 247, 240, 0.92)' }}
       >

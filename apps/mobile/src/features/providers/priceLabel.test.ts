@@ -10,9 +10,9 @@ describe('priceLabel', () => {
 
 describe('searchHref', () => {
   it('ouvre la Recherche, filtrée ou non sur une catégorie', () => {
-    expect(searchHref()).toBe('/recherche');
+    expect(searchHref()).toBe('/');
     expect(searchHref({ slug: 'beaute' })).toEqual({
-      pathname: '/recherche',
+      pathname: '/',
       params: { categorie: 'beaute' },
     });
   });

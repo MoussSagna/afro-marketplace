@@ -13,7 +13,6 @@ const Empty = () => null;
 const routes = {
   '(tabs)/_layout': ClientTabsLayout,
   '(tabs)/index': Empty,
-  '(tabs)/recherche': Empty,
   '(tabs)/demandes': RequestsTab,
   '(tabs)/messages': Empty,
   '(tabs)/compte': Empty,
@@ -123,6 +122,6 @@ describe('Mes demandes (lot M10)', () => {
     });
     expect(await screen.findByText('Aucune demande en cours')).toBeOnTheScreen();
     await press('Trouver un prestataire');
-    expect(screen).toHavePathname('/recherche');
+    expect(screen).toHavePathname('/');
   });
 });
