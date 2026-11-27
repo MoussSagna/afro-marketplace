@@ -8,40 +8,59 @@ import {
   useCulturalOrigins,
   useProvider,
 } from '@afro/common';
-import { BadgeCheck, Clock, Languages, MapPin } from 'lucide-react';
-import { Link, useParams } from 'react-router';
+import { Clock, Globe2, Languages, MapPin, PackageOpen, ShieldCheck, Users } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import { useLocation, useParams } from 'react-router';
 import { NotFoundPage } from '@/app/NotFoundPage';
-import { Rating } from '@/components/Rating';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/EmptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { buildProviderJsonLd } from '@/lib/seo';
+import { AboutSection, type AboutFact, type AboutTag } from '../components/AboutSection';
 import { AvailabilityCalendar } from '../components/AvailabilityCalendar';
+import { AddToEventButton } from '@/features/events/components/AddToEventButton';
+import { ContactPanel } from '../components/ContactPanel';
 import { Gallery } from '../components/Gallery';
 import { OfferingList } from '../components/OfferingList';
+import { PhotoLightbox } from '../components/PhotoLightbox';
+import { ProfileCover } from '../components/ProfileCover';
+import { ProfileTabs } from '../components/ProfileTabs';
+import { ProviderIdentity } from '../components/ProviderIdentity';
 import { ReviewList } from '../components/ReviewList';
+import { categoryIcon } from '../lib/categoryIcon';
+import { formatResponseTime, maxGuestsOf } from '../lib/profileDisplay';
+import type { ProfileTab } from '../lib/profileTabs';
 
-/** P5 : la page publique d'un prestataire. */
+/**
+ * P5 : la page publique d'un prestataire, pensée comme une vitrine.
+ *
+ * De haut en bas : la couverture sur toute la largeur de l'écran (sous la navbar transparente), avec
+ * l'identité du prestataire posée dessus ; puis 4 onglets (Présentation, Prestations, Galerie, Avis)
+ * dont le contenu se remplace sur place, et le panneau de contact, à droite sur ordinateur, présent
+ * quel que soit l'onglet.
+ */
 export function ProviderProfilePage() {
   const { slug = '' } = useParams();
   const provider = useProvider(slug);
   const categories = useCategories();
   const origins = useCulturalOrigins();
+  // Après « Publier mon avis » (C6), on arrive sur l'onglet Avis.
+  const reviewPublished = (useLocation().state as { reviewPublished?: boolean } | null)
+    ?.reviewPublished;
+  const [tab, setTab] = useState<ProfileTab>(reviewPublished ? 'avis' : 'presentation');
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const profile = provider.data?.profile;
 
   usePageMeta(profile && `${profile.displayName}, ${profile.city}`, profile?.bio.slice(0, 160));
 
   if (provider.isPending) {
     return (
-      <div
-        className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8"
-        role="status"
-        aria-label="Chargement"
-      >
-        <Skeleton className="h-56 rounded-xl" />
-        <Skeleton className="h-10 w-80" />
-        <Skeleton className="h-40 rounded-xl" />
+      <div className="flex flex-col gap-6 pb-12" role="status" aria-label="Chargement">
+        <Skeleton className="h-[420px] w-full rounded-none sm:h-[500px]" />
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 lg:px-6">
+          <Skeleton className="h-14 w-full max-w-[820px] rounded-full" />
+          <Skeleton className="h-64 rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -57,109 +76,63 @@ export function ProviderProfilePage() {
 
   const { offerings, media } = provider.data;
   const p = provider.data.profile;
-  const categoryNames = p.categoryIds
+  const images = media.filter((m) => m.type === 'image');
+  const providerCategories = p.categoryIds
     .map((id) => categories.data?.find((c) => c.id === id))
     .filter((c) => c !== undefined);
+  const group = categories.data?.find((c) => c.id === providerCategories[0]?.parentId);
   const originNames = p.culturalOriginIds
     .map((id) => origins.data?.find((o) => o.id === id)?.name)
-    .filter(Boolean);
+    .filter((name) => name !== undefined);
   const requestUrl = `/prestataires/${p.slug}/demande`;
   const jsonLd = buildProviderJsonLd(window.location.origin, {
     ...p,
-    categoryNames: categoryNames.map((c) => c.name),
+    categoryNames: providerCategories.map((c) => c.name),
   });
+  const cancellationLabel = CANCELLATION_POLICIES[p.cancellationPolicy].label;
+  const responseTime =
+    p.responseTimeHours === undefined ? undefined : formatResponseTime(p.responseTimeHours);
+  const CategoryIcon = categoryIcon(providerCategories[0]);
 
-  return (
-    <article>
-      {/* Données structurées pour Google (note, ville, prix). « < » échappé : pas d'injection. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('<', '\\u003c') }}
-      />
-      <div className="relative h-48 bg-linear-to-br from-ochre via-primary to-foreground md:h-72">
-        {p.coverUrl && <img src={p.coverUrl} alt="" className="size-full object-cover" />}
-      </div>
+  // Présentation : seulement ce que le profil renseigne (rien d'inventé).
+  const maxGuests = maxGuestsOf(offerings);
+  const tags: AboutTag[] = [
+    ...providerCategories.map((category) => ({ icon: CategoryIcon, label: category.name })),
+    ...originNames.map((name) => ({ icon: Globe2, label: name })),
+    ...(p.languages.length > 0
+      ? [{ icon: Languages, label: p.languages.map(languageLabel).join(', ') }]
+      : []),
+  ];
+  const facts: AboutFact[] = [
+    ...(maxGuests
+      ? [{ icon: Users, title: 'Capacité', value: `Jusqu’à ${maxGuests} invités` }]
+      : []),
+    {
+      icon: MapPin,
+      title: 'Localisation',
+      value: `${p.city} · jusqu’à ${p.travelRadiusKm} km`,
+    },
+    ...(responseTime
+      ? [{ icon: Clock, title: 'Réponse', value: `En ${responseTime} en moyenne` }]
+      : []),
+    { icon: ShieldCheck, title: 'Annulation', value: cancellationLabel },
+  ];
 
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_340px]">
-        <div className="flex min-w-0 flex-col gap-10">
-          <header className="flex flex-col gap-3">
-            <div className="flex flex-wrap gap-2">
-              {categoryNames.map((category) => (
-                <Link key={category.id} to={`/categories/${category.slug}`}>
-                  <Badge variant="secondary">{category.name}</Badge>
-                </Link>
-              ))}
-              {p.isProVerified && (
-                <Badge
-                  variant="outline"
-                  className="border-success/30 bg-success-muted text-success"
-                >
-                  <BadgeCheck aria-hidden /> Pro vérifié
-                </Badge>
-              )}
-            </div>
-            <h1 className="font-display text-3xl font-semibold md:text-4xl">{p.displayName}</h1>
-            <Rating value={p.ratingAverage} count={p.ratingCount} size="md" />
-            <ul className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
-              <li className="flex items-center gap-1">
-                <MapPin className="size-4" aria-hidden />
-                {p.city} · se déplace jusqu’à {p.travelRadiusKm} km
-              </li>
-              {p.languages.length > 0 && (
-                <li className="flex items-center gap-1">
-                  <Languages className="size-4" aria-hidden />
-                  {p.languages.map(languageLabel).join(', ')}
-                </li>
-              )}
-              {p.responseTimeHours !== undefined && (
-                <li className="flex items-center gap-1">
-                  <Clock className="size-4" aria-hidden />
-                  Répond en{' '}
-                  {p.responseTimeHours < 24
-                    ? `${Math.round(p.responseTimeHours)} h`
-                    : `${Math.round(p.responseTimeHours / 24)} j`}{' '}
-                  en moyenne
-                </li>
-              )}
-            </ul>
-            {originNames.length > 0 && (
-              <p className="text-sm">
-                <span className="font-medium">Origines : </span>
-                {originNames.join(', ')}
-              </p>
-            )}
-          </header>
-
-          <section aria-labelledby="about-title">
-            <h2 id="about-title" className="mb-3 font-display text-2xl font-semibold">
-              Présentation
-            </h2>
-            <p className="whitespace-pre-line">{p.bio}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{LEGAL_TYPE_LABELS[p.legalType]}</p>
-          </section>
-
-          {offerings.length > 0 && <OfferingList offerings={offerings} />}
-          <Gallery media={media} providerName={p.displayName} />
-          <ReviewList
-            providerId={p.id}
-            ratingAverage={p.ratingAverage}
-            ratingCount={p.ratingCount}
-          />
-        </div>
-
-        <aside className="flex flex-col gap-4 lg:sticky lg:top-20 lg:self-start">
-          <div className="rounded-xl border bg-card p-4">
-            <p className="mb-3 text-sm text-muted-foreground">
-              Gratuit et sans engagement : le prestataire vous répond avec un devis.
-            </p>
-            <Button asChild variant="cta" size="lg" className="w-full">
-              <Link to={requestUrl}>Demander un devis</Link>
-            </Button>
-          </div>
+  const panels: Record<ProfileTab, ReactNode> = {
+    presentation: (
+      <AboutSection
+        providerName={p.displayName}
+        bio={p.bio}
+        legalTypeLabel={LEGAL_TYPE_LABELS[p.legalType]}
+        tags={tags}
+        facts={facts}
+      >
+        {/* Informations pratiques : disponibilités et conditions d'annulation. */}
+        <div className="grid items-start gap-4 @2xl:grid-cols-2">
           <AvailabilityCalendar providerId={p.id} />
-          <section aria-labelledby="cancellation-title" className="rounded-xl border bg-card p-4">
-            <h2 id="cancellation-title" className="mb-2 font-semibold">
-              Annulation : {CANCELLATION_POLICIES[p.cancellationPolicy].label.toLowerCase()}
+          <section aria-labelledby="cancellation-title" className="rounded-xl border bg-card p-5">
+            <h2 id="cancellation-title" className="mb-2 font-display text-xl font-semibold">
+              Annulation : {cancellationLabel.toLowerCase()}
             </h2>
             <ul className="list-disc pl-5 text-sm text-muted-foreground">
               {describeCancellationPolicy(p.cancellationPolicy).map((line) => (
@@ -167,15 +140,75 @@ export function ProviderProfilePage() {
               ))}
             </ul>
           </section>
-        </aside>
+        </div>
+      </AboutSection>
+    ),
+    prestations:
+      offerings.length > 0 ? (
+        <OfferingList offerings={offerings} icon={CategoryIcon} />
+      ) : (
+        <EmptyState
+          icon={PackageOpen}
+          title="Pas encore de prestation"
+          description="Envoyez une demande : le prestataire vous répond avec une offre adaptée."
+        />
+      ),
+    galerie: <Gallery images={images} providerName={p.displayName} onOpen={setLightboxIndex} />,
+    avis: (
+      <ReviewList providerId={p.id} ratingAverage={p.ratingAverage} ratingCount={p.ratingCount} />
+    ),
+  };
+
+  return (
+    <article className="pb-16 lg:pb-24">
+      {/* Données structurées pour Google (note, ville, prix). « < » échappé : pas d'injection. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('<', '\\u003c') }}
+      />
+
+      <ProfileCover
+        imageUrl={p.coverUrl ?? images[0]?.url}
+        providerName={p.displayName}
+        photoCount={images.length}
+        onOpenGallery={() => setLightboxIndex(0)}
+      >
+        <ProviderIdentity
+          profile={p}
+          categories={providerCategories}
+          groupName={group?.name}
+          requestUrl={requestUrl}
+        />
+      </ProfileCover>
+
+      <div className="mx-auto mt-6 max-w-[1200px] px-4 sm:mt-8 lg:mt-10 lg:px-6">
+        <ProfileTabs
+          value={tab}
+          onValueChange={setTab}
+          panels={panels}
+          aside={
+            <aside aria-label="Contacter le prestataire" data-testid="profile-contact">
+              <ContactPanel
+                requestUrl={requestUrl}
+                addToEvent={<AddToEventButton providerId={p.id} providerName={p.displayName} />}
+                responseTime={responseTime}
+                highlights={[
+                  'Devis gratuit et sans engagement',
+                  `Se déplace jusqu’à ${p.travelRadiusKm} km autour de ${p.city}`,
+                  `Annulation ${cancellationLabel.toLowerCase()}`,
+                ]}
+              />
+            </aside>
+          }
+        />
       </div>
 
-      {/* Sur téléphone, le bouton reste visible en bas de l'écran. */}
-      <div className="sticky bottom-0 border-t bg-background/95 p-3 backdrop-blur lg:hidden">
-        <Button asChild variant="cta" size="lg" className="w-full">
-          <Link to={requestUrl}>Demander un devis</Link>
-        </Button>
-      </div>
+      <PhotoLightbox
+        images={images}
+        providerName={p.displayName}
+        index={lightboxIndex}
+        onIndexChange={setLightboxIndex}
+      />
     </article>
   );
 }

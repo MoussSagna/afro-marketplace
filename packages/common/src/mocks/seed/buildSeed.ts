@@ -15,6 +15,7 @@ import type {
   EventType,
   Message,
   NotificationPrefs,
+  PlannedEvent,
   ProviderProfile,
   Quote,
   QuoteRequest,
@@ -80,6 +81,8 @@ export function buildSeed(now: Date): MockData {
     reports: [],
     moderationActions: [],
     credentials: [],
+    events: [],
+    eventProviders: [],
     pendingSignUps: [],
   };
 
@@ -823,6 +826,75 @@ export function buildSeed(now: Date): MockData {
     note: 'Aucun élément de spam constaté.',
     createdAt: at(-29, 10),
   });
+
+  // ------------------------------------------- Planificateur d'événements
+
+  // Aïssatou prépare son mariage (le même que ses demandes du scénario 1 et 2) et un anniversaire.
+  // Les statuts ne sont pas stockés : « Devis demandé » vient de la demande en attente de Saveurs
+  // de Dakar, « Devis reçu » du devis de Compagnie Akwaba ; les deux autres sont seulement ajoutés.
+  {
+    const requestOf = (slug: string) =>
+      data.quoteRequests.find(
+        (r) =>
+          r.clientId === DEMO_CLIENT_ID &&
+          r.providerId === provider(slug).id &&
+          r.eventDate === day(75),
+      )?.id;
+    const addEvent = (
+      event: Omit<PlannedEvent, 'clientId' | 'createdAt' | 'updatedAt'>,
+      createdAt: string,
+      links: { slug: string; quoteRequestId?: string }[],
+    ) => {
+      data.events.push({ ...event, clientId: DEMO_CLIENT_ID, createdAt, updatedAt: createdAt });
+      for (const link of links) {
+        data.eventProviders.push({
+          id: nextId('evp'),
+          eventId: event.id,
+          providerId: provider(link.slug).id,
+          quoteRequestId: link.quoteRequestId,
+          retained: false,
+          createdAt,
+          updatedAt: createdAt,
+        });
+      }
+    };
+    addEvent(
+      {
+        id: 'evt-mariage-aissatou',
+        type: 'wedding',
+        name: 'Mariage de Aïssatou',
+        date: day(75),
+        city: 'Paris',
+        postalCode: '75011',
+        guestCount: 150,
+        budget: 'over_20000',
+        description:
+          'Mariage traditionnel et moderne. Nous souhaitons une ambiance afro-chic avec des prestataires expérimentés.',
+      },
+      at(-10, 9),
+      [
+        { slug: 'saveurs-de-dakar', quoteRequestId: requestOf('saveurs-de-dakar') },
+        { slug: 'compagnie-akwaba', quoteRequestId: requestOf('compagnie-akwaba') },
+        { slug: 'wax-and-wedding-deco' },
+        { slug: 'studio-sankofa' },
+      ],
+    );
+    addEvent(
+      {
+        id: 'evt-anniversaire-30-ans',
+        type: 'birthday',
+        name: 'Anniversaire 30 ans',
+        date: day(178),
+        city: 'Saint-Denis',
+        postalCode: '93200',
+        guestCount: 80,
+        budget: '3000_5000',
+        description: '',
+      },
+      at(-3, 18),
+      [{ slug: 'dj-makossa-vibes' }, { slug: 'douceurs-creoles' }, { slug: 'selfie-box-ambiance' }],
+    );
+  }
 
   // ------------------------------------------------ Champs dérivés
 

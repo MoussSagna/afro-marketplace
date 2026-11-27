@@ -17,7 +17,7 @@ async function fillFreeDate(page: Page) {
 
 test('parcours 1 : un visiteur demande un devis depuis un profil', async ({ page }) => {
   await page.goto('/prestataires/chez-tantie-adjoua');
-  await page.getByRole('link', { name: 'Demander un devis' }).first().click();
+  await page.getByRole('link', { name: 'Envoyer une demande' }).click();
 
   // Pas encore connecté : la connexion de démo, puis retour au formulaire.
   await expect(page).toHaveURL(/\/connexion\?retour=/);

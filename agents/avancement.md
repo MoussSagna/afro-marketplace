@@ -1,6 +1,177 @@
 # Avancement
 
-Dernière mise à jour : 26/11/2026 (refonte de la page de résultats ; recherche guidée façon Airbnb ; navbar animée au défilement ; « Comment ça marche » refaite, #58 fusionnée).
+Dernière mise à jour : 27/11/2026 (planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## Site : planificateur d'événements, page « Événements » (27/11/2026)
+
+Demande de Mouss : faire de « Événements » (avant : page publique « Bientôt disponible ») un **planificateur**,
+d'après une planche, **dans le site** à la même adresse (la maquette HTML intermédiaire n'est pas gardée, choix de Mouss).
+Branche `feat/maquette-evenements`, PR vers `dev` à valider. Détail, mesures et écarts :
+[`docs/events-planner-validation.md`](../docs/events-planner-validation.md).
+
+- **Règle métier** : pas de réservation ni de paiement ici. On ajoute des prestataires, on leur demande un devis,
+  on compare, on « retient » (≠ réserver ; la réservation reste l'acceptation d'un devis, règle n° 6).
+- **`@afro/common`** : `schemas/event.ts` (événement, lien `EventProvider`, formulaire, envoi groupé),
+  `rules/event.ts` (statut d'un prestataire **calculé depuis sa demande de devis**, compteurs, statut d'un
+  événement, retenir, conversions vers la demande de devis), 10 opérations `ApiClient` (`listEvents`, `getEvent`,
+  `createEvent`, `updateEvent`, `deleteEvent` / `restoreEvent` (suppression douce), `addEventProvider`,
+  `removeEventProvider`, `requestEventQuotes`, `setEventProviderRetained`), handler `mocks/handlers/events.ts`,
+  hooks `queries/useEvents.ts`, libellés (`PLANNED_EVENT_TYPE_LABELS`, `EVENT_BUDGET_LABELS`…).
+- **« Demander les devis » crée de vraies demandes** (une par prestataire) via `sendQuoteRequest`, extrait de
+  `handlers/quoteRequests.ts` (même code que le formulaire C1 : `canSendQuoteRequest`, conversation, masquage).
+  Les refus (prestataire indisponible…) sont renvoyés un par un et affichés.
+- **Seed** : 2 événements d'Aïssatou (mariage dans 75 jours, relié à ses vraies demandes à Saveurs de Dakar et
+  Compagnie Akwaba ; anniversaire 30 ans). Tables `events`, `eventProviders` ; clé de sauvegarde mock passée en
+  `v3` (la démo du navigateur repart du seed).
+- **Site** (`features/events/`) : routes `/evenements`, `/nouveau`, `/:id`, `/:id/modifier`, `/:id/ajouter`,
+  `/:id/devis` (connexion exigée, gabarit `EventsLayout` : navbar du site **sans** la section « Espace client », demande de Mouss). Formulaire **unique** création / modification en
+  3 étapes (`?etape=`, brouillon en `sessionStorage`). Fiche prestataire : « Ajouter à un événement »
+  (`AddToEventButton`, dans `ContactPanel`). Nouveaux composants partagés : `Toaster` + `stores/toasts.ts`
+  (toasts, action « Annuler »), `ConfirmDialog`.
+- Tests : `rules/event.test.ts`, `handlers/events.test.ts` ; `EventsPages.test.tsx` (21), `eventLib.test.ts`,
+  `toasts.test.ts` ; `e2e/events.spec.ts` (desktop + mobile).
+
+## Site : refonte du back-office admin (27/11/2026)
+
+Demande de Mouss : refonte du back-office existant (`/admin/…`) d'après une maquette (1568 × 1003), **sans
+changer les routes, les gardes ni les actions** ; pages secondaires harmonisées. Branche
+`feat/admin-dashboard-redesign` (depuis `dev`), PR vers `dev` à valider par Mouss. Détail, mesures et écarts :
+[`docs/admin-dashboard-redesign-validation.md`](../docs/admin-dashboard-redesign-validation.md).
+
+- **`AdminLayout`** : `Navbar` en mode `appShell` (nouvelles props `appShell`, `leading`, `accountLabel` : sans
+  liens du site ni animation de défilement), badge « Back office admin », cloche `AdminNotifications` (ce qui
+  reste à traiter, depuis `useAdminOverview`), menu du compte « Admin ». Menu latéral fixe dès 1024 px
+  (`SpaceNav` variante `sidebar`), tiroir en dessous. **Plus de pied de page** dans le back-office.
+- **Vue d'ensemble** : `AdminPageHeader`, `AdminStatsGrid` (4 chiffres cliquables), `AdminPriorityTasks`
+  (`lib/priorityTasks.ts` : profils à valider + signalements ouverts, plus anciens d'abord, « Examiner » →
+  fiche ou `/admin/signalements#rep-…`), `AdminRecentActivity` (`lib/activityDisplay.ts`), `AdminQuickActions`.
+- **Nouvelle opération `getAdminActivity`** (`GET /api/admin/activity?limit=`, schéma `adminActivityItemSchema`,
+  hook `useAdminActivity`) : activité reconstruite depuis les tables (comptes, profils, envois en validation,
+  signalements, journal de modération), rien d'inventé. **À implémenter aussi côté Supabase au lot 10.**
+  `@afro/common` : `formatTimeAgo` (« il y a 12 min », « hier », « il y a 2 mois »).
+- **Pages secondaires** : `AdminTable` (+ `AdminRow`, `AdminCell`) passe en cartes sous 768 px ; Profils à valider
+  (vignette `ProviderThumbnail`, localisation, statut, « Examiner ») ; fiche en 2 colonnes (décision collante,
+  `PhotoLightbox`) ; Signalements (filtres en segments, carte ciblée par l'ancre et mise au focus) ; Utilisateurs
+  (avatar, type de compte, état vide). Messages de réussite (`AdminFeedback`) après chaque action.
+- Tests : `formatDate.test.ts`, `admin.test.ts` (activité : accès, ordre, limite, mise à jour, pas de doublon),
+  `priorityTasks.test.ts`, `activityDisplay.test.ts`, `AdminPages.test.tsx` (+ 21 tests : chiffres de la base,
+  chargement, erreurs, états vides, tâches, ancre, activité, accès rapides, menu, en-tête, notifications,
+  tiroir, retours après action) ; `e2e/admin-dashboard.spec.ts` (desktop + mobile).
+
+## Menu du compte sous la navbar (27/11/2026)
+
+Après la fusion des PR #67 et #68, le test e2e « le menu du compte s'ouvre… » échouait (ordinateur et mobile) :
+le panneau s'ouvrait 6 px au-dessus du bas de la navbar (`sideOffset` 12 alors que l'avatar est à 18 px
+du bas sur ordinateur, 14 px sur mobile). `sideOffset` passe à 18 dans `UserMenu.tsx`.
+
+## Site : messagerie responsive sur téléphone (27/11/2026)
+
+Demande de Mouss (capture du bug + maquette) : textes qui sortaient des bulles, onglets coupés, en-tête tassé.
+Correction de l'existant, sans toucher à la logique. Même branche que le tableau de bord. Détail, causes et mesures :
+[`docs/chat-mobile-validation.md`](../docs/chat-mobile-validation.md).
+
+- **Bulles** (`MessageBubble`) : `min-w-0 max-w-[85%]`, `whitespace-pre-wrap [overflow-wrap:anywhere]` (un mot ou une
+  URL sans espace revient à la ligne) ; bulle reçue sur fond sable.
+- **Onglets de l'espace client** (`SpaceNav` « tabs ») : 4 colonnes sur téléphone ; si un libellé passerait sur
+  2 lignes, **icônes seules** pour les 4 (choix de Mouss ; mesure dans `components/layout/useLabelsFit.ts`, libellés
+  gardés pour les lecteurs d'écran) ; rangée icône + libellé dès 640 px.
+- **En-tête du fil** (`ConversationThread`) : avatar, nom + badge vérifié, date courte ; statut + « Voir la demande »
+  sur une 2ᵉ ligne sur téléphone. Défilement vers le dernier message : la liste seule (`scrollTop`), plus la page.
+- **Zone d'écriture** (`MessageComposer`) : champ d'une ligne qui grandit, bouton rond, marge `safe-area-inset-bottom`.
+- **Hauteur** (`MessagesPage`) en `100dvh` recalculée ; `index.html` : `interactive-widget=resizes-content` (clavier Android).
+- **Menu du compte** (`UserMenu`) : `modal={false}` comme le menu « Prestataires » (le mode modal bloquait le défilement
+  et retirait la barre de défilement : la page se décalait à l'ouverture, retour de Mouss) ; panneau sous la navbar
+  (`sideOffset={12}`). Test e2e dans `auth.spec.ts`.
+- **`StarRatingInput`** : la case radio invisible recouvre l'étoile (avant : `sr-only`, 1 px à côté) ; rendait le
+  parcours e2e d'avis instable selon les arrondis de mise en page.
+- Tests : 3 tests Vitest (long message, changement de conversation, Entrée / Maj + Entrée) ;
+  `e2e/chat-mobile.spec.ts` (5 formats, clavier simulé, changement de conversation).
+
+## Site : refonte du tableau de bord client (27/11/2026)
+
+Demande de Mouss : refonte de l'espace client (`/espace/…`) d'après une maquette (1536 × 1024), **sans nouvelle
+logique ni données en dur** ; Réservations, Messages et Mon compte gardés cohérents (harmonisation légère).
+Branche `claude/client-dashboard-redesign`, PR vers `dev` (validée par Mouss), avec la correction de la messagerie
+mobile ci-dessus. Détail, mesures et écarts :
+[`docs/client-dashboard-redesign-validation.md`](../docs/client-dashboard-redesign-validation.md).
+
+- **`ClientLayout`** : conteneur 1426 px, onglets `SpaceNav` variante `tabs` (actif sur fond sable, pastille orange
+  des messages), fondu CSS au changement d'onglet. Les variantes `top` / `side` (pro, admin) ne changent pas.
+- **`/espace/demandes`** (`RequestsPage`, côté client) : `ClientDashboardSummary` (`features/client-dashboard/`) =
+  bannière « Bonjour {prénom} 👋 » + 3 cartes-liens (demandes en cours, réservations à venir, messages non lus),
+  puis « Mes demandes » + « Nouvelle demande » (→ `/recherche`), filtres en pilule (`?onglet=` inchangé), états
+  vides. `RequestCard` : grande photo, badge vérifié, statut à icône (`RequestStatusBadge size="lg"`), chevron.
+  Le côté prestataire (« Demandes reçues ») garde sa page, avec le même style de cartes.
+- **`bookings/lib/upcomingBookings.ts`** : la règle « réservation à venir », partagée par la page Réservations et
+  le tableau de bord.
+- **`app/RootRoute.tsx`** : retour en haut à chaque nouveau chemin (pas au premier chargement, pas sur « retour »,
+  pas pour un filtre `?…`). Avant, une nouvelle page gardait le défilement de la précédente (ex. arrivée dans
+  l'espace client défilée de 145 px après la connexion). `ScrollRestoration` de React Router écarté : il remontait
+  aussi la page ~400 ms après le chargement. Tests : `window.scrollTo` remplacé par un faux dans `test/setup.ts`.
+- Tests : `ClientDashboard.test.tsx` (11 tests : prénom, chiffres recalculés depuis la base, mise à jour après
+  annulation, liens, filtres, carte, nouvelle demande, vide, erreur, navigation, côté pro), `upcomingBookings.test.ts` ;
+  `e2e/client-dashboard.spec.ts` (mise en page, défilement en haut, navigation, filtres, détail).
+
+## Site : refonte de la page de connexion (27/11/2026)
+
+Demande de Mouss : refonte de `/connexion` d'après une maquette (écran partagé, 1536 × 1024), **en gardant
+l’authentification simulée**. Branche `claude/login-redesign`, PR vers `dev` (validée visuellement par Mouss). Détail, mesures et écarts :
+[`docs/login-page-validation.md`](../docs/login-page-validation.md).
+
+- **Gabarit `AuthLayout`** (`features/auth/components/`) : photo à gauche sur toute la hauteur (`hero/soiree.webp`,
+  titre « Trouvez le prestataire idéal pour vos événements » + 3 pastilles), formulaire à droite, sans navbar ni
+  pied de page (le logo officiel ramène à l'accueil). Écran partagé dès 1024 px ; en dessous, photo en bandeau.
+- **`/connexion`** : email + mot de passe via `useSignIn` (déjà simulé par MSW depuis le lot M5 ; comptes de démo :
+  `Wenzee2026`), œil afficher / masquer, erreurs du serveur, état de chargement. Google / Apple : message « bientôt
+  disponible » (pas d'OAuth). Les 3 comptes de démo en un clic restent sous le formulaire (mêmes libellés).
+- **Nouvelles pages du site** (même faux serveur que l'app mobile) : `/inscription` (prénom, email, mot de passe,
+  conditions → code `123456` → session) et `/mot-de-passe-oublie` (email → code + nouveau mot de passe → session).
+  `useCompleteSignIn` : même fin pour toutes (cache vidé, session, `?retour=` ou espace du compte) ;
+  `safeRedirect` refuse les 3 pages d'authentification comme destination. « S'inscrire » (navbar) → `/inscription`.
+- `@afro/common` : `utils/authForms.ts` (schémas des formulaires : case « conditions » décochée au départ, code,
+  confirmation du mot de passe). L'app mobile garde pour l'instant sa copie locale du schéma d'inscription.
+- Tests : `authForms.test.ts`, `safeRedirect.test.ts` ; `AuthPages.test.tsx` (20 tests : validation, connexion,
+  retour, erreurs, chargement, œil, Google / Apple, inscription, email pris, mot de passe oublié, navbar) ;
+  `e2e/auth.spec.ts` (écran partagé, connexion par email, inscription complète) ; `a11y.spec.ts` sur les 3 pages.
+
+## Site : refonte de la fiche prestataire (27/11/2026)
+
+Demande de Mouss : faire de la page existante `/prestataires/:slug` (P5) une vitrine, d'après une maquette
+(« Maison Naya », 1200 × 1312), **sans changer la route, les données ni la logique**. Deux maquettes dans la journée :
+la 2ᵉ (retenue) met la couverture en plein écran et demande de vrais onglets. Branche
+`claude/vendor-profile-redesign`, PR vers `dev` (validée visuellement par Mouss). Détail, mesures et écarts :
+[`docs/vendor-profile-redesign-validation.md`](../docs/vendor-profile-redesign-validation.md).
+
+- **Couverture** (`ProfileCover`) : photo sur toute la largeur, tout en haut, sous la **navbar transparente**
+  (comme l'accueil). La page la demande par `useOverlayNavbar()` (`stores/navbarOverlay.ts`) tant que la couverture
+  est affichée : une 404 garde la navbar brune. `Navbar` : la recherche compacte de l'en-tête passe dans une prop
+  `withSearch` (accueil seulement). Identité (`ProviderIdentity`) posée en bas : monogramme, nom, badge, famille,
+  catégories, ville, note, cœur des favoris, « Contacter le prestataire » ; « Voir toute la galerie » ouvre la
+  visionneuse (`PhotoLightbox`).
+- **Onglets** (`ProfileTabs`, Tabs Radix de shadcn/ui) : Présentation, Prestations, Galerie, Avis. État React dans
+  la page, contenu remplacé sur place, **aucun défilement** ni ancre ; flèches du clavier. Après « Publier mon avis »
+  (C6), la fiche s'ouvre sur l'onglet Avis. Présentation : texte, spécialités, encadré Capacité / Localisation /
+  Réponse / Annulation, calendrier et annulation. Galerie : mosaïque + nombre de photos.
+- **Contact** (`ContactPanel`) : à droite, collant sur ordinateur, présent quel que soit l'onglet ; sous le contenu
+  sur téléphone. « Afficher le numéro » explique que le numéro est donné après réservation (règle n° 7, question n° 24).
+- **Rien d'inventé** : monogramme (pas de logo), pas de types d'événements ; prix gardés. Retiré : la barre
+  « Demander un devis » collée en bas sur téléphone. Libellés : « Formules et prix » → « Nos prestations »,
+  « Demander un devis » → « Contacter le prestataire » / « Envoyer une demande » (e2e `discover`, `request`, `review`
+  mis à jour). `Rating` gagne l'option `showValue`.
+- Tests : `profileDisplay.test.ts` ; `ProviderProfilePage.test.tsx` (couverture, onglets, clavier, pas de
+  défilement, contact persistant, galerie, avis, favoris, navbar) ; `e2e/provider-profile.spec.ts` (bords de la
+  couverture, onglets sans défilement, clavier, galerie, favoris, panneau collant, téléphone).
+
+## Branches resynchronisées (27/11/2026)
+
+Mise à jour : la PR #63 a elle aussi été fusionnée en squash, donc la divergence est restée (et la PR #65
+dev → main avait des conflits). Une nouvelle PR enregistre `main` comme ancêtre de `dev` avec
+`git merge -s ours` (aucun changement de code). Elle **doit** être fusionnée avec « Create a merge commit » ;
+si ce bouton n'existe pas, l'activer dans Settings → General → Pull Requests → « Allow merge commits ».
+
+La PR #61 (dev → main) a été fusionnée en « squash » : `main` avait donc un commit que `dev` n'avait pas,
+même si le code était identique. Une PR ramène `main` dans `dev` (aucun changement de code) et
+[`conventions.md`](conventions.md) précise de toujours fusionner `dev` → `main` avec « Create a merge commit ».
 
 ## Test e2e « parcours 7 » fiabilisé (27/11/2026)
 

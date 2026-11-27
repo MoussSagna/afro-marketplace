@@ -1,6 +1,10 @@
 import type {
   ClientType,
+  EventBudget,
+  EventProviderStatus,
+  EventStatus,
   EventType,
+  PlannedEventType,
   LegalType,
   PricingType,
   ProviderStatus,
@@ -116,4 +120,41 @@ export const MODERATION_ACTION_LABELS: Record<ModerationActionType, string> = {
   suspend_user: 'Compte suspendu',
   ban_user: 'Compte banni',
   reactivate_user: 'Compte réactivé',
+};
+
+// ------------------------------------------------ Événements (planificateur)
+
+export const PLANNED_EVENT_TYPE_LABELS: Record<PlannedEventType, string> = {
+  wedding: 'Mariage',
+  party: 'Soirée',
+  baptism: 'Baptême',
+  birthday: 'Anniversaire',
+  conference: 'Conférence',
+  other: 'Autre',
+};
+
+export const EVENT_BUDGET_LABELS: Record<EventBudget, string> = {
+  under_1000: 'Moins de 1 000 €',
+  '1000_3000': '1 000 – 3 000 €',
+  '3000_5000': '3 000 – 5 000 €',
+  '5000_10000': '5 000 – 10 000 €',
+  '10000_20000': '10 000 – 20 000 €',
+  over_20000: 'Plus de 20 000 €',
+  undecided: 'À définir',
+};
+
+export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
+  preparation: 'En préparation',
+  quotes: 'Devis en cours',
+  past: 'Passé',
+};
+
+/** « Retenu » n'est pas « Réservé » : la réservation vient de l'acceptation d'un devis. */
+export const EVENT_PROVIDER_STATUS_LABELS: Record<EventProviderStatus, string> = {
+  added: 'Ajouté',
+  requested: 'Devis demandé',
+  received: 'Devis reçu',
+  retained: 'Retenu',
+  booked: 'Réservé',
+  closed: 'Sans suite',
 };

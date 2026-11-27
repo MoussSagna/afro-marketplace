@@ -41,7 +41,7 @@ export function StarRatingInput({
       {[1, 2, 3, 4, 5].map((star) => (
         <label
           key={star}
-          className="cursor-pointer rounded-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
+          className="relative cursor-pointer rounded-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring"
           onMouseEnter={() => setHovered(star)}
         >
           <input
@@ -50,7 +50,10 @@ export function StarRatingInput({
             value={star}
             checked={value === star}
             onChange={() => onChange(star)}
-            className="sr-only"
+            // Invisible mais posée SUR l'étoile (et non 1 px à côté, comme avec `sr-only`) :
+            // un clic n'importe où sur l'étoile coche la note ; le clavier et les lecteurs d'écran
+            // la voient comme une vraie case radio.
+            className="absolute inset-0 m-0 size-full cursor-pointer appearance-none opacity-0"
             aria-label={`${star} étoile${star > 1 ? 's' : ''}`}
           />
           <Star

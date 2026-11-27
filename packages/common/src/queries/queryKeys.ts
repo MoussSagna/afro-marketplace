@@ -26,6 +26,11 @@ export const queryKeys = {
     unavailableDates: (providerId: string, range: { from: string; to: string }) =>
       [...queryKeys.providers.all, 'unavailable-dates', providerId, range] as const,
   },
+  events: {
+    all: ['events'] as const,
+    list: () => [...queryKeys.events.all, 'list'] as const,
+    detail: (id: string) => [...queryKeys.events.all, 'detail', id] as const,
+  },
   quoteRequests: {
     all: ['quote-requests'] as const,
     list: (side: Side) => [...queryKeys.quoteRequests.all, 'list', side] as const,
@@ -52,6 +57,7 @@ export const queryKeys = {
   admin: {
     all: ['admin'] as const,
     overview: () => [...queryKeys.admin.all, 'overview'] as const,
+    activity: (limit: number) => [...queryKeys.admin.all, 'activity', limit] as const,
     providersToReview: () => [...queryKeys.admin.all, 'providers-to-review'] as const,
     provider: (id: string) => [...queryKeys.admin.all, 'provider', id] as const,
     reports: (status?: ReportStatus) =>

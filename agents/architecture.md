@@ -71,12 +71,14 @@ Dans les tests web, `apps/web/src/test/setup.ts` appelle `mockDb.reset()` après
 
 ### Routes et espaces (lot 2)
 
-| Espace      | Préfixe                                                                                                              | Garde                                                            | Gabarit                    |
-| ----------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------- |
-| Public      | `/`, `/connexion`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`             |
-| Client      | `/espace/…` (demandes, reservations, messages, avis, compte)                                                         | `<RequireAuth />`                                                | `ClientLayout` (onglets)   |
-| Prestataire | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                              | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral) |
-| Admin       | `/admin/…` (prestataires, signalements, utilisateurs)                                                                | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout`              |
+| Espace           | Préfixe                                                                                                | Garde                                                            | Gabarit                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------- |
+| Public           | `/`, `/deconnexion`, `/recherche`, `/categories/:slug`, `/prestataires/:slug`, `/devenir-prestataire`… | aucune                                                           | `PublicLayout`                            |
+| Authentification | `/connexion`, `/inscription`, `/mot-de-passe-oublie`                                                   | aucune                                                           | `AuthLayout` (écran partagé, sans navbar) |
+| Client           | `/espace/…` (demandes, reservations, messages, avis, compte)                                           | `<RequireAuth />`                                                | `ClientLayout` (onglets)                  |
+| Événements       | `/evenements/…` (planificateur : liste, nouveau, détail, modifier, ajouter, devis)                     | `<RequireAuth />`                                                | `EventsLayout` (navbar seule)             |
+| Prestataire      | `/pro/…` (tableau de bord, demandes, devis, messages, agenda, avis, profil, onboarding)                | `<RequireAuth role="provider" />` → sinon `/devenir-prestataire` | `ProLayout` (menu latéral)                |
+| Admin            | `/admin/…` (prestataires, signalements, utilisateurs)                                                  | `<RequireAuth role="admin" />` → sinon « Accès refusé »          | `AdminLayout` (menu latéral, sans pied)   |
 
 Toutes les adresses sont dans `src/app/routes.tsx`. Chaque page est une route `lazy` vers `src/features/<fonctionnalité>/pages/…`
 (le helper `soon()` des pages « Bientôt disponible » a été retiré au lot 9 : toutes les pages du MVP existent).
@@ -108,9 +110,39 @@ Pages publiques de contenu (P7) : `/comment-ca-marche`, `/faq`, `/cgu`, `/mentio
   `lib/homeCategories.ts` (les 8 catégories de l'accueil, source unique hero + mosaïque), `lib/categoryMosaic.ts`.
   Section « Deux façons d'utiliser Wenzee » : `UserTypesSection`, `UserTypeCard`, `UserTypeIllustration` ;
   `lib/userTypes.ts` (textes et liens des deux parcours).
-- `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil (fixe,
-  transparente sur le hero) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
-  client ↔ prestataire) dans les espaces. `AppHeader` n'existe plus.
+- `src/features/provider-profile/` (fiche prestataire, P5) : `ProviderProfilePage` assemble `ProfileCover` (photo plein
+  écran, navbar transparente via `stores/navbarOverlay.ts`) avec `ProviderIdentity` posée dessus, puis `ProfileTabs`
+  (Tabs Radix, état React `tab` ; liste dans `lib/profileTabs.ts`) : `AboutSection` (+ `AvailabilityCalendar`),
+  `OfferingList`, `Gallery`, `ReviewList` ; à droite `ContactPanel` (collant sur ordinateur). `PhotoLightbox` : la
+  visionneuse partagée. Fonctions d'affichage pures dans `lib/profileDisplay.ts`, icône par famille dans
+  `lib/categoryIcon.ts`.
+- `src/features/auth/` (connexion simulée, P8) : `AuthLayout` (écran partagé photo | formulaire, route parente des
+  3 pages) ; `LoginPage` (email + mot de passe via `useSignIn`, `SocialButtons` simulés, `DemoAccounts`),
+  `SignUpPage` (`useSignUp` puis `useVerifyOtp`), `ForgotPasswordPage` (`useForgotPassword` puis `useResetPassword`) ;
+  `AuthInput` / `PasswordInput` (champ à icône, œil), `PasswordRules` ; `lib/useCompleteSignIn.ts` (fin commune de
+  toute connexion, `useAuthLink` garde `?retour=`). Schémas des formulaires : `@afro/common` `utils/authForms.ts`.
+- `src/features/client-dashboard/` (tableau de bord client, en haut de `/espace/demandes`) : `ClientDashboardSummary`
+  (calcule les chiffres avec `useQuoteRequests`, `useBookings`, `useUnreadCount`), `WelcomeBanner`, `DashboardStats`.
+  Les onglets de l'espace client : `SpaceNav` variante `tabs` (icônes seules sur téléphone si un libellé ne
+  tient pas sur une ligne : `useLabelsFit`). Défilement entre les pages : `app/RootRoute.tsx`
+  (en haut à chaque nouveau chemin ; pas au chargement, pas sur « retour »).
+- `src/features/admin/` (back-office, A1 à A4) : `AdminLayout` (dans `app/layouts/`) = `Navbar appShell` +
+  `SpaceNav` variante `sidebar` (tiroir sous 1024 px) + `AdminNotifications`. Vue d'ensemble : `AdminPageHeader`,
+  `AdminStatsGrid`, `AdminPriorityTasks`, `AdminRecentActivity` (`useAdminActivity`), `AdminQuickActions`,
+  `AdminPanel` ; fonctions pures dans `lib/` (`priorityTasks`, `activityDisplay`, `initials`). Tableaux :
+  `AdminTable` / `AdminRow` / `AdminCell` (cartes sous 768 px), `StatusPill`, `AdminFeedback` ; `ReasonDialog`
+  pour les décisions à motif.
+- `src/features/events/` (planificateur, page « Événements ») : `EventsPage`, `EventFormPage` (création ET
+  modification, 3 étapes, `lib/eventDraft.ts`, `lib/eventSteps.ts`), `EventDetailsPage`, `AddEventProviderPage`
+  (recherche `useProviderSearch`), `RequestQuotesPage` ; `components/AddToEventButton` (fiche prestataire).
+  Affichage : `lib/eventDisplay.ts` (icônes et photos par type, tons des statuts, familles conseillées).
+- `src/components/Toaster.tsx` + `src/stores/toasts.ts` : les toasts de toute l'application (`toast({ title,
+description, action })`), montés une fois dans `RootRoute`. `src/components/ConfirmDialog.tsx` : confirmer une
+  action sensible (focus sur « Annuler »).
+- `src/components/layout/Navbar.tsx` : **la navbar de toutes les pages** (4 gabarits). `overlay` sur l'accueil et la fiche prestataire (fixe,
+  transparente sur la photo ; recherche compacte avec `withSearch`, accueil seulement) ; ailleurs collée avec fond brun. `spaceLabel` (badge d'espace) et `children` (bascule
+  client ↔ prestataire) dans les espaces. `appShell` (back-office) : sans liens du site ni animation au défilement,
+  avec `leading` (bouton du tiroir) et `accountLabel` (« Admin »). `AppHeader` n'existe plus.
 - `src/components/layout/SiteFooter.tsx` : **le pied de page de toutes les pages** (4 gabarits). Contenu dans
   `footerContent.ts` (liens, réseaux sociaux), `NewsletterForm.tsx`, `SocialIcon.tsx`.
 - `public/images/hero/` : photos du hero en WebP (versions 900 px pour les téléphones) ; `public/images/categories/` :

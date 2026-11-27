@@ -2,9 +2,11 @@ import type { Side } from '@afro/common';
 import type { RouteObject } from 'react-router';
 import { RequireAuth } from '@/features/auth/components/RequireAuth';
 import { AdminLayout } from './layouts/AdminLayout';
+import { EventsLayout } from './layouts/EventsLayout';
 import { ClientLayout } from './layouts/ClientLayout';
 import { ProLayout } from './layouts/ProLayout';
 import { PublicLayout } from './layouts/PublicLayout';
+import { RootRoute } from './RootRoute';
 
 /**
  * Les pages « demandes » et « messages », communes aux espaces client et pro :
@@ -47,7 +49,37 @@ export const routes: RouteObject[] = [
   {
     // Affiché pendant le tout premier chargement d'une page « lazy ».
     HydrateFallback: () => null,
+    // Défilement entre les pages : en haut pour une nouvelle page, gardé pour un filtre.
+    Component: RootRoute,
     children: [
+      {
+        // Connexion, inscription, mot de passe oublié : écran partagé photo | formulaire,
+        // sans navbar ni pied de page (le logo ramène à l'accueil).
+        lazy: async () => ({
+          Component: (await import('@/features/auth/components/AuthLayout')).AuthLayout,
+        }),
+        children: [
+          {
+            path: 'connexion',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/LoginPage')).LoginPage,
+            }),
+          },
+          {
+            path: 'inscription',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/SignUpPage')).SignUpPage,
+            }),
+          },
+          {
+            path: 'mot-de-passe-oublie',
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/ForgotPasswordPage'))
+                .ForgotPasswordPage,
+            }),
+          },
+        ],
+      },
       {
         element: <PublicLayout />,
         children: [
@@ -55,12 +87,6 @@ export const routes: RouteObject[] = [
             index: true,
             lazy: async () => ({
               Component: (await import('@/features/search/pages/HomePage')).HomePage,
-            }),
-          },
-          {
-            path: 'connexion',
-            lazy: async () => ({
-              Component: (await import('@/features/auth/pages/LoginPage')).LoginPage,
             }),
           },
           {
@@ -115,13 +141,7 @@ export const routes: RouteObject[] = [
             }),
           },
           {
-            // Liens de la navbar de l'accueil : pages « bientôt disponible » (hors MVP).
-            path: 'evenements',
-            lazy: async () => ({
-              Component: (await import('@/features/static/pages/ComingSoonPages')).EventsPage,
-            }),
-          },
-          {
+            // Lien de la navbar de l'accueil : page « bientôt disponible » (hors MVP).
             path: 'offres',
             lazy: async () => ({
               Component: (await import('@/features/static/pages/ComingSoonPages')).DealsPage,
@@ -168,6 +188,52 @@ export const routes: RouteObject[] = [
             lazy: async () => ({
               Component: (await import('./NotFoundPage')).NotFoundPage,
             }),
+          },
+        ],
+      },
+      {
+        // Planificateur d'événements (page « Événements » de la navbar) : il suffit d'être connecté.
+        // Gabarit à part : la navbar du site, sans la section « Espace client ».
+        path: 'evenements',
+        element: <RequireAuth />,
+        children: [
+          {
+            element: <EventsLayout />,
+            children: [
+              {
+                index: true,
+                lazy: async () => ({
+                  Component: (await import('@/features/events/pages/EventsPage')).EventsPage,
+                }),
+              },
+              ...['nouveau', ':eventId/modifier'].map((path) => ({
+                path,
+                lazy: async () => ({
+                  Component: (await import('@/features/events/pages/EventFormPage')).EventFormPage,
+                }),
+              })),
+              {
+                path: ':eventId',
+                lazy: async () => ({
+                  Component: (await import('@/features/events/pages/EventDetailsPage'))
+                    .EventDetailsPage,
+                }),
+              },
+              {
+                path: ':eventId/ajouter',
+                lazy: async () => ({
+                  Component: (await import('@/features/events/pages/AddEventProviderPage'))
+                    .AddEventProviderPage,
+                }),
+              },
+              {
+                path: ':eventId/devis',
+                lazy: async () => ({
+                  Component: (await import('@/features/events/pages/RequestQuotesPage'))
+                    .RequestQuotesPage,
+                }),
+              },
+            ],
           },
         ],
       },

@@ -31,7 +31,7 @@ export function BookingCard({ summary, side }: { summary: BookingSummary; side: 
     side === 'client' ? provider.displayName : `${client.firstName} ${client.lastNameInitial}`;
   const status = STATUS[booking.status] ?? STATUS.confirmed!;
   return (
-    <article className="relative flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-4 transition-shadow hover:shadow-card">
+    <article className="relative flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4 shadow-card transition-[border-color] duration-200 hover:border-primary/25 sm:px-6 sm:py-5">
       <div className="flex min-w-0 flex-col gap-1">
         <h3 className="font-sans text-base font-semibold">
           <Link

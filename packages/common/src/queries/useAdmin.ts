@@ -28,6 +28,15 @@ export function useAdminOverview() {
   return useQuery({ queryKey: queryKeys.admin.overview(), queryFn: () => api.getAdminOverview() });
 }
 
+/** A1 : l'activité récente (rechargée, comme le reste, après chaque décision d'admin). */
+export function useAdminActivity(limit = 5) {
+  const api = useApiClient();
+  return useQuery({
+    queryKey: queryKeys.admin.activity(limit),
+    queryFn: () => api.getAdminActivity({ limit }),
+  });
+}
+
 /** A2 : les profils en attente de validation. */
 export function useProvidersToReview() {
   const api = useApiClient();

@@ -47,3 +47,92 @@ test.describe('connexion de démo', () => {
     await expect(page.getByRole('link', { name: 'Se connecter', exact: true })).toBeVisible();
   });
 });
+
+test.describe('page de connexion (refonte du 27/11/2026)', () => {
+  test('écran partagé : photo sur toute la hauteur à gauche, formulaire à droite', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('/connexion');
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Bon retour sur Wenzee' }),
+    ).toBeVisible();
+    const photo = (await page.getByRole('complementary', { name: 'Wenzee' }).boundingBox())!;
+    const form = (await page
+      .getByRole('form', { name: 'Se connecter avec un e-mail' })
+      .boundingBox())!;
+    const viewport = page.viewportSize()!;
+
+    if (isMobile) {
+      // Téléphone : la photo en bandeau, le formulaire dessous, sur toute la largeur.
+      expect(photo.width).toBe(viewport.width);
+      expect(photo.height).toBeLessThan(viewport.height / 2);
+      expect(form.y).toBeGreaterThan(photo.y + photo.height);
+    } else {
+      expect(photo).toMatchObject({
+        x: 0,
+        y: 0,
+        width: viewport.width / 2,
+        height: viewport.height,
+      });
+      expect(form.x).toBeGreaterThan(viewport.width / 2);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+    await expect(page.getByRole('link', { name: 'Créer un compte' })).toBeVisible();
+  });
+
+  test('connexion par email et mot de passe (simulée)', async ({ page }) => {
+    await page.goto('/connexion?retour=%2Fespace%2Fmessages');
+    await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
+    await expect(page.getByText('Adresse email invalide')).toBeVisible();
+
+    await page.getByLabel('Adresse e-mail').fill('aissatou.ndiaye@example.com');
+    await page.getByLabel('Mot de passe', { exact: true }).fill('Faux2026');
+    await page.getByRole('button', { name: 'Afficher le mot de passe' }).click();
+    await expect(page.getByLabel('Mot de passe', { exact: true })).toHaveAttribute('type', 'text');
+    await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
+    await expect(page.getByRole('alert')).toHaveText('Email ou mot de passe incorrect.');
+
+    await page.getByLabel('Mot de passe', { exact: true }).fill('Wenzee2026');
+    await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
+    await expect(page).toHaveURL('/espace/messages');
+  });
+
+  test('« Créer un compte » : inscription complète avec le code de démo', async ({ page }) => {
+    await page.goto('/connexion');
+    await page.getByRole('link', { name: 'Créer un compte' }).click();
+    await expect(page).toHaveURL('/inscription');
+
+    await page.getByLabel('Prénom').fill('Fatou');
+    await page.getByLabel('Adresse e-mail').fill('fatou.e2e@example.com');
+    await page.getByLabel('Mot de passe', { exact: true }).fill('Bonjour2026');
+    await page.getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Créer mon compte' }).click();
+
+    await expect(page.getByRole('heading', { name: 'Vérifiez votre e-mail' })).toBeVisible();
+    await page.getByLabel('Code à 6 chiffres').fill('123456');
+    await page.getByRole('button', { name: 'Confirmer' }).click();
+    await expect(page).toHaveURL('/espace/demandes');
+  });
+});
+
+test('le menu du compte s’ouvre sans bloquer le défilement ni décaler la page', async ({
+  page,
+}) => {
+  await page.goto('/connexion');
+  await page.getByRole('button', { name: 'Se connecter : Aïssatou, cliente' }).click();
+  await expect(page).toHaveURL('/espace/demandes');
+  const avatar = page.getByRole('button', { name: 'Menu de Aïssatou' });
+  const before = (await avatar.boundingBox())!;
+
+  await avatar.click();
+  await expect(page.getByRole('menuitem', { name: 'Se déconnecter' })).toBeVisible();
+  // Un menu modal poserait `data-scroll-locked` (et retirerait la barre de défilement : la page bougeait).
+  await expect(page.locator('body')).not.toHaveAttribute('data-scroll-locked');
+  expect((await avatar.boundingBox())!.x).toBe(before.x);
+  // Le panneau s'ouvre sous la navbar, sans la chevaucher.
+  const navbarBottom = await page
+    .getByRole('banner')
+    .evaluate((el) => el.getBoundingClientRect().bottom);
+  expect((await page.getByRole('menu').boundingBox())!.y).toBeGreaterThanOrEqual(navbarBottom - 1);
+});

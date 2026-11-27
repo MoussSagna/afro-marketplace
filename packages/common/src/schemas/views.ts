@@ -1,13 +1,25 @@
 import { z } from 'zod';
 import { bookingSchema } from './booking';
 import { mediaSchema, offeringSchema } from './catalogue';
-import { idSchema, isoDateSchema, paginated } from './common';
+import { idSchema, isoDateSchema, isoDateTimeSchema, paginated } from './common';
 import { conversationSchema, messageSchema } from './messaging';
 import { providerCardSchema, providerProfileSchema, publicProviderProfileSchema } from './provider';
 import { quoteSchema } from './quote';
 import { quoteRequestSchema } from './quoteRequest';
 import { reviewSchema } from './review';
-import { moderationActionSchema, reportSchema } from './moderation';
+import {
+  eventCountsSchema,
+  eventProviderSchema,
+  eventProviderStatusSchema,
+  eventSchema,
+  eventStatusSchema,
+} from './event';
+import {
+  moderationActionSchema,
+  moderationActionTypeSchema,
+  reportReasonSchema,
+  reportSchema,
+} from './moderation';
 import { publicUserSchema, userSchema } from './user';
 
 /*
@@ -99,6 +111,36 @@ export const adminOverviewSchema = z.object({
   users: z.number().int().nonnegative(),
 });
 
+/**
+ * A1 : un événement de l'activité récente, lu dans les vraies tables (comptes, profils,
+ * signalements, journal de modération). Rien n'est inventé : pas de table « activité » à part.
+ */
+export const adminActivityItemSchema = z.object({
+  /** Unique dans la liste (« user-…:created », « mod-12 »…). */
+  id: z.string(),
+  type: z.enum([
+    /** Un compte client a été créé. */
+    'account_created',
+    /** Un profil prestataire a été créé (inscription prestataire). */
+    'provider_created',
+    /** Un profil a été envoyé en validation (il attend l'admin). */
+    'provider_submitted',
+    /** Un signalement a été fait. */
+    'report_created',
+    /** Une décision d'admin (journal de modération). */
+    'moderation',
+  ]),
+  at: isoDateTimeSchema,
+  /** Qui ou quoi est concerné : « Aïssatou N. », « Kompa Vibes Haïti », « Avis de Grace M. »… */
+  subject: z.string(),
+  /** Pour `moderation` : la décision prise. */
+  action: moderationActionTypeSchema.optional(),
+  /** Pour `report_created` : le motif. */
+  reason: reportReasonSchema.optional(),
+  /** La page d'admin à ouvrir pour en savoir plus, s'il y en a une. */
+  href: z.string().optional(),
+});
+
 /** A2 : la fiche d'un profil à valider, avec son propriétaire et l'historique de modération. */
 export const adminProviderDetailsSchema = myProviderDetailsSchema.extend({
   owner: userSchema,
@@ -118,4 +160,26 @@ export const adminReportSchema = reportSchema.extend({
     /** Le contenu a déjà été masqué ou supprimé. */
     hidden: z.boolean(),
   }),
+});
+
+// ------------------------------------------------------------ Événements (planificateur)
+
+/** « Mes événements » : un événement, son statut et ses compteurs, calculés. */
+export const eventSummarySchema = z.object({
+  event: eventSchema,
+  status: eventStatusSchema,
+  counts: eventCountsSchema,
+  /** Les prestataires de l'événement (« Ajouter à un événement » sait s'il y est déjà). */
+  providerIds: z.array(idSchema),
+});
+
+/** Le détail d'un événement : ses prestataires, chacun avec son statut calculé. */
+export const eventDetailsSchema = eventSummarySchema.extend({
+  providers: z.array(
+    z.object({
+      link: eventProviderSchema,
+      status: eventProviderStatusSchema,
+      provider: providerCardSchema,
+    }),
+  ),
 });

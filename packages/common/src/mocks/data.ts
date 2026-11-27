@@ -4,6 +4,8 @@ import {
   categorySchema,
   conversationSchema,
   culturalOriginSchema,
+  eventProviderSchema,
+  eventSchema,
   mediaSchema,
   messageSchema,
   moderationActionSchema,
@@ -46,6 +48,9 @@ export const mockDataSchema = z.object({
   credentials: z
     .array(z.object({ userId: z.string().min(1), email: z.string(), password: z.string() }))
     .default([]),
+  /** Planificateur d'événements (27/11/2026). `.default([])` : une ancienne sauvegarde reste lisible. */
+  events: z.array(eventSchema).default([]),
+  eventProviders: z.array(eventProviderSchema).default([]),
   /** Inscriptions en attente du code de vérification. */
   pendingSignUps: z
     .array(

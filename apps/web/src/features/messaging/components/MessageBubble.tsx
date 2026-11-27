@@ -16,16 +16,19 @@ export function MessageBubble({ message, isMine }: { message: Message; isMine: b
   return (
     <li
       className={cn(
-        'flex max-w-[85%] flex-col gap-1 sm:max-w-[70%]',
-        isMine ? 'self-end items-end' : 'self-start items-start',
+        // min-w-0 + max-w : la bulle suit son contenu, sans jamais dépasser 85 % du fil (70 % sur grand écran).
+        'flex max-w-[85%] min-w-0 flex-col gap-1 sm:max-w-[70%]',
+        isMine ? 'items-end self-end' : 'items-start self-start',
       )}
     >
       <div
         className={cn(
-          'rounded-2xl px-4 py-2 whitespace-pre-line',
+          // pre-wrap : garde les retours à la ligne du message ; overflow-wrap:anywhere coupe un mot
+          // ou une URL trop longs au lieu de les laisser sortir de la bulle.
+          'max-w-full rounded-2xl px-4 py-2.5 leading-relaxed whitespace-pre-wrap [overflow-wrap:anywhere] sm:px-5 sm:py-3',
           isMine
             ? 'rounded-br-sm bg-primary text-primary-foreground'
-            : 'rounded-bl-sm border bg-card',
+            : 'rounded-bl-sm bg-secondary text-secondary-foreground',
         )}
       >
         {message.body}
