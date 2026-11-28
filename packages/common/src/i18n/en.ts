@@ -23,7 +23,6 @@ export const en: Translations = {
     onQuote: 'On quote',
   },
   comingSoon: {
-    favorites: 'Find the providers you saved as favourites here.',
     events: 'Plan your events and the providers for each one.',
   },
   splash: {
@@ -112,6 +111,20 @@ export const en: Translations = {
   favorites: {
     add: 'Add {{name}} to favourites',
     remove: 'Remove {{name}} from favourites',
+    title: 'Favourites',
+    count_one: '{{count}} provider saved',
+    count_other: '{{count}} providers saved',
+    loading: 'Loading your favourites',
+    filters: 'Filter your favourites by category',
+    all: 'All',
+    chip: '{{name}} ({{count}})',
+    emptyTitle: 'No favourites yet',
+    emptyHint:
+      'Tap the heart on a provider in Search: you’ll find them here to request a quote later.',
+    explore: 'Explore providers',
+    quote: 'Quote',
+    quoteLabel: 'Request a quote from {{name}}',
+    addToEventLabel: 'Add {{name}} to an event',
   },
   search: {
     title: 'Search',

@@ -36,7 +36,6 @@ export const fr = {
     onQuote: 'Sur devis',
   },
   comingSoon: {
-    favorites: 'Retrouve ici les prestataires que tu as gardés en favori.',
     events: 'Organise tes événements et les prestataires de chacun.',
   },
   splash: {
@@ -128,6 +127,20 @@ export const fr = {
   favorites: {
     add: 'Ajouter {{name}} aux favoris',
     remove: 'Retirer {{name}} des favoris',
+    title: 'Favoris',
+    count_one: '{{count}} prestataire gardé',
+    count_other: '{{count}} prestataires gardés',
+    loading: 'Chargement de tes favoris',
+    filters: 'Filtrer tes favoris par catégorie',
+    all: 'Tous',
+    chip: '{{name}} ({{count}})',
+    emptyTitle: 'Pas encore de coup de cœur',
+    emptyHint:
+      'Touche le cœur d’un prestataire dans la Recherche : tu le retrouveras ici pour demander un devis plus tard.',
+    explore: 'Explorer les prestataires',
+    quote: 'Devis',
+    quoteLabel: 'Demander un devis à {{name}}',
+    addToEventLabel: 'Ajouter {{name}} à un événement',
   },
   search: {
     title: 'Recherche',

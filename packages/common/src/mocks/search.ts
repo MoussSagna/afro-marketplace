@@ -42,11 +42,13 @@ export function searchProviders(
       )
     : undefined;
 
+  const onlyIds = filters.ids ? new Set(filters.ids) : undefined;
   const query = filters.q ? normalizeText(filters.q) : '';
   const city = filters.city ? normalizeText(filters.city) : '';
 
   const matches = (provider: ProviderProfile): boolean => {
     if (!isProviderPublic(provider)) return false;
+    if (onlyIds && !onlyIds.has(provider.id)) return false;
     // Catégorie inconnue → aucun résultat (plutôt que tout montrer).
     if (filters.category && !categoryIds) return false;
     if (categoryIds && !provider.categoryIds.some((id) => categoryIds.has(id))) return false;

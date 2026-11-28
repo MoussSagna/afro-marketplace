@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { amountInCentsSchema, isoDateSchema, slugSchema } from './common';
+import { amountInCentsSchema, idSchema, isoDateSchema, slugSchema } from './common';
 
 export const providerSortSchema = z.enum(['relevance', 'rating', 'price_asc', 'price_desc']);
 
@@ -10,6 +10,8 @@ export const providerSortSchema = z.enum(['relevance', 'rating', 'price_asc', 'p
 export const providerSearchFiltersSchema = z.object({
   /** Texte libre : nom, ville… */
   q: z.string().trim().max(100).optional(),
+  /** Seulement ces prestataires (ex. l'écran Favoris de l'app, qui ne garde que des identifiants). */
+  ids: z.array(idSchema).max(50).optional(),
   /** Slug d'une catégorie principale ou d'une sous-catégorie. */
   category: slugSchema.optional(),
   /** Slugs d'origines culturelles (on garde le prestataire s'il en a au moins une). */

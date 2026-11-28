@@ -28,6 +28,18 @@ function interpolate(value: number, input: number[], output: number[]) {
   return output[output.length - 1]!;
 }
 
+/**
+ * Les animations d'entrée / de sortie / de déplacement (`entering={FadeIn.duration(200)}`) :
+ * des objets dont chaque méthode renvoie l'objet lui-même. Sous Jest, elles ne font rien.
+ */
+function layoutAnimation(): Record<string, unknown> {
+  const builder: Record<string, unknown> = {};
+  for (const method of ['duration', 'delay', 'springify', 'damping', 'easing', 'reduceMotion']) {
+    builder[method] = () => builder;
+  }
+  return builder;
+}
+
 const identity = <T,>(value: T) => value;
 const easing = () => identity;
 
@@ -49,6 +61,12 @@ export const reanimatedMock = {
     out: easing,
     inOut: easing,
   },
+  FadeIn: layoutAnimation(),
+  FadeInDown: layoutAnimation(),
+  FadeOut: layoutAnimation(),
+  ZoomOut: layoutAnimation(),
+  LinearTransition: layoutAnimation(),
+  ReduceMotion: { System: 'system', Always: 'always', Never: 'never' },
   useSharedValue: <T,>(value: T) => ({ value }),
   useAnimatedStyle: (factory: () => object) => factory(),
   useDerivedValue: <T,>(factory: () => T) => ({ value: factory() }),

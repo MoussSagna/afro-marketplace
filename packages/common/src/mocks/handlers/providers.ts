@@ -18,6 +18,7 @@ export function filtersFromSearchParams(params: URLSearchParams) {
     q: text('q'),
     category: text('category'),
     origins: text('origins')?.split(','),
+    ids: text('ids')?.split(',').filter(Boolean),
     city: text('city'),
     date: text('date'),
     budgetMax: number('budgetMax'),

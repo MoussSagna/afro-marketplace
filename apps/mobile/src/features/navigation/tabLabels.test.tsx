@@ -75,13 +75,13 @@ describe('Libellés et icônes de la barre d’onglets', () => {
     }
   });
 
-  it('Favoris : un écran vide pour l’instant ; l’onglet Événements s’ouvre', async () => {
+  it('Favoris : l’écran des favoris (vide ici) ; l’onglet Événements s’ouvre', async () => {
     await renderRouter(
       { ...routes, '(tabs)/favoris': FavoritesTab },
       { initialUrl: '/favoris', wrapper: testProviders(demoApi().api) },
     );
     expect(screen.getByRole('header', { name: 'Favoris' })).toBeOnTheScreen();
-    expect(screen.getByText('Bientôt disponible')).toBeOnTheScreen();
+    expect(screen.getByText('Pas encore de coup de cœur')).toBeOnTheScreen();
     expect(screen.getByRole('tab', { name: 'Favoris' })).toBeSelected();
 
     await fireEvent.press(screen.getByRole('tab', { name: 'Événements' }));
