@@ -1,12 +1,12 @@
 # Avancement
 
-Dernière mise à jour : 28/11/2026 (app mobile : header dynamique des fiches prestataires ; app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
 
 ## App mobile : header dynamique des fiches prestataires (28/11/2026)
 
 Demande de Mouss : un header en surimpression sur la fiche prestataire, où **le nom remonte dans la barre** quand
-on fait défiler, sans jamais bouger Retour ni Favori. `apps/mobile` uniquement, **non commité** (validation de Mouss
-d'abord). Détail : [`docs/mobile-dynamic-header-validation.md`](../docs/mobile-dynamic-header-validation.md).
+on fait défiler, sans jamais bouger Retour ni Favori. `apps/mobile` uniquement. Branche `feat/mobile-dynamic-header`, PR #78 vers `dev`.
+Détail : [`docs/mobile-dynamic-header-validation.md`](../docs/mobile-dynamic-header-validation.md).
 
 - **Réutilisable** : `src/components/dynamic-header/` — `useDynamicHeader()` (toute la logique de scroll :
   Reanimated, mesure du titre avec `onLayout` + `measureLayout`, Safe Area) et `DynamicVendorHeader` (titre,
@@ -17,6 +17,31 @@ d'abord). Détail : [`docs/mobile-dynamic-header-validation.md`](../docs/mobile-
   header (photos, compteur et visionneuse inchangés). **Nouveau** : le cœur Favori sur la fiche (même store que les cartes).
 - Tests : `dynamicHeader.test.tsx` (12), 3 parcours dans `profile.test.tsx` ; 362 tests mobiles au vert.
   **Validation visuelle** : voir le document (simulateur).
+
+## App mobile : écran « Ta recherche », pied de page et invités (28/11/2026)
+
+Demande de Mouss (même branche que les filtres, `feat/mobile-filtres`, non commitée). Détail :
+[`docs/search-screen-ui-fixes.md`](../docs/search-screen-ui-fixes.md).
+
+- **Plus de bande beige sous le pied** : le conteneur ne prend que la marge sûre du haut ; le pied blanc porte celle
+  du bas (`useSafeAreaInsets`) et descend jusqu'au bord de l'écran. Clavier géré (`KeyboardAvoidingView`).
+- **Invités** : un champ numérique (`Input`, icône personnes, clavier numérique) remplace les boutons − / + ;
+  chiffres seulement, vide permis pendant la saisie, 1 à 1 000.
+
+## App mobile : filtres de recherche en bottom sheet (28/11/2026)
+
+Demande de Mouss : refondre les filtres façon Airbnb avec `@gorhom/bottom-sheet`, sans toucher à la pilule de
+recherche ni au moteur. Branche `feat/mobile-filtres` (depuis `dev`), **non commitée**. Détail et écarts :
+[`docs/mobile-search-filters-validation.md`](../docs/mobile-search-filters-validation.md).
+
+- **Bouton Filtres seulement pendant une recherche** (état `results` de l'écran) : masqué en découverte et au retour.
+  Seul changement de `SearchPill` : l'option `showFilters`.
+- **Composant réutilisable `components/AppBottomSheet`** (demande de Mouss) ; **`SearchFiltersSheet`** dessus :
+  liste des filtres, sous-écrans dans le même panneau (catégorie, lieu, date, budget, note, tri, origines),
+  vérifiés, brouillon appliqué seulement par « Afficher N prestataires ». L'ancien `FiltersSheet` plein écran est retiré.
+- Dépendances : `@gorhom/bottom-sheet` 5.2.14, `react-native-gesture-handler` ~3.3.0 (SDK 58) ; providers à la racine.
+- Écarts dus au moteur (une catégorie, budget maximum, une date, pas de rayon) : documentés, n° 33.
+- Tests : `filters.test.tsx` (8), `AppBottomSheet.test.tsx` (2). **Captures à faire** (Expo Go du simulateur).
 
 ## App mobile : planificateur d'événements (27/11/2026)
 

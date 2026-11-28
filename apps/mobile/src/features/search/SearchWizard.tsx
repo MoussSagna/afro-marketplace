@@ -1,13 +1,21 @@
-import { useCategories, useProviderSearch, type ProviderSearchFilters } from '@afro/common';
+import { useCategories, type ProviderSearchFilters } from '@afro/common';
 import { Image } from 'expo-image';
-import { MapPin, Minus, Plus, Search, X } from 'lucide-react-native';
-import { useMemo, useState, type ReactNode } from 'react';
+import { MapPin, Search, Users, X } from 'lucide-react-native';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutAnimation, Pressable, ScrollView, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  KeyboardAvoidingView,
+  LayoutAnimation,
+  Platform,
+  Pressable,
+  ScrollView,
+  TextInput,
+  View,
+} from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { FullScreenModal } from '@/components/FullScreenModal';
-import { Button, Heading, Text } from '@/components/ui';
+import { Button, Heading, Input, Text } from '@/components/ui';
 import { useCategoryName } from '@/i18n/useCategoryName';
 import { useLanguage } from '@/i18n/useLanguage';
 import { mainCategories } from '@/lib/categories';
@@ -16,6 +24,7 @@ import { useThemeColors } from '@/theme/useTheme';
 import { Calendar } from '@/components/Calendar';
 import { CATEGORY_ICONS } from './categoryIcons';
 import { CATEGORY_PHOTOS } from './categoryPhotos';
+import { useCityCounts } from './useCityCounts';
 import { shortDay } from '@/lib/dates';
 
 /** Ce que remplit la recherche plein écran (les autres filtres sont dans le panneau Filtres). */
@@ -27,7 +36,6 @@ type Step = 'what' | 'where' | 'when' | 'guests';
 const STEPS: Step[] = ['what', 'where', 'when', 'guests'];
 
 /** On compte les invités de 10 en 10, jusqu'à 1 000. */
-export const GUESTS_STEP = 10;
 const GUESTS_MAX = 1000;
 
 type SearchWizardProps = {
@@ -55,6 +63,7 @@ function WizardBody({ filters, onClose, onSubmit }: Omit<SearchWizardProps, 'vis
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const colors = useThemeColors();
+  const insets = useSafeAreaInsets();
   const categories = useCategories();
   const categoryName = useCategoryName();
   const [draft, setDraft] = useState<SearchDraft>(() => ({
@@ -89,165 +98,180 @@ function WizardBody({ filters, onClose, onSubmit }: Omit<SearchWizardProps, 'vis
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-muted" edges={['top', 'bottom']}>
-      <View className="h-14 flex-row items-center justify-center">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('search.close')}
-          onPress={onClose}
-          className="absolute left-4 h-10 w-10 items-center justify-center rounded-full border border-border bg-card"
+    // Le haut seulement : la zone sûre du BAS est dans le fond blanc du pied (pas de bande beige dessous).
+    <SafeAreaView className="flex-1 bg-muted" edges={['top']}>
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View className="h-14 flex-row items-center justify-center">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('search.close')}
+            onPress={onClose}
+            className="absolute left-4 h-10 w-10 items-center justify-center rounded-full border border-border bg-card"
+          >
+            <X size={18} color={colors.foreground} />
+          </Pressable>
+          <Text weight="bold">{t('search.wizardTitle')}</Text>
+        </View>
+
+        <ScrollView
+          contentContainerClassName="gap-2.5 px-3 pb-6"
+          keyboardShouldPersistTaps="handled"
         >
-          <X size={18} color={colors.foreground} />
-        </Pressable>
-        <Text weight="bold">{t('search.wizardTitle')}</Text>
-      </View>
-
-      <ScrollView contentContainerClassName="gap-2.5 px-3 pb-6" keyboardShouldPersistTaps="handled">
-        {STEPS.map((name) =>
-          name === step ? (
-            <StepCard key={name}>
-              {name === 'what' ? (
-                <>
-                  <Heading level={2}>{t('search.whatQuestion')}</Heading>
-                  <SearchField
-                    label={t('search.whatQuestion')}
-                    placeholder={t('search.whatPlaceholder')}
-                    value={draft.q ?? ''}
-                    onChangeText={(q) => change({ q: q || undefined })}
-                    onSubmitEditing={nextStep}
-                    icon={<Search size={18} color={colors.foreground} />}
+          {STEPS.map((name) =>
+            name === step ? (
+              <StepCard key={name}>
+                {name === 'what' ? (
+                  <>
+                    <Heading level={2}>{t('search.whatQuestion')}</Heading>
+                    <SearchField
+                      label={t('search.whatQuestion')}
+                      placeholder={t('search.whatPlaceholder')}
+                      value={draft.q ?? ''}
+                      onChangeText={(q) => change({ q: q || undefined })}
+                      onSubmitEditing={nextStep}
+                      icon={<Search size={18} color={colors.foreground} />}
+                    />
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerClassName="mt-4 gap-3"
+                    >
+                      {mainCategories(categories.data ?? []).map((c) => {
+                        const on = c.slug === draft.category;
+                        return (
+                          <Pressable
+                            key={c.id}
+                            accessibilityRole="button"
+                            accessibilityState={{ selected: on }}
+                            accessibilityLabel={categoryName(c)}
+                            onPress={() => {
+                              change({ category: on ? undefined : c.slug });
+                              if (!on) nextStep();
+                            }}
+                            className="w-[104px] gap-1.5"
+                          >
+                            {CATEGORY_PHOTOS[c.slug] ? (
+                              <Image
+                                source={CATEGORY_PHOTOS[c.slug]}
+                                style={{ width: 104, height: 104, borderRadius: 14 }}
+                                className={cn(
+                                  'border',
+                                  on ? 'border-2 border-foreground' : 'border-border',
+                                )}
+                              />
+                            ) : (
+                              // Pas encore de photo : l'icône de la catégorie sur un fond doux.
+                              <View
+                                testID={`category-icon-${c.slug}`}
+                                style={{ width: 104, height: 104, borderRadius: 14 }}
+                                className={cn(
+                                  'items-center justify-center border bg-muted',
+                                  on ? 'border-2 border-foreground' : 'border-border',
+                                )}
+                              >
+                                {CATEGORY_ICONS[c.slug] ? (
+                                  <SvgXml
+                                    xml={CATEGORY_ICONS[c.slug]!}
+                                    width={48}
+                                    height={48}
+                                    color={colors.primary}
+                                  />
+                                ) : null}
+                              </View>
+                            )}
+                            <Text size="xs" weight="semibold">
+                              {categoryName(c)}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </ScrollView>
+                  </>
+                ) : null}
+                {name === 'where' ? (
+                  <WhereStep
+                    value={draft.city}
+                    onChange={(city) => change({ city })}
+                    onDone={nextStep}
                   />
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerClassName="mt-4 gap-3"
-                  >
-                    {mainCategories(categories.data ?? []).map((c) => {
-                      const on = c.slug === draft.category;
-                      return (
-                        <Pressable
-                          key={c.id}
-                          accessibilityRole="button"
-                          accessibilityState={{ selected: on }}
-                          accessibilityLabel={categoryName(c)}
-                          onPress={() => {
-                            change({ category: on ? undefined : c.slug });
-                            if (!on) nextStep();
-                          }}
-                          className="w-[104px] gap-1.5"
-                        >
-                          {CATEGORY_PHOTOS[c.slug] ? (
-                            <Image
-                              source={CATEGORY_PHOTOS[c.slug]}
-                              style={{ width: 104, height: 104, borderRadius: 14 }}
-                              className={cn(
-                                'border',
-                                on ? 'border-2 border-foreground' : 'border-border',
-                              )}
-                            />
-                          ) : (
-                            // Pas encore de photo : l'icône de la catégorie sur un fond doux.
-                            <View
-                              testID={`category-icon-${c.slug}`}
-                              style={{ width: 104, height: 104, borderRadius: 14 }}
-                              className={cn(
-                                'items-center justify-center border bg-muted',
-                                on ? 'border-2 border-foreground' : 'border-border',
-                              )}
-                            >
-                              {CATEGORY_ICONS[c.slug] ? (
-                                <SvgXml
-                                  xml={CATEGORY_ICONS[c.slug]!}
-                                  width={48}
-                                  height={48}
-                                  color={colors.primary}
-                                />
-                              ) : null}
-                            </View>
-                          )}
-                          <Text size="xs" weight="semibold">
-                            {categoryName(c)}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </ScrollView>
-                </>
-              ) : null}
-              {name === 'where' ? (
-                <WhereStep
-                  value={draft.city}
-                  onChange={(city) => change({ city })}
-                  onDone={nextStep}
-                />
-              ) : null}
-              {name === 'when' ? (
-                <>
-                  <Heading level={2}>{t('search.whenQuestion')}</Heading>
-                  <Text size="sm" tone="muted">
-                    {t('search.whenHint')}
-                  </Text>
-                  <Calendar value={draft.date} onChange={(date) => change({ date })} />
-                </>
-              ) : null}
-              {name === 'guests' ? (
-                <GuestsStep value={draft.guests} onChange={(guests) => change({ guests })} />
-              ) : null}
-            </StepCard>
-          ) : (
-            <Pressable
-              key={name}
-              accessibilityRole="button"
-              accessibilityLabel={`${labels[name]} : ${values[name]}`}
-              onPress={() => open(name)}
-              className="h-[58px] flex-row items-center justify-between rounded-3xl bg-card px-5 active:opacity-80"
-              style={{ boxShadow: '0 4px 18px rgba(43, 26, 18, 0.10)' }}
-            >
-              <Text size="sm" weight="medium" tone="muted">
-                {labels[name]}
-              </Text>
-              <Text size="sm" weight="semibold">
-                {values[name]}
-              </Text>
-            </Pressable>
-          ),
-        )}
-      </ScrollView>
+                ) : null}
+                {name === 'when' ? (
+                  <>
+                    <Heading level={2}>{t('search.whenQuestion')}</Heading>
+                    <Text size="sm" tone="muted">
+                      {t('search.whenHint')}
+                    </Text>
+                    <Calendar value={draft.date} onChange={(date) => change({ date })} />
+                  </>
+                ) : null}
+                {name === 'guests' ? (
+                  <GuestsStep value={draft.guests} onChange={(guests) => change({ guests })} />
+                ) : null}
+              </StepCard>
+            ) : (
+              <Pressable
+                key={name}
+                accessibilityRole="button"
+                accessibilityLabel={`${labels[name]} : ${values[name]}`}
+                onPress={() => open(name)}
+                className="h-[58px] flex-row items-center justify-between rounded-3xl bg-card px-5 active:opacity-80"
+                style={{ boxShadow: '0 4px 18px rgba(43, 26, 18, 0.10)' }}
+              >
+                <Text size="sm" weight="medium" tone="muted">
+                  {labels[name]}
+                </Text>
+                <Text size="sm" weight="semibold">
+                  {values[name]}
+                </Text>
+              </Pressable>
+            ),
+          )}
+        </ScrollView>
 
-      <View className="flex-row items-center justify-between border-t border-border bg-card px-5 pb-2 pt-3.5">
-        {step === 'when' ? (
-          <>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => {
-                change({ date: undefined });
-                nextStep();
-              }}
-            >
-              <Text weight="semibold" className="underline">
-                {t('search.skip')}
-              </Text>
-            </Pressable>
-            <Button variant="primary" onPress={nextStep}>
-              {t('search.next')}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Pressable accessibilityRole="button" onPress={() => setDraft({})}>
-              <Text weight="semibold" className="underline">
-                {t('search.clearAll')}
-              </Text>
-            </Pressable>
-            <Button
-              icon={<Search size={18} color={colors['cta-foreground']} />}
-              onPress={() => onSubmit(draft)}
-            >
-              {t('search.submit')}
-            </Button>
-          </>
-        )}
-      </View>
+        {/* Le pied : fond blanc jusqu'au dernier pixel de l'écran ; les boutons restent au-dessus de
+          l'indicateur d'accueil (iPhone) ou de la barre système (Android) grâce aux marges sûres. */}
+        <View
+          testID="search-footer"
+          className="flex-row items-center justify-between border-t border-border bg-card px-5 pt-3.5"
+          style={{ paddingBottom: Math.max(insets.bottom, 8) }}
+        >
+          {step === 'when' ? (
+            <>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  change({ date: undefined });
+                  nextStep();
+                }}
+              >
+                <Text weight="semibold" className="underline">
+                  {t('search.skip')}
+                </Text>
+              </Pressable>
+              <Button variant="primary" onPress={nextStep}>
+                {t('search.next')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Pressable accessibilityRole="button" onPress={() => setDraft({})}>
+                <Text weight="semibold" className="underline">
+                  {t('search.clearAll')}
+                </Text>
+              </Pressable>
+              <Button
+                icon={<Search size={18} color={colors['cta-foreground']} />}
+                onPress={() => onSubmit(draft)}
+              >
+                {t('search.submit')}
+              </Button>
+            </>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -300,19 +324,7 @@ function WhereStep({
 }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  // Tous les prestataires (une page de 50) : de quoi lister les villes. Le vrai serveur aura sa liste.
-  const all = useProviderSearch({ pageSize: 50 });
-  const cities = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const p of all.data?.items ?? []) {
-      if (p.city) counts.set(p.city, (counts.get(p.city) ?? 0) + 1);
-    }
-    const typed = (value ?? '').trim().toLowerCase();
-    return [...counts]
-      .filter(([city]) => !typed || city.toLowerCase().includes(typed))
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .slice(0, 5);
-  }, [all.data, value]);
+  const cities = useCityCounts(value);
 
   return (
     <>
@@ -356,7 +368,11 @@ function WhereStep({
   );
 }
 
-/** « Combien d'invités ? » : un compteur, de 10 en 10. */
+/**
+ * « Combien d'invités ? » : un vrai champ numérique (clavier du téléphone), plus de boutons − / +.
+ * Seulement des chiffres ; le champ peut rester vide pendant la saisie (= pas de nombre d'invités) ;
+ * la valeur envoyée à la recherche est un entier de 1 à 1 000 (0 ou vide : sans filtre d'invités).
+ */
 function GuestsStep({
   value,
   onChange,
@@ -366,80 +382,31 @@ function GuestsStep({
 }) {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const guests = value ?? 0;
+  // Le texte du champ (il peut être vide le temps de taper) ; le nombre part dans le brouillon.
+  const [text, setText] = useState(value ? String(value) : '');
+  const type = (input: string) => {
+    const digits = input.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+    const guests = Math.min(Number(digits || 0), GUESTS_MAX);
+    setText(digits === '' ? '' : String(guests));
+    onChange(guests > 0 ? guests : undefined);
+  };
   return (
     <>
       <Heading level={2}>{t('search.guestsQuestion')}</Heading>
-      <View className="mt-4 flex-row items-center justify-between gap-3">
-        <View className="flex-1">
-          <Text size="sm" weight="semibold">
-            {t('search.guestsLabel')}
-          </Text>
-          <Text size="xs" tone="muted">
-            {t('search.guestsHint')}
-          </Text>
-        </View>
-        <View
-          className="flex-row items-center gap-3.5"
-          accessible
-          accessibilityRole="adjustable"
-          accessibilityLabel={t('search.guestsLabel')}
-          accessibilityValue={{ text: guests ? t('search.guests', { count: guests }) : '0' }}
-          accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
-          onAccessibilityAction={(event) =>
-            onChange(event.nativeEvent.actionName === 'increment' ? more(guests) : less(guests))
-          }
-        >
-          <RoundButton
-            label={t('search.fewerGuests')}
-            disabled={guests === 0}
-            onPress={() => onChange(less(guests))}
-          >
-            <Minus size={18} color={colors.foreground} />
-          </RoundButton>
-          <Text weight="bold" className="min-w-[36px] text-center">
-            {String(guests)}
-          </Text>
-          <RoundButton
-            label={t('search.moreGuests')}
-            disabled={guests >= GUESTS_MAX}
-            onPress={() => onChange(more(guests))}
-          >
-            <Plus size={18} color={colors.foreground} />
-          </RoundButton>
-        </View>
+      <View className="mt-4">
+        <Input
+          label={t('search.guestsLabel')}
+          hint={t('search.guestsHint')}
+          value={text}
+          onChangeText={type}
+          placeholder="0"
+          keyboardType="number-pad"
+          inputMode="numeric"
+          returnKeyType="done"
+          maxLength={4}
+          icon={<Users size={20} color={colors['muted-foreground']} />}
+        />
       </View>
     </>
-  );
-}
-
-const more = (guests: number) => Math.min(guests + GUESTS_STEP, GUESTS_MAX);
-const less = (guests: number) => (guests - GUESTS_STEP > 0 ? guests - GUESTS_STEP : undefined);
-
-function RoundButton({
-  label,
-  disabled,
-  onPress,
-  children,
-}: {
-  label: string;
-  disabled?: boolean;
-  onPress(): void;
-  children: ReactNode;
-}) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ disabled }}
-      disabled={disabled}
-      onPress={onPress}
-      className={cn(
-        'h-9 w-9 items-center justify-center rounded-full border border-input',
-        disabled && 'opacity-40',
-      )}
-    >
-      {children}
-    </Pressable>
   );
 }

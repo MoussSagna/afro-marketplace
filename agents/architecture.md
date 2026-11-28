@@ -183,11 +183,14 @@ apps/mobile/
                        EventDetailScreen, AddProviderScreen, RequestQuotesScreen, AddToEventButton (fiche),
                        eventDisplay (icônes, photos, statuts), EventChrome (en-tête, barre d'actions)
   src/components/      ConfirmModal (confirmation centrée), Toaster + src/stores/toasts.ts (toasts avec action)
+  src/components/AppBottomSheet.tsx Le panneau du bas réutilisable (@gorhom/bottom-sheet : fond, poignée, glissement,
+                       en-tête, défilement, pied fixe ; ouvert par une ref). Providers dans app/_layout.tsx
   src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
                        « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil,
                        puis les rangées façon Airbnb : homeSections + ProviderRow + ProviderMiniCard, et HowItWorks) ;
                        « results » = CategoryBar + SearchResultCard. Commun : SearchPill, SearchWizard (Quoi/Où/Quand/
                        Invités), FiltersSheet + BudgetSlider, useSearchFilters (filtres ↔ adresse, `vue=resultats`)
+                       Filtres : SearchFiltersSheet (+ FilterViews, filterDraft), bouton seulement en mode résultats
   src/features/favorites/ FavoriteButton (le cœur des cartes) ; favoris dans src/stores/favorites.ts (téléphone)
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
