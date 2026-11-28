@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 /**
  * Section « Pourquoi Wenzee », sous « Comment ça marche » : la mission en une photo et quelques lignes.
  * Photo à gauche (cadre ocre décalé en arrière-plan), texte à droite ; empilés sur téléphone et tablette.
- * Même grammaire que les sections au-dessus : surtitre à tiret, titre Playfair, mot accent souligné.
+ * Même grammaire que les sections au-dessus : surtitre à tiret, titre `font-display`, mot accent souligné.
  * Fond ivoire : il alterne avec le sable de « Comment ça marche ».
  */
 export function WhyWenzeeSection() {

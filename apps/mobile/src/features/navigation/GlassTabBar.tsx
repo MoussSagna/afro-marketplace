@@ -312,13 +312,13 @@ const styles = StyleSheet.create({
     // Un peu plus large que l'onglet (56) : « Événements » tient sur une ligne, sans changer la barre.
     width: 64,
     marginTop: 2,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: 'Nunito_500Medium',
     fontSize: 10,
     lineHeight: 12,
     textAlign: 'center',
   },
-  labelActive: { fontFamily: 'Inter_700Bold' },
-  badgeText: { fontFamily: 'Inter_700Bold', fontSize: 10, color: INK },
+  labelActive: { fontFamily: 'Nunito_700Bold' },
+  badgeText: { fontFamily: 'Nunito_700Bold', fontSize: 10, color: INK },
   ball: { position: 'absolute', left: 0, top: 0, width: BALL_SIZE, height: BALL_SIZE },
   ballButton: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });

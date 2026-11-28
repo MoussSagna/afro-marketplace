@@ -114,8 +114,8 @@ describe('Preset NativeWind (packages/config/tailwind/preset.cjs)', () => {
 
   it('déclare les polices chargées par expo-font', () => {
     const fonts = resolveConfig(tailwindConfig).theme.fontFamily as Record<string, string[]>;
-    expect(fonts.sans).toEqual(['Inter_400Regular']);
-    expect(fonts.display).toEqual(['PlayfairDisplay_700Bold']);
+    expect(fonts.sans).toEqual(['Nunito_400Regular']);
+    expect(fonts.display).toEqual(['Nunito_700Bold']);
   });
 
   it('reprend les rayons de la maquette (10 px champs, 16 px cartes)', () => {

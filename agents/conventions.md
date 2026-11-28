@@ -80,7 +80,8 @@
 
 - N'utilise que les couleurs du thème : `primary` (terre intense, actions et liens), `foreground`, `muted`/`muted-foreground` (texte secondaire #6B4A36), `secondary` (sable), `accent` (soleil, **fond uniquement**, avec `accent-foreground`), `ochre` (étoiles, filets, focus, **jamais en texte**), `clay` (décor seulement), `success`/`warning`/`destructive` et leurs variantes `-muted`, `sidebar-*` pour le menu pro.
 - Survols et éléments actifs de menu : `bg-muted`, pas `bg-accent` (le soleil est réservé aux pastilles).
-- Titres h1–h3 en Playfair Display (`font-display`, appliqué par défaut), le reste en Inter.
+- Tout le site est en **Nunito** (la police du logo, choix de Mouss du 27/11/2026). Titres h1–h3 avec `font-display`
+  (appliqué par défaut, aussi en Nunito) : la hiérarchie se fait par la taille et la graisse, pas par une 2e police.
 - Rayons : `rounded-md` (10 px) boutons et champs, `rounded-xl` (16 px) cartes, `rounded-full` pastilles.
 - Logo : toujours le composant `Logo` (`components/Logo.tsx`), jamais un nom écrit à la main ; sur photo ou fond sombre, `variant="light"`.
 - En-tête et pied de page : une seule navbar (`components/layout/Navbar.tsx`) et un seul pied de page
@@ -90,7 +91,7 @@
 - Piège des marges responsives : un raccourci `lg:p-8` réécrit les 4 marges et efface un `md:pl-…` plus spécifique ;
   préférer des côtés explicites, ou une plage (`lg:max-[1399px]:pl-8`). Les points de rupture arbitraires
   (`min-[1400px]:`) ne passent pas toujours après `sm:`/`lg:` dans la feuille générée.
-- **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices :
+- **Mobile** : mêmes noms de classes que le site grâce au preset (`bg-cta`, `text-muted-foreground`…). Polices (toutes en Nunito) :
   `font-sans`, `font-sans-medium`, `font-sans-semibold`, `font-sans-bold`, `font-display`. Composants de base dans
   `apps/mobile/src/components/ui/` ; on n'ajoute pas de couleur en dur (sauf les icônes lucide, qui prennent un code hexa).
 - Images de la maquette (catégories, états vides, bannière) : `/mnt/project-files/maquette/assets/`.

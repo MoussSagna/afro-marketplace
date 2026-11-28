@@ -9,7 +9,7 @@ interface AdminPageHeaderProps {
   actions?: ReactNode;
 }
 
-/** Le titre d'une page du back-office (Playfair), avec son sous-titre. */
+/** Le titre d'une page du back-office (`font-display`), avec son sous-titre. */
 export function AdminPageHeader({ id, title, description, actions }: AdminPageHeaderProps) {
   return (
     <header className="flex flex-wrap items-end justify-between gap-4">
