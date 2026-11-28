@@ -1,6 +1,29 @@
 # Avancement
 
-Dernière mise à jour : 27/11/2026 (typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : planificateur d'événements (27/11/2026)
+
+Demande de Mouss : reprendre le planificateur du site dans l'app (onglet Événements), d'après une maquette mobile,
+**sans nouvelle logique métier**. Branche `feat/mobile-evenements` (depuis `dev`), **non commitée** (validation de
+Mouss d'abord). Détail, correspondances et écarts : [`docs/mobile-event-planner-validation.md`](../docs/mobile-event-planner-validation.md).
+
+- **Écrans** (`features/events/`, mêmes adresses que le site) : Mes événements
+  (cartes, état vide), Créer / Modifier (même formulaire en 3 étapes), Détail (couverture, Modifier / Supprimer,
+  prestataires par famille, retenir, retirer, « Complète ton événement »), Ajouter un prestataire, Demander les
+  devis. Fiche prestataire : « Ajouter à un événement » (panneau du bas, « Nouvel événement »).
+- « Mes événements » est l'onglet (`app/(tabs)/evenements.tsx`, barre d'onglets visible). **Créer, consulter, modifier,
+  ajouter un prestataire et demander les devis s'ouvrent par-dessus les onglets** (`app/evenements/…`), **sans la barre**
+  (demande de Mouss, 28/11/2026) ; « retour » ou une suppression ramènent à la liste. Pas de header global.
+- **Rien de dupliqué** : hooks, règles et API de `@afro/common` ; brouillon / validation du formulaire et familles
+  conseillées **déplacés du site vers `@afro/common`** (`utils/eventForm.ts`, `utils/eventPlanning.ts`), le site les
+  ré-exporte sans changement.
+- Nouveaux composants transverses : `ConfirmModal`, `Toaster` + `stores/toasts.ts` (« Annuler » après une
+  suppression). Textes : section `events` (fr / en).
+- Au passage : le test « activité récente » du back-office dépendait de l'heure (« hier » ou « il y a 22 h » selon
+  l'heure du test) ; il accepte maintenant les deux.
+- Tests : `events.test.tsx` (14), `eventForm.test.ts` (6). **Validation visuelle à faire** (Expo Go du simulateur
+  en 57, projet en SDK 58).
 
 ## Site et app : typo arrondie Nunito (27/11/2026)
 

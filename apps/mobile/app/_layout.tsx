@@ -4,6 +4,7 @@ import '@/lib/polyfills';
 import '@/i18n';
 import '../global.css';
 import { Stack } from 'expo-router';
+import { Toaster } from '@/components/Toaster';
 import { SplashGate } from '@/features/splash/SplashGate';
 import { useAppReady } from '@/features/splash/useAppReady';
 import { AppProviders } from '@/providers/AppProviders';
@@ -27,6 +28,8 @@ export default function RootLayout() {
             contentStyle: { backgroundColor: colors.background },
           }}
         />
+        {/* Les toasts de toute l'app (« Événement supprimé », « Prestataire ajouté »…). */}
+        <Toaster />
       </AppProviders>
     </SplashGate>
   );
