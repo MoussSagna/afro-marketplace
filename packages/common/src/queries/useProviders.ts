@@ -3,13 +3,20 @@ import type { ProviderSearchFilters } from '../types';
 import { useApiClient } from './ApiClientContext';
 import { queryKeys } from './queryKeys';
 
-/** Recherche de prestataires (P2, P4). Les anciens résultats restent affichés pendant le chargement des nouveaux. */
-export function useProviderSearch(filters: ProviderSearchFilters) {
+/**
+ * Recherche de prestataires (P2, P4). Les anciens résultats restent affichés pendant le chargement des nouveaux.
+ * `enabled: false` pour ne rien charger (ex. l'écran Favoris sans favori).
+ */
+export function useProviderSearch(
+  filters: ProviderSearchFilters,
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   const api = useApiClient();
   return useQuery({
     queryKey: queryKeys.providers.search(filters),
     queryFn: () => api.searchProviders(filters),
     placeholderData: keepPreviousData,
+    enabled,
   });
 }
 

@@ -10,6 +10,15 @@ describe('cn', () => {
   });
 });
 
+describe('cn : tailles de titre du thème', () => {
+  it('garde la couleur avec text-h1/h2/h3 (titres lisibles en thème sombre)', () => {
+    expect(cn('font-display text-foreground text-h1')).toBe('font-display text-foreground text-h1');
+    expect(cn('text-h2 text-primary')).toBe('text-h2 text-primary');
+    // Deux tailles de titre : la dernière gagne.
+    expect(cn('text-h1', 'text-h3')).toBe('text-h3');
+  });
+});
+
 describe('formatRating', () => {
   it('écrit la note avec une virgule et une décimale', () => {
     expect(formatRating(4.9)).toBe('4,9');

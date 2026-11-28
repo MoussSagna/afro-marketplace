@@ -26,6 +26,15 @@ describe('API des prestataires (mockée)', () => {
     ]);
   });
 
+  it('filtre par identifiants passés dans l’adresse (« ?ids=a,b »)', async () => {
+    const ids = mockDb.data.providers
+      .filter((p) => p.status === 'published')
+      .slice(0, 2)
+      .map((p) => p.id);
+    const result = await api.searchProviders({ ids, pageSize: 50 });
+    expect(result.items.map((p) => p.id).sort()).toEqual([...ids].sort());
+  });
+
   it('refuse des filtres invalides', async () => {
     await expect(api.searchProviders({ date: 'demain' })).rejects.toMatchObject({
       status: 400,

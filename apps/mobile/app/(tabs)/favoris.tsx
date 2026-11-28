@@ -1,8 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import { ComingSoonScreen } from '@/features/coming-soon/ComingSoonScreen';
+import { FavoritesScreen } from '@/features/favorites/FavoritesScreen';
 
-/** L'onglet Favoris : vide pour l'instant (voir agents/questions-ouvertes.md n° 30). */
-export default function FavoritesTab() {
-  const { t } = useTranslation();
-  return <ComingSoonScreen title={t('tabs.favorites')} description={t('comingSoon.favorites')} />;
-}
+/** L'onglet Favoris : les prestataires gardés d'un cœur (voir features/favorites/). */
+export default FavoritesScreen;

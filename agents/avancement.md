@@ -1,6 +1,24 @@
 # Avancement
 
-Dernière mise à jour : 28/11/2026 (app mobile : « Ajouter à un événement » en bottom sheet + audit ; app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : écran Favoris ; app mobile : « Ajouter à un événement » en bottom sheet + audit ; app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : écran Favoris (28/11/2026)
+
+Demande de Mouss : remplacer l'onglet Favoris vide par un vrai écran. Branche `feat/mobile-favoris` (depuis `dev`),
+PR vers `dev`. Détail : [`docs/mobile-favoris-validation.md`](../docs/mobile-favoris-validation.md) ; choix à valider :
+questions-ouvertes n° 34.
+
+- `features/favorites/` : `FavoritesScreen` (grille 2 colonnes de `ProviderMiniCard`, cœur compris ; compteur ;
+  pastilles par catégorie principale ; « Devis » et « Ajouter à un événement » sous chaque carte ; état vide qui
+  ramène à la Recherche), `useFavoriteProviders` (données), `favoritesView` (logique pure : ordre des cœurs,
+  catégories, filtre).
+- Même état que la Recherche et la fiche : le store `stores/favorites.ts` (AsyncStorage), inchangé.
+- `@afro/common` : filtre `ids` dans la recherche (schéma, mock MSW, handler) ; `useProviderSearch(filters, { enabled })`.
+- Animations Reanimated (fondu à l'entrée et à la sortie, les autres cartes glissent) ; Moti non installé.
+- Correction transverse : `cn` connaît les tailles `text-h1/h2/h3` → les titres gardent la couleur du thème
+  (ils étaient noirs en sombre dans toute l'app).
+- Tests : `favoritesView.test.ts` (6), `favorites.test.tsx` (9, dont la synchro avec la Recherche), `cn.test.ts` (+1),
+  Vitest `@afro/common` (+2 pour `ids`). Captures clair / sombre (liste + vide) sur iPhone 17e.
 
 ## App mobile : « Ajouter à un événement » en bottom sheet, et audit des panneaux (28/11/2026)
 

@@ -186,6 +186,8 @@ apps/mobile/
   src/components/AppBottomSheet.tsx Le panneau du bas réutilisable (@gorhom/bottom-sheet : fond, poignée, glissement,
                        en-tête dans la poignée, sous-titre, défilement, pied fixe, `fitContent`, retour Android ;
                        ouvert par une ref). Providers dans app/_layout.tsx. Le pattern de toute l'app
+  src/features/favorites/ Onglet Favoris : FavoritesScreen (grille de ProviderMiniCard, filtres par catégorie, actions),
+                       useFavoriteProviders + favoritesView ; FavoriteButton (le cœur des cartes). État : stores/favorites.ts
   src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
                        « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil,
                        puis les rangées façon Airbnb : homeSections + ProviderRow + ProviderMiniCard, et HowItWorks) ;

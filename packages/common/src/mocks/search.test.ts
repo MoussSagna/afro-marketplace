@@ -18,6 +18,18 @@ describe('searchProviders', () => {
     expect(slugs()).not.toContain('atelier-kente'); // en pause
   });
 
+  it('ne garde que les identifiants demandés (écran Favoris), et jamais un profil non publié', () => {
+    const published = data.providers.filter((p) => p.status === 'published');
+    const hidden = data.providers.find((p) => p.status !== 'published')!;
+    const ids = [published[2]!.id, published[0]!.id, hidden.id, 'prov-inconnu'];
+    expect(
+      all({ ids })
+        .items.map((p) => p.id)
+        .sort(),
+    ).toEqual([published[0]!.id, published[2]!.id].sort());
+    expect(all({ ids: [] }).items).toEqual([]);
+  });
+
   it('filtre par sous-catégorie', () => {
     expect(slugs({ category: 'dj' }).sort()).toEqual(['afro-beats-by-kofi', 'dj-makossa-vibes']);
   });
