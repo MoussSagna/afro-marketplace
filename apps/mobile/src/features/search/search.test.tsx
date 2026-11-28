@@ -107,13 +107,11 @@ describe('Recherche (lot M7)', () => {
     ).toBeOnTheScreen();
     await press('Suivant');
 
-    // Étape 4 : Combien d'invités ? De 10 en 10.
+    // Étape 4 : Combien d'invités ? Un champ numérique (plus de boutons − / +).
     expect(screen.getByRole('header', { name: 'Combien d’invités ?' })).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Moins d’invités' })).toBeDisabled();
-    for (let i = 0; i < 8; i++) await press('Plus d’invités');
-    expect(screen.getByRole('adjustable', { name: 'Invités' })).toHaveAccessibilityValue({
-      text: '80 invités',
-    });
+    expect(screen.queryByRole('button', { name: 'Plus d’invités' })).toBeNull();
+    await fireEvent.changeText(screen.getByLabelText('Nombre d’invités'), '80');
+    expect(screen.getByLabelText('Nombre d’invités')).toHaveProp('value', '80');
 
     await press('Rechercher');
     expect(screen).toHaveSearchParams({
@@ -155,21 +153,26 @@ describe('Recherche (lot M7)', () => {
     await screen.findByText(plural(totals[0]!));
     await press('Filtres');
 
+    // Le panneau (bottom sheet) : une ligne par filtre, le nombre de résultats en bas.
     expect(
-      await screen.findByRole('button', { name: `Voir ${plural(totals[0]!)}` }),
+      await screen.findByRole('button', { name: `Afficher ${plural(totals[0]!)}` }),
     ).toBeOnTheScreen();
-    await press('Mieux notés');
+    await press('Trier par, Pertinence');
+    await fireEvent.press(screen.getByRole('radio', { name: 'Mieux notés' }));
+    await press('Valider');
     await fireEvent(
-      screen.getByRole('switch', { name: 'Profils vérifiés seulement' }),
+      screen.getByRole('switch', { name: 'Vérifiés uniquement' }),
       'valueChange',
       true,
     );
+    await press('Budget, Toutes les tranches');
     const slider = screen.getByRole('adjustable', { name: 'Budget maximum' });
     expect(slider).toHaveAccessibilityValue({ text: 'Sans limite' });
     await fireEvent(slider, 'accessibilityAction', { nativeEvent: { actionName: 'decrement' } });
     expect(slider).toHaveAccessibilityValue({ text: /^4\s900\s€$/ });
+    await press('Valider');
 
-    const show = await screen.findByRole('button', { name: `Voir ${plural(totals[1]!)}` });
+    const show = await screen.findByRole('button', { name: `Afficher ${plural(totals[1]!)}` });
     await fireEvent.press(show);
     expect(screen).toHaveSearchParams({
       tri: 'note',
@@ -214,5 +217,56 @@ describe('Dates de la recherche', () => {
   it('écrit les jours dans la langue de l’app', () => {
     expect(longDay('2026-12-14', 'fr-FR')).toBe('lundi 14 décembre 2026');
     expect(longDay('2026-12-14', 'en-GB')).toBe('Monday, 14 December 2026');
+  });
+});
+
+describe('Ta recherche : champ des invités et pied de page', () => {
+  /** Ouvre la recherche plein écran et va jusqu'à l'étape des invités. */
+  async function openGuests() {
+    await open('/?vue=resultats');
+    await fireEvent.press(await screen.findByRole('search', { name: /^Que cherches-tu \?/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /^Invités : / }));
+    return screen.getByLabelText('Nombre d’invités');
+  }
+
+  it('n’accepte que des chiffres, garde le champ vide pendant la saisie, plafonne à 1 000', async () => {
+    const input = await openGuests();
+    expect(input).toHaveProp('keyboardType', 'number-pad');
+    expect(input).toHaveProp('placeholder', '0');
+    expect(screen.getByText('Indique le nombre d’invités (estimation)')).toBeOnTheScreen();
+
+    await fireEvent.changeText(input, '12a-3');
+    expect(input).toHaveProp('value', '123');
+    await fireEvent.changeText(input, '');
+    expect(input).toHaveProp('value', '');
+    await fireEvent.changeText(input, '007');
+    expect(input).toHaveProp('value', '7');
+    await fireEvent.changeText(input, '9999');
+    expect(input).toHaveProp('value', '1000');
+  });
+
+  it('la valeur est gardée d’une étape à l’autre, puis envoyée à la recherche', async () => {
+    const input = await openGuests();
+    await fireEvent.changeText(input, '150');
+    await fireEvent.press(screen.getByRole('button', { name: /^Où : / }));
+    expect(screen.getByRole('button', { name: 'Invités : 150 invités' })).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Rechercher' }));
+    expect(screen).toHaveSearchParams({ invites: '150', vue: 'resultats' });
+  });
+
+  it('0 ou vide : pas de filtre d’invités', async () => {
+    const input = await openGuests();
+    await fireEvent.changeText(input, '0');
+    await fireEvent.press(screen.getByRole('button', { name: 'Rechercher' }));
+    expect(screen).toHaveSearchParams({});
+  });
+
+  it('le pied de page blanc descend jusqu’en bas (marge sûre dans son fond)', async () => {
+    await openGuests();
+    const footer = screen.getByTestId('search-footer');
+    expect(footer.props.className).toContain('bg-card');
+    expect(footer).toHaveStyle({ paddingBottom: 8 });
+    expect(screen.getByRole('button', { name: 'Tout effacer' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: /Rechercher/ })).toBeOnTheScreen();
   });
 });

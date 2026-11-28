@@ -3,7 +3,9 @@ import '@/lib/polyfills';
 // Puis les textes de l'app, en français ou en anglais selon le téléphone.
 import '@/i18n';
 import '../global.css';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Toaster } from '@/components/Toaster';
 import { SplashGate } from '@/features/splash/SplashGate';
 import { useAppReady } from '@/features/splash/useAppReady';
@@ -20,17 +22,23 @@ export default function RootLayout() {
   const ready = useAppReady();
   const colors = useThemeColors();
   return (
-    <SplashGate ready={ready}>
-      <AppProviders>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.background },
-          }}
-        />
-        {/* Les toasts de toute l'app (« Événement supprimé », « Prestataire ajouté »…). */}
-        <Toaster />
-      </AppProviders>
-    </SplashGate>
+    // Les gestes (glisser un panneau du bas…) : GestureHandlerRootView, tout autour de l'app.
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SplashGate ready={ready}>
+        <AppProviders>
+          {/* Les panneaux du bas (@gorhom/bottom-sheet) : à l'intérieur des providers (données, thème). */}
+          <BottomSheetModalProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.background },
+              }}
+            />
+            {/* Les toasts de toute l'app (« Événement supprimé », « Prestataire ajouté »…). */}
+            <Toaster />
+          </BottomSheetModalProvider>
+        </AppProviders>
+      </SplashGate>
+    </GestureHandlerRootView>
   );
 }

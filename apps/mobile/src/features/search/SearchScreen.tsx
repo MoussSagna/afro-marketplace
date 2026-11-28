@@ -1,7 +1,7 @@
 import { useCategories, useInfiniteProviderSearch } from '@afro/common';
 import { useNavigation } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, Easing, FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,7 +15,7 @@ import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
 import { CategoryBar } from './CategoryBar';
 import { countPanelFilters } from './countPanelFilters';
-import { FiltersSheet } from './FiltersSheet';
+import { SearchFiltersSheet, type SearchFiltersSheetRef } from './SearchFiltersSheet';
 import { SearchHome } from './SearchHome';
 import { SearchPill } from './SearchPill';
 import { SearchResultCard } from './SearchResultCard';
@@ -41,7 +41,7 @@ export function SearchScreen() {
   const navigation = useNavigation();
   const { filters, mode, update, replace, showAll, clearFilters, reset } = useSearchFilters();
   const [wizardOpen, setWizardOpen] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const filtersSheet = useRef<SearchFiltersSheetRef>(null);
   const [pillHeight, setPillHeight] = useState(PILL_SPACE);
 
   // Toucher l'onglet Recherche quand on y est déjà : retour à l'état initial.
@@ -111,9 +111,11 @@ export function SearchScreen() {
           filters={filters}
           activeFilters={countPanelFilters(filters)}
           canClear={mode === 'results'}
+          // Le bouton Filtres n'apparaît que pendant une recherche (état « résultats »), pas en découverte.
+          showFilters={mode === 'results'}
           onOpen={() => setWizardOpen(true)}
           onClear={reset}
-          onOpenFilters={() => setFiltersOpen(true)}
+          onOpenFilters={() => filtersSheet.current?.present()}
         />
       </View>
 
@@ -127,15 +129,8 @@ export function SearchScreen() {
           setWizardOpen(false);
         }}
       />
-      <FiltersSheet
-        visible={filtersOpen}
-        filters={filters}
-        onClose={() => setFiltersOpen(false)}
-        onApply={(draft) => {
-          update(draft);
-          setFiltersOpen(false);
-        }}
-      />
+      {/* Les filtres (bottom sheet) : appliqués à la recherche en cours seulement à la validation. */}
+      <SearchFiltersSheet ref={filtersSheet} filters={filters} onApply={update} />
     </View>
   );
 }

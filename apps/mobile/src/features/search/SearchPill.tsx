@@ -12,6 +12,8 @@ type SearchPillProps = {
   activeFilters: number;
   /** Montrer le bouton qui efface la recherche (par défaut : dès qu'un critère est choisi). */
   canClear?: boolean;
+  /** Montrer le bouton Filtres : seulement pendant une recherche (pas en découverte). Par défaut : oui. */
+  showFilters?: boolean;
   onOpen(): void;
   onClear(): void;
   onOpenFilters(): void;
@@ -26,6 +28,7 @@ export function SearchPill({
   filters,
   activeFilters,
   canClear,
+  showFilters = true,
   onOpen,
   onClear,
   onOpenFilters,
@@ -65,25 +68,27 @@ export function SearchPill({
           {summary.hint}
         </Text>
       </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={
-          activeFilters > 0
-            ? t('search.filtersActive', { count: activeFilters })
-            : t('search.filters')
-        }
-        onPress={onOpenFilters}
-        className="h-11 w-11 items-center justify-center rounded-full border border-input bg-card active:opacity-70"
-      >
-        <SlidersHorizontal size={18} color={colors.foreground} />
-        {activeFilters > 0 ? (
-          <View className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full border-2 border-card bg-primary px-1">
-            <Text size="caption" weight="bold" tone="inverse">
-              {String(activeFilters)}
-            </Text>
-          </View>
-        ) : null}
-      </Pressable>
+      {showFilters ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={
+            activeFilters > 0
+              ? t('search.filtersActive', { count: activeFilters })
+              : t('search.filters')
+          }
+          onPress={onOpenFilters}
+          className="h-11 w-11 items-center justify-center rounded-full border border-input bg-card active:opacity-70"
+        >
+          <SlidersHorizontal size={18} color={colors.foreground} />
+          {activeFilters > 0 ? (
+            <View className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full border-2 border-card bg-primary px-1">
+              <Text size="caption" weight="bold" tone="inverse">
+                {String(activeFilters)}
+              </Text>
+            </View>
+          ) : null}
+        </Pressable>
+      ) : null}
     </View>
   );
 }
