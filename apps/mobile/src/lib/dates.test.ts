@@ -1,4 +1,11 @@
-import { messageTime, monthGrid, monthRange, monthYear, shortDate } from './dates';
+import {
+  conversationTime,
+  messageTime,
+  monthGrid,
+  monthRange,
+  monthYear,
+  shortDate,
+} from './dates';
 
 describe('dates des calendriers', () => {
   it('donne le premier et le dernier jour d’un mois', () => {
@@ -24,5 +31,20 @@ describe('dates des calendriers', () => {
     expect(messageTime(before, 'fr-FR', now)).toBe('3 mars');
     expect(shortDate('2026-12-06', 'fr-FR')).toBe('6 déc.');
     expect(shortDate('2026-12-06', 'en-GB')).toBe('6 Dec');
+  });
+
+  it('écrit la date d’une conversation : l’heure, « Hier », puis la date', () => {
+    const now = new Date(2026, 10, 28, 9, 0);
+    const today = new Date(2026, 10, 28, 8, 12).toISOString();
+    const yesterday = new Date(2026, 10, 27, 23, 50).toISOString();
+    const older = new Date(2026, 10, 26, 10, 0).toISOString();
+    expect(conversationTime(today, 'fr-FR', 'Hier', now)).toBe('08:12');
+    expect(conversationTime(yesterday, 'fr-FR', 'Hier', now)).toBe('Hier');
+    expect(conversationTime(older, 'fr-FR', 'Hier', now)).toBe('26 nov.');
+    // Le 1er du mois : la veille est le dernier jour du mois précédent.
+    const first = new Date(2026, 11, 1, 9, 0);
+    expect(
+      conversationTime(new Date(2026, 10, 30, 20, 0).toISOString(), 'en-GB', 'Yesterday', first),
+    ).toBe('Yesterday');
   });
 });

@@ -198,7 +198,10 @@ apps/mobile/
   src/features/provider-profile/ Profil prestataire (M8) : ProviderProfileScreen, ProfileGallery (+ visionneuse),
                        onglets (ProfileTabs), ReportSheet, profileText (prix d'une formule, invités, annulation…)
   src/features/messaging/ Messagerie (M10) : ConversationsScreen, ConversationScreen (fil + devis), MessageBubble,
-                       MessageComposer, QuoteCard, requestStatus (badge d'une demande)
+                       MessageComposer, QuoteCard, requestStatus (badge d'une demande) ; liste refondue (28/11) :
+                       useConversationList (conversations + demandes + catégories), conversationList (pastilles,
+                       recherche, compteurs, sans écran), list/ (MessagesHeader, MessagesFilters, ConversationItem,
+                       ConversationSkeleton, MessagesEmptyState)
   src/features/requests/ Mes demandes (M10) : RequestsScreen (3 onglets), RequestDetailScreen (annuler, poser une question)
   src/features/bookings/ Devis et réservations (M11) : QuoteActions (accepter / refuser + panneau du bas), BookingPanel
                        (ma réservation, annulation), BookingsScreen (/reservations), bookingStatus
