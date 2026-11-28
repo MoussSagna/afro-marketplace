@@ -33,6 +33,18 @@ export function shortDay(iso: string, locale: string): string {
   }).format(noonUtc(iso));
 }
 
+/** « sam. 10 févr. 2027 » / « Wed 10 Feb 2027 » : la date d'un événement (planificateur). */
+export function eventDay(iso: string, locale: string): string {
+  const text = new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(noonUtc(iso));
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 /** « samedi 14 décembre 2026 » : ce que lit VoiceOver sur un jour du calendrier. */
 export function longDay(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, {

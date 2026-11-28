@@ -104,7 +104,8 @@ describe('Vue d’ensemble (A1)', () => {
     expect(rows).toHaveLength(3);
     expect(rows[0]).toHaveTextContent('Nouveau signalement');
     expect(rows[0]).toHaveTextContent('Profil Le Mafé Truck');
-    expect(rows[0]).toHaveTextContent('hier');
+    // Le signalement de démo date d'« hier » à heure fixe : selon l'heure du test, moins ou plus de 24 h.
+    expect(rows[0]).toHaveTextContent(/hier|il y a \d+\s*h/);
     expect(within(rows[0]!).getByRole('link')).toHaveAttribute(
       'href',
       expect.stringMatching(/^\/admin\/signalements#rep-/),

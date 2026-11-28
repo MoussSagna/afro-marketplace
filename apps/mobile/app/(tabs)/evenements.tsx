@@ -1,8 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { ComingSoonScreen } from '@/features/coming-soon/ComingSoonScreen';
+import { SignInRequired } from '@/features/auth/SignInRequired';
+import { EventsListScreen } from '@/features/events/EventsListScreen';
 
-/** L'onglet Événements : vide pour l'instant (voir agents/questions-ouvertes.md n° 30). */
+/**
+ * L'onglet Événements : « Mes événements », avec la barre d'onglets. Créer, consulter, modifier un
+ * événement s'ouvre PAR-DESSUS les onglets (app/evenements/…), sans la barre.
+ */
 export default function EventsTab() {
   const { t } = useTranslation();
-  return <ComingSoonScreen title={t('tabs.events')} description={t('comingSoon.events')} />;
+  return (
+    <SignInRequired title={t('tabs.events')} reason={t('events.signIn')}>
+      <EventsListScreen />
+    </SignInRequired>
+  );
 }

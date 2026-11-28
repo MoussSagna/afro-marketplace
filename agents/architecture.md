@@ -21,15 +21,15 @@ dans du code de production, seulement dans `apps/web/src/mocks` et les tests).
 
 ## `packages/common/src`
 
-| Dossier    | Rôle                                                                                                    | À savoir                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `schemas/` | Schémas Zod : entités, formulaires (`…InputSchema`), vues renvoyées par l'API (`views.ts`)              | **Source de vérité.** Un fichier par bloc du modèle                                                             |
-| `types/`   | Types déduits des schémas (`z.infer`, `z.input` pour les formulaires)                                   | Ne jamais écrire un type à la main s'il peut être déduit                                                        |
-| `rules/`   | Règles métier en fonctions pures                                                                        | Voir [`regles-metier.md`](regles-metier.md). Pas d'accès réseau, pas de `Date.now()` : la date est un paramètre |
-| `api/`     | Interface `ApiClient` (toutes les opérations du MVP) + `createHttpApiClient`                            | Chaque réponse est validée par Zod. Erreurs : `ApiError { status, code, message }`                              |
-| `queries/` | Hooks TanStack Query + `queryKeys`                                                                      | Un hook par opération, ajoutés lot par lot                                                                      |
-| `mocks/`   | Seed, base en mémoire, handlers MSW                                                                     | Voir ci-dessous                                                                                                 |
-| `utils/`   | `formatPrice`, outils de dates, formulaires partagés site + app (`quoteForm`, `profileForms`, `money`…) | Les messages d'erreur des formulaires sont des constantes, traduites via `errorKeyOf`                           |
+| Dossier    | Rôle                                                                                                                                  | À savoir                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `schemas/` | Schémas Zod : entités, formulaires (`…InputSchema`), vues renvoyées par l'API (`views.ts`)                                            | **Source de vérité.** Un fichier par bloc du modèle                                                             |
+| `types/`   | Types déduits des schémas (`z.infer`, `z.input` pour les formulaires)                                                                 | Ne jamais écrire un type à la main s'il peut être déduit                                                        |
+| `rules/`   | Règles métier en fonctions pures                                                                                                      | Voir [`regles-metier.md`](regles-metier.md). Pas d'accès réseau, pas de `Date.now()` : la date est un paramètre |
+| `api/`     | Interface `ApiClient` (toutes les opérations du MVP) + `createHttpApiClient`                                                          | Chaque réponse est validée par Zod. Erreurs : `ApiError { status, code, message }`                              |
+| `queries/` | Hooks TanStack Query + `queryKeys`                                                                                                    | Un hook par opération, ajoutés lot par lot                                                                      |
+| `mocks/`   | Seed, base en mémoire, handlers MSW                                                                                                   | Voir ci-dessous                                                                                                 |
+| `utils/`   | `formatPrice`, outils de dates, formulaires partagés site + app (`quoteForm`, `profileForms`, `eventForm`, `eventPlanning`, `money`…) | Les messages d'erreur des formulaires sont des constantes, traduites via `errorKeyOf`                           |
 
 ### Le chemin d'une donnée
 
@@ -176,6 +176,13 @@ apps/mobile/
   src/lib/polyfills/   Ce qui manque à Hermes (URL, crypto.randomUUID, EventTarget… pour MSW)
   src/providers/       AppProviders : QueryClient (TanStack Query) + ApiClient
   src/features/splash/ Démarrage : useAppReady (polices + données), SplashGate, AnimatedSplash (Reanimated)
+  app/(tabs)/evenements.tsx L'onglet Événements : « Mes événements » (avec la barre d'onglets)
+  app/evenements/      Les écrans d'un événement, PAR-DESSUS les onglets (sans la barre) : nouveau, [eventId]/index,
+                       modifier, ajouter, devis ; mêmes adresses que le site ; connexion exigée (_layout)
+  src/features/events/ Planificateur (repris du site) : EventsListScreen, EventFormScreen (+ EventStepper),
+                       EventDetailScreen, AddProviderScreen, RequestQuotesScreen, AddToEventButton (fiche),
+                       eventDisplay (icônes, photos, statuts), EventChrome (en-tête, barre d'actions)
+  src/components/      ConfirmModal (confirmation centrée), Toaster + src/stores/toasts.ts (toasts avec action)
   src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
                        « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil,
                        puis les rangées façon Airbnb : homeSections + ProviderRow + ProviderMiniCard, et HowItWorks) ;

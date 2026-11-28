@@ -1,5 +1,4 @@
 import { act, fireEvent } from '@testing-library/react-native';
-import EventsTab from '../../../app/(tabs)/evenements';
 import FavoritesTab from '../../../app/(tabs)/favoris';
 import { Tabs } from 'expo-router';
 import { renderRouter, screen } from 'expo-router/testing-library';
@@ -76,9 +75,9 @@ describe('Libellés et icônes de la barre d’onglets', () => {
     }
   });
 
-  it('Favoris et Événements : des écrans vides pour l’instant', async () => {
+  it('Favoris : un écran vide pour l’instant ; l’onglet Événements s’ouvre', async () => {
     await renderRouter(
-      { ...routes, '(tabs)/favoris': FavoritesTab, '(tabs)/evenements': EventsTab },
+      { ...routes, '(tabs)/favoris': FavoritesTab },
       { initialUrl: '/favoris', wrapper: testProviders(demoApi().api) },
     );
     expect(screen.getByRole('header', { name: 'Favoris' })).toBeOnTheScreen();

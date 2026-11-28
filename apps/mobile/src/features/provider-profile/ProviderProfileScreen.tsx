@@ -14,6 +14,7 @@ import { cn } from '@/lib/cn';
 import { useSessionStore } from '@/stores/session';
 import { useThemeColors } from '@/theme/useTheme';
 import { useAuthFlowStore } from '../auth/authFlowStore';
+import { AddToEventButton } from '../events/AddToEventButton';
 import { ProfileGallery } from './ProfileGallery';
 import { AvailabilityTab, InfoTab, OfferingsTab, ReviewsTab } from './ProfileTabs';
 import { ReportSheet } from './ReportSheet';
@@ -143,6 +144,15 @@ function ProfileContent({
             <Text size="sm" tone="muted">
               {`· ${profile.city} · ${t('profile.travel', { km: profile.travelRadiusKm })}`}
             </Text>
+          </View>
+
+          <View className="mt-4">
+            <AddToEventButton
+              providerId={profile.id}
+              providerName={profile.displayName}
+              profilePath={pathname}
+              onSignIn={signInFirst}
+            />
           </View>
 
           <View
