@@ -1,5 +1,4 @@
-import { useRouter } from 'expo-router';
-import { ChevronLeft, X } from 'lucide-react-native';
+import { X } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,13 +9,12 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FullScreenModal } from '@/components/FullScreenModal';
 import { Photo, Text } from '@/components/ui';
 
 /** La hauteur de la galerie en haut du profil (maquette P5). */
 export const GALLERY_HEIGHT = 300;
-const INK = '#2B1A12';
 
 type ProfileGalleryProps = {
   /** Les adresses des photos, la couverture d'abord. */
@@ -31,14 +29,12 @@ function pageOf(event: NativeSyntheticEvent<NativeScrollEvent>, width: number) {
 
 /**
  * La galerie du profil (maquette P5) : les photos défilent de côté, une par page,
- * avec le compteur « 1 / 8 photos » et le bouton Retour par-dessus.
+ * avec le compteur « 1 / 8 photos » par-dessus. Retour et Favori sont dans le header de la fiche (DynamicVendorHeader).
  * Toucher une photo l'ouvre en grand (PhotoViewer).
  */
 export function ProfileGallery({ photos, name }: ProfileGalleryProps) {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
   const [index, setIndex] = useState(0);
   const [viewerAt, setViewerAt] = useState<number | null>(null);
   const count = Math.max(photos.length, 1);
@@ -67,15 +63,6 @@ export function ProfileGallery({ photos, name }: ProfileGalleryProps) {
         <Photo className="h-full w-full" />
       )}
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('common.back')}
-        onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
-        className="absolute left-4 h-11 w-11 items-center justify-center rounded-full active:opacity-70"
-        style={{ top: insets.top + 8, backgroundColor: 'rgba(253, 247, 240, 0.92)' }}
-      >
-        <ChevronLeft size={22} color={INK} />
-      </Pressable>
       <View
         className="absolute bottom-8 right-3.5 rounded-full px-2.5 py-1"
         style={{ backgroundColor: 'rgba(43, 26, 18, 0.7)' }}

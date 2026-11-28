@@ -3,14 +3,17 @@ import { useLocalSearchParams, usePathname, useRouter } from 'expo-router';
 import { BadgeCheck, CheckCircle2 } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import notFoundImage from '../../../assets/images/aucun-resultat.webp';
 import { WenzeeLoader } from '@/components/brand/WenzeeLoader';
+import { DynamicVendorHeader, useDynamicHeader } from '@/components/dynamic-header';
 import { QueryState } from '@/components/QueryState';
 import { Badge, Button, EmptyState, Heading, Rating, Text } from '@/components/ui';
 import { useLanguage } from '@/i18n/useLanguage';
 import { cn } from '@/lib/cn';
+import { useFavoritesStore, useIsFavorite } from '@/stores/favorites';
 import { useSessionStore } from '@/stores/session';
 import { useThemeColors } from '@/theme/useTheme';
 import { useAuthFlowStore } from '../auth/authFlowStore';
@@ -30,7 +33,8 @@ const TAB_LABELS = {
 
 /**
  * Le profil d'un prestataire (P5, maquette « Découvrir »), ouvert depuis une carte.
- * - En haut : la galerie qu'on fait glisser (et qu'on agrandit au toucher).
+ * - En haut : la galerie qu'on fait glisser (et qu'on agrandit au toucher), sous le header dynamique
+ *   (Retour, Favori, et le nom qui remonte dans la barre quand on fait défiler : DynamicVendorHeader).
  * - Puis : badges, nom, note, ville, et quatre onglets Formules / Avis / Dispos / Infos.
  * - En bas, toujours visible : le prix de départ et « Demander un devis ».
  *   Sans compte, le bouton ouvre la connexion et revient ici ensuite.
@@ -94,6 +98,7 @@ function ProfileContent({
   const [tab, setTab] = useState<Tab>('offerings');
   const [reporting, setReporting] = useState(false);
   const [reported, setReported] = useState(false);
+  const header = useDynamicHeader();
 
   const { profile, offerings, media } = details;
   const photos = [
@@ -117,90 +122,111 @@ function ProfileContent({
     router.push({ pathname: '/prestataires/[slug]/demande', params: { slug: profile.slug } });
   };
   const report = () => (user ? setReporting(true) : signInFirst());
+  const isFavorite = useIsFavorite(profile.id);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
 
   return (
     <>
-      <ScrollView className="flex-1" contentContainerClassName="pb-8">
-        <ProfileGallery photos={photos} name={profile.displayName} />
-        <View className="-mt-5 rounded-t-3xl bg-background px-5 pt-4">
-          <View className="flex-row flex-wrap gap-1.5">
-            {profile.isProVerified ? (
-              <Badge variant="success" icon={<BadgeCheck size={13} color={colors.success} />}>
-                {t('common.verified')}
-              </Badge>
-            ) : null}
-            {originNames.map((name) => (
-              <Badge key={name}>{name}</Badge>
-            ))}
-          </View>
-          <Heading className="mt-2">{profile.displayName}</Heading>
-          <View className="mt-1 flex-row flex-wrap items-center gap-x-2">
-            <Rating value={profile.ratingAverage} count={profile.ratingCount} />
-            {profile.ratingCount > 0 ? (
+      <Animated.ScrollView
+        testID="profile-scroll"
+        className="flex-1"
+        contentContainerClassName="pb-8"
+        {...header.scrollProps}
+      >
+        <View {...header.contentProps}>
+          <ProfileGallery photos={photos} name={profile.displayName} />
+          <View className="-mt-5 rounded-t-3xl bg-background px-5 pt-4">
+            <View className="flex-row flex-wrap gap-1.5">
+              {profile.isProVerified ? (
+                <Badge variant="success" icon={<BadgeCheck size={13} color={colors.success} />}>
+                  {t('common.verified')}
+                </Badge>
+              ) : null}
+              {originNames.map((name) => (
+                <Badge key={name}>{name}</Badge>
+              ))}
+            </View>
+            <View {...header.titleProps} className="mt-2">
+              <Heading>{profile.displayName}</Heading>
+            </View>
+            <View className="mt-1 flex-row flex-wrap items-center gap-x-2">
+              <Rating value={profile.ratingAverage} count={profile.ratingCount} />
+              {profile.ratingCount > 0 ? (
+                <Text size="sm" tone="muted">
+                  {t('profile.reviewsCount', { count: profile.ratingCount })}
+                </Text>
+              ) : null}
               <Text size="sm" tone="muted">
-                {t('profile.reviewsCount', { count: profile.ratingCount })}
+                {`· ${profile.city} · ${t('profile.travel', { km: profile.travelRadiusKm })}`}
               </Text>
-            ) : null}
-            <Text size="sm" tone="muted">
-              {`· ${profile.city} · ${t('profile.travel', { km: profile.travelRadiusKm })}`}
-            </Text>
-          </View>
+            </View>
 
-          <View className="mt-4">
-            <AddToEventButton
-              providerId={profile.id}
-              providerName={profile.displayName}
-              profilePath={pathname}
-              onSignIn={signInFirst}
-            />
-          </View>
+            <View className="mt-4">
+              <AddToEventButton
+                providerId={profile.id}
+                providerName={profile.displayName}
+                profilePath={pathname}
+                onSignIn={signInFirst}
+              />
+            </View>
 
-          <View
-            accessibilityRole="tablist"
-            accessibilityLabel={t('profile.tabs')}
-            className="mt-4 flex-row gap-1 rounded-full bg-muted p-1"
-          >
-            {PROFILE_TABS.map((value) => {
-              const on = tab === value;
-              return (
-                <Pressable
-                  key={value}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: on }}
-                  onPress={() => setTab(value)}
-                  className={cn('flex-1 items-center rounded-full py-2', on && 'bg-card')}
-                >
-                  <Text size="xs" weight="bold" tone={on ? 'default' : 'muted'}>
-                    {t(TAB_LABELS[value])}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          <View className="mt-4">
-            {tab === 'offerings' ? <OfferingsTab offerings={offerings} bio={profile.bio} /> : null}
-            {tab === 'reviews' ? <ReviewsTab profile={profile} /> : null}
-            {tab === 'availability' ? <AvailabilityTab providerId={profile.id} /> : null}
-            {tab === 'info' ? (
-              <>
-                {reported ? (
-                  <View
-                    accessibilityRole="alert"
-                    className="mb-3 flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
+            <View
+              accessibilityRole="tablist"
+              accessibilityLabel={t('profile.tabs')}
+              className="mt-4 flex-row gap-1 rounded-full bg-muted p-1"
+            >
+              {PROFILE_TABS.map((value) => {
+                const on = tab === value;
+                return (
+                  <Pressable
+                    key={value}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected: on }}
+                    onPress={() => setTab(value)}
+                    className={cn('flex-1 items-center rounded-full py-2', on && 'bg-card')}
                   >
-                    <CheckCircle2 size={18} color={colors.success} />
-                    <Text size="sm" tone="success" className="flex-1">
-                      {t('profile.reportSent')}
+                    <Text size="xs" weight="bold" tone={on ? 'default' : 'muted'}>
+                      {t(TAB_LABELS[value])}
                     </Text>
-                  </View>
-                ) : null}
-                <InfoTab profile={profile} origins={originNames} onReport={report} />
-              </>
-            ) : null}
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <View className="mt-4">
+              {tab === 'offerings' ? (
+                <OfferingsTab offerings={offerings} bio={profile.bio} />
+              ) : null}
+              {tab === 'reviews' ? <ReviewsTab profile={profile} /> : null}
+              {tab === 'availability' ? <AvailabilityTab providerId={profile.id} /> : null}
+              {tab === 'info' ? (
+                <>
+                  {reported ? (
+                    <View
+                      accessibilityRole="alert"
+                      className="mb-3 flex-row items-center gap-2 rounded-2xl bg-success-muted p-3"
+                    >
+                      <CheckCircle2 size={18} color={colors.success} />
+                      <Text size="sm" tone="success" className="flex-1">
+                        {t('profile.reportSent')}
+                      </Text>
+                    </View>
+                  ) : null}
+                  <InfoTab profile={profile} origins={originNames} onReport={report} />
+                </>
+              ) : null}
+            </View>
           </View>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      <DynamicVendorHeader
+        {...header.headerProps}
+        title={profile.displayName}
+        onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+        isFavorite={isFavorite}
+        onToggleFavorite={() => toggleFavorite(profile.id)}
+      />
 
       <SafeAreaView
         edges={['bottom']}

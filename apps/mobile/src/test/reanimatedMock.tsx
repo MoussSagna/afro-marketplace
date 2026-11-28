@@ -1,5 +1,5 @@
 import { forwardRef, type ComponentType } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 /**
  * Un faux Reanimated pour Jest (le vrai a besoin du moteur natif des « worklets »,
@@ -33,9 +33,14 @@ const easing = () => identity;
 
 export const reanimatedMock = {
   __esModule: true,
-  default: { View: createAnimatedComponent(View), createAnimatedComponent },
+  default: {
+    View: createAnimatedComponent(View),
+    ScrollView: createAnimatedComponent(ScrollView),
+    createAnimatedComponent,
+  },
   createAnimatedComponent,
   interpolate,
+  Extrapolation: { CLAMP: 'clamp', EXTEND: 'extend', IDENTITY: 'identity' },
   Easing: {
     linear: identity,
     ease: identity,
@@ -46,6 +51,11 @@ export const reanimatedMock = {
   },
   useSharedValue: <T,>(value: T) => ({ value }),
   useAnimatedStyle: (factory: () => object) => factory(),
+  useDerivedValue: <T,>(factory: () => T) => ({ value: factory() }),
+  // Le gestionnaire reçoit l'événement natif, comme le vrai (`event.contentOffset.y`).
+  useAnimatedScrollHandler:
+    (handler: (event: unknown) => void) => (event: { nativeEvent?: unknown }) =>
+      handler(event.nativeEvent ?? event),
   useAnimatedProps: (factory: () => object) => factory(),
   useReducedMotion: jest.fn(() => false),
   withTiming: identity,

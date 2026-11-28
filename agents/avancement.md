@@ -1,6 +1,22 @@
 # Avancement
 
-Dernière mise à jour : 28/11/2026 (app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : header dynamique des fiches prestataires (28/11/2026)
+
+Demande de Mouss : un header en surimpression sur la fiche prestataire, où **le nom remonte dans la barre** quand
+on fait défiler, sans jamais bouger Retour ni Favori. `apps/mobile` uniquement. Branche `feat/mobile-dynamic-header`, PR #78 vers `dev`.
+Détail : [`docs/mobile-dynamic-header-validation.md`](../docs/mobile-dynamic-header-validation.md).
+
+- **Réutilisable** : `src/components/dynamic-header/` — `useDynamicHeader()` (toute la logique de scroll :
+  Reanimated, mesure du titre avec `onLayout` + `measureLayout`, Safe Area) et `DynamicVendorHeader` (titre,
+  `isFavorite`, `onBack`, `onToggleFavorite` ; ne connaît aucun prestataire).
+- Apparition liée à la **position réelle** du titre principal (`titleRevealProgress`, pas de seuil fixe), fondu +
+  légère montée, voile translucide (flou expo-blur sur iPhone), aucun re-render pendant le scroll.
+- Fiche : `ScrollView` → `Animated.ScrollView` (même et unique scroll). Le bouton Retour quitte la galerie pour le
+  header (photos, compteur et visionneuse inchangés). **Nouveau** : le cœur Favori sur la fiche (même store que les cartes).
+- Tests : `dynamicHeader.test.tsx` (12), 3 parcours dans `profile.test.tsx` ; 362 tests mobiles au vert.
+  **Validation visuelle** : voir le document (simulateur).
 
 ## App mobile : écran « Ta recherche », pied de page et invités (28/11/2026)
 
