@@ -16,19 +16,32 @@ import { ScrollView, TextInput, View } from 'react-native';
 type ModalProps = {
   children?: ReactNode;
   footerComponent?: ComponentType<Record<string, unknown>>;
+  handleComponent?: ComponentType<Record<string, unknown>> | null;
   onDismiss?(): void;
+  onChange?(index: number): void;
   accessibilityLabel?: string;
 };
 
 export const BottomSheetModal = forwardRef<unknown, ModalProps>(function BottomSheetModal(
-  { children, footerComponent: Footer, onDismiss, accessibilityLabel },
+  {
+    children,
+    footerComponent: Footer,
+    handleComponent: Handle,
+    onDismiss,
+    onChange,
+    accessibilityLabel,
+  },
   ref,
 ) {
   const [open, setOpen] = useState(false);
   useImperativeHandle(ref, () => ({
-    present: () => setOpen(true),
+    present: () => {
+      setOpen(true);
+      onChange?.(0);
+    },
     dismiss: () => {
       setOpen(false);
+      onChange?.(-1);
       onDismiss?.();
     },
     close: () => setOpen(false),
@@ -38,6 +51,7 @@ export const BottomSheetModal = forwardRef<unknown, ModalProps>(function BottomS
   if (!open) return null;
   return (
     <View testID="bottom-sheet-modal" accessibilityLabel={accessibilityLabel}>
+      {Handle ? <Handle /> : null}
       {children}
       {Footer ? <Footer animatedFooterPosition={{ value: 0 }} /> : null}
     </View>

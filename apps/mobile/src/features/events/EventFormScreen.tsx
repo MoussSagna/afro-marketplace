@@ -28,6 +28,7 @@ import { eventDay, todayIso } from '@/lib/dates';
 import { toast } from '@/stores/toasts';
 import { useThemeColors } from '@/theme/useTheme';
 import { FormAlert } from '../auth/components/FormAlert';
+import { CREATED_EVENT_PARAM } from './AddToEventButton';
 import { EventBottomBar, EventHeader } from './EventChrome';
 import { EVENT_TYPE_ICONS } from './eventDisplay';
 import { EventStepper } from './EventStepper';
@@ -296,7 +297,11 @@ export function EventFormScreen({ existing }: { existing?: PlannedEvent }) {
           ? t('events.form.createdWithProvider', { name: created.name })
           : t('events.form.createdHint'),
       });
-      if (backTo) router.navigate(backTo as Href);
+      // Retour sur la fiche : le panneau « Ajouter à un événement » s'y rouvre sur ce nouvel événement.
+      if (backTo)
+        router.navigate(
+          `${backTo}?${CREATED_EVENT_PARAM}=${encodeURIComponent(created.id)}` as Href,
+        );
       else router.replace({ pathname: '/evenements/[eventId]', params: { eventId: created.id } });
     } catch (error) {
       setServerError(apiError(error) ?? t('events.form.saveError'));

@@ -184,7 +184,8 @@ apps/mobile/
                        eventDisplay (icônes, photos, statuts), EventChrome (en-tête, barre d'actions)
   src/components/      ConfirmModal (confirmation centrée), Toaster + src/stores/toasts.ts (toasts avec action)
   src/components/AppBottomSheet.tsx Le panneau du bas réutilisable (@gorhom/bottom-sheet : fond, poignée, glissement,
-                       en-tête, défilement, pied fixe ; ouvert par une ref). Providers dans app/_layout.tsx
+                       en-tête dans la poignée, sous-titre, défilement, pied fixe, `fitContent`, retour Android ;
+                       ouvert par une ref). Providers dans app/_layout.tsx. Le pattern de toute l'app
   src/features/search/ Recherche (M7), premier onglet et écran d'ouverture. Deux états (searchState.ts) :
                        « home » = SearchHome (carrousel FeaturedCarousel « À la une » + catégories, ancien Accueil,
                        puis les rangées façon Airbnb : homeSections + ProviderRow + ProviderMiniCard, et HowItWorks) ;
@@ -213,7 +214,8 @@ apps/mobile/
   src/features/providers/ ProviderCard (carte prestataire), priceLabel, profileHref (adresse d'un profil)
   src/components/Calendar.tsx Calendrier d'un mois : pour choisir un jour (recherche) ou lire des dispos (profil)
   src/components/FullScreenModal.tsx Fenêtre plein écran (Modal) qui respecte l'encoche : à utiliser pour tout plein écran
-  src/components/BottomSheet.tsx Panneau qui monte du bas (fond assombri, croix, poignée), ex. « Accepter le devis »
+  src/components/BottomSheet.tsx Ancien panneau du bas (Modal), ex. « Accepter le devis » : à migrer vers AppBottomSheet
+                       puis supprimer (audit : docs/mobile-bottom-sheet-audit.md)
   src/components/StarRatingInput.tsx Choisir une note de 1 à 5 étoiles (grandes ou petites)
   src/components/Checkbox.tsx Case à cocher avec son texte (conditions d'inscription, d'un devis…)
   src/lib/dates.ts     Dates des calendriers (isoDay, longDay, monthGrid, monthRange…)

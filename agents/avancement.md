@@ -1,6 +1,24 @@
 # Avancement
 
-Dernière mise à jour : 28/11/2026 (app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : « Ajouter à un événement » en bottom sheet + audit ; app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : « Ajouter à un événement » en bottom sheet, et audit des panneaux (28/11/2026)
+
+Demande de Mouss : refondre ce qui s'ouvre au toucher de « Ajouter à un événement » avec `@gorhom/bottom-sheet`, et
+auditer tout `apps/mobile` pour en faire un pattern global. Le bouton ne change pas. Branche
+`feat/mobile-add-to-event-sheet`, PR vers `dev`. Détail : [`docs/mobile-add-to-event-validation.md`](../docs/mobile-add-to-event-validation.md) ;
+audit : [`docs/mobile-bottom-sheet-audit.md`](../docs/mobile-bottom-sheet-audit.md).
+
+- `features/events/useAddToEvent.ts` (logique : `useEvents`, `useAddEventProvider`) et `AddToEventSheet.tsx`
+  (affichage : cartes photo / type / date / ville / invités / prestataires, état vide, confirmation ou erreur dans
+  le panneau). « Nouvel événement » → formulaire existant → retour sur la fiche (`?evenementCree=`) avec le panneau
+  rouvert sur le nouvel événement.
+- `AppBottomSheet` : `subtitle`, `fitContent` (hauteur du contenu), en-tête dans `handleComponent` (sinon oublié dans
+  la hauteur), **bouton retour d'Android** (n'était pas géré, filtres compris).
+- Audit : 4 migrations prioritaires proposées (Accepter le devis, Décliner une demande, Apparence / Langue, date du
+  formulaire), puis suppression de `components/BottomSheet.tsx`. **Aucune faite sans validation.**
+- Tests : +7 dans `events.test.tsx`, +2 dans `AppBottomSheet.test.tsx`. Captures iPhone 17e et 18 Pro Max ;
+  Android non vérifié (pas d'émulateur).
 
 ## App mobile : header dynamique des fiches prestataires (28/11/2026)
 

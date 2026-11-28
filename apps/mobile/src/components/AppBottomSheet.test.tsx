@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { createRef } from 'react';
-import { Text } from 'react-native';
+import { BackHandler, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppBottomSheet, type AppBottomSheetRef } from './AppBottomSheet';
 import { Button } from './ui';
@@ -57,5 +57,54 @@ describe('AppBottomSheet (panneau du bas réutilisable)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Retour aux filtres' }));
     expect(onBack).toHaveBeenCalledTimes(1);
     expect(screen.getByText('Calendrier')).toBeOnTheScreen();
+  });
+
+  it('Android : le bouton « retour » ferme le panneau (sans quitter l’écran), puis ne s’en mêle plus', async () => {
+    type Handler = Parameters<typeof BackHandler.addEventListener>[1];
+    const handlers: Handler[] = [];
+    const remove = jest.fn();
+    const spy = jest
+      .spyOn(BackHandler, 'addEventListener')
+      .mockImplementation((_event, handler) => {
+        handlers.push(handler);
+        return { remove };
+      });
+    const ref = createRef<AppBottomSheetRef>();
+    const onDismiss = jest.fn();
+    await render(
+      <AppBottomSheet ref={ref} title="Ajouter à un événement" onDismiss={onDismiss}>
+        <Text>Mes événements</Text>
+      </AppBottomSheet>,
+      { wrapper },
+    );
+    expect(handlers).toHaveLength(0); // fermé : le retour reste à la navigation
+    await act(() => ref.current?.present());
+    expect(handlers).toHaveLength(1);
+    let handled: boolean | null | undefined;
+    await act(() => {
+      handled = handlers[0]!({} as Parameters<Handler>[0]);
+    });
+    expect(handled).toBe(true);
+    expect(screen.queryByText('Mes événements')).toBeNull();
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(remove).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('affiche le sous-titre sous le titre', async () => {
+    const ref = createRef<AppBottomSheetRef>();
+    await render(
+      <AppBottomSheet
+        ref={ref}
+        title="Ajouter à un événement"
+        subtitle="Choisis l’événement."
+        fitContent
+      >
+        <Text>Liste</Text>
+      </AppBottomSheet>,
+      { wrapper },
+    );
+    await act(() => ref.current?.present());
+    expect(screen.getByText('Choisis l’événement.')).toBeOnTheScreen();
   });
 });
