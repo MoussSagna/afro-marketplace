@@ -131,6 +131,9 @@ describe('L’app en anglais (lot M6b)', () => {
     expect(
       await screen.findByRole('button', { name: `Show ${total} providers` }),
     ).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: 'Filters' })).toBeOnTheScreen();
+    // Le budget est un sous-écran du panneau (bottom sheet).
+    await press('Budget, Any price');
     expect(screen.getByRole('adjustable', { name: 'Maximum budget' })).toHaveAccessibilityValue({
       text: 'No limit',
     });

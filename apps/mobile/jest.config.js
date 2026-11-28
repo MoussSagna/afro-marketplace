@@ -18,6 +18,9 @@ module.exports = {
     '^react-native-reanimated$': '<rootDir>/src/test/reanimatedJest.js',
     // (un autre fichier, sinon Jest prend les deux pour le même module et le faux se rappelle lui-même)
     '^react-native-reanimated/mock$': '<rootDir>/src/test/reanimatedJestMock.js',
+    // @gorhom/bottom-sheet (panneaux du bas) : notre faux (src/test/bottomSheetMock.tsx), qui ouvre et
+    // ferme vraiment le panneau ; la vraie bibliothèque a besoin des gestes natifs.
+    '^@gorhom/bottom-sheet$': '<rootDir>/src/test/bottomSheetMock.tsx',
     // Pour React Native, lucide pointe vers des fichiers .mjs que Jest ne sait pas lire :
     // dans les tests, on prend sa version CommonJS (identique).
     '^lucide-react-native$':
