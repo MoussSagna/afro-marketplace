@@ -1,6 +1,19 @@
 # Avancement
 
-Dernière mise à jour : 28/11/2026 (app mobile : écran Favoris ; app mobile : « Ajouter à un événement » en bottom sheet + audit ; app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+Dernière mise à jour : 28/11/2026 (app mobile : refonte de la liste des Messages ; app mobile : écran Favoris ; app mobile : « Ajouter à un événement » en bottom sheet + audit ; app mobile : header dynamique des fiches prestataires ; app mobile : filtres de recherche en bottom sheet) ; 28/11/2026 (app mobile : planificateur d'événements ; typo arrondie Nunito sur le site et l'app ; Recherche mobile enrichie façon Airbnb ; barre d'onglets mobile : libellés et icône Événements ; app mobile : la Recherche devient l'écran principal ; planificateur d'événements ; refonte du back-office admin ; refonte du tableau de bord client ; connexion, inscription et mot de passe oublié, #67 ; fiche prestataire, #64).
+
+## App mobile : refonte de la liste des Messages (28/11/2026)
+
+Demande de Mouss, d'après une maquette : en-tête avec recherche et « Nouvelle conversation », pastilles Tous / Non lus /
+Devis, lignes avec photo, catégorie, badge vérifié et non-lus. Fil de discussion et messagerie inchangés. Branche
+`feat/mobile-messages-refonte` (depuis `dev`), PR vers `dev`. **Validée par Mouss le 28/11/2026.** Détail, cycles et écarts :
+[`docs/mobile-messages-refonte-validation.md`](../docs/mobile-messages-refonte-validation.md).
+
+- `useConversationList` croise conversations, demandes de devis et catégories (requêtes existantes) ; logique pure
+  dans `conversationList.ts` ; composants dans `features/messaging/list/`. `conversationTime` (« Hier ») dans `dates.ts`.
+- Choix validés : tutoiement (« Toi : ») ; « Devis » = devis envoyé ; « Non lus (n) » = conversations non lues ;
+  « Nouvelle conversation » → Recherche (masqué côté prestataire). Reports : questions-ouvertes n° 35 à 38.
+- Tests : `conversationList.test.ts` (7), `messaging.test.tsx` (+7), `dates.test.ts` (+1) ; 416 tests mobiles.
 
 ## App mobile : écran Favoris (28/11/2026)
 
