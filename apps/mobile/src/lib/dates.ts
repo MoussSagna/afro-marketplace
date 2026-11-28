@@ -115,6 +115,22 @@ export function messageTime(isoDateTime: string, locale: string, now = new Date(
   ).format(date);
 }
 
+/**
+ * La date d'une conversation dans la liste (comme WhatsApp) : « 12:08 » aujourd'hui,
+ * « Hier » la veille (libellé traduit, passé par l'appelant), « 26 nov. » avant.
+ */
+export function conversationTime(
+  isoDateTime: string,
+  locale: string,
+  yesterdayLabel: string,
+  now = new Date(),
+): string {
+  const date = new Date(isoDateTime);
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  if (todayIso(date) === todayIso(yesterday)) return yesterdayLabel;
+  return messageTime(isoDateTime, locale, now);
+}
+
 /** « 6 déc. » / « 6 Dec » : une date ISO sans heure (fin de validité d'un devis…). */
 export function shortDate(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, {
