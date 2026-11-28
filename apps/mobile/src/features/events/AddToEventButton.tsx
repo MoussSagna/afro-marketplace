@@ -1,18 +1,15 @@
-import { useAddEventProvider, useEvents } from '@afro/common';
-import { useRouter } from 'expo-router';
-import { CalendarPlus, Check, Plus } from 'lucide-react-native';
-import { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { CalendarPlus } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
-import { BottomSheet } from '@/components/BottomSheet';
-import { QueryState } from '@/components/QueryState';
-import { Button, Text } from '@/components/ui';
-import { useErrorText } from '@/i18n/useErrorText';
-import { useLanguage } from '@/i18n/useLanguage';
-import { eventDay } from '@/lib/dates';
+import type { AppBottomSheetRef } from '@/components/AppBottomSheet';
+import { Button } from '@/components/ui';
 import { useSessionStore } from '@/stores/session';
-import { toast } from '@/stores/toasts';
 import { useThemeColors } from '@/theme/useTheme';
+import { AddToEventSheet } from './AddToEventSheet';
+
+/** Le paramètre posé par le formulaire en revenant sur la fiche : l'événement qu'il vient de créer. */
+export const CREATED_EVENT_PARAM = 'evenementCree';
 
 type AddToEventButtonProps = {
   providerId: string;
@@ -24,9 +21,11 @@ type AddToEventButtonProps = {
 };
 
 /**
- * « Ajouter à un événement » sur la fiche prestataire, comme sur le site : un panneau liste mes
- * événements (« Ajouter » ou « Ajouté ») et propose « Nouvel événement » (formulaire, prestataire
- * ajouté à la fin, puis retour sur la fiche).
+ * « Ajouter à un événement » sur la fiche prestataire, comme sur le site. Le bouton ne change pas ;
+ * il ouvre le panneau du bas (AddToEventSheet, @gorhom/bottom-sheet) : on touche un événement pour
+ * y ajouter le prestataire, ou « Nouvel événement » ouvre le formulaire existant.
+ * Après la création, le formulaire ajoute le prestataire et revient ici avec `?evenementCree=…` :
+ * le panneau se rouvre et montre le nouvel événement, prestataire ajouté (on ne perd pas le fil).
  */
 export function AddToEventButton({
   providerId,
@@ -35,17 +34,29 @@ export function AddToEventButton({
   onSignIn,
 }: AddToEventButtonProps) {
   const { t } = useTranslation();
-  const { locale } = useLanguage();
-  const { apiError } = useErrorText();
   const router = useRouter();
   const colors = useThemeColors();
   const user = useSessionStore((s) => s.user);
-  const [open, setOpen] = useState(false);
-  const events = useEvents({ enabled: open && !!user });
-  const add = useAddEventProvider();
+  const sheet = useRef<AppBottomSheetRef>(null);
+  const params = useLocalSearchParams<{ [CREATED_EVENT_PARAM]?: string }>();
+  const [createdEventId, setCreatedEventId] = useState<string | undefined>();
+
+  // Retour du formulaire : on retient le nouvel événement (pendant le rendu, comme le conseille React),
+  // puis on rouvre le panneau et on efface le paramètre (pour ne pas le rouvrir une seconde fois).
+  const fromForm = user ? params[CREATED_EVENT_PARAM] : undefined;
+  const [seen, setSeen] = useState<string | undefined>();
+  if (fromForm && fromForm !== seen) {
+    setSeen(fromForm);
+    setCreatedEventId(fromForm);
+  }
+  useEffect(() => {
+    if (!fromForm) return;
+    sheet.current?.present();
+    router.setParams({ [CREATED_EVENT_PARAM]: undefined });
+  }, [fromForm, router]);
 
   const newEvent = () => {
-    setOpen(false);
+    sheet.current?.dismiss();
     router.push({
       pathname: '/evenements/nouveau',
       params: { prestataire: providerId, retour: profilePath },
@@ -58,102 +69,20 @@ export function AddToEventButton({
         variant="outline"
         size="md"
         fullWidth
-        onPress={() => (user ? setOpen(true) : onSignIn())}
+        onPress={() => (user ? sheet.current?.present() : onSignIn())}
         icon={<CalendarPlus size={18} color={colors.primary} />}
       >
         {t('events.sheet.button')}
       </Button>
-      <BottomSheet
-        visible={open}
-        onClose={() => setOpen(false)}
-        title={t('events.sheet.title')}
-        closeLabel={t('common.close')}
-        footer={
-          <Button
-            variant="outline"
-            fullWidth
-            onPress={newEvent}
-            icon={<Plus size={18} color={colors.primary} />}
-          >
-            {t('events.sheet.newEvent')}
-          </Button>
-        }
-      >
-        <QueryState
-          isPending={events.isPending}
-          isError={events.isError}
-          onRetry={() => void events.refetch()}
-          loadingLabel={t('events.loading')}
-        >
-          {(events.data ?? []).length === 0 ? (
-            <Text tone="muted" className="py-4 text-center">
-              {t('events.sheet.noEvents')}
-            </Text>
-          ) : (
-            <View className="gap-1">
-              {(events.data ?? []).map(({ event, providerIds }) => {
-                const added = providerIds.includes(providerId);
-                return (
-                  <View
-                    key={event.id}
-                    className="flex-row items-center gap-3 border-b border-border py-3"
-                  >
-                    <View className="flex-1">
-                      <Text weight="bold" numberOfLines={1}>
-                        {event.name}
-                      </Text>
-                      <Text size="xs" tone="muted">
-                        {`${eventDay(event.date, locale)} · ${event.city}`}
-                      </Text>
-                    </View>
-                    {added ? (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        disabled
-                        accessibilityLabel={t('events.sheet.addedLabel', { name: event.name })}
-                        icon={<Check size={15} color={colors['secondary-foreground']} />}
-                      >
-                        {t('events.sheet.added')}
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        disabled={add.isPending}
-                        accessibilityLabel={t('events.sheet.addLabel', { name: event.name })}
-                        onPress={() =>
-                          add.mutate(
-                            { eventId: event.id, providerId },
-                            {
-                              onSuccess: () =>
-                                toast({
-                                  title: t('events.add.addedToast'),
-                                  description: t('events.add.addedToastHint', {
-                                    name: providerName,
-                                    event: event.name,
-                                  }),
-                                }),
-                              onError: (error) =>
-                                toast({
-                                  tone: 'info',
-                                  title: t('events.add.addFailed'),
-                                  description: apiError(error),
-                                }),
-                            },
-                          )
-                        }
-                        icon={<Plus size={15} color={colors['cta-foreground']} />}
-                      >
-                        {t('events.sheet.add')}
-                      </Button>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
-          )}
-        </QueryState>
-      </BottomSheet>
+      <AddToEventSheet
+        ref={sheet}
+        providerId={providerId}
+        providerName={providerName}
+        createdEventId={createdEventId}
+        enabled={!!user}
+        onCreateEvent={newEvent}
+        onDismiss={() => setCreatedEventId(undefined)}
+      />
     </>
   );
 }

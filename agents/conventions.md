@@ -38,6 +38,10 @@
 - **@gorhom/bottom-sheet** (panneaux du bas) : passer par `components/AppBottomSheet` ; sous Jest, un faux
   (`src/test/bottomSheetMock.tsx`) ouvre et ferme vraiment le panneau. Un composant rendu seul qui lit les zones sûres
   a besoin d'un `SafeAreaProvider` dans son test.
+  **Quand l'utiliser** (pattern Wenzee, voir [`docs/mobile-bottom-sheet-audit.md`](../docs/mobile-bottom-sheet-audit.md)) :
+  choix ou action courte sans quitter l'écran → panneau ; parcours en étapes ou formulaire long → écran dédié ;
+  confirmation destructive → `ConfirmModal`. `fitContent` pour les choix courts. Confirmation **dans** le panneau
+  (les toasts passent dessous) ; `dismiss()` avant de naviguer ; `BottomSheetTextInput` pour un champ.
 - Les tests sont à côté du fichier testé (`foo.ts` → `foo.test.ts`).
 - La CI est plus lente que nos postes : `findBy…` attend jusqu'à 5 s (`configure` dans `apps/web/src/test/setup.ts`)
   et un test web peut durer 20 s (`testTimeout`). N'ajoute pas de `timeout` au cas par cas.

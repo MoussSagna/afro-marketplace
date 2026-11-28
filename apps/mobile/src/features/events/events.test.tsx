@@ -339,4 +339,123 @@ describe('Ajouter à un événement (fiche prestataire)', () => {
       retour: '/prestataires/saveurs-de-dakar',
     });
   });
+
+  it('le panneau : sous-titre, et pour chaque événement type, date, ville, invités, prestataires', async () => {
+    const { db } = await open('/prestataires/saveurs-de-dakar');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    expect(
+      screen.getByText('Choisis l’événement auquel tu veux associer ce prestataire.'),
+    ).toBeOnTheScreen();
+    const birthday = db.data.events.find((e) => e.id === BIRTHDAY)!;
+    const card = await screen.findByRole('button', { name: 'Ajouter à Anniversaire 30 ans' });
+    expect(card.props.accessibilityHint).toMatch(
+      new RegExp(
+        `^Anniversaire, .+, ${birthday.city}, ${birthday.guestCount} invités, \\d+ prestataires?$`,
+      ),
+    );
+    expect(screen.getByRole('button', { name: 'Nouvel événement' })).toBeOnTheScreen();
+  });
+
+  it('toucher une carte ajoute le prestataire, puis le confirme dans le panneau', async () => {
+    await open('/prestataires/saveurs-de-dakar');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    await fireEvent.press(
+      await screen.findByRole('button', { name: 'Ajouter à Anniversaire 30 ans' }),
+    );
+    expect(
+      await screen.findByText('Saveurs de Dakar est ajouté à « Anniversaire 30 ans ».'),
+    ).toBeOnTheScreen();
+    expect(screen.getByRole('alert')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Déjà dans Anniversaire 30 ans' })).toBeDisabled();
+  });
+
+  it('si l’ajout échoue : le panneau reste ouvert et affiche la raison', async () => {
+    const { db } = await open('/prestataires/saveurs-de-dakar');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    const card = await screen.findByRole('button', { name: 'Ajouter à Anniversaire 30 ans' });
+    // L'événement disparaît entre-temps (supprimé depuis un autre appareil) : l'API refuse l'ajout.
+    db.update((data) => {
+      data.events = data.events.filter((e) => e.id !== BIRTHDAY);
+    });
+    await fireEvent.press(card);
+    expect(await screen.findByText('Ajout impossible')).toBeOnTheScreen();
+    expect(screen.getByRole('alert')).toBeOnTheScreen();
+    const provider = db.data.providers.find((p) => p.slug === 'saveurs-de-dakar')!;
+    expect(
+      db.data.eventProviders.some((l) => l.eventId === BIRTHDAY && l.providerId === provider.id),
+    ).toBe(false);
+  });
+
+  it('si les événements ne se chargent pas : « Réessayer »', async () => {
+    const ctx = await open('/prestataires/saveurs-de-dakar');
+    const listEvents = jest.spyOn(ctx.api, 'listEvents').mockRejectedValueOnce(new Error('réseau'));
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    await fireEvent.press(await screen.findByRole('button', { name: 'Réessayer' }));
+    expect(
+      await screen.findByRole('button', { name: 'Ajouter à Anniversaire 30 ans' }),
+    ).toBeOnTheScreen();
+    expect(listEvents).toHaveBeenCalledTimes(2);
+  });
+
+  it('sans événement : l’état vide, puis « Créer mon événement » ouvre le formulaire', async () => {
+    const { db } = await open('/prestataires/saveurs-de-dakar', DEMO_CLIENT_ID, (mock) => {
+      mock.update((data) => {
+        data.events = data.events.filter((e) => e.clientId !== DEMO_CLIENT_ID);
+      });
+    });
+    const provider = db.data.providers.find((p) => p.slug === 'saveurs-de-dakar')!;
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    expect(await screen.findByText('Tu n’as pas encore d’événement')).toBeOnTheScreen();
+    expect(
+      screen.getByText('Crée ton premier événement pour y ajouter ce prestataire.'),
+    ).toBeOnTheScreen();
+    // Pas de doublon : le pied « Nouvel événement » disparaît quand il n'y a aucun événement.
+    expect(screen.queryByRole('button', { name: 'Nouvel événement' })).toBeNull();
+    await press('Créer mon événement');
+    expect(screen).toHavePathname('/evenements/nouveau');
+    expect(screen).toHaveSearchParams({
+      prestataire: provider.id,
+      retour: '/prestataires/saveurs-de-dakar',
+    });
+  });
+
+  it('la croix ferme le panneau sans rien ajouter', async () => {
+    const { db } = await open('/prestataires/saveurs-de-dakar');
+    const before = db.data.eventProviders.length;
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    await screen.findByRole('button', { name: 'Ajouter à Anniversaire 30 ans' });
+    await press('Fermer');
+    expect(screen.queryByRole('button', { name: 'Ajouter à Anniversaire 30 ans' })).toBeNull();
+    expect(db.data.eventProviders.length).toBe(before);
+  });
+
+  it('créer un événement depuis le panneau : retour sur la fiche, panneau rouvert, prestataire ajouté', async () => {
+    const { db } = await open('/prestataires/saveurs-de-dakar');
+    const provider = db.data.providers.find((p) => p.slug === 'saveurs-de-dakar')!;
+    const date = nextMonth14();
+    await fireEvent.press(await screen.findByRole('button', { name: 'Ajouter à un événement' }));
+    await press('Nouvel événement');
+    await fireEvent.press(await screen.findByRole('radio', { name: 'Soirée' }));
+    await press('Suivant');
+    await fireEvent.changeText(screen.getByLabelText('Nom de l’événement'), 'Soirée de gala');
+    await press(/^Date, /);
+    await press('Mois suivant');
+    await press(longDay(date, 'fr-FR'));
+    await press('Valider la date');
+    await fireEvent.changeText(screen.getByLabelText('Ville'), 'Paris');
+    await fireEvent.changeText(screen.getByLabelText('Code postal'), '75011');
+    await fireEvent.changeText(screen.getByLabelText('Nombre d’invités'), '80');
+    await press('Suivant');
+    await press('Créer l’événement');
+
+    expect(
+      await screen.findByText('« Soirée de gala » est créé, et Saveurs de Dakar y est ajouté.'),
+    ).toBeOnTheScreen();
+    expect(screen).toHavePathname('/prestataires/saveurs-de-dakar');
+    expect(screen.getByRole('button', { name: 'Déjà dans Soirée de gala' })).toBeDisabled();
+    const created = db.data.events.find((e) => e.name === 'Soirée de gala')!;
+    expect(
+      db.data.eventProviders.some((l) => l.eventId === created.id && l.providerId === provider.id),
+    ).toBe(true);
+  });
 });

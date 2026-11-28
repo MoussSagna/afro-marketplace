@@ -30,7 +30,7 @@ function EmptyEvents({ onCreate }: { onCreate(): void }) {
         {t('events.emptyHint')}
       </Text>
       <Button
-        className="mt-3"
+        className="mt-3 self-center"
         onPress={onCreate}
         icon={<Plus size={18} color={colors['cta-foreground']} />}
       >
