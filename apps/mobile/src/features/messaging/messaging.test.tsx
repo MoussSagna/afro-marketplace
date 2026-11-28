@@ -1,5 +1,5 @@
 import { DEMO_CLIENT_ID, type MockDb } from '@afro/common/mocks';
-import { act, fireEvent } from '@testing-library/react-native';
+import { act, fireEvent, waitFor } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import ConversationRoute from '../../../app/conversations/[id]';
 import MessagesTab from '../../../app/(tabs)/messages';
@@ -153,9 +153,145 @@ describe('Messagerie (lot M10)', () => {
         db.data.conversations = db.data.conversations.filter((c) => c.clientId !== DEMO_CLIENT_ID);
       },
     });
-    expect(await screen.findByText('Aucune conversation')).toBeOnTheScreen();
+    expect(await screen.findByText('Pas encore de messages')).toBeOnTheScreen();
+    // Sans conversation, pas de pastilles de filtre.
+    expect(screen.queryByRole('tab', { name: 'Tous' })).toBeNull();
     await press('Trouver un prestataire');
     expect(screen).toHavePathname('/');
+  });
+});
+
+describe('Messagerie : liste des conversations (refonte)', () => {
+  /** Les noms des conversations affichées, dans l'ordre. */
+  const shownNames = (db: MockDb) =>
+    clientConversations(db)
+      .map((c) => c.providerName)
+      .filter((name) => screen.queryByRole('button', { name: new RegExp(`^${escape(name)}, `) }));
+  const row = (name: string) =>
+    screen.getByRole('button', { name: new RegExp(`^${escape(name)}, `) });
+
+  it('affiche la catégorie, le badge vérifié, « Toi : » et les non-lus de chaque conversation', async () => {
+    const { db } = await open('/messages');
+    const all = clientConversations(db);
+    await screen.findByRole('button', { name: new RegExp(`^${escape(all[0]!.providerName)}, `) });
+
+    const verified = all.find(
+      (c) => db.data.providers.find((p) => p.id === c.request.providerId)!.isProVerified,
+    )!;
+    expect(row(verified.providerName).props.accessibilityLabel).toContain('Vérifié');
+    const unverified = all.find(
+      (c) => !db.data.providers.find((p) => p.id === c.request.providerId)!.isProVerified,
+    )!;
+    expect(row(unverified.providerName).props.accessibilityLabel).not.toContain('Vérifié');
+
+    // Saveurs de Dakar est traiteur dans le jeu de démo.
+    expect(row('Saveurs de Dakar').props.accessibilityLabel).toMatch(/Traiteur/);
+    // Le dernier message envoyé par la cliente commence par « Toi : ».
+    const mine = all.find((c) => {
+      const last = db.data.messages.filter((m) => m.conversationId === c.conversation.id).at(-1);
+      return last?.senderId === DEMO_CLIENT_ID && last.kind !== 'system';
+    })!;
+    expect(row(mine.providerName).props.accessibilityLabel).toContain('Toi : ');
+  });
+
+  it('filtre Tous / Non lus / Devis avec le compteur des non-lus', async () => {
+    const { db } = await open('/messages');
+    const all = clientConversations(db);
+    const unread = all
+      .filter((c) => c.conversation.unreadCountClient > 0)
+      .map((c) => c.providerName);
+    const quoted = all
+      .filter((c) => db.data.quotes.some((q) => q.quoteRequestId === c.request.id))
+      .map((c) => c.providerName);
+    await screen.findByRole('button', { name: new RegExp(`^${escape(all[0]!.providerName)}, `) });
+    expect(screen.getByRole('tab', { name: 'Tous' })).toBeSelected();
+
+    await fireEvent.press(screen.getByRole('tab', { name: `Non lus (${unread.length})` }));
+    expect(screen.getByRole('tab', { name: `Non lus (${unread.length})` })).toBeSelected();
+    expect(shownNames(db)).toEqual(unread);
+
+    await fireEvent.press(screen.getByRole('tab', { name: 'Devis' }));
+    expect(shownNames(db)).toEqual(quoted);
+
+    await fireEvent.press(screen.getByRole('tab', { name: 'Tous' }));
+    expect(shownNames(db)).toEqual(all.map((c) => c.providerName));
+  });
+
+  it('Non lus sans message non lu : un état vide qui ramène à toutes les conversations', async () => {
+    await open('/messages', {
+      prepare: (db) => {
+        for (const c of db.data.conversations) c.unreadCountClient = 0;
+      },
+    });
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Non lus' }));
+    expect(screen.getByText('Tout est lu')).toBeOnTheScreen();
+    await press('Voir toutes les conversations');
+    expect(screen.getByRole('tab', { name: 'Tous' })).toBeSelected();
+    expect(screen.queryByText('Tout est lu')).toBeNull();
+  });
+
+  it('recherche en temps réel, sans accents, avec un état « aucun résultat »', async () => {
+    const { db } = await open('/messages');
+    const all = clientConversations(db);
+    await screen.findByRole('button', { name: new RegExp(`^${escape(all[0]!.providerName)}, `) });
+
+    await press('Rechercher une conversation');
+    const field = screen.getByLabelText('Rechercher un prestataire');
+    await fireEvent.changeText(field, 'creoles');
+    expect(shownNames(db)).toEqual(['Douceurs Créoles']);
+
+    await fireEvent.changeText(field, 'zzz');
+    expect(screen.getByText('Aucune conversation trouvée')).toBeOnTheScreen();
+    await fireEvent.press(screen.getAllByRole('button', { name: 'Effacer la recherche' }).at(-1)!);
+    expect(shownNames(db)).toHaveLength(all.length);
+
+    // Fermer la loupe vide aussi la recherche.
+    await fireEvent.changeText(field, 'akwaba');
+    expect(shownNames(db)).toEqual(['Compagnie Akwaba']);
+    await press('Fermer la recherche');
+    expect(screen.queryByLabelText('Rechercher un prestataire')).toBeNull();
+    expect(shownNames(db)).toHaveLength(all.length);
+  });
+
+  it('toucher une conversation non lue l’ouvre et la marque comme lue', async () => {
+    const { db } = await open('/messages');
+    const target = clientConversations(db).find((c) => c.conversation.unreadCountClient > 0)!;
+    await fireEvent.press(
+      await screen.findByRole('button', { name: new RegExp(`^${escape(target.providerName)}, `) }),
+    );
+    expect(screen).toHavePathname(`/conversations/${target.conversation.id}`);
+    expect(await screen.findByRole('header', { name: target.providerName })).toBeOnTheScreen();
+    await waitFor(() =>
+      expect(
+        db.data.conversations.find((c) => c.id === target.conversation.id)!.unreadCountClient,
+      ).toBe(0),
+    );
+  });
+
+  it('« Nouvelle conversation » reprend le parcours existant : la Recherche', async () => {
+    await open('/messages');
+    await press('Nouvelle conversation');
+    expect(screen).toHavePathname('/');
+  });
+
+  it('en cas d’erreur : un message clair et « Réessayer »', async () => {
+    const ctx = demoApi();
+    const user = ctx.db.data.users.find((u) => u.id === DEMO_CLIENT_ID)!;
+    await act(() => useSessionStore.getState().signIn({ user, token: `demo:${user.id}` }));
+    const original = ctx.api.listConversations.bind(ctx.api);
+    let fail = true;
+    ctx.api.listConversations = (side) =>
+      fail ? Promise.reject(new Error('réseau')) : original(side);
+    await renderRouter(routes, { initialUrl: '/messages', wrapper: testProviders(ctx.api) });
+
+    expect(await screen.findByText('Impossible de charger tes messages')).toBeOnTheScreen();
+    fail = false;
+    await press('Réessayer');
+    expect(
+      await screen.findByRole('button', {
+        name: new RegExp(`^${escape(clientConversations(ctx.db)[0]!.providerName)}, `),
+      }),
+    ).toBeOnTheScreen();
   });
 });
 

@@ -1,135 +1,149 @@
-import { useConversations, type ConversationSummary, type Side } from '@afro/common';
+import type { Side } from '@afro/common';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, RefreshControl, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import emptyImage from '../../../assets/images/aucun-resultat.webp';
-import { QueryState } from '@/components/QueryState';
-import { Avatar, Button, EmptyState, Heading, Text } from '@/components/ui';
-import { useLanguage } from '@/i18n/useLanguage';
-import { cn } from '@/lib/cn';
-import { messageTime } from '@/lib/dates';
-import { useSessionStore } from '@/stores/session';
+import { useThemeColors } from '@/theme/useTheme';
 import { TAB_BAR_SPACE } from '../navigation/GlassTabBar';
 import { useCollapseOnScroll } from '../navigation/useCollapseOnScroll';
-import { clientName } from '../pro/clientName';
-import { conversationHref } from './conversationHref';
+import {
+  conversationCounts,
+  visibleConversations,
+  type ConversationEntry,
+  type ConversationFilter,
+} from './conversationList';
+import { ConversationItem } from './list/ConversationItem';
+import { ConversationSkeleton } from './list/ConversationSkeleton';
+import { MessagesEmptyState } from './list/MessagesEmptyState';
+import { MessagesFilters } from './list/MessagesFilters';
+import { MessagesHeader } from './list/MessagesHeader';
+import { useConversationList } from './useConversationList';
 
 /**
- * L'onglet Messages (C4, maquette « Messages ») : une conversation par demande de devis,
- * la plus récente en haut. Pastille soleil = messages non lus. Rafraîchi toutes les 7 s.
- * Côté prestataire (S5, lot M14), la même liste, au nom des clients.
+ * L'onglet Messages (C4, refonte du 28/11/2026) : une conversation par demande de devis,
+ * la plus récente en haut, rafraîchie toutes les 7 s.
+ * - En-tête : titre, loupe (recherche instantanée par nom ou catégorie), « Nouvelle conversation ».
+ * - Pastilles : Tous, Non lus (n), Devis.
+ * - Lignes : avatar, nom (+ badge vérifié), catégorie, dernier message, date, non-lus.
+ * Côté prestataire (S5), la même liste au nom des clients, sans « Nouvelle conversation ».
  */
 export function ConversationsScreen({ side = 'client' }: { side?: Side }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const conversations = useConversations(side);
+  const colors = useThemeColors();
+  const list = useConversationList(side);
   const onScroll = useCollapseOnScroll();
+  const [filter, setFilter] = useState<ConversationFilter>('all');
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState('');
+
+  const counts = useMemo(() => conversationCounts(list.entries), [list.entries]);
+  const shown = useMemo(
+    () => visibleConversations(list.entries, filter, query),
+    [list.entries, filter, query],
+  );
+
+  const toggleSearch = () => {
+    setSearching((open) => !open);
+    setQuery('');
+  };
+
+  const empty = () => {
+    if (list.entries.length === 0) {
+      return (
+        <MessagesEmptyState
+          kind="empty"
+          title={t('messages.emptyTitle')}
+          description={t(side === 'client' ? 'messages.emptyHint' : 'messages.emptyHintPro')}
+          actionLabel={side === 'client' ? t('messages.findProvider') : undefined}
+          onAction={() => router.navigate('/')}
+        />
+      );
+    }
+    if (query.trim()) {
+      return (
+        <MessagesEmptyState
+          kind="search"
+          title={t('messages.noResultTitle')}
+          description={t('messages.noResultHint')}
+          actionLabel={t('messages.clearSearch')}
+          onAction={() => setQuery('')}
+        />
+      );
+    }
+    const kind = filter === 'unread' ? 'unread' : 'quotes';
+    return (
+      <MessagesEmptyState
+        kind={kind}
+        title={t(kind === 'unread' ? 'messages.noUnreadTitle' : 'messages.noQuotesTitle')}
+        description={t(kind === 'unread' ? 'messages.noUnreadHint' : 'messages.noQuotesHint')}
+        actionLabel={t('messages.showAll')}
+        onAction={() => setFilter('all')}
+      />
+    );
+  };
+
+  const body = () => {
+    if (list.isPending) return <ConversationSkeleton />;
+    if (list.isError) {
+      return (
+        <MessagesEmptyState
+          kind="error"
+          title={t('messages.loadErrorTitle')}
+          description={t('messages.loadErrorHint')}
+          actionLabel={t('common.retry')}
+          onAction={() => void list.refetch()}
+        />
+      );
+    }
+    return (
+      <FlatList
+        data={shown}
+        keyExtractor={(entry) => entry.summary.conversation.id}
+        accessibilityLabel={t('messages.list')}
+        renderItem={({ item }: { item: ConversationEntry }) => (
+          <ConversationItem entry={item} side={side} />
+        )}
+        ItemSeparatorComponent={Separator}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ paddingBottom: TAB_BAR_SPACE, flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={list.isRefetching}
+            onRefresh={() => void list.refetch()}
+            tintColor={colors.ochre}
+          />
+        }
+        ListEmptyComponent={empty()}
+      />
+    );
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <View className="px-5 pb-1.5 pt-2">
-        <Heading>{t('messages.title')}</Heading>
-      </View>
-      <QueryState
-        isPending={conversations.isPending}
-        isError={conversations.isError}
-        onRetry={() => void conversations.refetch()}
-        loadingLabel={t('messages.loading')}
-      >
-        <FlatList
-          data={conversations.data ?? []}
-          keyExtractor={(item) => item.conversation.id}
-          accessibilityLabel={t('messages.list')}
-          renderItem={({ item }) => <ConversationRow summary={item} side={side} />}
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: TAB_BAR_SPACE, flexGrow: 1 }}
-          refreshControl={
-            <RefreshControl
-              refreshing={conversations.isRefetching}
-              onRefresh={() => void conversations.refetch()}
-            />
-          }
-          ListEmptyComponent={
-            <EmptyState
-              className="flex-1"
-              image={emptyImage}
-              title={t('messages.emptyTitle')}
-              description={t(side === 'client' ? 'messages.emptyHint' : 'messages.emptyHintPro')}
-              action={
-                side === 'client' ? (
-                  <Button size="md" onPress={() => router.navigate('/')}>
-                    {t('messages.findProvider')}
-                  </Button>
-                ) : undefined
-              }
-            />
-          }
-        />
-      </QueryState>
+      <MessagesHeader
+        searching={searching}
+        onToggleSearch={toggleSearch}
+        query={query}
+        onChangeQuery={setQuery}
+        canCompose={side === 'client'}
+        placeholder={t(
+          side === 'client' ? 'messages.searchPlaceholder' : 'messages.searchPlaceholderPro',
+        )}
+      />
+      {list.entries.length > 0 ? (
+        <MessagesFilters value={filter} onChange={setFilter} counts={counts} />
+      ) : null}
+      <View className="flex-1 pt-1">{body()}</View>
     </SafeAreaView>
   );
 }
 
-function ConversationRow({ summary, side }: { summary: ConversationSummary; side: Side }) {
-  const { t } = useTranslation();
-  const { locale } = useLanguage();
-  const router = useRouter();
-  const userId = useSessionStore((s) => s.user?.id);
-  const { conversation, providerName, otherParticipant, lastMessage, unreadCount } = summary;
-  const name = side === 'client' ? providerName : clientName(otherParticipant);
-  const unread = unreadCount > 0;
-  const preview = !lastMessage
-    ? t('messages.noMessage')
-    : lastMessage.senderId === userId && lastMessage.kind !== 'system'
-      ? t('messages.you', { body: lastMessage.body })
-      : lastMessage.body;
-  const time = messageTime(conversation.lastMessageAt, locale);
-
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={[
-        name,
-        unread ? t('messages.unread', { count: unreadCount }) : undefined,
-        preview,
-        time,
-      ]
-        .filter(Boolean)
-        .join(', ')}
-      onPress={() => router.push(conversationHref(conversation.id, side))}
-      className="flex-row items-center gap-3 border-b border-border px-5 py-3.5 active:bg-muted"
-    >
-      <Avatar name={name} uri={otherParticipant.avatarUrl} />
-      <View className="min-w-0 flex-1">
-        <View className="flex-row items-baseline justify-between gap-2">
-          <Text size="sm" weight="bold" numberOfLines={1} className="shrink">
-            {name}
-          </Text>
-          <Text size="xs" tone="muted">
-            {time}
-          </Text>
-        </View>
-        <View className="mt-0.5 flex-row items-center gap-2">
-          <Text
-            size="xs"
-            numberOfLines={1}
-            weight={unread ? 'semibold' : 'regular'}
-            tone={unread ? 'default' : 'muted'}
-            className={cn('flex-1', lastMessage?.kind === 'system' && 'italic')}
-          >
-            {preview}
-          </Text>
-          {unread ? (
-            <View className="h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5">
-              <Text size="caption" weight="bold" className="text-accent-foreground">
-                {String(unreadCount)}
-              </Text>
-            </View>
-          ) : null}
-        </View>
-      </View>
-    </Pressable>
-  );
+/** Le trait fin entre deux conversations, aligné sur le bord gauche de la liste. */
+function Separator() {
+  return <View className="ml-5 bg-border" style={{ height: StyleSheet.hairlineWidth * 2 }} />;
 }
