@@ -3,6 +3,7 @@ import { seedDemoAccounts } from '@afro/common/mocks';
 import { act, fireEvent } from '@testing-library/react-native';
 import { renderRouter, screen } from 'expo-router/testing-library';
 import { isoDay, longDay } from '@/lib/dates';
+import { useFavoritesStore } from '@/stores/favorites';
 import { useSessionStore } from '@/stores/session';
 import { demoApi, testProviders } from '@/test/demoApi';
 import { useAuthFlowStore } from '../auth/authFlowStore';
@@ -46,6 +47,7 @@ async function signInAsClient() {
 }
 
 afterEach(() => {
+  useFavoritesStore.setState({ ids: [] });
   useTabBarStore.setState({ collapsed: false });
   useAuthFlowStore.setState({ redirectTo: null });
   useSessionStore.setState({ user: null, token: null });
@@ -203,5 +205,46 @@ describe('Profil prestataire (lot M8)', () => {
     );
     expect(screen).toHavePathname(`/prestataires/${first.slug}`);
     expect(await screen.findByRole('header', { name: first.displayName })).toBeOnTheScreen();
+  });
+});
+
+describe('Profil prestataire : header dynamique', () => {
+  it('Retour (dans le header) ramène à la recherche', async () => {
+    const { api } = demoApi();
+    const { items } = await api.searchProviders({});
+    await renderRouter(routes, { initialUrl: '/?vue=resultats', wrapper: testProviders(api) });
+    await fireEvent.press(
+      await screen.findByRole('link', { name: new RegExp(`^${items[0]!.displayName}, `) }),
+    );
+    await screen.findByRole('header', { name: items[0]!.displayName });
+    await fireEvent.press(screen.getByRole('button', { name: 'Retour' }));
+    expect(screen).toHavePathname('/');
+  });
+
+  it('le cœur du header utilise les mêmes favoris que les cartes', async () => {
+    const { prepared } = await open(SLUG, ({ api }) => api.getProviderBySlug(SLUG));
+    const name = (prepared as ProviderDetails).profile.displayName;
+    await fireEvent.press(
+      await screen.findByRole('button', { name: `Ajouter ${name} aux favoris` }),
+    );
+    expect(useFavoritesStore.getState().ids).toEqual([PROVIDER_ID]);
+    const heart = screen.getByRole('button', { name: `Retirer ${name} des favoris` });
+    expect(heart).toBeSelected();
+    await fireEvent.press(heart);
+    expect(useFavoritesStore.getState().ids).toEqual([]);
+  });
+
+  it('le défilement ne re-rend pas la fiche et garde les boutons en place', async () => {
+    const { prepared } = await open(SLUG, ({ api }) => api.getProviderBySlug(SLUG));
+    const name = (prepared as ProviderDetails).profile.displayName;
+    const heading = await screen.findByRole('header', { name });
+    const back = screen.getByRole('button', { name: 'Retour' });
+    await fireEvent.scroll(screen.getByTestId('profile-scroll'), {
+      nativeEvent: { contentOffset: { x: 0, y: 900 } },
+    });
+    // Mêmes éléments (pas de nouveau rendu) : le header ne dépend du scroll que via Reanimated.
+    expect(screen.getByRole('header', { name })).toBe(heading);
+    expect(screen.getByRole('button', { name: 'Retour' })).toBe(back);
+    expect(screen.getByRole('button', { name: `Ajouter ${name} aux favoris` })).toBeOnTheScreen();
   });
 });
